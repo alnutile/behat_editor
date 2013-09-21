@@ -6,3 +6,4 @@ Feature: Index Page
   Scenario: User visits page and sees list of files
     Given I am on "/admin/behat/index"
     Then I should see "behat_3.feature"
+
