@@ -1,0 +1,4 @@
+name = Behat Editor
+description = Edit and View Behat files as well as run tests
+core = 7.x
+

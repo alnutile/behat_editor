@@ -1,0 +1,69 @@
+<?php
+
+define('BEHAT_EDITOR_FOLDER', 'behat_features');
+define('BEHAT_EDITOR_FILE_PREFIX', 'behat_editor');
+
+function behat_editor_permission() {
+    $items['behat view test'] = array(
+       'title' => t('View a test file'),
+       'description' => t('Can view a singular test')
+    );
+    $items['behat view all tests'] = array(
+        'title' => t('View all test file'),
+        'description' => t('Can view all tests')
+    );
+    $items['behat add test'] = array(
+        'title' => t('Add a test'),
+        'description' => t('Can add a test')
+    );
+    $items['behat run test'] = array(
+        'title' => t('Can run a test'),
+        'description' => t('Can run a test')
+    );
+    $items['behat edit test'] = array(
+        'title' => t('Can edit a test'),
+        'description' => t('Can edit a test')
+    );
+    $items['behat delete test'] = array(
+        'title' => t('Can delete a test'),
+        'description' => t('Can delete a test')
+    );
+   return $items;
+}
+
+function behat_editor_menu() {
+    $path = drupal_get_path('module', 'behat_editor');
+    $items['admin/behat/index'] = array(
+        'page callback' => 'behat_editor_index',
+        'access arguments' => array('behat view all tests'),
+        'file' => 'behat_editor_index.inc',
+        'file path' => "$path/controllers/"
+    );
+    $items['admin/behat/view/%/%'] = array(
+        'page callback' => 'behat_editor_view',
+        'page arguments' => array(3,4),
+        'access arguments' => array('behat view test'),
+        'file' => 'behat_editor_view.inc',
+        'file path' => "$path/controllers/"
+    );
+    return $items;
+}
+
+function behat_editor_theme() {
+    $items['behat_editor_file_to_html_view'] = array(
+        'variables' => array(
+            'file_text' => NULL,
+        ),
+        'file' => 'tpl/behat_shared_views.inc'
+    );
+
+    $items['behat_editor_results_area'] = array(
+        'variables' => array(
+            'params' => NULL
+        ),
+        'file' => 'tpl/behat_shared_views.inc',
+        'template' => 'tpl/behat-editor-results-area'
+    );
+
+    return $items;
+}
