@@ -65,15 +65,18 @@ function _behat_editor_build_array_of_available_files($modules) {
  *  array of common file data
  */
 function _behat_get_file_info($module, $filename) {
-    if ($module == BEHAT_EDITOR_DEFAULT_FOLDER) {
-        $sub_folder = BEHAT_EDITOR_DEFAULT_FOLDER;
+    if ($module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
+        $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
+        $files_folder =  file_build_uri("/{$sub_folder}/");
+        $path = drupal_realpath($files_folder);
+        $full_path_with_file = $path . '/' . $filename;
     } else {
-        $sub_folder = drupal_get_path('module', $module);
+        $sub_folder = drupal_get_path('module', $module) . '/' . BEHAT_EDITOR_FOLDER;
+        $path = DRUPAL_ROOT . '/' . $sub_folder;
+        $full_path_with_file = $path . '/' . $filename;
     }
 
-    $file_found = array();
-    $path = DRUPAL_ROOT . '/' . $sub_folder . '/' . BEHAT_EDITOR_FOLDER;
-    $full_path_with_file = $path . '/' . $filename;
+
 
     $file_data = array(
         'module' => $module,
@@ -81,6 +84,7 @@ function _behat_get_file_info($module, $filename) {
         'absolute_path' => $path,
         'absolute_path_with_file' => $full_path_with_file,
         'scenario' => _behat_editor_read_file($full_path_with_file),
+        'filename_no_ext' => substr($filename, 0, -8)
     );
     return $file_data;
 }

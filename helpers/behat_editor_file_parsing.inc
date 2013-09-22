@@ -213,7 +213,6 @@ function _behat_editor_save_html_to_file($request, $module, $filename) {
     //@todo why was this not loaded with info file files[] call?
     $scenario_array = _behat_editor_parse_questions($request['scenario']);
     $feature = theme('behat_editor_create_file', $vars = array('scenario' => $scenario_array));
-    watchdog('test_file_output', print_r($feature, 1));
     global $user;
     //@todo DRY this up for either type of user and response
     if (user_access('behat add test') && $module != variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER)) {
@@ -240,7 +239,6 @@ function _behat_editor_process_file_in_module_folder($module, $filename, $featur
         watchdog('gherkin_generator', "%date File made %name", $variables = array('%date' => $date, '%name' => $filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
         $output =  array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
     }
-
     return $output;
 }
 
@@ -248,7 +246,6 @@ function _behat_editor_linkable_path($module, $filename) {
     $module_path = drupal_get_path('module', $module);
     return $module_path . '/' . variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER) . '/' . $filename;
 }
-
 
 /**
  * @todo this needs to consider non root as well
@@ -262,7 +259,7 @@ function _behat_editor_save_path($module) {
 
 
 function _behat_editor_process_file_in_tmp($filename, $feature) {
-    $folder = variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER);
+    $folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
     $path = file_build_uri("/{$folder}/");
     $response = file_unmanaged_save_data($feature, $path . '/' . $filename, $replace = FILE_EXISTS_REPLACE);
     if($response == FALSE) {

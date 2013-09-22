@@ -266,7 +266,6 @@ function template_preprocess_behat_editor_questions_area_edit(&$variables) {
 function theme_behat_editor_create_file($variables) {
     $scenario = $variables['scenario'];
     $file = '';
-    watchdog('test_before_key', print_r($scenario, 1));
     foreach($scenario as $key) {
             $new_line = _behat_editor_new_line($key['new_line']);
             $new_line_above = _behat_editor_new_line($key['new_line_above']);

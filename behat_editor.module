@@ -2,6 +2,7 @@
 
 define('BEHAT_EDITOR_FOLDER', 'behat_features');
 define('BEHAT_EDITOR_DEFAULT_FOLDER', 'behat_tests');
+define('BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER', 'behat_tests');
 
 function behat_editor_permission() {
     $items['behat view test'] = array(
