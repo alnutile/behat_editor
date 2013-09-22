@@ -10,7 +10,6 @@ function behat_editor_view($module, $filename) {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     $file_info = _behat_get_file_info($module, $filename);
-    drupal_add_js(array('behat_editor' => array('gherkinGeneratorDefaultPath' => file_directory_temp())), 'setting');
 
     $path = drupal_get_path('module', 'behat_editor');
     $build['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';

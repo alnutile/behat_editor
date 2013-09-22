@@ -23,22 +23,41 @@
     }
 
     Drupal.behat_editor.renderMessage = function(data) {
-        if(data.file) {
-            var message = data.file.message;
-            var messages = "<div class='alert alert-info'>";
-            messages += message;
-            messages += "</div>";
-            $('#messages').append(messages);
-        }
 
-        if(data.test) {
-            var message = data.test.message;
-            var messages = "<div class='alert alert-info'>";
+        if(data.error == 1) {
+            var message = data.message;
+            var messages = "<div class='alert alert-error'>";
             messages += message;
             messages += "</div>";
             $('#messages').append(messages);
-            Drupal.behat_editor.setResultsIframe(data.test.file);
+        } else {
+            if(data.file) {
+                var message = data.file.message;
+                var messages = "<div class='alert alert-info'>";
+                messages += message;
+                messages += "</div>";
+                $('#messages').append(messages);
+            }
+
+            if(data.test) {
+                var message = data.test.message;
+                var messages = "<div class='alert alert-info'>";
+                messages += message;
+                messages += "</div>";
+                $('#messages').append(messages);
+                Drupal.behat_editor.setResultsIframe(data.test.file);
+            }
         }
     };
+
+    Drupal.behat_editor.make_scenario_array = function(scenario) {
+        var items = scenario.length;
+        var scenario_array = new Array()
+        for(var i = 0; i < items; i++) {
+            scenario_array[i] =$(scenario[i]).text();
+        }
+
+        return scenario_array;
+    }
 
 })(jQuery);

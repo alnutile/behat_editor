@@ -65,8 +65,14 @@ function _behat_editor_build_array_of_available_files($modules) {
  *  array of common file data
  */
 function _behat_get_file_info($module, $filename) {
+    if ($module == BEHAT_EDITOR_DEFAULT_FOLDER) {
+        $sub_folder = BEHAT_EDITOR_DEFAULT_FOLDER;
+    } else {
+        $sub_folder = drupal_get_path('module', $module);
+    }
+
     $file_found = array();
-    $path = DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . '/' . BEHAT_EDITOR_FOLDER;
+    $path = DRUPAL_ROOT . '/' . $sub_folder . '/' . BEHAT_EDITOR_FOLDER;
     $full_path_with_file = $path . '/' . $filename;
 
     $file_data = array(
@@ -83,8 +89,5 @@ function _behat_get_file_info($module, $filename) {
 function _behat_editor_read_file($full_path_with_file) {
     $file_open = fopen($full_path_with_file, "r");
     $file_read = fread($file_open, filesize($full_path_with_file));
-//    $file_to_array = _gherkin_generator_turn_file_to_array($file_read);
-//    $array_to_html_array = _gherkin_generator_parse_questions($file_to_array, $direction = 'html_view');
-//    $output = theme('item_list', $vars = array('items' => $array_to_html_array, 'attributes' => array('class' => array('scenario'))));
     return $file_read;
 }

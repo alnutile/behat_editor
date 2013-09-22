@@ -14,7 +14,7 @@ function _behat_editor_parse_questions($scenario, $direction = 'file') {
     foreach($scenario as $value) {
         if($results = behat_editor_string_type(trim($value), $scenario, $count, $direction)) {
             //@todo DRY this up of separate
-            if(count($results) < 3) {
+            if(!isset($results['string'])) {
                 foreach($results as $row) {
                     if($row) {
                         $scenario_array[] = $row;
@@ -200,4 +200,80 @@ function _behat_editor_turn_file_to_array($file) {
         }
     }
     return $array;
+}
+
+/**
+ * @param $request
+ *   this is an array keyed as such
+ *     scenario - an array of the scenario lines one line = one array row
+ *     filename -
+ * @return array
+ */
+function _behat_editor_save_html_to_file($request, $module, $filename) {
+    //@todo why was this not loaded with info file files[] call?
+    $scenario_array = _behat_editor_parse_questions($request['scenario']);
+    $feature = theme('behat_editor_create_file', $vars = array('scenario' => $scenario_array));
+    watchdog('test_file_output', print_r($feature, 1));
+    global $user;
+    //@todo DRY this up for either type of user and response
+    if (user_access('behat add test') && $module != variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER)) {
+        /* Derived from features.admin.inc module */
+        $output = _behat_editor_process_file_in_module_folder($module, $filename, $feature, $request);
+        return $output;
+    } else {
+        $output = _behat_editor_process_file_in_tmp($filename, $feature);
+        return $output;
+    }
+}
+
+function _behat_editor_process_file_in_module_folder($module, $filename, $feature, $request) {
+    $full_path = _behat_editor_save_path($module);
+    $response = file_put_contents("{$full_path}/{$filename}", $feature);
+    if($response == FALSE) {
+        watchdog('gherkin_generator', "File could not be made...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+        $output = array('message' => "Error file could not be save", 'file' => $response, 'error' => '1');
+    } else {
+        $gherkin_linkable_path = _behat_editor_linkable_path($module, $filename);
+        $url = url($gherkin_linkable_path, $options = array('absolute' => TRUE));
+        $file_url = l('click here', $url, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
+        $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+        watchdog('gherkin_generator', "%date File made %name", $variables = array('%date' => $date, '%name' => $filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
+        $output =  array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
+    }
+
+    return $output;
+}
+
+function _behat_editor_linkable_path($module, $filename) {
+    $module_path = drupal_get_path('module', $module);
+    return $module_path . '/' . variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER) . '/' . $filename;
+}
+
+
+/**
+ * @todo this needs to consider non root as well
+ *   eg anonymous user saves to tmp while test run?
+ *   or to allow them to link to it.
+ */
+function _behat_editor_save_path($module) {
+    $module_path = drupal_get_path('module', $module);
+    return  DRUPAL_ROOT . '/' . $module_path . '/' . variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER);
+}
+
+
+function _behat_editor_process_file_in_tmp($filename, $feature) {
+    $folder = variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER);
+    $path = file_build_uri("/{$folder}/");
+    $response = file_unmanaged_save_data($feature, $path . '/' . $filename, $replace = FILE_EXISTS_REPLACE);
+    if($response == FALSE) {
+        watchdog('gherkin_generator', "File could not be made.", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+        $output = array('message' => "Error file could not be save", 'file' => $response, 'error' => '1');
+    } else {
+        $file_uri = $response;
+        $file_url = l('click here', file_create_url($response), array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
+        $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+        watchdog('gherkin_generator', "%date File made %name", $variables = array('%date' => $date, '%name' => $response), $severity = WATCHDOG_NOTICE, $link = $file_url);
+        $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $file_uri, 'error' => '0');
+    }
+    return $output;
 }

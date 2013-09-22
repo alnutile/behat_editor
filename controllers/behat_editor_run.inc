@@ -5,6 +5,7 @@
  */
 function behat_editor_run($module, $filename) {
     $response = '';
+    module_load_include('inc', 'behat_editor', 'helpers/behat_editor_file_parsing');
     if($_REQUEST['method'] == 'view-mode') {
         module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
         module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
@@ -21,33 +22,37 @@ function behat_editor_run($module, $filename) {
      */
     if($_REQUEST['method'] == 'create-mode') {
         if(isset($_REQUEST['scenario'])) {
-            $response = _gherkin_generator_save_html_to_file($_REQUEST);
+            $response = _behat_editor_save_html_to_file($_REQUEST, $module, $filename, 'file');
+
             if($response['file'] != FALSE){
-                $run_test_response = _gherkin_generator_run_test($response['file'], $_REQUEST['filename']);
+                $run_test_response = _behat_editor_run_test($response['file'], $_REQUEST['filename']);
                 //@todo respond to error!
                 $results = array('file' => $response, 'test' => $run_test_response);
                 drupal_json_output($results);
                 exit();
             } else {
                 //@todo better error output here
-                drupal_json_output(array());
+                //  the response needs to be made to work as the format above
+                drupal_json_output(array('file' => array('message' => $response), 'error' => 1));
                 exit();
             }
         } else {
             //Send back the Error
-            watchdog('gherkin_generator', "Bad Request", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
-            $response = array('message' => t('Bad Request'), 'file' => FALSE);
+            watchdog('behat_editor', "Bad Request: Scenario could not be parsed", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+            $response = array('message' => t('Bad Request: Scenario could not be parsed'), 'file' => FALSE, 'error' => 1);
             drupal_json_output($response);
             exit();
         }
     }
 }
 
+
+
 function _behat_editor_run_test($file_path, $name) {
     if (!is_file($file_path)) {
         //@todo does this stop the process and feedback the error system if
         //  file does not exist?
-        watchdog('gherkin_generator', "Error file does not exist", $variables = array(), $severity = WATCHDOG_ERROR, $link = $file_path);
+        watchdog('behat_editor', "Error file does not exist", $variables = array(), $severity = WATCHDOG_ERROR, $link = $file_path);
         return array('message' => "Error file does not exist", 'file' => $file_path);
     } else {
         if(user_access('save gherkin test')) {
@@ -78,7 +83,7 @@ function _behat_editor_run_tests_from_module_folder($file_path, $name) {
     $results_url = file_create_url($results_uri);                           //
     $output = drupal_realpath($path_results) . '/' . $test_id . '.html';    //Needed to run bin
 
-    $response = exec("cd $path/behat && bin/behat --format=html --out $output $absolute_file_path && echo $?");
+    $response = exec("cd $path/behat && bin/behat --format=html --tags '~@javascript' --out $output $absolute_file_path && echo $?");
     $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
 
     /**
@@ -89,18 +94,18 @@ function _behat_editor_run_tests_from_module_folder($file_path, $name) {
         $output = array('message' => t('@date: <br> Test successful!', array('@date' => $date)), 'file' => $results_url, 'error' => FALSE);
     } else {
         watchdog('gherkin_generator', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $file_path), $severity = WATCHDOG_ERROR, $link = $file_path);
-        $output = array('message' => t('@date: <br> Error running test !name to download ', array('@date' => $date, '@name' => $file_path)), 'file' => $file, 'error' => TRUE);
+        $output = array('message' => t('@date: <br> Error running test !name to download ', array('@date' => $date, '@name' => $file_path)), 'file' => $file_path, 'error' => TRUE);
     }
 
     return $output;
 }
 
-function _gherkin_generator_run_tests_from_tmp_folder($file_path, $name) {
+function _behat_editor_run_tests_from_tmp_folder($file_path, $name) {
     watchdog('test_tmp_name', print_r($name, 1));
     watchdog('real_path', drupal_realpath($file_path));
     $absolute_file_path = drupal_realpath($file_path);
-    $path = drupal_get_path('module', 'gherkin_generator');
-    $path_results = file_build_uri("/gherkin_tests/results");
+    $path = drupal_get_path('module', 'behat_editor');
+    $path_results = file_build_uri("/behat_editor/results");
     if (!file_prepare_directory($path_results, FILE_CREATE_DIRECTORY)) {
         drupal_mkdir($path_results);
     }
@@ -110,7 +115,7 @@ function _gherkin_generator_run_tests_from_tmp_folder($file_path, $name) {
     $results_url = file_create_url($results_uri);                           //
     $output = drupal_realpath($path_results) . '/' . $test_id . '.html';    //Needed to run bin
 
-    $response = exec("cd $path/behat && bin/behat --format=html --out $output $absolute_file_path && echo $?");
+    $response = exec("cd $path/behat && bin/behat --format=html --tags '~@javascript' --out $output $absolute_file_path && echo $?");
     $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
 
     if($response == 0) {

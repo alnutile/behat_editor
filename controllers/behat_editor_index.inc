@@ -9,6 +9,17 @@ function behat_editor_index() {
                 have a behet_features folder inside.',
         '#suffix' => '</div>'
     );
+    $build['actions'] = array(
+        '#type' => 'container',
+        '#attributes' => array('class' => array('span11', 'well'))
+    );
+
+    $build['actions']['add_test'] = array(
+        '#type' => 'link',
+        '#title' => t('Add Test'),
+        '#href' => "admin/behat/add",
+        '#attributes' => array('class' => array('btn', 'btn-success', 'add')),
+    );
 
     $modules = _behat_editor_check_for_modules();
     $files_array = _behat_editor_build_array_of_available_files($modules);
