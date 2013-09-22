@@ -1,4 +1,4 @@
-## Behat Editro and Gherkin Generator
+## Behat Editor and Gherkin Generator
 
 ### About
 
