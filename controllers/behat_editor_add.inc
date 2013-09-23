@@ -57,10 +57,10 @@ function behat_editor_add_form($form, $form_state) {
 
     $form['actions']['admin_area'] = array(
         '#type' => 'link',
-        '#title' => t('| Admin'),
+        '#title' => t('Admin'),
         '#name' => 'admin_area',
         '#href' => "admin/behat/index",
-        '#attributes' => array('class' => array('btn', 'btn-link', 'back')),
+        '#attributes' => array('class' => array('btn', 'btn-warning', 'back')),
     );
 
     $form['left-side'] = array(
