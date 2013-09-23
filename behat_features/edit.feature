@@ -1,5 +1,5 @@
 Feature: Edit Page
-
+  @javascript
   Scenario: User clicks link to see view
     Given I am on "/admin/behat/view/behat_editor/aa_mock.feature"
     And I follow "Edit Test"
@@ -14,6 +14,7 @@ Feature: Edit Page
   Scenario: User runs a test
     Given I am on "/admin/behat/edit/behat_editor/aa_mock.feature"
     And I follow "Run Test"
+    And I wait
     And I wait
     And I should see "Test successful!"
 
