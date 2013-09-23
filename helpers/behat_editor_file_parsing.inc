@@ -10,13 +10,10 @@
  */
 function _behat_editor_parse_questions($scenario, $direction = 'file') {
     $scenario_array = array();
-    $count = 0; /* used to get tags */
+    $count = 0;                                                                // used to get tags
+    $scenario = array_values($scenario);                                       //reset keys since some unset work
     foreach($scenario as $value) {
         if($results = behat_editor_string_type(trim($value), $scenario, $count, $direction)) {
-            //Rows with tags we need to get the internal array content
-            //  @todo pull this out into a hookable feature so that
-            //    we can later deal with Feature descriptions and other
-            //    types of Scenarios etc.
             if(array_key_exists('scenario', $results) || array_key_exists('feature', $results)) {
                 $key = key($results);
                 foreach($results[$key] as $row) {
@@ -181,6 +178,8 @@ function behat_editor_string_scenario($string, $scenario, $count, $direction) {
 }
 
 function behat_editor_string_tags($scenario, $count, $spaces = 0, $direction) {
+    watchdog('test_tag_run_count', print_r($count, 1));
+    watchdog('test_tag_run_scenario', print_r($scenario, 1));
 
     if(array_key_exists($count, $scenario)) {
         $string = $scenario[$count];

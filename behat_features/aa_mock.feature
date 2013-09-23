@@ -1,7 +1,7 @@
  @feature_tag @tag1 @tag2
  Feature: View Page
 
-   @tag3 tag4
+   @tag3
    Scenario: User clicks link to see view
      Given I am on "/admin/behat/index"
      And I follow "view"

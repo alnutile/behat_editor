@@ -5,7 +5,6 @@
 
             $('ul.tagit').each(function(){
                 var inputId = $(this).data('scenario-id');
-                console.log(inputId);
                 $(this).tagit(
                     {
                         singleField: true,
