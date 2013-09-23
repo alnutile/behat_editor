@@ -3,6 +3,18 @@
 
         attach: function (context) {
 
+            $('ul.tagit').each(function(){
+                var inputId = $(this).data('scenario-id');
+                console.log(inputId);
+                $(this).tagit(
+                    {
+                        singleField: true,
+                        singleFieldNode: $('#scenario-values-'+inputId+''),
+                        placeholderText: '@scenario_tag'
+                    }
+                );
+            });
+
             $('a.run').click(function(e){
                 e.preventDefault();
                 var method = 'create-mode';

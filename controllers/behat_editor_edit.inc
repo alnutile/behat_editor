@@ -15,7 +15,9 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     drupal_add_library('system', 'ui.autocomplete');
     drupal_add_library('behat_editor', 'tag_it') ;
     $file_info = _behat_get_file_info($module, $filename);
-    $file_to_html = theme('behat_editor_file_to_html_view', $vars = array('file_text' => $file_info['scenario']));
+    //Product the HTML from the File in a format it will have all the markup needed to
+    //  build / edit a test
+    $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
 
 
     $path = drupal_get_path('module', 'behat_editor');
@@ -67,7 +69,10 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     $form['results'] = array(
         '#markup' => theme('behat_editor_results_area', $args = array('params' => array()))
     );
+
     $form['left-side']['existing_test'] = array(
+        '#prefix' => '<div class="well">',
+        '#suffix' => '</div>',
         '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
     );
 

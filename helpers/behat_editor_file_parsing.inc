@@ -97,6 +97,32 @@ function behat_editor_string_feature($string, $scenario, $count, $direction) {
                 );
                 $results['feature'] = $tags + $feature_line;
                 return $results;
+            case 'html_edit':
+                $tags = array();
+                $tags = behat_editor_string_tags($scenario, $count - 1, 0, $direction);
+                //@todo remove number key should be automatic
+                $features_tags[0] = array(
+                    'data' => "<strong>Feature Tags:</strong>",
+                    'class' => array('ignore'),
+                );
+
+                $features_tag_input[1] = array(
+                    'data' => array('features_tag_value' => array('#id' => 'features-tagit-values', '#type' => 'hidden', '#name' => 'features_tag_value', '#value'=>$tags)),
+                    'class' => array('tag hidden'),
+                    'id' => 'features-tags'
+                );
+
+                $features_tag_it[2] = array(
+                    'data' => '<ul id="features-tagit-input"></ul><div class="help-block">Start each tag with @. Just separate by comma for more than one tags. Tags can not have spaces.</div>',
+                    'class' => array('ignore'),
+                );
+
+                $feature_line[3] = array(
+                    'data' => $string,
+                    'class' => array('feature')
+                );
+                $results['feature'] = $features_tags + $features_tag_input + $features_tag_it + $feature_line;
+                return $results;
         }
     }
 }
@@ -125,9 +151,29 @@ function behat_editor_string_scenario($string, $scenario, $count, $direction) {
                 $tags[0] = behat_editor_string_tags($scenario, $count - 1, 2, $direction);
                 $scenario_line[1] = array(
                     'data' => $string,
-                    'class' => array('scenario', "spaces-two")
+                    'class' => array("spaces-two")
                 );
                 $results['scenario'] = $tags + $scenario_line;
+                return $results;
+            case 'html_edit':
+                $tags = array();
+                $tags = behat_editor_string_tags($scenario, $count - 1, 2, $direction);
+                $uid = rand(100000000, 900000000);
+                $scenario_tag_input[0] = array(
+                    'data' => array("scenario-tags-$uid" => array('#class' => 'section-tag', '#id' => "scenario-values-$uid", '#type' => 'hidden', '#value' => $tags)),
+                    //'data' => array('features_tag_value' => array('#id' => "scenario-values-$uid", '#type' => 'hidden', '#name' => 'features_tag_value', '#value'=>$tags)),
+                    'class' => array('tag')
+                );
+                $scenario_tag_it[2] = array(
+                    'data' => '<i class="icon-move pull-left"></i><ul id="scenario-input-' . $uid . '" class="tagit" data-scenario-id="'.$uid.'"></ul>',
+                    'class' => array('ignore'),
+                );
+                $scenario_line[3] = array(
+                    'data' => _behat_editor_question_wrapper($string),
+                    'class' => array('name'),
+                    'data-scenario-tag-box' => "scenario-values-$uid"
+                );
+                $results['scenario'] = $scenario_tag_input + $scenario_tag_it + $scenario_line;
                 return $results;
         }
 
@@ -154,9 +200,11 @@ function behat_editor_string_tags($scenario, $count, $spaces = 0, $direction) {
                     case 'html_view':
                         $results = array(
                             'data' => $string,
-                            'class' => array('tags', "spaces-$spaces")
+                            'class' => array('tag', "spaces-$spaces")
                         );
                         return $results;
+                    case 'html_edit':
+                         return $string;
                 }
             }
         }
@@ -181,8 +229,17 @@ function behat_editor_string_steps($string, $parent, $count, $direction) {
                     'data' => $string,
                     'class' => array('steps', "spaces-four")
                 );
+            case 'html_edit':
+                return  array(
+                    'data' => _behat_editor_question_wrapper($string),
+                    'class' => array('steps', "spaces-four")
+                );
         }
     }
+}
+
+function _behat_editor_question_wrapper($string) {
+    return '<i class="icon-move pull-left"></i>' . $string . '<i class="remove icon-remove-circle"></i>';
 }
 
 function _behat_editor_pop_first_word($string) {

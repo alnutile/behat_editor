@@ -45,6 +45,87 @@ function _behat_editor_produce_table_array($files_array) {
 }
 
 
+function theme_behat_editor_file_to_html_edit($vars) {
+    $build['file_text'] = array(
+        '#markup' => $vars['file_text']
+    );
+    return $build;
+}
+
+function template_preprocess_behat_editor_file_to_html_edit(&$variables) {
+    module_load_include('inc', 'behat_editor', 'helpers/behat_editor_file_parsing');
+    $file_text = $variables['file_text'];
+    $file_to_array = _behat_editor_turn_file_to_array($file_text);
+    $array_to_html_array = _behat_editor_parse_questions($file_to_array, $direction = 'html_edit');
+    $make_it_html = theme('behat_editor_item_list', $vars = array('items' => $array_to_html_array, 'attributes' => array('class' => 'scenario sortable ui-sortable')));
+    $variables['file_text'] = $make_it_html;
+
+}
+
+/**
+ * from theme_item_list
+ * @param $variables
+ * @return string
+ */
+function theme_behat_editor_item_list($variables) {
+    $items = $variables['items'];
+    $type = 'ul';
+    $attributes = $variables['attributes'];
+    $output = '<div class="item-list">';
+
+
+    if (!empty($items)) {
+        $output .= "<$type" . drupal_attributes($attributes) . '>';
+        $num_items = count($items);
+        $i = 0;
+        foreach ($items as $item) {
+            $id = '';
+            $attributes = array();
+            $children = array();
+            $data = '';
+            $i++;
+            $id = (isset($item['id'])) ? "id=\"{$item['id']}\"" : '';
+            foreach ($item as $key => $value) {
+                watchdog('test_item', print_r($item, 1));
+                if ($key == 'data') {
+                    if(is_array($value)) {
+                        watchdog('test_item_value', print_r($value, 1));
+                        watchdog('test_item_pre_render', print_r($value, 1));
+                        //@todo get drupal_render form element here
+                        $field_name = key($value);
+                        $id_input = (isset($value[$field_name]['#id'])) ? "id=\"{$value[$field_name]['#id']}\"" : '';
+                        $name = (isset($value[$field_name]['#name'])) ? "name=\"{$value[$field_name]['#name']}\"" : '';
+                        $class = (isset($value[$field_name]['#class'])) ? "class=\"{$value[$field_name]['#class']}\"" : '';
+                        $value = $value[$field_name]['#value'];
+                        $data = "<input type='hidden' value=\"{$value}\" $id_input $name $class>";
+                    } else {
+                        $data = $value;
+                    }
+                }
+                elseif ($key == 'children') {
+                    $children = $value;
+                }
+                else {
+                    $attributes[$key] = $value;
+                }
+            }
+            if ($i == 1) {
+                $attributes['class'][] = 'first';
+            }
+            if ($i == $num_items) {
+                $attributes['class'][] = 'last';
+            }
+            $output .= '<li ' . $id . drupal_attributes($attributes) . '>' . $data . "</li>\n";
+        }
+        $output .= "</$type>";
+    }
+    $output .= '</div>';
+    return $output;
+
+}
+
+
+//@todo move the preprocess work into here
 function theme_behat_editor_file_to_html_view($vars) {
     $build['file_text'] = array(
         '#markup' => $vars['file_text']
@@ -60,7 +141,6 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
     $array_to_html_array = _behat_editor_parse_questions($file_to_array, $direction = 'html_view');
     $make_it_html = theme('item_list', $vars = array('items' => $array_to_html_array));
     $variables['file_text'] = $make_it_html;
-
 }
 
 function _behat_editor_questions_form() {

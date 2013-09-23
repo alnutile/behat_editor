@@ -61,9 +61,9 @@ function behat_editor_menu() {
         'file' => 'behat_editor_add.inc',
         'file path' => "$path/controllers/"
     );
-    $items['admin/behat/edit'] = array(
+    $items['admin/behat/edit/%/%'] = array(
         'page callback' => 'drupal_get_form',
-        'page arguments' => array('behat_editor_edit_form'),
+        'page arguments' => array('behat_editor_edit_form', 3, 4),
         'access arguments' => array('behat edit test'),
         'file' => 'behat_editor_edit.inc',
         'file path' => "$path/controllers/"
@@ -78,7 +78,12 @@ function behat_editor_theme() {
         ),
         'file' => 'tpl/behat_shared_views.inc'
     );
-
+    $items['behat_editor_file_to_html_edit'] = array(
+        'variables' => array(
+            'file_text' => NULL,
+        ),
+        'file' => 'tpl/behat_shared_views.inc'
+    );
     $items['behat_editor_results_area'] = array(
         'variables' => array(
             'params' => NULL
@@ -105,6 +110,13 @@ function behat_editor_theme() {
         'variables' => array(),
         'file' => 'tpl/behat_shared_views.inc',
         'template' => 'tpl/behat-editor-questions-area-intro'
+    );
+    $items['behat_editor_item_list'] = array(
+        'variables' => array(
+            'items' => NULL,
+            'attributes' => NULL,
+        ),
+        'file' => 'tpl/behat_shared_views.inc',
     );
     return $items;
 }

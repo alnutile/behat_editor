@@ -38,13 +38,14 @@ Feature: Add Page
     And I should see "Scenario: WikiPedia"
 
   @anonymous
-  Scenario: Anonymous user adds looks at file
+  Scenario: Anonymous user adds and looks at file
     Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help"
     And I follow "click here"
     And I wait
     And I wait
     And I follow "Run Test"
+    Then I wait
     Then I wait
     Then I should see "File created"
     And I follow savedTest

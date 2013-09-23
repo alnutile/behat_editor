@@ -6,4 +6,5 @@ Feature: Edit Page
     Then I should see "Editing: aa_mock.feature"
     And I should see "Your results will show here..."
     And I should see "Feature: View Page"
+    And I should see "User clicks link"
 

@@ -45,7 +45,8 @@ function behat_editor_view($module, $filename) {
     );
 
     $build['question'] = array(
-
+        '#prefix' => '<div class="well span5">',
+        '#suffix' => '</div>',
         '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
     );
 
