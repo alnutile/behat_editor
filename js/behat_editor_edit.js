@@ -1,5 +1,5 @@
 (function ($) {
-    Drupal.behaviors.behat_editor_add = {
+    Drupal.behaviors.behat_editor_edit = {
 
         attach: function (context) {
 

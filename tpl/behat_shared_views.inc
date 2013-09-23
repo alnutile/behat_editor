@@ -18,6 +18,7 @@ function _behat_editor_produce_table_array($files_array) {
                 array
                 (
                     l($file_name, 'admin/behat/view/' . $module_name . '/' . $file_name),
+                    $module_name,
                     l('view', 'admin/behat/view/' . $module_name . '/' . $file_name),
                     l('edit', 'admin/behat/edit/' . $module_name . '/' . $file_name),
                     l('delete', 'admin/behat/delete/' . $module_name . '/' . $file_name)
@@ -28,6 +29,7 @@ function _behat_editor_produce_table_array($files_array) {
 
     $header = array(
         'Name',
+        'Module',
         'View',
         'Edit',
         'Delete',
@@ -58,12 +60,13 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
     $array_to_html_array = _behat_editor_parse_questions($file_to_array, $direction = 'html_view');
     $make_it_html = theme('item_list', $vars = array('items' => $array_to_html_array));
     $variables['file_text'] = $make_it_html;
+
 }
 
 function _behat_editor_questions_form() {
     $form['questions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('well', 'span6')),
+        '#attributes' => array('class' => array('well', 'pull-left')),
         '#weight' => -100
     );
 
@@ -218,24 +221,9 @@ function _behat_editor_existing_test() {
 
     $form['existing_test'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('well', 'span6'), 'id' => 'existing-test'),
+        '#attributes' => array('class' => array('well'), 'id' => 'existing-test'),
         '#weight' => -101,
     );
-
-//    @todo come back to this should not had to of made a preprocess
-//    $form['existing_test']['features_tags_value'] = array(
-//        '#type' => 'hidden',
-//        '#attributes' => array(
-//            'id' => 'features-tagit-values',
-//        ),
-//        '#name' => 'features_tag_value',
-//        '#printed' => FALSE,
-//    );
-//
-//    $form['existing_test']['features_tags_input'] = array(
-//        '#markup' => "<ul id='features-tagit-input'></ul><div class='help-block'>Start each tag with @. Just separate by comma for more than one tags. Tags can not have spaces.</div>",
-//        '#printed' => FALSE,
-//    );
 
     $form['existing_test']['build'] = array(
         '#theme' => 'behat_editor_questions_area_edit'
@@ -262,38 +250,8 @@ function template_preprocess_behat_editor_questions_area_edit(&$variables) {
     );
 }
 
-
-function theme_behat_editor_create_file($variables) {
-    $scenario = $variables['scenario'];
-    $file = '';
-    foreach($scenario as $key) {
-            $new_line = _behat_editor_new_line($key['new_line']);
-            $new_line_above = _behat_editor_new_line($key['new_line_above']);
-            $spaces = _behat_editor_spaces($key['spaces']);
-            $file = $file . "{$new_line_above}" . "{$spaces}" . $key['string'] . "{$new_line}\r\n";
-    }
-    return $file;
-}
-
 function theme_behat_editor_create_html($array) {
 
-}
-
-
-function _behat_editor_new_line($new_line) {
-    if($new_line == 1) {
-        return "\r\n";
-    } else {
-        return "";
-    }
-}
-
-function _behat_editor_spaces($spaces) {
-    $spaces_return = '';
-    for($i = 0; $i <= $spaces; $i++) {
-        $spaces_return = $spaces_return . " ";
-    }
-    return $spaces_return;
 }
 
 

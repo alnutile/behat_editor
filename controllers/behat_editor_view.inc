@@ -10,10 +10,12 @@ function behat_editor_view($module, $filename) {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     $file_info = _behat_get_file_info($module, $filename);
-
     $path = drupal_get_path('module', 'behat_editor');
     $build['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
-    $build['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_view_run.js';
+    $build['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_view.js';
+
+    $build['#attached']['css']['behat_app_css'] = $path . '/css/behat_editor_app.css';
+    $build['#attached']['css']['behat_view_css'] = $path . '/css/behat_editor_view.css';
 
     $build['header'] = array(
         '#markup' => '<h3>Feature: ' . $filename . '</h3>'
@@ -35,13 +37,15 @@ function behat_editor_view($module, $filename) {
     );
 
     $build['actions']['edit_test'] = array(
-        '#type' => 'button',
+        '#type' => 'link',
         '#name' => 'edit_test',
-        '#value' => 'Edit Test',
-        '#attributes' => array('class' => array('btn-info')),
+        '#title' => t('Edit Test'),
+        '#href' => "admin/behat/edit/$module/$filename",
+        '#attributes' => array('class' => array('btn', 'btn-info', 'edit')),
     );
 
     $build['question'] = array(
+
         '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
     );
 

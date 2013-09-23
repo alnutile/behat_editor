@@ -10,16 +10,16 @@ function behat_editor_run($module, $filename) {
     if($_REQUEST['method'] == 'view-mode') {
         module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
         module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
-        $file_info = _behat_get_file_info($module, $filename);
-        $run_test_response = _behat_editor_run_test($file_info['absolute_path_with_file'], $filename);
-        $results = array('file' => $file_info['absolute_path_with_file'], 'test' => $run_test_response);
+        $file_object = _behat_get_file_info($module, $filename);
+        $run_test_response = _behat_editor_run_test($file_object);
+        $results = array('file' => $file_object['absolute_path_with_file'], 'test' => $run_test_response);
         drupal_json_output($results);
         exit();
     }
 
     /**
-     * Run both module and file folder tests from the aboslute url
-     * so this can be consolidated
+     * This means the file needs to be created or
+     * updated before being Run
      */
     if($_REQUEST['method'] == 'create-mode') {
         if(isset($_REQUEST['scenario'])) {
@@ -27,14 +27,11 @@ function behat_editor_run($module, $filename) {
             if($response['file'] != FALSE){
                 $file_object = _behat_get_file_info($module, $filename);
                 $run_test_response = _behat_editor_run_test($file_object);
-
                 //@todo respond to error!
                 $results = array('file' => $response, 'test' => $run_test_response);
                 drupal_json_output($results);
                 exit();
             } else {
-                //@todo better error output here
-                //  the response needs to be made to work as the format above
                 drupal_json_output(array('file' => array('message' => $response), 'error' => 1));
                 exit();
             }
@@ -74,6 +71,7 @@ function _behat_editor_run_test($file_object) {
  */
 function _behat_editor_run_tests_from_module_folder($file_object) {
 
+    //Setup folder to store file with test results
     $file_tmp_folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
     $path_results = file_build_uri("/{$file_tmp_folder}/results");
     if (!file_prepare_directory($path_results, FILE_CREATE_DIRECTORY)) {
@@ -81,12 +79,11 @@ function _behat_editor_run_tests_from_module_folder($file_object) {
     }
 
     //$file_full_path = $file_object['absolute_path'];
-    $absolute_file_path = $path_results;
+    $absolute_file_path =  $file_object['absolute_path_with_file'];
     $path = drupal_get_path('module', 'behat_editor');
 
     $name = $file_object['filename_no_ext'];
     $file_name = $file_object['filename'];
-    $file_path = $file_object['absolute_path_with_file'];
 
     $test_id = $name;
     $results_uri = $path_results . '/' . $name . '.html';                   //Need to show the file in iframe later
@@ -100,11 +97,11 @@ function _behat_editor_run_tests_from_module_folder($file_object) {
      * @todo DRY UP RESPONSE WORK
      */
     if($response == 0) {
-        watchdog('gherkin_generator', "%date Test successful results at %name", $variables = array('%date' => $date, '%name' => $output), $severity = WATCHDOG_NOTICE, $link = $file_path);
+        watchdog('behat_editor', "%date Test successful results at %name", $variables = array('%date' => $date, '%name' => $output), $severity = WATCHDOG_NOTICE, $link = $absolute_file_path);
         $output = array('message' => t('@date: <br> Test successful!', array('@date' => $date)), 'file' => $results_url, 'error' => FALSE);
     } else {
-        watchdog('gherkin_generator', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $file_name), $severity = WATCHDOG_ERROR, $link = $file_path);
-        $output = array('message' => t('@date: <br> Error running test !name to download ', array('@date' => $date, '@name' => $file_path)), 'file' => $file_path, 'error' => TRUE);
+        watchdog('behat_editor', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $file_name), $severity = WATCHDOG_ERROR, $link = $absolute_file_path);
+        $output = array('message' => t('@date: <br> Error running test !name to download ', array('@date' => $date, '@name' => $file_name)), 'file' => $file_name, 'error' => TRUE);
     }
 
     return $output;
@@ -130,10 +127,10 @@ function _behat_editor_run_tests_from_tmp_folder($file_object) {
     $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
 
     if($response == 0) {
-        watchdog('gherkin_generator', "%date Test successful results at %name", $variables = array('%date' => $date, '%name' => $output), $severity = WATCHDOG_NOTICE, $link = $linkable_path);
+        watchdog('behat_editor', "%date Test successful results at %name", $variables = array('%date' => $date, '%name' => $output), $severity = WATCHDOG_NOTICE, $link = $linkable_path);
         $output = array('message' => t('@date: <br> Test successful!', array('@date' => $date)), 'file' => $results_url, 'error' => FALSE);
     } else {
-        watchdog('gherkin_generator', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $linkable_path), $severity = WATCHDOG_ERROR, $link = $linkable_path);
+        watchdog('behat_editor', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $linkable_path), $severity = WATCHDOG_ERROR, $link = $linkable_path);
         $output = array('message' => t('@date: <br> Error running test !name to download ', array('@date' => $date, '@name' => $linkable_path)), 'file' => $results_url, 'error' => TRUE);
     }
 
