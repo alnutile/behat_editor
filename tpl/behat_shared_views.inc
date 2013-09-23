@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * @files returned from _behat_editor_build_array_of_available_files
  *
@@ -59,7 +57,6 @@ function template_preprocess_behat_editor_file_to_html_edit(&$variables) {
     $array_to_html_array = _behat_editor_parse_questions($file_to_array, $direction = 'html_edit');
     $make_it_html = theme('behat_editor_item_list', $vars = array('items' => $array_to_html_array, 'attributes' => array('class' => 'scenario sortable ui-sortable')));
     $variables['file_text'] = $make_it_html;
-
 }
 
 /**
@@ -73,7 +70,6 @@ function theme_behat_editor_item_list($variables) {
     $attributes = $variables['attributes'];
     $output = '<div class="item-list">';
 
-
     if (!empty($items)) {
         $output .= "<$type" . drupal_attributes($attributes) . '>';
         $num_items = count($items);
@@ -81,23 +77,14 @@ function theme_behat_editor_item_list($variables) {
         foreach ($items as $item) {
             $id = '';
             $attributes = array();
-            $children = array();
             $data = '';
             $i++;
             $id = (isset($item['id'])) ? "id=\"{$item['id']}\"" : '';
             foreach ($item as $key => $value) {
-                watchdog('test_item', print_r($item, 1));
                 if ($key == 'data') {
                     if(is_array($value)) {
-                        watchdog('test_item_value', print_r($value, 1));
-                        watchdog('test_item_pre_render', print_r($value, 1));
-                        //@todo get drupal_render form element here
-                        $field_name = key($value);
-                        $id_input = (isset($value[$field_name]['#id'])) ? "id=\"{$value[$field_name]['#id']}\"" : '';
-                        $name = (isset($value[$field_name]['#name'])) ? "name=\"{$value[$field_name]['#name']}\"" : '';
-                        $class = (isset($value[$field_name]['#class'])) ? "class=\"{$value[$field_name]['#class']}\"" : '';
-                        $value = $value[$field_name]['#value'];
-                        $data = "<input type='hidden' value=\"{$value}\" $id_input $name $class>";
+                        //@todo get this to be drupal_render
+                        $data = _behat_editor_check_for_render_field($value);
                     } else {
                         $data = $value;
                     }
@@ -121,7 +108,16 @@ function theme_behat_editor_item_list($variables) {
     }
     $output .= '</div>';
     return $output;
+}
 
+function _behat_editor_check_for_render_field($value) {
+    $field_name = key($value);
+    $id_input = (isset($value[$field_name]['#id'])) ? "id=\"{$value[$field_name]['#id']}\"" : '';
+    $name = (isset($value[$field_name]['#name'])) ? "name=\"{$value[$field_name]['#name']}\"" : '';
+    $class = (isset($value[$field_name]['#class'])) ? "class=\"{$value[$field_name]['#class']}\"" : '';
+    $value = $value[$field_name]['#value'];
+    $data = "<input type='hidden' value=\"{$value}\" $id_input $name $class>";
+    return $data;
 }
 
 

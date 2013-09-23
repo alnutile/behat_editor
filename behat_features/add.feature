@@ -75,7 +75,7 @@ Feature: Add Page
     And I press "Name it"
     And I fill in sectionOneTag
     And I fill in "name" with "Testing Rocks"
-    And I press "Name it"
+    And I press "Name it"‘
     And I fill in sectionTwoTag
     And I follow "Run Test"
     And I wait

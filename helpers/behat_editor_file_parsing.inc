@@ -204,7 +204,7 @@ function behat_editor_string_tags($scenario, $count, $spaces = 0, $direction) {
                         );
                         return $results;
                     case 'html_edit':
-                         return $string;
+                         return str_replace(' ', ', ', $string);
                 }
             }
         }
