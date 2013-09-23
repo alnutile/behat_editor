@@ -1,0 +1,22 @@
+/*
+Errno::ENOENT: No such file or directory - behat_editor_view.scss
+
+Backtrace:
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/sass-3.2.10/lib/sass/plugin/compiler.rb:360:in `read'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/sass-3.2.10/lib/sass/plugin/compiler.rb:360:in `update_stylesheet'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/sass-3.2.10/lib/sass/plugin/compiler.rb:203:in `block in update_stylesheets'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/sass-3.2.10/lib/sass/plugin/compiler.rb:201:in `each'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/sass-3.2.10/lib/sass/plugin/compiler.rb:201:in `update_stylesheets'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/sass-3.2.10/lib/sass/plugin/compiler.rb:283:in `block in watch'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/listen-0.7.3/lib/listen/multi_listener.rb:108:in `call'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/listen-0.7.3/lib/listen/multi_listener.rb:108:in `on_change'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/listen-0.7.3/lib/listen/multi_listener.rb:117:in `block in initialize_adapter'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/listen-0.7.3/lib/listen/adapter.rb:198:in `call'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/listen-0.7.3/lib/listen/adapter.rb:198:in `report_changes'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/listen-0.7.3/lib/listen/adapter.rb:210:in `poll_changed_dirs'
+/Users/alfrednutile/.rvm/gems/ruby-1.9.3-p448/gems/listen-0.7.3/lib/listen/adapters/darwin.rb:38:in `block in start'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Errno::ENOENT: No such file or directory - behat_editor_view.scss"; }
