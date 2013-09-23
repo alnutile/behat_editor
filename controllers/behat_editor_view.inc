@@ -44,8 +44,17 @@ function behat_editor_view($module, $filename) {
         '#attributes' => array('class' => array('btn', 'btn-info', 'edit')),
     );
 
-    $build['question'] = array(
+    $build['actions']['admin_area'] = array(
+        '#type' => 'link',
+        '#title' => t('Admin'),
+        '#name' => 'admin_area',
+        '#href' => "admin/behat/index",
+        '#attributes' => array('class' => array('btn', 'btn-warning', 'back')),
+    );
 
+    $build['question'] = array(
+        '#prefix' => '<div class="well span5">',
+        '#suffix' => '</div>',
         '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
     );
 

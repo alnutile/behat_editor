@@ -1,0 +1,11 @@
+.page-admin-behat-edit ul.sortable {
+  list-style: none; }
+.page-admin-behat-edit .scenario li {
+  font-size: 18px;
+  line-height: 24px; }
+  .page-admin-behat-edit .scenario li div.help-block {
+    font-size: 10px; }
+.page-admin-behat-edit .scenario li.hidden {
+  display: none; }
+.page-admin-behat-edit label, .page-admin-behat-edit .qualifier {
+  font-size: 18px; }
