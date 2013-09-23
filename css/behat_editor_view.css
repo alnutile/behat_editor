@@ -1,0 +1,13 @@
+.page-admin-behat-view ul {
+  list-style: none; }
+  .page-admin-behat-view ul li {
+    font-size: 18px;
+    line-height: 24px; }
+    .page-admin-behat-view ul li div.help-block {
+      font-size: 10px; }
+.page-admin-behat-view label, .page-admin-behat-view .qualifier {
+  font-size: 14px; }
+.page-admin-behat-view li.spaces-two {
+  margin-left: 10px; }
+.page-admin-behat-view li.spaces-four {
+  margin-left: 20px; }

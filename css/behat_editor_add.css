@@ -7,6 +7,3 @@
     font-size: 10px; }
 .page-admin-behat-add label, .page-admin-behat-add .qualifier {
   font-size: 18px; }
-
-.running-tests, .saving-tests {
-  display: none; }

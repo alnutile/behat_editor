@@ -1,17 +1,14 @@
 (function ($) {
-    Drupal.behaviors.behat_editor_add = {
+    Drupal.behaviors.behat_editor_run = {
 
         attach: function (context) {
 
             $('a.run').click(function(e){
                 e.preventDefault();
-                var method = 'create-mode';
-                var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
-                var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
+                var method = 'view-mode';
                 var url = $(this).attr('href');
                 var parameters = {
-                    "method": method,
-                    "scenario[]": scenario_array
+                    "method": method
                 };
                 $.post(url, parameters, function(data){
                     //this console.log forces reload of iframe cache in Chromes

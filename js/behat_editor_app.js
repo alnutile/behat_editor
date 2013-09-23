@@ -50,11 +50,24 @@
         }
     };
 
+    Drupal.behat_editor.renderMessageCustom = function(message, error_type, context) {
+        var messages = "<div class='alert alert-" + error_type + "'>";  //@todo pull out error = FALSE/TRUE
+        messages += message;                                            //@todo pull out error type eg error, info, success etc
+        messages += "</div>";
+        $('#messages', context).append(messages);
+    };
+
+
     Drupal.behat_editor.make_scenario_array = function(scenario) {
         var items = scenario.length;
         var scenario_array = new Array()
         for(var i = 0; i < items; i++) {
-            scenario_array[i] =$(scenario[i]).text();
+            if($(scenario[i]).hasClass('tag')) {
+                var tags = $('input', scenario[i]).val();
+                scenario_array[i] = tags;
+            } else {
+                scenario_array[i] = $(scenario[i]).text();
+            }
         }
 
         return scenario_array;

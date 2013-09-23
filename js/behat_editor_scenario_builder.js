@@ -79,21 +79,16 @@
                 }
             };
 
-            var renderMessage = function(message, error_type) {
-                var messages = "<div class='alert alert-" + error_type + "'>";  //@todo pull out error = FALSE/TRUE
-                messages += message;                                            //@todo pull out error type eg error, info, success etc
-                messages += "</div>";
-                $('#messages', context).append(messages);
-            };
-
 
             /* offer an example */
+
             $('a.example-test-load', context).click(function(){
                 var example = $('ul.example-test').html();
                 var message = "You just loaded a test for Wikipedia click Run Test to see it start";
-                renderMessage(message, 'success');
+                Drupal.behat_editor.renderMessageCustom(message, 'success', context);
                 $('ul.scenario:eq(0)').empty().append(example);
                 checkIfCanRun();
+
                 return false;
             });
 
@@ -162,10 +157,15 @@
                 var destination_wrapper = createOutput(leaf_class, sortable, label, data_value, middle_words, data_value2, label_text);
 
                 $('ul.scenario', context).append(destination_wrapper).applyTagIts('@scenario_tag', 'scenario');
-                Drupal.attachBehaviors($('ul.scenario'));
+
                 checkIfCanRun();
             });
        }
     };
-
+   //@todo move this out of live
+    $('document').ready(function(){
+        $('i.remove').live('click', function(){
+                $(this).closeButton();
+            });
+    });
 })(jQuery);

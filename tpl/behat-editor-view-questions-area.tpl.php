@@ -1,4 +1,3 @@
-<div class="well span6">
-    <?php print render($actions); ?>
+<div class="well span5">
     <?php print render($questions);?>
 </div>

@@ -13,12 +13,14 @@ function _behat_editor_parse_questions($scenario, $direction = 'file') {
     $count = 0; /* used to get tags */
     foreach($scenario as $value) {
         if($results = behat_editor_string_type(trim($value), $scenario, $count, $direction)) {
-            //@todo DRY this up of separate
-            if(!isset($results['string'])) {
-                foreach($results as $row) {
-                    if($row) {
-                        $scenario_array[] = $row;
-                    }
+            //Rows with tags we need to get the internal array content
+            //  @todo pull this out into a hookable feature so that
+            //    we can later deal with Feature descriptions and other
+            //    types of Scenarios etc.
+            if(array_key_exists('scenario', $results) || array_key_exists('feature', $results)) {
+                $key = key($results);
+                foreach($results[$key] as $row) {
+                    $scenario_array[] = $row;
                 }
             } else {
                 $scenario_array[] = $results;
@@ -76,25 +78,26 @@ function behat_editor_string_feature($string, $scenario, $count, $direction) {
     if(in_array($first_word, $options)) {
         switch($direction) {
             case 'file':
-                if($result = behat_editor_string_tags($scenario, $count - 1, 0, $direction)) {
-                    $results[] = $result;
-                }
-                $results[] = array(
+                $tags = array();
+                $tags[0] = behat_editor_string_tags($scenario, $count - 1, 0, $direction);
+                $feature_line[1] = array(
                     'string' => $string,
                     'spaces' => 0,
                     'new_line' => 0,
-                    'new_line_above' => 0,
+                    'new_line_above' =>  0,
                 );
+                $results['feature'] = $tags + $feature_line;
+                return $results;
             case 'html_view':
-                if($result = behat_editor_string_tags($scenario, $count - 1, 0, $direction)) {
-                    $results[] = $result;
-                }
-                $results[] = array(
+                $tags = array();
+                $tags[0] = behat_editor_string_tags($scenario, $count - 1, 0, $direction);
+                $feature_line[1] = array(
                     'data' => $string,
                     'class' => array('feature', "spaces-none")
                 );
+                $results['feature'] = $tags + $feature_line;
+                return $results;
         }
-        return $results;
     }
 }
 
@@ -107,25 +110,27 @@ function behat_editor_string_scenario($string, $scenario, $count, $direction) {
     if(in_array($first_word, $options)) {
         switch($direction) {
             case 'file':
-                if($result = behat_editor_string_tags($scenario, $count - 1, 2, $direction)) {
-                    $results[] = $result;
-                }
-                $results[] = array(
+                $tags = array();
+                $tags[0] = behat_editor_string_tags($scenario, $count - 1, 2, $direction);
+                $scenario_line[1] = array(
                     'string' => $string,
                     'spaces' => 2,
                     'new_line' => 0,
-                    'new_line_above' =>  ($result) ? 0 : 1,
+                    'new_line_above' =>  0,
                 );
+                $results['scenario'] = $tags + $scenario_line;
+                return $results;
             case 'html_view':
-                if($result = behat_editor_string_tags($scenario, $count - 1, 2, $direction)) {
-                    $results[] = $result;
-                }
-                $results[] = array(
+                $tags = array();
+                $tags[0] = behat_editor_string_tags($scenario, $count - 1, 2, $direction);
+                $scenario_line[1] = array(
                     'data' => $string,
                     'class' => array('scenario', "spaces-two")
                 );
+                $results['scenario'] = $tags + $scenario_line;
+                return $results;
         }
-        return $results;
+
     }
 }
 
@@ -172,11 +177,10 @@ function behat_editor_string_steps($string, $parent, $count, $direction) {
                     'new_line_above' => 0
                 );
             case 'html_view':
-                $results[] = array(
+                return  array(
                     'data' => $string,
                     'class' => array('steps', "spaces-four")
                 );
-                return $results;
         }
     }
 }
@@ -212,7 +216,7 @@ function _behat_editor_turn_file_to_array($file) {
 function _behat_editor_save_html_to_file($request, $module, $filename) {
     //@todo why was this not loaded with info file files[] call?
     $scenario_array = _behat_editor_parse_questions($request['scenario']);
-    $feature = theme('behat_editor_create_file', $vars = array('scenario' => $scenario_array));
+    $feature = _behat_editor_create_file($scenario_array);
     global $user;
     //@todo DRY this up for either type of user and response
     if (user_access('behat add test') && $module != variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER)) {
@@ -225,18 +229,50 @@ function _behat_editor_save_html_to_file($request, $module, $filename) {
     }
 }
 
+
+function _behat_editor_create_file($scenario) {
+
+    $file = '';
+    foreach($scenario as $key) {
+        $new_line = _behat_editor_new_line($key['new_line']);
+        $new_line_above = _behat_editor_new_line($key['new_line_above']);
+        $spaces = _behat_editor_spaces($key['spaces']);
+        $file = $file . "{$new_line_above}" . "{$spaces}" . $key['string'] . "{$new_line}\r\n";
+    }
+    return $file;
+}
+
+
+
+function _behat_editor_new_line($new_line) {
+    if($new_line == 1) {
+        return "\r\n";
+    } else {
+        return "";
+    }
+}
+
+function _behat_editor_spaces($spaces) {
+    $spaces_return = '';
+    for($i = 0; $i <= $spaces; $i++) {
+        $spaces_return = $spaces_return . " ";
+    }
+    return $spaces_return;
+}
+
+
 function _behat_editor_process_file_in_module_folder($module, $filename, $feature, $request) {
     $full_path = _behat_editor_save_path($module);
     $response = file_put_contents("{$full_path}/{$filename}", $feature);
     if($response == FALSE) {
-        watchdog('gherkin_generator', "File could not be made...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+        watchdog('behat_editor', "File could not be made...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
         $output = array('message' => "Error file could not be save", 'file' => $response, 'error' => '1');
     } else {
         $gherkin_linkable_path = _behat_editor_linkable_path($module, $filename);
         $url = url($gherkin_linkable_path, $options = array('absolute' => TRUE));
         $file_url = l('click here', $url, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
         $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-        watchdog('gherkin_generator', "%date File made %name", $variables = array('%date' => $date, '%name' => $filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
+        watchdog('behat_editor', "%date File made %name", $variables = array('%date' => $date, '%name' => $filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
         $output =  array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
     }
     return $output;
@@ -263,13 +299,13 @@ function _behat_editor_process_file_in_tmp($filename, $feature) {
     $path = file_build_uri("/{$folder}/");
     $response = file_unmanaged_save_data($feature, $path . '/' . $filename, $replace = FILE_EXISTS_REPLACE);
     if($response == FALSE) {
-        watchdog('gherkin_generator', "File could not be made.", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+        watchdog('behat_editor', "File could not be made.", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
         $output = array('message' => "Error file could not be save", 'file' => $response, 'error' => '1');
     } else {
         $file_uri = $response;
         $file_url = l('click here', file_create_url($response), array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
         $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-        watchdog('gherkin_generator', "%date File made %name", $variables = array('%date' => $date, '%name' => $response), $severity = WATCHDOG_NOTICE, $link = $file_url);
+        watchdog('behat_editor', "%date File made %name", $variables = array('%date' => $date, '%name' => $response), $severity = WATCHDOG_NOTICE, $link = $file_url);
         $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $file_uri, 'error' => '0');
     }
     return $output;

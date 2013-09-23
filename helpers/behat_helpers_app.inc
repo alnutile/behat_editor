@@ -50,9 +50,17 @@ function _behat_editor_has_folder($module) {
 function _behat_editor_build_array_of_available_files($modules) {
     $files_found = array();
     foreach($modules as $machine_name => $nice_name) {
-        $path = DRUPAL_ROOT . '/' . drupal_get_path('module', $machine_name) . '/' . BEHAT_EDITOR_FOLDER;
-        $files_found[$machine_name] = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
+        if ($machine_name == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
+            $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
+            $files_folder =  file_build_uri("/{$sub_folder}/");
+            $path = drupal_realpath($files_folder);
+            $files_found[$machine_name] = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
+        } else {
+          $path = DRUPAL_ROOT . '/' . drupal_get_path('module', $machine_name) . '/' . BEHAT_EDITOR_FOLDER;
+          $files_found[$machine_name] = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
+        }
     }
+
     return $files_found;
 }
 

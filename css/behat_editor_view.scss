@@ -1,8 +1,6 @@
-.page-admin-behat-add {
-  ul.sortable {
+.page-admin-behat-view {
+  ul  {
     list-style: none;
-  }
-  .scenario {
     li {
       font-size: 18px;
       line-height: 24px;
@@ -11,10 +9,18 @@
         font-size: 10px;
       }
 
-    }
 
+    }
   }
   label, .qualifier {
-    font-size: 18px;
+    font-size: 14px;
   }
+  li.spaces-two {
+    margin-left: 10px;
+  }
+
+  li.spaces-four {
+    margin-left: 20px;
+  }
+
 }
