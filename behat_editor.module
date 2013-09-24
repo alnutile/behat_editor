@@ -72,7 +72,7 @@ function behat_editor_menu() {
         'page callback' => array('behat_editor_save'),
         'page arguments' => array(3,4),
         'file' => 'behat_editor_save.inc',
-        'access arguments' => array('behat save test'),
+        'access arguments' => array('behat add test'),
         'file path' => "$path/controllers"
     );
     return $items;
