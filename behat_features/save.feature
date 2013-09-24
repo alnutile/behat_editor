@@ -11,5 +11,6 @@ Feature: Saving only not run
     Then I should see "Scenario: Mink Rocks"
     And I should see "Scenario: WikiPedia"
     Then I follow "Save Test"
-    Then I should see "Test Saved"
+    And I wait
+    Then I should see "File created"
 
