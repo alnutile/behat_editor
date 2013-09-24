@@ -22,6 +22,11 @@
         $('.test-result').append(iframe);
     }
 
+    Drupal.behat_editor.setResultsBox = function(text) {
+        $('.test-result').empty();
+        $('.test-result').html(text);
+    }
+
     Drupal.behat_editor.renderMessage = function(data) {
 
         if(data.error == 1) {
@@ -45,7 +50,7 @@
                 messages += message;
                 messages += "</div>";
                 $('#messages').append(messages);
-                Drupal.behat_editor.setResultsIframe(data.test.file);
+                Drupal.behat_editor.setResultsBox(data.test.file);
             }
         }
     };
