@@ -1,0 +1,5 @@
+name = Behat Editor SauceLabs
+description = Connects the tests to SauceLabs
+package = Behat Editor
+core = 7.x
+files[] = behat_editor_saucelabs.module
