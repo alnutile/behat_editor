@@ -25,6 +25,7 @@ function behat_editor_add_form($form, $form_state) {
     $form['#attached']['js']['behat_editor_close'] = $path . '/js/jquery.behat_editor.close_button.js';
     $form['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
     $form['#attached']['js']['behat_editor_add'] = $path . '/js/behat_editor_add.js';
+    $form['#attached']['js']['behat_editor_save'] = $path . '/js/behat_editor_save.js';
     $form['#attached']['js']['behat_editor_sbuilder'] = $path . '/js/behat_editor_scenario_builder.js';
 
     $form['#attached']['css']['behat_app_css'] = $path . '/css/behat_editor_app.css';

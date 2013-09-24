@@ -26,14 +26,14 @@
 
         if(data.error == 1) {
             var message = data.message;
-            var messages = "<div class='alert alert-error'>";
+            var messages = "<div class='alert alert-error'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
             messages += message;
             messages += "</div>";
             $('#messages').append(messages);
         } else {
             if(data.file) {
                 var message = data.file.message;
-                var messages = "<div class='alert alert-info'>";
+                var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                 messages += message;
                 messages += "</div>";
                 $('#messages').append(messages);
@@ -41,7 +41,7 @@
 
             if(data.test) {
                 var message = data.test.message;
-                var messages = "<div class='alert alert-info'>";
+                var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                 messages += message;
                 messages += "</div>";
                 $('#messages').append(messages);
@@ -51,7 +51,7 @@
     };
 
     Drupal.behat_editor.renderMessageCustom = function(message, error_type, context) {
-        var messages = "<div class='alert alert-" + error_type + "'>";  //@todo pull out error = FALSE/TRUE
+        var messages = "<div class='alert alert-" + error_type + "'><a href='#' class='close' data-dismiss='alert'>&times;</a>";  //@todo pull out error = FALSE/TRUE
         messages += message;                                            //@todo pull out error type eg error, info, success etc
         messages += "</div>";
         $('#messages', context).append(messages);
