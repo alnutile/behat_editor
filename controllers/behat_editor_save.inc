@@ -11,7 +11,6 @@ function behat_editor_save($module, $filename) {
         $response = _behat_editor_save_html_to_file($_REQUEST, $module, $filename, 'file');
         if($response['file'] != FALSE){
             $file_object = _behat_get_file_info($module, $filename);
-            watchdog('test_file_info', print_r($file_object, 1));
             $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $file_object);
             drupal_json_output($results);
             exit();

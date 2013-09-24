@@ -178,8 +178,6 @@ function behat_editor_string_scenario($string, $scenario, $count, $direction) {
 }
 
 function behat_editor_string_tags($scenario, $count, $spaces = 0, $direction) {
-    watchdog('test_tag_run_count', print_r($count, 1));
-    watchdog('test_tag_run_scenario', print_r($scenario, 1));
 
     if(array_key_exists($count, $scenario)) {
         $string = $scenario[$count];

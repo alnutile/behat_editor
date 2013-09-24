@@ -112,7 +112,6 @@ function theme_behat_editor_item_list($variables) {
 
 function _behat_editor_check_for_render_field($value) {
     $field_name = key($value);
-    watchdog('test_editor_item_list', print_r($value[$field_name], 1));
 
     $id_input = (isset($value[$field_name]['#id'])) ? "id=\"{$value[$field_name]['#id']}\"" : '';
     $name = (isset($value[$field_name]['#name'])) ? "name=\"{$value[$field_name]['#name']}\"" : '';

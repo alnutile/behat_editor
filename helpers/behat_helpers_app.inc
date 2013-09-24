@@ -84,8 +84,6 @@ function _behat_get_file_info($module, $filename) {
         $full_path_with_file = $path . '/' . $filename;
     }
 
-
-
     $file_data = array(
         'module' => $module,
         'filename' => $filename,
