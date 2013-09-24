@@ -68,6 +68,13 @@ function behat_editor_menu() {
         'file' => 'behat_editor_edit.inc',
         'file path' => "$path/controllers/"
     );
+    $items['admin/behat/save/%/%'] = array(
+        'page callback' => array('behat_editor_save'),
+        'page arguments' => array(3,4),
+        'file' => 'behat_editor_save.inc',
+        'access arguments' => array('behat save test'),
+        'file path' => "$path/controllers"
+    );
     return $items;
 }
 
