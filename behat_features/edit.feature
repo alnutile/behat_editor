@@ -6,7 +6,7 @@ Feature: Edit Page
     And I wait
     Then I should see "Editing: aa_mock.feature"
     And I should see "Your results will show here..."
-    And I should see "Feature: View Page"
+    And I should see "Feature:"
     And I should see "User clicks link"
     And I should see "Save Test"
 

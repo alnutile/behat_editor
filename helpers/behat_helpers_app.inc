@@ -60,7 +60,6 @@ function _behat_editor_build_array_of_available_files($modules) {
           $files_found[$machine_name] = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
         }
     }
-
     return $files_found;
 }
 
