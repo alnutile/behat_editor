@@ -6,3 +6,7 @@
      Given I am on "/admin/behat/index"
      And I follow "view"
      Then I should see "Feature: aa_mock.feature"
+ 
+   Scenario: Mink Rocks
+ 
+   Scenario: Testing Rocks
