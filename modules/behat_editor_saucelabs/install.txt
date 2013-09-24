@@ -1,0 +1,10 @@
+After you enable the module you will need to visit composer_manager [admin/config/system/composer-manager]
+and allow it to rebuild composer.json from the composer.json file in this modules folder.
+
+After that you need to put your Saucelabs info into the settings.php file
+
+At the end of the file just add this
+$conf['saucelabs'] = array('username' => 'YOU', 'api' => 'LONG STRING HERE');
+
+You can get your API on the lower left of the screen once you log in on the Dashboard.
+
