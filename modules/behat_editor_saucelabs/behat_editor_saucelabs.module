@@ -1,0 +1,66 @@
+<?php
+use WebDriver\SauceLabs\SauceRest;
+
+function behat_editor_saucelabs_permission() {
+    $items['behat run saucelabs test'] = array(
+        'title' => t('Can run a Saucelabs a test'),
+        'description' => t('Can un a Saucelabs a test')
+    );
+    return $items;
+}
+
+function behat_editor_saucelabs_menu() {
+    $path = drupal_get_path('module', 'behat_editor_saucelabs');
+    $items['admin/behat/saucelabs/run/%/%'] = array(
+        'page callback' => array('behat_editor_saucelabs_run'),
+        'page arguments' => array(4,5),
+        'file' => 'behat_editor_saucelabs_run.inc',
+        'access arguments' => array('behat run saucelabs test'),
+        'file path' => "$path/controllers"
+    );
+    return $items;
+}
+
+/**
+ * @todo there should have been a better theme hook for this
+ */
+function behat_editor_saucelabs_page_build(&$page) {
+    dpm($page);
+    if(arg(1) == 'behat' && arg(2) == 'view') {
+        composer_manager_register_autoloader();
+
+        if (!class_exists('WebDriver\SauceLabs\SauceRest')) {
+            $message = t('SauceRest not found.');
+            throw new \RuntimeException($message);
+        }
+
+        list($username, $api) = behat_editor_saucelabs_connect();
+
+        $res = new SauceRest($username, $api);
+
+        dpm($res->getAccountDetails($username));
+        $module = arg(3);
+        $filename = arg(4);
+        $path = drupal_get_path('module', 'behat_editor_saucelabs');
+        $page['content']['system_main']['#attached']['js']['behat_editor_saucelabs_run'] = $path . '/js/behat_editor_saucelabs_run.js';
+
+        $page['content']['system_main']['actions']['saucelabs_run'] = array(
+            '#type' => 'link',
+            '#title' => 'Run on Sauce Labs',
+            '#name' => 'sauce_labs',
+            '#href' => "admin/behat/saucelabs/run/$module/$filename",
+            '#attributes' => array('class' => array('sauce', 'btn', 'btn-success'))
+        );
+    }
+}
+
+function behat_editor_saucelabs_connect() {
+    if(!isset($GLOBALS['conf']['saucelabs'])) {
+        $message = t('SauceRest conf not set.');
+        throw new \RuntimeException($message);
+    } else {
+        $user = $GLOBALS['conf']['saucelabs']['username'];
+        $api = $GLOBALS['conf']['saucelabs']['api'];
+        return array($user, $api);
+    }
+}

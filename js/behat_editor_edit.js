@@ -25,8 +25,6 @@
                     "scenario[]": scenario_array
                 };
                 $.post(url, parameters, function(data){
-                    //this console.log forces reload of iframe cache in Chromes
-                    console.log(data);
                     Drupal.behat_editor.renderMessage(data);
                 }, "json");
             });
