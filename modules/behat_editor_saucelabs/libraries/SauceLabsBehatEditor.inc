@@ -28,7 +28,7 @@ class SauceLabsBehatEditor {
         $jobs_trimmed = array_slice($jobs, 0, 5);
         $latest_id = $jobs[0]['id'];
         $lastest_job = $jobs[0];
-        return array('count' => count($jobs), 'lastest_id' => $latest_id, 'jobs' => $jobs_trimmed, 'lastest_jobs' => $lastest_job);
+        return array('count' => count($jobs), 'latest_id' => $latest_id, 'jobs' => $jobs_trimmed, 'latest_job' => $lastest_job);
     }
 
 }
