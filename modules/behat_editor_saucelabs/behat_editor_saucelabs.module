@@ -1,5 +1,6 @@
 <?php
-use WebDriver\SauceLabs\SauceRest;
+use BehatEditor\SauceLabs\SauceLabsBehatEditor;
+
 
 function behat_editor_saucelabs_permission() {
     $items['behat run saucelabs test'] = array(
@@ -18,6 +19,12 @@ function behat_editor_saucelabs_menu() {
         'access arguments' => array('behat run saucelabs test'),
         'file path' => "$path/controllers"
     );
+    /* allow jquery to get data about jobs status */
+    $items['admin/behat/saucelabs/jobs'] = array(
+        'page callback' => array('behat_editor_saucelabs_jobs'),
+        'access arguments' => array('behat run saucelabs test'),
+    );
+
     return $items;
 }
 
@@ -25,20 +32,29 @@ function behat_editor_saucelabs_menu() {
  * @todo there should have been a better theme hook for this
  */
 function behat_editor_saucelabs_page_build(&$page) {
-    dpm($page);
-    if(arg(1) == 'behat' && arg(2) == 'view') {
-        composer_manager_register_autoloader();
 
-        if (!class_exists('WebDriver\SauceLabs\SauceRest')) {
-            $message = t('SauceRest not found.');
+    if(arg(1) == 'behat' && arg(2) == 'view') {
+
+        composer_manager_register_autoloader();
+        //@todo pull this in with above ann ot user module_load_include
+        module_load_include('inc', 'behat_editor_saucelabs', 'libraries/SauceLabsBehatEditor');
+        if (!class_exists('BehatEditor\SauceLabs\SauceLabsBehatEditor')) {
+            $message = t('SauceLabsBehatEditor not found.');
             throw new \RuntimeException($message);
         }
 
-        list($username, $api) = behat_editor_saucelabs_connect();
+        $username = variable_get('behat_editor_saucelabs_username', '');
+        $api_key = variable_get('behat_editor_saucelabs_api', '');
+        $check_connection = new SauceLabsBehatEditor($username, $api_key);
+        $connected = $check_connection->connectTest();
 
-        $res = new SauceRest($username, $api);
+        if(isset($connected['error'])) {
+            $disabled = 'disabled';
+            drupal_set_message(t("Saucelabs connection error: :error The Saucelabs button will be disabled till resolved.", array(':error' => $connected['error'])), 'error');
+        } else {
+            $disabled = '';
+        }
 
-        dpm($res->getAccountDetails($username));
         $module = arg(3);
         $filename = arg(4);
         $path = drupal_get_path('module', 'behat_editor_saucelabs');
@@ -49,18 +65,25 @@ function behat_editor_saucelabs_page_build(&$page) {
             '#title' => 'Run on Sauce Labs',
             '#name' => 'sauce_labs',
             '#href' => "admin/behat/saucelabs/run/$module/$filename",
-            '#attributes' => array('class' => array('sauce', 'btn', 'btn-success'))
+            '#attributes' => array('class' => array('sauce', 'btn', 'btn-success', "$disabled"))
         );
     }
 }
 
-function behat_editor_saucelabs_connect() {
-    if(!isset($GLOBALS['conf']['saucelabs'])) {
-        $message = t('SauceRest conf not set.');
+
+function behat_editor_saucelabs_jobs() {
+    composer_manager_register_autoloader();
+    //@todo pull this in with above
+    module_load_include('inc', 'behat_editor_saucelabs', 'libraries/SauceLabsBehatEditor');
+    if (!class_exists('BehatEditor\SauceLabs\SauceLabsBehatEditor')) {
+        $message = t('SauceLabsBehatEditor not found.');
         throw new \RuntimeException($message);
-    } else {
-        $user = $GLOBALS['conf']['saucelabs']['username'];
-        $api = $GLOBALS['conf']['saucelabs']['api'];
-        return array($user, $api);
     }
+
+    $username = variable_get('behat_editor_saucelabs_username', '');
+    $api_key = variable_get('behat_editor_saucelabs_api', '');
+    $check_connection = new SauceLabsBehatEditor($username, $api_key);
+    $summary = $check_connection->jobsSummary();
+    drupal_json_output($summary);
+    exit();
 }
