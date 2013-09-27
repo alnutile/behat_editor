@@ -5,7 +5,7 @@ use BehatEditor\SauceLabs\BehatEditorSauceLabsRun;
 function behat_editor_saucelabs_run($module, $filename) {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'helpers/behat_editor_file_parsing');
-    module_load_include('inc', 'behat_editor', 'controllers/behat_editor_run');
+    module_load_include('inc', 'behat_editor', 'includes/behat_editor_run');
 
     composer_manager_register_autoloader();
     //@todo pull this in with above ann ot user module_load_include
