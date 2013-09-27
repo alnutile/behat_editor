@@ -7,6 +7,10 @@ function behat_editor_saucelabs_permission() {
         'title' => t('Can run a Saucelabs a test'),
         'description' => t('Can un a Saucelabs a test')
     );
+    $items['behat admin saucelabs'] = array(
+        'title' => t('Can run a Saucelabs a test'),
+        'description' => t('Can un a Saucelabs a test')
+    );
     return $items;
 }
 
@@ -25,6 +29,15 @@ function behat_editor_saucelabs_menu() {
         'access arguments' => array('behat run saucelabs test'),
     );
 
+    $items['admin/config/development/behat_saucelabs'] = array(
+        'page callback' => array('drupal_get_form'),
+        'page arguments' => array('behat_editor_saucelabs_admin_form'),
+        'access arguments' => array('behat admin saucelabs'),
+        'description' => "Setup Behat to integrate with SauceLabs",
+        'title' => 'Behat Editor SauceLabs Settings',
+        'file path' => "$path/includes",
+        'file' => 'behat_editor_saucelabs_admin_form.inc',
+    );
     return $items;
 }
 
@@ -47,6 +60,7 @@ function behat_editor_saucelabs_form_alter(&$form, $form_state, $form_id) {
         if(isset($connected['error'])) {
             $disabled = 'disabled';
             drupal_set_message(t("Saucelabs connection error: :error The Saucelabs button will be disabled till resolved.", array(':error' => $connected['error'])), 'error');
+            drupal_set_message(t("You can configure SauceLabs here !here", array('!here' => l('configure', 'admin/config/development/behat_saucelabs'))), 'info');
         } else {
             $disabled = '';
         }
