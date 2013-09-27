@@ -1,0 +1,24 @@
+{
+    "require": {
+        "sauce/sausage": ">=0.9.1",
+        "pfizer/behat": "*",
+        "behat/behat": "2.4.*@stable",
+        "behat/mink": "1.4@stable",
+        "behat/mink-goutte-driver": "*",
+        "behat/mink-selenium-driver": "*",
+        "behat/mink-selenium2-driver": "*",
+        "behat/mink-extension": "*",
+        "behat/mink-sahi-driver": "*"
+
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pfizer/behat"
+        }
+    ]
+}

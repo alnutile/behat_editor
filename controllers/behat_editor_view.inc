@@ -11,6 +11,7 @@ function behat_editor_view($module, $filename) {
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     $file_info = _behat_get_file_info($module, $filename);
     $path = drupal_get_path('module', 'behat_editor');
+    $build['#theme'] = array('theme_behat_editor_view');
     $build['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
     $build['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_view.js';
 
