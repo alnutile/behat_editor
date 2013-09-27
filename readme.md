@@ -22,7 +22,7 @@ There will be a submodule that will show how you can connect this to SauceLabs.
 ### Setup
 
 After you download this repo go setup the module per drupal install steps
-you will then need to setup behat in the modules behat folder.
+you will need to have composer_manager installed so it can download behat into it's vendor directory.
 Behat [http://docs.behat.org/] explains how to run composer to install the module.
 It relies on the Mink extension.
 
@@ -43,7 +43,7 @@ java -jar selenium-server-standalone-2.31.0.jar
 So you should be able to run
 
 ```
-behat/bin/behat
+vendor/behat/behat/bin/behat
 ```
 
 after you are done.
@@ -67,17 +67,17 @@ There are other hooks as well.
 Since gherkin allows for different languages you can add keys to the lists of keys that are checked for
 as a new file is made or html is parsed
 
-hook_gherkin_generator_string_feature
+hook_behat_editor_string_feature
 
-hook_gherkin_generator_string_scenario
+hook_behat_editor_string_scenario
 --a feature can have multiple features
 
-hook_gherkin_generator_string_tags
+hook_behat_editor_string_tags
 --later we can hook and limit tags as needed.
 
-hook_gherkin_generator_string_steps
+hook_behat_editor_string_steps
 
-You can add other types here hook_gherkin_generator_string_types
+You can add other types here hook_behat_editor_string_types
 which later can include Scenario Overviews, Backgrounds etc.
 
 And for parsing we can consider gherkins table and PyString features.
