@@ -11,6 +11,7 @@ class BehatEditorRun {
     public $relative_path = '';
     public $filename = '';
     public $yml_path = '';
+    public $filename_no_ext = '';
     public $file_object = array();
 
     /**
@@ -27,6 +28,7 @@ class BehatEditorRun {
         $this->absolute_file_path = $file_object['absolute_path_with_file'];
         $this->relative_path = $file_object['relative_path'];
         $this->filename = $file_object['filename'];
+        $this->filename_no_ext = $file_object['filename_no_ext'];
         $this->module = $file_object['module'];
         $this->file_object = $file_object;
         $this->output_file = self::getPath();
@@ -34,10 +36,33 @@ class BehatEditorRun {
 
     public function getPath() {
         if(user_access('behat add test') && $this->module != variable_get('behat_editor_default_storage_folder', BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER)) {
-            return  _behat_editor_run_tests_from_module_folder($this->file_object);
+            return  self::runFromModuleFolder();
         } else {
-            return _behat_editor_run_tests_from_tmp_folder($this->file_object);
+            return self::runFromTmpFolder();
         }
+    }
+
+    public function runFromModuleFolder() {
+        //Setup folder to store file with test results
+        $file_tmp_folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
+        $path_results = file_build_uri("/{$file_tmp_folder}/results");
+        if (!file_prepare_directory($path_results, FILE_CREATE_DIRECTORY)) {
+            drupal_mkdir($path_results);
+        }
+        $test_id = $this->filename_no_ext;
+        $output_file = drupal_realpath($path_results) . '/' . $test_id . '.txt';    //Needed to run bin
+        return $output_file;
+    }
+
+    public function runFromTmpFolder() {
+        $file_tmp_folder = variable_get('behat_editor_default_storage_folder', BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER);
+        $path_results = file_build_uri("/{$file_tmp_folder}/results");
+        if (!file_prepare_directory($path_results, FILE_CREATE_DIRECTORY)) {
+            drupal_mkdir($path_results);
+        }
+        $test_id = $this->filename_no_ext;
+        $output_file = drupal_realpath($path_results) . '/' . $test_id . '.txt';    //Needed to run bin
+        return $output_file;
     }
 
     public function exec() {
