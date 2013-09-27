@@ -4,4 +4,5 @@ package = Behat Editor
 core = 7.x
 dependencies[] = behat_editor
 dependencies[] = composer_manager
+configure = admin/config/development/behat_saucelabs
 files[] = behat_editor_saucelabs.module
