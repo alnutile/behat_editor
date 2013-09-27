@@ -17,7 +17,7 @@ function behat_editor_saucelabs_menu() {
         'page arguments' => array(4,5),
         'file' => 'behat_editor_saucelabs_run.inc',
         'access arguments' => array('behat run saucelabs test'),
-        'file path' => "$path/controllers"
+        'file path' => "$path/includes"
     );
     /* allow jquery to get data about jobs status */
     $items['admin/behat/saucelabs/jobs'] = array(
