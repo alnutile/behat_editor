@@ -28,13 +28,9 @@ function behat_editor_saucelabs_menu() {
     return $items;
 }
 
-/**
- * @todo there should have been a better theme hook for this
- */
-function behat_editor_saucelabs_page_build(&$page) {
-
-    if(arg(1) == 'behat' && arg(2) == 'view') {
-
+function behat_editor_saucelabs_form_alter(&$form, $form_state, $form_id) {
+    $forms = array('behat_editor_view_form', 'behat_editor_edit_form', 'behat_editor_add_form');
+    if(in_array($form_id, $forms)) {
         composer_manager_register_autoloader();
         //@todo pull this in with above ann ot user module_load_include
         module_load_include('inc', 'behat_editor_saucelabs', 'libraries/SauceLabsBehatEditor');
@@ -58,9 +54,9 @@ function behat_editor_saucelabs_page_build(&$page) {
         $module = arg(3);
         $filename = arg(4);
         $path = drupal_get_path('module', 'behat_editor_saucelabs');
-        $page['content']['system_main']['#attached']['js']['behat_editor_saucelabs_run'] = $path . '/js/behat_editor_saucelabs_run.js';
+        $form['#attached']['js']['behat_editor_saucelabs_run'] = $path . '/js/behat_editor_saucelabs_run.js';
 
-        $page['content']['system_main']['actions']['saucelabs_run'] = array(
+        $form['actions']['saucelabs_run'] = array(
             '#type' => 'link',
             '#title' => 'Run on Sauce Labs',
             '#name' => 'sauce_labs',
@@ -69,6 +65,7 @@ function behat_editor_saucelabs_page_build(&$page) {
         );
     }
 }
+
 
 
 function behat_editor_saucelabs_jobs() {
