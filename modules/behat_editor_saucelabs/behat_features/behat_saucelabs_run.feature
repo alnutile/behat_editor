@@ -8,6 +8,7 @@ Feature: Run Tests on SauceLabs
     And I wait
     And I wait
     And I wait
+    And I should see "Connecting to Saucelabs and waiting"
     And I wait
     And I wait
-    Then I should see "1 scenario (1 passed)"
+    Then I should see "Test successful!"
