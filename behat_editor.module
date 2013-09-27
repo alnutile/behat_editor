@@ -174,3 +174,31 @@ function behat_editor_form_alter(&$form, $form_state, $form_id) {
 function _behat_editor_behat_bin_folder() {
     return composer_manager_vendor_dir() . '/behat/behat/';
 }
+
+
+/**
+ * Implements hook_help().
+ */
+function behat_editor_help($path, $arg) {
+    $output = NULL;
+
+    switch ($path) {
+        case 'admin/help#behat_editor':
+            $output = '<p>' . t('Visit the <a href="@handbook_url">Behat Editor Handbook</a> for help and information.', array('@handbook_url' => 'http://comingsoon.com')) . '</p>';
+            break;
+        case 'admin/behat/index':
+            $output = '<p>' . t('Below are all the feature files found in behat_features folders of all enabled modules') . '</p>';
+            $output .= '<p>' . t('From here you can View and Run a test. Or Add a new test.') . '</p>';
+            break;
+        case 'admin/behat/view/%/%':
+            $output = '<p>' . t('You are viewing a file. You can edit or run a test as needed') . '</p>';
+            break;
+        case 'admin/behat/add':
+            $output = '<p>' . t('This will create a new test file. As you make it feel free to Run a test.') . '</p>';
+            break;
+        case 'admin/behat/edit':
+            $output = '<p>' . t('You are editing a file on the system. As you Run or click Save your test will be written back to the file.') . '</p>';
+            break;
+    }
+    return $output;
+}

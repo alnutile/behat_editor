@@ -4,7 +4,6 @@ use BehatEditor\Libraries\BehatEditorRun;
  * @todo this is running and saving it should only run
  */
 function behat_editor_run($module, $filename) {
-    $response = '';
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'helpers/behat_editor_file_parsing');
     composer_manager_register_autoloader();
@@ -81,37 +80,9 @@ function behat_editor_run($module, $filename) {
     }
 }
 
-
 /**
- * @todo maybe all tests should results should go into public://files/
+ * @todo move this into a Class like the FileParse class
  */
-function _behat_editor_run_tests_from_module_folder($file_object) {
-    module_load_include('inc', 'behat_editor', 'behat_helpers_app');
-    //Setup folder to store file with test results
-    $file_tmp_folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
-    $path_results = file_build_uri("/{$file_tmp_folder}/results");
-    if (!file_prepare_directory($path_results, FILE_CREATE_DIRECTORY)) {
-        drupal_mkdir($path_results);
-    }
-    $name = $file_object['filename_no_ext'];
-    $test_id = $name;
-    $output_file = drupal_realpath($path_results) . '/' . $test_id . '.txt';    //Needed to run bin
-    return $output_file;
-}
-
-function _behat_editor_run_tests_from_tmp_folder($file_object) {
-    module_load_include('inc', 'behat_editor', 'behat_helpers_app');
-    $file_tmp_folder = variable_get('behat_editor_default_storage_folder', BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER);
-    $path_results = file_build_uri("/{$file_tmp_folder}/results");
-    if (!file_prepare_directory($path_results, FILE_CREATE_DIRECTORY)) {
-        drupal_mkdir($path_results);
-    }
-    $name = $file_object['filename_no_ext'];
-    $test_id = $name;
-    $output_file = drupal_realpath($path_results) . '/' . $test_id . '.txt';    //Needed to run bin
-    return $output_file;
-}
-
 function _behat_editor_output_html_item_list($results){
     $output_file_to_array = _behat_editor_turn_file_to_array($results);
     $output_item_list = theme('item_list', $var = array('title' => 'Test Results', 'items' => $output_file_to_array));
