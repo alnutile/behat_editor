@@ -38,42 +38,42 @@ function behat_editor_menu() {
         'page callback' => 'behat_editor_index',
         'access arguments' => array('behat view all tests'),
         'file' => 'behat_editor_index.inc',
-        'file path' => "$path/controllers/"
+        'file path' => "$path/includes/"
     );
     $items['admin/behat/view/%/%'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_view_form', 3,4),
         'access arguments' => array('behat view test'),
         'file' => 'behat_editor_view.inc',
-        'file path' => "$path/controllers/"
+        'file path' => "$path/includes/"
     );
     $items['admin/behat/run/%/%'] = array(
         'page callback' => array('behat_editor_run'),
         'page arguments' => array(3,4),
         'file' => 'behat_editor_run.inc',
         'access arguments' => array('behat run test'),
-        'file path' => "$path/controllers"
+        'file path' => "$path/includes"
     );
     $items['admin/behat/add'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_add_form'),
         'access arguments' => array('behat add test'),
         'file' => 'behat_editor_add.inc',
-        'file path' => "$path/controllers/"
+        'file path' => "$path/includes/"
     );
     $items['admin/behat/edit/%/%'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_edit_form', 3, 4),
         'access arguments' => array('behat edit test'),
         'file' => 'behat_editor_edit.inc',
-        'file path' => "$path/controllers/"
+        'file path' => "$path/includes/"
     );
     $items['admin/behat/save/%/%'] = array(
         'page callback' => array('behat_editor_save'),
         'page arguments' => array(3,4),
         'file' => 'behat_editor_save.inc',
         'access arguments' => array('behat add test'),
-        'file path' => "$path/controllers"
+        'file path' => "$path/includes"
     );
     return $items;
 }
