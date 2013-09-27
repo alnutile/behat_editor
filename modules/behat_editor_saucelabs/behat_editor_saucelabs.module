@@ -57,7 +57,7 @@ function behat_editor_saucelabs_form_alter(&$form, $form_state, $form_id) {
         $check_connection = new SauceLabsBehatEditor($username, $api_key);
         $connected = $check_connection->connectTest();
 
-        if(isset($connected['error'])) {
+        if(isset($connected['error']) || empty($username) || empty($api_key)) {
             $disabled = 'disabled';
             drupal_set_message(t("Saucelabs connection error: :error The Saucelabs button will be disabled till resolved.", array(':error' => $connected['error'])), 'error');
             drupal_set_message(t("You can configure SauceLabs here !here", array('!here' => l('configure', 'admin/config/development/behat_saucelabs'))), 'info');
