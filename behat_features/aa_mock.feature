@@ -1,8 +1,26 @@
- @javascript
- Feature: View Page aa_mock
-
-   @tag3
-   Scenario: User clicks link to see view
-     Given I am on "/admin/behat/index"
-     And I follow "aa_mock.feature"
-     Then I should see "Feature: aa_mock.feature"
+ @tag1 @tag2
+ Feature: Tests for http://www.alfrednutile.info/about
+ 
+   Scenario: Test
+     Given I am on "http://www.alfrednutile.info/about"
+     Then I should see "Alfred"
+ 
+   Scenario: Mink Rocks
+ 
+   Scenario: Testing Rocks
+ 
+   Scenario: Mink Rocks
+ 
+   Scenario: Testing Rocks
+ 
+   Scenario: Mink Rocks
+ 
+   Scenario: Testing Rocks
+ 
+   Scenario: Mink Rocks
+ 
+   Scenario: Testing Rocks
+ 
+   Scenario: Mink Rocks
+ 
+   Scenario: Testing Rocks

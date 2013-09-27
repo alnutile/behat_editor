@@ -75,7 +75,7 @@ function _behat_get_file_info($module, $filename) {
     if ($module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
         $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
         $files_folder =  file_build_uri("/{$sub_folder}/");
-        $relative_path = $files_folder . '/' . $filename;
+        $relative_path = url($path = file_create_url("$files_folder/$filename"));
         $path = drupal_realpath($files_folder);
         $full_path_with_file = $path . '/' . $filename;
     } else {
