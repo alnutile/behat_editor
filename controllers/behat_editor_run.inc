@@ -27,27 +27,14 @@ function behat_editor_run($module, $filename) {
         $res = new BehatEditorRun($file_object);
         $run_test_response = $res->exec();
         $response = $run_test_response['response'];
-        $absolute_file_path =  $file_object['absolute_path_with_file'];
-        $output_file = $run_test_response['output_file'];
-        $date = format_date(time(), $type = 'medium', $format = '',
-            $timezone = NULL, $langcode = NULL);
-        $filename = $file_object['filename'];
-        $file_message = array(
-            'file' => $filename,
-            'error' => 0,
-            'message' => "$date <br> File $filename tested."
-        );
+
+        //Check the Response from Running the Tests
         if($response == 0) {
-            $results = _behat_editor_read_file($output_file);
-            $output_item_list = _behat_editor_output_html_item_list($results);
-            $output = array('message' => t('@date: <br> Test successful!', array('@date' => $date)), 'file' => $output_item_list, 'error' => FALSE);
-            $results = array('file' => $file_message, 'test' => $output, 'error' => 0);
+            $results = $res->generateReturnPassOutput();
             drupal_json_output($results);
             exit();
         } else {
-            watchdog('behat_editor', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $output_file), $severity = WATCHDOG_ERROR, $link = $absolute_file_path);
-            $output = array('message' => t('@date: <br> Error running test !name to download ', array('@date' => $date, '@name' => $filename)), 'file' => $filename, 'error' => TRUE);
-            $results = array('file' => $file_message, 'test' => $output, 'error' => 1);
+            $results = $res->generateReturnFailOutput();
             drupal_json_output($results);
             exit();
         }
@@ -68,30 +55,14 @@ function behat_editor_run($module, $filename) {
                 $res = new BehatEditorRun($file_object);
                 $run_test_response = $res->exec();
                 $response = $run_test_response['response'];
-                $absolute_file_path =  $file_object['absolute_path_with_file'];
-                $output_file = $run_test_response['output_file'];
-                $date = format_date(time(), $type = 'medium', $format = '',
-                    $timezone = NULL, $langcode = NULL);
-                $filename = $file_object['filename'];
-                $file_url = l($filename, $file_object['relative_path'], $options = array('attributes' => array('target' => '_blank')));
-                $file_message = array(
-                    'file' => $filename,
-                    'error' => 0,
-                    'message' => "$date <br> File $file_url tested."
-                );
+
                 //Check the Response from Running the Tests
                 if($response == 0) {
-                    $results = _behat_editor_read_file($output_file);
-                    $output_item_list = _behat_editor_output_html_item_list($results);
-                    $output = array('message' => t('@date: <br> Test successful!', array('@date' => $date)), 'file' => $output_item_list, 'error' => FALSE);
-                    $results = array('file' => $file_message, 'test' => $output, 'error' => 0);
+                    $results = $res->generateReturnPassOutput();
                     drupal_json_output($results);
                     exit();
                 } else {
-                    //Test Error
-                    watchdog('behat_editor', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $output_file), $severity = WATCHDOG_ERROR, $link = $absolute_file_path);
-                    $output = array('message' => t('@date: <br> Error running test !name to download ', array('@date' => $date, '@name' => $filename)), 'file' => $filename, 'error' => TRUE);
-                    $results = array('file' => $file_message, 'test' => $output, 'error' => 1);
+                    $results = $res->generateReturnFailOutput();
                     drupal_json_output($results);
                     exit();
                 }
@@ -109,6 +80,7 @@ function behat_editor_run($module, $filename) {
         }
     }
 }
+
 
 /**
  * @todo maybe all tests should results should go into public://files/

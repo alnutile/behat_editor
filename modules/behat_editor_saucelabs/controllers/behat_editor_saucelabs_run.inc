@@ -39,12 +39,15 @@ function behat_editor_saucelabs_run($module, $filename) {
         $output_item_list = _behat_editor_output_html_item_list($results);
         watchdog('behat_editor', "%date Test successful results at %name", $variables = array('%date' => $date, '%name' => $output_file), $severity = WATCHDOG_NOTICE, $link = $absolute_file_path);
         $output = array('message' => t('@date: <br> Test successful!', array('@date' => $date)), 'file' => $output_item_list, 'error' => FALSE);
+        $results = array('file' => $file_message, 'test' => $output, 'error' => 0);
+        drupal_json_output($results);
+        exit();
     } else {
         watchdog('behat_editor', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $output_file), $severity = WATCHDOG_ERROR, $link = $absolute_file_path);
         $output = array('message' => t('@date: <br> Error running test !name to download ', array('@date' => $date, '@name' => $filename)), 'file' => $filename, 'error' => TRUE);
+        $results = array('file' => $file_message, 'test' => $output, 'error' => 1);
+        drupal_json_output($results);
+        exit();
     }
-
-    $results = array('file' => $file_message, 'test' => $output);
-    drupal_json_output($results);
-    exit();
 }
+

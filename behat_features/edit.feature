@@ -4,10 +4,10 @@ Feature: Edit Page
     Given I am on "/admin/behat/view/behat_editor/aa_mock.feature"
     And I follow "Edit Test"
     And I wait
+    And I wait
     Then I should see "Editing: aa_mock.feature"
     And I should see "Your results will show here..."
     And I should see "Feature:"
-    And I should see "User clicks link"
     And I should see "Save Test"
 
   @javascript
@@ -31,7 +31,7 @@ Feature: Edit Page
     And I fill in sectionTwoTag
     And I follow "Run Test"
     And I wait
-    Then I should see "File created"
+    Then I should see "Test successful!"
     And I follow savedTest
     Then I should see "@tag1"
     Then I should see "@tag2"

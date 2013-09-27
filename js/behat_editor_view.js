@@ -11,6 +11,7 @@
                     "method": method
                 };
                 $.post(url, parameters, function(data){
+                    console.log(data);
                     Drupal.behat_editor.renderMessage(data);
                 }, "json");
             });
