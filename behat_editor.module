@@ -134,12 +134,6 @@ function behat_editor_theme() {
     return $items;
 }
 
-
-
-function behat_editor_page_build(&$page) {
-
-}
-
 function behat_editor_library() {
     $path = drupal_get_path('module', 'behat_editor');
     $libraries['tag_it'] = array(
