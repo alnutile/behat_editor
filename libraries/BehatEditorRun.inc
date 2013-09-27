@@ -18,7 +18,7 @@ class BehatEditorRun {
      * check it comes from the class later one
      */
     public function __construct($file_object) {
-        $this->behat_path = drupal_get_path('module', 'behat_editor');
+        $this->behat_path = _behat_editor_behat_bin_folder();
         $this->absolute_file_path = '';
         $this->file_full_path = $file_object['absolute_path_with_file'];
         $this->absolute_file_path = $file_object['absolute_path_with_file'];
@@ -38,7 +38,7 @@ class BehatEditorRun {
     }
 
     public function exec() {
-        $response = exec("cd $this->behat_path/behat && ./bin/behat --no-paths --tags '~@javascript' --out $this->output_file  $this->absolute_file_path && echo $?");
+        $response = exec("cd $this->behat_path && ./bin/behat --no-paths --tags '~@javascript' --out $this->output_file  $this->absolute_file_path && echo $?");
         return array('response' => $response, 'output_file' => $this->output_file);
     }
 
@@ -70,6 +70,4 @@ class BehatEditorRun {
         $results = array('file' => $file_message, 'test' => $output, 'error' => 1);
         return $results;
     }
-
-
 }
