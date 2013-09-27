@@ -5,11 +5,11 @@ use BehatEditor\SauceLabs\SauceLabsBehatEditor;
 function behat_editor_saucelabs_permission() {
     $items['behat run saucelabs test'] = array(
         'title' => t('Can run a Saucelabs a test'),
-        'description' => t('Can un a Saucelabs a test')
+        'description' => t('Can run a Saucelabs a test')
     );
     $items['behat admin saucelabs'] = array(
-        'title' => t('Can run a Saucelabs a test'),
-        'description' => t('Can un a Saucelabs a test')
+        'title' => t('Can admin Saucelabs'),
+        'description' => t('Can  admin Saucelabs')
     );
     return $items;
 }
