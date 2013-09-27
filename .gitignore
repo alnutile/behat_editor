@@ -1,4 +1,5 @@
 css/.sass-cache
-behat/*
+behat/behat.yml
+behat/features/bootstrap/FeatureContext.php
 behat_features/1*.feature
 behat_features/results/*.html
