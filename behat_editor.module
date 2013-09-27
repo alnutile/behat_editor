@@ -156,3 +156,20 @@ function behat_editor_library() {
     );
     return $libraries;
 }
+
+function behat_editor_form_alter(&$form, $form_state, $form_id) {
+    $forms = array('behat_editor_view_form', 'behat_editor_edit_form', 'behat_editor_add_form');
+    if(in_array($form_id, $forms)) {
+        $vendor = composer_manager_vendor_dir();
+        if(!file_exists($vendor)) {
+            drupal_set_message(t("You do not have a vendor folder setup. Did you finish setting up Composer Manager?", 'error'));
+        } elseif(!file_exists($vendor .'/behat/behat/bin/behat' )) {
+            drupal_set_message(t('You do not have a behat loaded yet. Did you run !composer_install via the Composer Manager?',
+                array('!composer_install' => l('composer install', 'admin/config/system/composer-manager'))), 'error');
+        }
+    }
+}
+
+function _behat_editor_behat_bin_folder() {
+    return composer_manager_vendor_dir() . '/behat/behat/';
+}
