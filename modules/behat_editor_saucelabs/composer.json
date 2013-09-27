@@ -1,0 +1,5 @@
+{
+    "require": {
+        "instaclick/php-webdriver": "1.0.16"
+    }
+}

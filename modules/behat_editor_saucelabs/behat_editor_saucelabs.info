@@ -2,4 +2,6 @@ name = Behat Editor SauceLabs
 description = Connects the tests to SauceLabs
 package = Behat Editor
 core = 7.x
+dependencies[] = behat_editor
+dependencies[] = composer_manager
 files[] = behat_editor_saucelabs.module

@@ -37,17 +37,16 @@ Feature: Add Page
     Then I should see "Scenario: Mink Rocks"
     And I should see "Scenario: WikiPedia"
 
-  @anonymous
+  @anonymous @thisone
   Scenario: Anonymous user adds and looks at file
     Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help"
     And I follow "click here"
     And I wait
-    And I wait
     And I follow "Run Test"
     Then I wait
     Then I wait
-    Then I should see "File created"
+    Then I should see "Test successful"
     And I follow savedTest
     Then I should see "Scenario: WikiPedia"
     Then I should not see "This is a tool to help"
@@ -61,7 +60,7 @@ Feature: Add Page
     And I fill in featuresTag
     And I follow "Run Test"
     And I wait
-    Then I should see "File created"
+    Then I should see "Test successful!"
     And I follow savedTest
     Then I should see "@tag1"
     Then I should not see "This is a tool to help"
@@ -79,7 +78,7 @@ Feature: Add Page
     And I fill in sectionTwoTag
     And I follow "Run Test"
     And I wait
-    Then I should see "File created"
+    Then I should see "Test successful!"
     And I follow savedTest
     Then I should see "@tag1"
     Then I should see "@tag2"

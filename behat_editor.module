@@ -79,6 +79,12 @@ function behat_editor_menu() {
 }
 
 function behat_editor_theme() {
+    $items['behat_editor_view'] = array(
+        'variables' => array(
+            'params' => NULL,
+        ),
+        'file' => 'tpl/behat_shared_views.inc'
+    );
     $items['behat_editor_file_to_html_view'] = array(
         'variables' => array(
             'file_text' => NULL,
