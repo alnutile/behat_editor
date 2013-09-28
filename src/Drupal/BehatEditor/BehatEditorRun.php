@@ -70,6 +70,21 @@ class BehatEditorRun {
         return array('response' => $response, 'output_file' => $this->output_file);
     }
 
+    public function execDrush() {
+        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths --tags '~@javascript' $this->absolute_file_path", $output, $return_var);
+        return $output;
+    }
+
+    public function execDrushAll($module_path, $javascript = FALSE) {
+        if($javascript == TRUE) {
+            $tags = '';
+        } else {
+            $tags = "--tags '~@javascript'";
+        }
+        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tags $module_path", $output, $return_var);
+        return $output;
+    }
+
     public function generateReturnPassOutput() {
         $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
         $file_url = l($this->filename, $this->relative_path, $options = array('attributes' => array('target' => '_blank', 'id' => 'test-file')));

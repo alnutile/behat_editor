@@ -1,0 +1,20 @@
+<?php
+
+use Drupal\BehatEditor;
+
+class SimpletestUnitTestBehatEditorCase extends DrupalUnitTestCase {
+
+    public static function getInfo() {
+      return array(
+        'name' => 'BehatEditor unit tests',
+        'description' => 'Test some file management features',
+        'group' => 'BehatEditor',
+      );
+    }
+
+    public function testFileCreation() {
+        $results = new Drupal\BehatEditor\File();
+        $file = array();
+        $this->assertTrue($result, $file);
+    }
+}
