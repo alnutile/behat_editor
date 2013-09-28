@@ -86,8 +86,8 @@ class BehatEditorRun {
         } else {
             $tags = "--tags '~@javascript'";
         }
-        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tags $module_path", $output, $return_var);
 
+        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --profile localdev --format=pretty --no-paths $tags $module_path", $output, $return_var);
         return $output;
     }
 

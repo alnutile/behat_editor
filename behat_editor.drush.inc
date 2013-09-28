@@ -65,8 +65,7 @@ function drush_behat_editor_behat_run() {
 function drush_behat_editor_behat_run_folder() {
     //@todo validate args
     $module = func_get_arg(0);
-
-    if(func_num_args() < 1) {
+    if(func_num_args() > 1) {
         $javascript = func_get_arg(1);
     } else {
         $javascript = 0;
