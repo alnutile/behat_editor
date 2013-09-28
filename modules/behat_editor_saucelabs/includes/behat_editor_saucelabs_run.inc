@@ -1,6 +1,5 @@
 <?php
-use BehatEditor\SauceLabs\SauceLabsBehatEditor;
-use BehatEditor\SauceLabs\BehatEditorSauceLabsRun;
+use Drupal\BehatEditorSauceLabs;
 
 function behat_editor_saucelabs_run($module, $filename) {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
@@ -8,17 +7,15 @@ function behat_editor_saucelabs_run($module, $filename) {
     module_load_include('inc', 'behat_editor', 'includes/behat_editor_run');
 
     composer_manager_register_autoloader();
-    //@todo pull this in with above ann ot user module_load_include
-    module_load_include('inc', 'behat_editor_saucelabs', 'libraries/BehatEditorSauceLabsRun');
 
-    if (!class_exists('BehatEditor\SauceLabs\BehatEditorSauceLabsRun')) {
+    if (!class_exists('Drupal\BehatEditorSauceLabs\BehatEditorSauceLabsRun')) {
         $message = t('BehatEditorSauceLabsRun not found.');
         drupal_json_output($results = array('error' => 1, 'message' => $message));
         exit();
     }
 
     $file_object = _behat_get_file_info($module, $filename);
-    $res = new BehatEditorSauceLabsRun($file_object);
+    $res = new Drupal\BehatEditorSauceLabs\BehatEditorSauceLabsRun($file_object);
 
     $run_test_response = $res->exec();
 

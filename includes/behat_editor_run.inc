@@ -1,29 +1,19 @@
 <?php
-use BehatEditor\Libraries\BehatEditorRun;
+use Drupal\BehatEditor;
 /**
  * @todo this is running and saving it should only run
  */
 function behat_editor_run($module, $filename) {
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
-    module_load_include('inc', 'behat_editor', 'helpers/behat_editor_file_parsing');
     composer_manager_register_autoloader();
-    //@todo pull this in with above ann ot user module_load_include
-    module_load_include('inc', 'behat_editor', 'libraries/BehatEditorRun');
-
-    if (!class_exists('BehatEditor\Libraries\BehatEditorRun')) {
-        $message = t('BehatEditorRun not found.');
-
-        $results = array('file' => array(), 'test' => array(), 'message' => $message, 'error' => 1);
-        drupal_json_output($results);
-        exit();
-    }
 
     if($_REQUEST['method'] == 'view-mode') {
-        //Run with no alterations to the test file
+        //@todo include these in autoloader
         module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
+        module_load_include('inc', 'behat_editor', 'helpers/behat_editor_file_parsing');
         module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
+
         $file_object = _behat_get_file_info($module, $filename);
-        $res = new BehatEditorRun($file_object);
+        $res = new Drupal\BehatEditor\BehatEditorRun($file_object);
         $run_test_response = $res->exec();
         $response = $run_test_response['response'];
 
@@ -37,7 +27,6 @@ function behat_editor_run($module, $filename) {
             drupal_json_output($results);
             exit();
         }
-
     }
 
     /**
@@ -45,13 +34,17 @@ function behat_editor_run($module, $filename) {
      * updated before being Run
      */
     if($_REQUEST['method'] == 'create-mode') {
+        //@todo include these in autoloader
+        module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
+        module_load_include('inc', 'behat_editor', 'helpers/behat_editor_file_parsing');
+        module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
         //Make sure it is a good request
         if(isset($_REQUEST['scenario'])) {
             $response = _behat_editor_save_html_to_file($_REQUEST, $module, $filename, 'file');
             //Make sure the file was made
             if($response['file'] != FALSE){
                 $file_object = _behat_get_file_info($module, $filename);
-                $res = new BehatEditorRun($file_object);
+                $res = new Drupal\BehatEditor\BehatEditorRun($file_object);
                 $run_test_response = $res->exec();
                 $response = $run_test_response['response'];
 

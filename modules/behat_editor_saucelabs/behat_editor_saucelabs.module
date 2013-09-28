@@ -1,6 +1,6 @@
 <?php
-use BehatEditor\SauceLabs\SauceLabsBehatEditor;
 
+use Drupal\BehatEditorSauceLabs;
 
 function behat_editor_saucelabs_permission() {
     $items['behat run saucelabs test'] = array(
@@ -45,16 +45,15 @@ function behat_editor_saucelabs_form_alter(&$form, $form_state, $form_id) {
     $forms = array('behat_editor_view_form', 'behat_editor_edit_form', 'behat_editor_add_form');
     if(in_array($form_id, $forms)) {
         composer_manager_register_autoloader();
-        //@todo pull this in with above ann ot user module_load_include
-        module_load_include('inc', 'behat_editor_saucelabs', 'libraries/SauceLabsBehatEditor');
-        if (!class_exists('BehatEditor\SauceLabs\SauceLabsBehatEditor')) {
-            $message = t('SauceLabsBehatEditor not found.');
+        if (!class_exists('Drupal\BehatEditorSauceLabs\Wrapper')) {
+            $message = t('SauceLabs Wrapper not found.');
             throw new \RuntimeException($message);
         }
 
         $username = variable_get('behat_editor_saucelabs_username', '');
         $api_key = variable_get('behat_editor_saucelabs_api', '');
-        $check_connection = new SauceLabsBehatEditor($username, $api_key);
+
+        $check_connection = new Drupal\BehatEditorSauceLabs\Wrapper($username, $api_key);
         $connected = $check_connection->connectTest();
 
         if(isset($connected['error']) || empty($username) || empty($api_key)) {
@@ -84,16 +83,15 @@ function behat_editor_saucelabs_form_alter(&$form, $form_state, $form_id) {
 
 function behat_editor_saucelabs_jobs() {
     composer_manager_register_autoloader();
-    //@todo pull this in with above
-    module_load_include('inc', 'behat_editor_saucelabs', 'libraries/SauceLabsBehatEditor');
-    if (!class_exists('BehatEditor\SauceLabs\SauceLabsBehatEditor')) {
-        $message = t('SauceLabsBehatEditor not found.');
-        throw new \RuntimeException($message);
+    if (!class_exists('Drupal\BehatEditorSauceLabs\Wrapper')) {
+        $message = t('SauceLabs Wrapper not found.');
+        drupal_json_output(array('error' => 1, 'message' => $message));
+        exit();
     }
 
     $username = variable_get('behat_editor_saucelabs_username', '');
     $api_key = variable_get('behat_editor_saucelabs_api', '');
-    $check_connection = new SauceLabsBehatEditor($username, $api_key);
+    $check_connection = new Drupal\BehatEditorSauceLabs\Wrapper($username, $api_key);
     $summary = $check_connection->jobsSummary();
     drupal_json_output($summary);
     exit();
