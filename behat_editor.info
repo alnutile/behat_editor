@@ -1,4 +1,5 @@
 name = Behat Editor
 description = Edit and View Behat files as well as run tests
 core = 7.x
-
+dependencies[] = composer_manager
+files[] = behat_editor.test
