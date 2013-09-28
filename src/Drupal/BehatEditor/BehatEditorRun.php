@@ -12,6 +12,7 @@ class BehatEditorRun {
     public $filename = '';
     public $yml_path = '';
     public $filename_no_ext = '';
+    public $file_array;
     public $file_object = array();
 
     /**
@@ -66,8 +67,12 @@ class BehatEditorRun {
     }
 
     public function exec() {
-        $response = exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths --tags '~@javascript' --out $this->output_file  $this->absolute_file_path && echo $?");
-        return array('response' => $response, 'output_file' => $this->output_file);
+        //@todo come back and just use exec output and response return features.
+        //  Could save from writing to the drive
+        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths --tags '~@javascript' $this->absolute_file_path", $output);
+        $this->file_array = $output;
+        $response = is_array($output) ? 0 : 1;
+        return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
     }
 
     public function execDrush() {
@@ -82,6 +87,7 @@ class BehatEditorRun {
             $tags = "--tags '~@javascript'";
         }
         exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tags $module_path", $output, $return_var);
+
         return $output;
     }
 
@@ -93,11 +99,18 @@ class BehatEditorRun {
             'error' => 0,
             'message' => "$date <br> File $file_url tested."
         );
-        $results = _behat_editor_read_file($this->output_file);
-        $output_item_list = _behat_editor_output_html_item_list($results);
-        $output = array('message' => t('@date: <br> Test successful!', array('@date' => $date)), 'file' => $output_item_list, 'error' => FALSE);
+        $report = self::generateHTMLOutput();
+        $output = array('message' => t('@date: <br> Test successful!', array('@date' => $date)), 'file' => $this->filename, 'test_output' => $report, 'error' => FALSE);
         $results = array('file' => $file_message, 'test' => $output, 'error' => 0);
         return $results;
+    }
+
+    public function generateHTMLOutput() {
+        $results_message = array_slice($this->file_array, -3);
+        $results_message_top = array_slice($this->file_array, 0, -3);
+        $output_item_results = theme('item_list', $var = array('title' => 'Summary', 'items' => $results_message));
+        $output_item_list = theme('item_list', $var = array('title' => 'All Results', 'items' => $results_message_top));
+        return $output_item_results . $output_item_list;
     }
 
     public function generateReturnFailOutput() {
@@ -108,9 +121,10 @@ class BehatEditorRun {
             'error' => 0,
             'message' => "$date <br> File $file_url tested."
         );
-        watchdog('behat_editor', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $this->output_file), $severity = WATCHDOG_ERROR, $link = $this->absolute_file_path);
-        $output = array('message' => t('@date: <br> Error running test !name to download ', array('@date' => $date, '@name' => $this->filename)), 'file' => $this->filename, 'error' => TRUE);
-        $results = array('file' => $file_message, 'test' => $output, 'error' => 1);
+        $message =  t('@date: <br> Error running test @name ', array('@date' => $date, '@name' => $this->filename));
+        watchdog('behat_editor', "%date Error Running Test %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_ERROR, $link = $this->absolute_file_path);
+        $output = array('message' => $message, 'file' => $this->filename, 'error' => TRUE);
+        $results = array('file' => $file_message, 'test' => $output, 'error' => 1, 'message' => $message);
         return $results;
     }
 }
