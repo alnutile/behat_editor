@@ -73,12 +73,4 @@ function behat_editor_run($module, $filename) {
     }
 }
 
-/**
- * @todo move this into a Class like the FileParse class
- */
-function _behat_editor_output_html_item_list($results){
-    $output_file_to_array = _behat_editor_turn_file_to_array($results);
-    $output_item_list = theme('item_list', $var = array('title' => 'Test Results', 'items' => $output_file_to_array));
-    return $output_item_list;
-}
 

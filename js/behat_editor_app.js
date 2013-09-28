@@ -50,7 +50,7 @@
                 messages += message;
                 messages += "</div>";
                 $('#messages').append(messages);
-                Drupal.behat_editor.setResultsBox(data.test.file);
+                Drupal.behat_editor.setResultsBox(data.test.test_output);
             }
         }
     };
