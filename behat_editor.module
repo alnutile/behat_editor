@@ -176,6 +176,10 @@ function _behat_editor_behat_bin_folder() {
 }
 
 
+function behat_editor_page_alter(&$page) {
+
+}
+
 /**
  * Implements hook_help().
  */

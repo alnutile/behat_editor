@@ -20,5 +20,10 @@
             "type": "vcs",
             "url": "https://github.com/pfizer/behat"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-0": {
+            "Drupal\\BehatEditor": "src/"
+        }
+    }
 }
