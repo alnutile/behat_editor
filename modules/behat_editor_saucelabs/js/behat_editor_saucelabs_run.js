@@ -46,7 +46,13 @@
             $('a.sauce').click(function(e){
                 e.preventDefault();
                 if(!$(this).hasClass('disabled')) {
-                    var method = 'view-mode';
+                    var method = 'create-mode';
+                    var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
+                    var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
+                    var parameters = {
+                        "method": method,
+                        "scenario[]": scenario_array
+                    };
                     var url = $(this).attr('href');
                     var latestId = '';
                     //Add this first to get previous job id
@@ -57,7 +63,7 @@
                         //since it was created before my first setup of the
                         //staring id
                         Drupal.behat_editor_saucelabs.saucelabs_check(1, latestId);
-                        $.post(url, function(data){
+                        $.post(url, parameters, function(data){
                             Drupal.behat_editor.renderMessage(data);
                         }, "json");
                     });

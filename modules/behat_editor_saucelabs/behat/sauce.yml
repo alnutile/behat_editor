@@ -1,0 +1,52 @@
+default:
+  context:
+    parameters:
+      default_session:    goutte
+      javascript_session: selenium
+      base_url:           http://en.wikipedia.org/wiki/Main_Page
+      browser:            firefox
+      selenium:
+        host: ondemand.saucelabs.com
+        port: 80
+        browser: >
+          {
+            "username":         "alnutile",
+            "access-key":       "eff45429-2e25-4c17-965e-f86be009d0ea",
+            "browser":          "firefox",
+            "browser-version":  "7",
+            "os":               "Windows 2003",
+            "name":             "Testing Selenium with Behat"
+          }
+
+
+Webdriver-saucelabs:
+  context:
+    class:  'FeatureContext'
+  extensions:
+    Behat\MinkExtension\Extension:
+      selenium2:
+        browser: iexplore
+        wd_host: alnutile@eff45429-2e25-4c17-965e-f86be009d0ea@ondemand.saucelabs.com/wd/hub
+        capabilities: { "platform": "VISTA", "browser": "iexplore", "version": "9"}
+
+
+Selenium-saucelabs2:
+  context:
+    class:  'FeatureContext'
+  extensions:
+    Behat\MinkExtension\Extension:
+      base_url:  'http://screenshots.alfrednutile.info/'
+      javascript_session:  'selenium'
+      goutte:              ~
+      selenium:
+        host: ondemand.saucelabs.com
+        port: 80
+        browser: >
+          {
+            "username":         "alnutile",
+            "access-key":       "eff45429-2e25-4c17-965e-f86be009d0ea",
+            "browser":          "firefox",
+            "browser-version":  "7",
+            "os":               "Windows 2003",
+            "name":             "Testing Selenium with Behat"
+          }
