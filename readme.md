@@ -86,3 +86,4 @@ And for parsing we can consider gherkins table and PyString features.
 ### Todo
 
 Add submodule for behat and SauceLabs
+Add info on install libraries or have drush do it or composer manager

@@ -11,14 +11,16 @@ function _behat_editor_produce_table_array($files_array) {
     $rows = array();
     foreach($files_array as $key => $value) {
         foreach($value as $row) {
-            $file_name = $row->filename;
+            $file_name = $row['filename'];
             $module_name = $key;
+            $tags = implode(', ', $row['tags_array']);
             $rows[] = array(
                 'data' =>
                 array
                 (
                     l($file_name, 'admin/behat/view/' . $module_name . '/' . $file_name),
                     $module_name,
+                    $tags,
                     l('view', 'admin/behat/view/' . $module_name . '/' . $file_name),
                     l('edit', 'admin/behat/edit/' . $module_name . '/' . $file_name),
                     l('delete', 'admin/behat/delete/' . $module_name . '/' . $file_name)
@@ -30,6 +32,7 @@ function _behat_editor_produce_table_array($files_array) {
     $header = array(
         'Name',
         'Module',
+        'Tags',
         'View',
         'Edit',
         'Delete',
@@ -38,7 +41,7 @@ function _behat_editor_produce_table_array($files_array) {
     $behat_table = theme('table', array(
         'header' => $header,
         'rows' => $rows,
-        'attributes' => array('class' => array('table-hover'))
+        'attributes' => array('class' => array('table-hover'), 'id' => 'admin-features')
     ));
 
     return $behat_table;

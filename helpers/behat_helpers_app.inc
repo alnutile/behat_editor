@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\BehatEditor;
+
 /**
  * @return modules that have behat_feature folders
  */
@@ -54,10 +56,10 @@ function _behat_editor_build_array_of_available_files($modules) {
             $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
             $files_folder =  file_build_uri("/{$sub_folder}/");
             $path = drupal_realpath($files_folder);
-            $files_found[$machine_name] = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
+            $files_found[$machine_name] = _behat_editor_scan_directories($machine_name, $path);
         } else {
           $path = DRUPAL_ROOT . '/' . drupal_get_path('module', $machine_name) . '/' . BEHAT_EDITOR_FOLDER;
-          $files_found[$machine_name] = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
+          $files_found[$machine_name] =  _behat_editor_scan_directories($machine_name, $path);
         }
     }
     return $files_found;
@@ -71,35 +73,14 @@ function _behat_editor_build_array_of_available_files($modules) {
  * @return
  *  array of common file data
  */
-function _behat_get_file_info($module, $filename) {
-    if ($module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
-        $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
-        $files_folder =  file_build_uri("/{$sub_folder}/");
-        $relative_path = url($path = file_create_url("$files_folder/$filename"));
-        $path = drupal_realpath($files_folder);
-        $full_path_with_file = $path . '/' . $filename;
-    } else {
-        $sub_folder = drupal_get_path('module', $module) . '/' . BEHAT_EDITOR_FOLDER;
-        $relative_path = $sub_folder . '/' . $filename;
-        $path = DRUPAL_ROOT . '/' . $sub_folder;
-        $full_path_with_file = $path . '/' . $filename;
+function _behat_editor_scan_directories($module, $path) {
+    composer_manager_register_autoloader();
+    $file_data = array();
+    $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
+    foreach($files as $key => $value) {
+        $filename = $files[$key]->filename;
+        $file = new Drupal\BehatEditor\File(array(), $module, $filename, 'file');
+        $file_data[$key] = $file->get_file_info();
     }
-
-    $file_data = array(
-        'module' => $module,
-        'filename' => $filename,
-        'absolute_path' => $path,
-        'absolute_path_with_file' => $full_path_with_file,
-        'scenario' => _behat_editor_read_file($full_path_with_file),
-        'filename_no_ext' => substr($filename, 0, -8),
-        'relative_path' => $relative_path,
-    );
     return $file_data;
-}
-
-
-function _behat_editor_read_file($full_path_with_file) {
-    $file_open = fopen($full_path_with_file, "r");
-    $file_read = fread($file_open, filesize($full_path_with_file));
-    return $file_read;
 }
