@@ -54,7 +54,7 @@
                     $.getJSON('/admin/behat/saucelabs/jobs', function(data){
                         var latestId = 0;
                         latestId = data.latest_id;
-                        //This still allowed for me to miss the job ID
+                        //So I do not miss the lastId before starting a job
                         //since it was created before my first setup of the
                         //staring id
                         Drupal.behat_editor_saucelabs.saucelabs_check(1, latestId);
