@@ -41,7 +41,7 @@ function _behat_editor_produce_table_array($files_array) {
     $behat_table = theme('table', array(
         'header' => $header,
         'rows' => $rows,
-        'attributes' => array('class' => array('table-hover'))
+        'attributes' => array('class' => array('table-hover'), 'id' => 'admin-features')
     ));
 
     return $behat_table;
