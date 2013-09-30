@@ -42,11 +42,10 @@ function behat_editor_run($module, $filename) {
         if(isset($_REQUEST['scenario'])) {
             $file = new Drupal\BehatEditor\File($_REQUEST, $module, $filename, 'file');
             $response = $file->save_html_to_file();
-            //$response = _behat_editor_save_html_to_file($_REQUEST, $module, $filename, 'file');
 
             //Make sure the file was made
             if($response['file'] != FALSE){
-                $file_object = _behat_get_file_info($module, $filename);
+                $file_object = $file->get_file_info();
                 $res = new Drupal\BehatEditor\BehatEditorRun($file_object);
                 $run_test_response = $res->exec();
                 $response = $run_test_response['response'];
