@@ -25,6 +25,7 @@
                     "scenario[]": scenario_array
                 };
                 $.post(url, parameters, function(data){
+                    console.log(data);
                     Drupal.behat_editor.renderMessage(data);
                 }, "json");
             });

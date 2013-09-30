@@ -40,7 +40,10 @@ function behat_editor_run($module, $filename) {
         module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
         //Make sure it is a good request
         if(isset($_REQUEST['scenario'])) {
-            $response = _behat_editor_save_html_to_file($_REQUEST, $module, $filename, 'file');
+            $file = new Drupal\BehatEditor\File($_REQUEST, $module, $filename, 'file');
+            $response = $file->save_html_to_file();
+            //$response = _behat_editor_save_html_to_file($_REQUEST, $module, $filename, 'file');
+
             //Make sure the file was made
             if($response['file'] != FALSE){
                 $file_object = _behat_get_file_info($module, $filename);
@@ -60,7 +63,7 @@ function behat_editor_run($module, $filename) {
                 }
             //Issue Creating File
             } else {
-                drupal_json_output(array('file' => array('message' => $response), 'error' => 1));
+                drupal_json_output(array('message' => $response['message'], 'file' => array('message' => $response), 'error' => 1));
                 exit();
             }
         } else {
