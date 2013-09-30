@@ -1,5 +1,5 @@
  
- Feature: View Page
+ Feature: Users views a test
  
    Scenario: User clicks link to see view
      Given I am on "/admin/behat/index"

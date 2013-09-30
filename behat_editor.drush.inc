@@ -62,6 +62,7 @@ function drush_behat_editor_behat_run() {
     return $results;
 }
 
+//@todo add profile switch as well
 function drush_behat_editor_behat_run_folder() {
     //@todo validate args
     $module = func_get_arg(0);
