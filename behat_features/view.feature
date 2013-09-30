@@ -1,6 +1,7 @@
- 
+ @test1 @test3 @test5
  Feature: Users views a test
- 
+
+   @test2
    Scenario: User clicks link to see view
      Given I am on "/admin/behat/index"
      And I follow "aa_mock.feature"

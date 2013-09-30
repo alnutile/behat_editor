@@ -13,6 +13,7 @@
         )};
 
     Drupal.behat_editor_saucelabs.getStatus = function(data, tries, max_tries, starting_job_id) {
+            console.log(data);
             if(starting_job_id == 0) {
                 starting_job_id = data.latest_id;
                 Drupal.behat_editor.renderMessageCustom('Connecting to Saucelabs and waiting for job feedback try '+ tries + ' of ' + max_tries, 'info');
@@ -43,16 +44,24 @@
     Drupal.behaviors.behat_editor_saucelabs_run = {
 
         attach: function (context) {
-
             $('a.sauce').click(function(e){
                 e.preventDefault();
                 if(!$(this).hasClass('disabled')) {
                     var method = 'view-mode';
                     var url = $(this).attr('href');
-                    Drupal.behat_editor_saucelabs.saucelabs_check();
-                    $.post(url, function(data){
-                        Drupal.behat_editor.renderMessage(data);
-                    }, "json");
+                    var latestId = '';
+                    //Add this first to get previous job id
+                    $.getJSON('/admin/behat/saucelabs/jobs', function(data){
+                        var latestId = 0;
+                        latestId = data.latest_id;
+                        //So I do not miss the lastId before starting a job
+                        //since it was created before my first setup of the
+                        //staring id
+                        Drupal.behat_editor_saucelabs.saucelabs_check(1, latestId);
+                        $.post(url, function(data){
+                            Drupal.behat_editor.renderMessage(data);
+                        }, "json");
+                    });
                 }
             });
         }
