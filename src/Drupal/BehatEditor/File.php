@@ -14,7 +14,7 @@ class File {
         $this->module = $module;
         $this->filename = $filename;
         $this->parse_type = $parse_type;
-        $this->scenario = $request['scenario'];
+        $this->scenario = (isset($request['scenario'])) ? $request['scenario'] : array();
     }
 
     public function save_html_to_file() {
@@ -22,6 +22,12 @@ class File {
         $this->feature =  self::_create_file();
         $output = self::_figure_out_where_to_save_file();
         return $output;
+    }
+
+    public function output_file_text_to_html_array($file_text) {
+        $this->scenario = self::_turn_file_to_array($file_text);
+        $this->scenario_array = self::_parse_questions();
+        return $this->scenario_array;
     }
 
     public function get_file_info() {
@@ -124,6 +130,16 @@ class File {
             $count++;
         }
         return $scenario_array;
+    }
+
+    private function _turn_file_to_array($file) {
+        $array = explode("\n", $file);
+        foreach($array as $key => $value) {
+            if(strlen($value) <= 1) {
+                unset($array[$key]);
+            }
+        }
+        return $array;
     }
 
     private function _string_type($string, $scenario, $count, $direction){
@@ -239,7 +255,7 @@ class File {
                         'class' => array('ignore'),
                     );
                     $scenario_line[3] = array(
-                        'data' => _behat_editor_question_wrapper($string),
+                        'data' => self::_question_wrapper($string),
                         'class' => array('name'),
                         'data-scenario-tag-box' => "scenario-values-$uid"
                     );
