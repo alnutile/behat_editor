@@ -154,6 +154,20 @@ function behat_editor_library() {
             )
         )
     );
+    $libraries['data_table'] = array(
+        'title' => 'DataTable',
+        'website' => "http://datatables.net/",
+        'version' => '1.9',
+        'js' => array(
+            $path . '/libraries/datatables/media/js/jquery.dataTables.js' => array(),
+        ),
+        'css' => array(
+            $path . '/libraries/datatables/media/css/jquery.dataTables.css' => array(
+                'type' => 'file',
+                'media' => 'screen'
+            )
+        )
+    );
     return $libraries;
 }
 
