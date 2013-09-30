@@ -44,16 +44,41 @@ class File {
             $full_path_with_file = $path . '/' . $this->filename;
         }
 
+        $file_text = self::read_file($full_path_with_file);
         $file_data = array(
             'module' => $this->module,
             'filename' => $this->filename,
             'absolute_path' => $path,
             'absolute_path_with_file' => $full_path_with_file,
-            'scenario' => _behat_editor_read_file($full_path_with_file),
+            'scenario' => $file_text,
             'filename_no_ext' => substr($this->filename, 0, -8),
             'relative_path' => $relative_path,
+            'tags_array' => self::_tags_array($file_text)
         );
         return $file_data;
+    }
+
+    private function _tags_array($file) {
+        $file_to_array = self::_turn_file_to_array($file);
+        $tags = array();
+        foreach($file_to_array as $key => $value) {
+            if(strpos($value, '@') && !strpos($value, '"')) {
+                foreach(explode(' ', $value) as $tag) {
+                    if(!empty($tag)) {
+                        $tags[] = $tag;
+                    }
+                }
+            }
+        }
+        return $tags;
+    }
+
+    public function read_file($full_path_with_file) {
+        if(filesize($full_path_with_file) > 0) {
+            $file_open = fopen($full_path_with_file, "r");
+            $file_read = fread($file_open, filesize($full_path_with_file));
+            return $file_read;
+        }
     }
 
     private function _figure_out_where_to_save_file(){
@@ -266,6 +291,16 @@ class File {
         }
     }
 
+    private function _parse_tags($scenario_array) {
+        $tags = array();
+        foreach($scenario_array as $key => $value) {
+            if(strpos('@', $value)) {
+                $string = str_replace(',', '', $value);
+                $tags[] = explode(' ', $string);
+            }
+        }
+        return $tags;
+    }
     private function _string_tags($scenario, $count, $spaces = 0, $direction) {
 
         if(array_key_exists($count, $scenario)) {

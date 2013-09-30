@@ -20,6 +20,8 @@ function behat_editor_index() {
     $modules = array_merge($modules, _behat_editor_test_folder_array());
     $files_array = _behat_editor_build_array_of_available_files($modules);
 
+    dpm($files_array);
+
     $behat_table =_behat_editor_produce_table_array($files_array);
     $build['behat_table'] = array(
         '#markup' => $behat_table
@@ -37,5 +39,4 @@ function _behat_editor_test_folder_array() {
             'nice_name' => 'Behat Tmp Folder'
         )
     );
-
 }
