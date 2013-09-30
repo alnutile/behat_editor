@@ -1,4 +1,6 @@
 <?php
+use Drupal\BehatEditor;
+
 /**
  * @files returned from _behat_editor_build_array_of_available_files
  *
@@ -51,13 +53,15 @@ function theme_behat_editor_file_to_html_edit($vars) {
 }
 
 function template_preprocess_behat_editor_file_to_html_edit(&$variables) {
-    module_load_include('inc', 'behat_editor', 'helpers/behat_editor_file_parsing');
+    composer_manager_register_autoloader();
     $file_text = $variables['file_text'];
-    $file_to_array = _behat_editor_turn_file_to_array($file_text);
-    $array_to_html_array = _behat_editor_parse_questions($file_to_array, $direction = 'html_edit');
-    $make_it_html = theme('behat_editor_item_list', $vars = array('items' => $array_to_html_array, 'attributes' => array('class' => 'scenario sortable ui-sortable')));
+    //@todo should not have to pass all this to instantiate File class
+    $request['scenario'] = $file_text;
+    $file = new Drupal\BehatEditor\File($request, FALSE, FALSE, 'html_edit');
+    $make_it_html = theme('behat_editor_item_list', $vars = array('items' => $file->output_file_text_to_html_array($file_text), 'attributes' => array('class' => 'scenario sortable ui-sortable')));
     $variables['file_text'] = $make_it_html;
 }
+
 
 /**
  * from theme_item_list
@@ -132,11 +136,11 @@ function theme_behat_editor_file_to_html_view($vars) {
 
 
 function template_preprocess_behat_editor_file_to_html_view(&$variables) {
-    module_load_include('inc', 'behat_editor', 'helpers/behat_editor_file_parsing');
+    composer_manager_register_autoloader();
     $file_text = $variables['file_text'];
-    $file_to_array = _behat_editor_turn_file_to_array($file_text);
-    $array_to_html_array = _behat_editor_parse_questions($file_to_array, $direction = 'html_view');
-    $make_it_html = theme('item_list', $vars = array('items' => $array_to_html_array));
+    $request['scenario'] = $file_text;
+    $file = new Drupal\BehatEditor\File($request, FALSE, FALSE, 'html_view');
+    $make_it_html = theme('item_list', $vars = array('items' => $file->output_file_text_to_html_array($file_text)));
     $variables['file_text'] = $make_it_html;
 }
 

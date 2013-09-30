@@ -1,4 +1,5 @@
 <?php
+use Drupal\BehatEditor;
 
 /**
  * @param $module to get the path
@@ -6,15 +7,16 @@
  * @return content
  */
 
-use Drupal\BehatEditor;
-
 function behat_editor_view_form($form, $form_state, $module, $filename) {
+    composer_manager_register_autoloader();
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
-    $file_info = _behat_get_file_info($module, $filename);
+
+    $file = new Drupal\BehatEditor\File($_REQUEST, $module, $filename, FALSE);
+    $file_info = $file->get_file_info();
+
     $path = drupal_get_path('module', 'behat_editor');
     $form['#theme'] = array('theme_behat_editor_view');
-
 
     $form['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
     $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_view.js';
