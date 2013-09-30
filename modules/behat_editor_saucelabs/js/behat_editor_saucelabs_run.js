@@ -13,7 +13,6 @@
         )};
 
     Drupal.behat_editor_saucelabs.getStatus = function(data, tries, max_tries, starting_job_id) {
-            console.log(data);
             if(starting_job_id == 0) {
                 starting_job_id = data.latest_id;
                 Drupal.behat_editor.renderMessageCustom('Connecting to Saucelabs and waiting for job feedback try '+ tries + ' of ' + max_tries, 'info');

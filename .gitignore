@@ -1,4 +1,5 @@
 css/.sass-cache
+modules/behat_editor_saucelabs/behat/behat.yml
 behat/behat.yml
 behat/features/bootstrap/FeatureContext.php
 behat_features/1*.feature
