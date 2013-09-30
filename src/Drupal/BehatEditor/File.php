@@ -24,6 +24,32 @@ class File {
         return $output;
     }
 
+    public function get_file_info() {
+        if ($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
+            $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
+            $files_folder =  file_build_uri("/{$sub_folder}/");
+            $relative_path = url($path = file_create_url("$files_folder/$this->filename"));
+            $path = drupal_realpath($files_folder);
+            $full_path_with_file = $path . '/' . $this->filename;
+        } else {
+            $sub_folder = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
+            $relative_path = $sub_folder . '/' . $this->filename;
+            $path = DRUPAL_ROOT . '/' . $sub_folder;
+            $full_path_with_file = $path . '/' . $this->filename;
+        }
+
+        $file_data = array(
+            'module' => $this->module,
+            'filename' => $this->filename,
+            'absolute_path' => $path,
+            'absolute_path_with_file' => $full_path_with_file,
+            'scenario' => _behat_editor_read_file($full_path_with_file),
+            'filename_no_ext' => substr($this->filename, 0, -8),
+            'relative_path' => $relative_path,
+        );
+        return $file_data;
+    }
+
     private function _figure_out_where_to_save_file(){
         if (user_access('behat add test') && $this->module != variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER)) {
             /* Derived from features.admin.inc module */
