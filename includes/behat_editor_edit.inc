@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\BehatEditor;
 /**
  * @param $module to get the path
  * @param $filename the filename to get that as well
@@ -14,7 +15,9 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     drupal_add_library('system', 'ui.sortable');
     drupal_add_library('system', 'ui.autocomplete');
     drupal_add_library('behat_editor', 'tag_it') ;
-    $file_info = _behat_get_file_info($module, $filename);
+    composer_manager_register_autoloader();
+    $file = new Drupal\BehatEditor\File(array(), $module, $filename, FALSE);
+    $file_info = $file->get_file_info();
     //Product the HTML from the File in a format it will have all the markup needed to
     //  build / edit a test
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
