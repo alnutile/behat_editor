@@ -12,7 +12,7 @@ function behat_editor_drush_command() {
     $items = array();
 
     $items['behat-run'] = array(
-        'description' => 'Pass a file to run as a test',
+        'description' => 'Pass a module name and file to run as a test pass 1 for javascript TRUE',
         'allow-additional-options' => TRUE,
         'aliases' => array('br'),
         'examples' => array(
@@ -22,11 +22,12 @@ function behat_editor_drush_command() {
         'arguments' => array(
             'module' => 'The module name that the test file is in',
             'filename' => 'The file name to test. Should be in present folder',
+            'javascript' => '1 if you want to run javascript based tests 0 if not. Javascript means you are running this locally.',
         ),
     );
 
     $items['behat-run-folder'] = array(
-        'description' => 'Pass a folder to run all tests and decide to turn on Javascript',
+        'description' => 'Pass a module name to run all tests in it\'s behat_features folder and decide to turn on Javascript',
         'allow-additional-options' => TRUE,
         'aliases' => array('brf'),
         'examples' => array(
@@ -46,6 +47,11 @@ function behat_editor_drush_command() {
 function drush_behat_editor_behat_run() {
     $module = func_get_arg(0);
     $filename = func_get_arg(1);
+    if(func_num_args() > 2) {
+        $javascript = func_get_arg(2);
+    } else {
+        $javascript = 0;
+    }
     //@todo validate args
     composer_manager_register_autoloader();
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
@@ -54,10 +60,12 @@ function drush_behat_editor_behat_run() {
     $path = $path . '/src/Drupal/BehatEditor/BehatEditorRun.php';
     $path = drupal_realpath($path);
     require_once("$path");
-    $file_object = _behat_get_file_info($module, $filename);
+    $file = new Drupal\BehatEditor\File(array(), $module, $filename, FALSE);
+    $file_object = $file->get_file_info();
+
     $run = new Drupal\BehatEditor\BehatEditorRun($file_object);
     print "Running Tests...\n";
-    $output = $run->execDrush();
+    $output = $run->execDrush($javascript);
     $results = implode("\n\r", $output);
     return $results;
 }

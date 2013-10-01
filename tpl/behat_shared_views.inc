@@ -61,7 +61,7 @@ function template_preprocess_behat_editor_file_to_html_edit(&$variables) {
     //@todo should not have to pass all this to instantiate File class
     $request['scenario'] = $file_text;
     $file = new Drupal\BehatEditor\File($request, FALSE, FALSE, 'html_edit');
-    $make_it_html = theme('behat_editor_item_list', $vars = array('items' => $file->output_file_text_to_html_array($file_text), 'attributes' => array('class' => 'scenario sortable ui-sortable')));
+    $make_it_html = theme('behat_editor_item_list', $vars = array('items' => $file->output_file_text_to_html_array($file_text), 'attributes' => array('class' => 'scenario sortable ui-sortable', 'data-mode' => 'create-mode')));
     $variables['file_text'] = $make_it_html;
 }
 
@@ -143,7 +143,7 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
     $file_text = $variables['file_text'];
     $request['scenario'] = $file_text;
     $file = new Drupal\BehatEditor\File($request, FALSE, FALSE, 'html_view');
-    $make_it_html = theme('item_list', $vars = array('items' => $file->output_file_text_to_html_array($file_text)));
+    $make_it_html = theme('item_list', $vars = array('attributes' => array('class' => array('scenario'), 'data-mode' => 'view-mode'), 'items' => $file->output_file_text_to_html_array($file_text)));
     $variables['file_text'] = $make_it_html;
 }
 

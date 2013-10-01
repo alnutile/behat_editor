@@ -1,5 +1,5 @@
- @test1 @test3 @test5
- Feature: Users views a test
+@javascript 
+Feature: Users views a test
 
    @test2
    Scenario: User clicks link to see view
