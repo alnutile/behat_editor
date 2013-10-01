@@ -75,8 +75,13 @@ class BehatEditorRun {
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
     }
 
-    public function execDrush() {
-        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths --tags '~@javascript' $this->absolute_file_path", $output, $return_var);
+    public function execDrush($javascript = FALSE) {
+        if($javascript == TRUE) {
+            $tags = '';
+        } else {
+            $tags = "--tags '~@javascript'";
+        }
+        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tags $this->absolute_file_path", $output, $return_var);
         return $output;
     }
 

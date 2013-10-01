@@ -1,4 +1,4 @@
-<ul class="scenario sortable">
+<ul class="scenario sortable" data-mode="create-mode">
     <li class="ignore"><strong>Feature Tags:</strong></li>
     <li id="feature-tags" class='tag'>
         <?php print render($features_tags_value); ?>

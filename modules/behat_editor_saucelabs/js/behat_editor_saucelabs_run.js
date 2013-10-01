@@ -46,7 +46,10 @@
             $('a.sauce').click(function(e){
                 e.preventDefault();
                 if(!$(this).hasClass('disabled')) {
-                    var method = 'create-mode';
+                    var method = 'view-mode';
+                    if ($('ul.scenario').attr('data-mode')) {
+                        method = $('ul.scenario').data('mode');
+                    }
                     var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
                     var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
                     var parameters = {
