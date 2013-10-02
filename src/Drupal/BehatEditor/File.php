@@ -53,16 +53,16 @@ class File {
             'scenario' => $file_text,
             'filename_no_ext' => substr($this->filename, 0, -8),
             'relative_path' => $relative_path,
-            'tags_array' => self::_tags_array($file_text)
+            'tags_array' => self::_tags_array($file_text, $this->module)
         );
         return $file_data;
     }
 
-    private function _tags_array($file) {
+    private function _tags_array($file, $module_name) {
         $file_to_array = self::_turn_file_to_array($file);
         $tags = array();
         foreach($file_to_array as $key => $value) {
-            if(strpos($value, '@') && !strpos($value, '"')) {
+            if(strpos($value, '@') !== FALSE && !strpos($value, '"')) {
                 foreach(explode(' ', $value) as $tag) {
                     if(!empty($tag)) {
                         $tags[] = $tag;
