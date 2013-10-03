@@ -19,6 +19,7 @@ function behat_editor_index() {
         '#attributes' => array('class' => array('btn', 'btn-success', 'add')),
     );
 
+    //@todo convert to Files class
     $modules = _behat_editor_check_for_modules();
     $modules = array_merge($modules, _behat_editor_test_folder_array());
     $files_array = _behat_editor_build_array_of_available_files($modules);

@@ -55,6 +55,17 @@ You should be able to run it and see the results on the right.
 If there are any errors check out the drupal reports area under this modules name.
 
 
+### Drush
+
+drush br module_name file.feature 1
+This will run the test in javascript good for local tests
+
+drush br module_name file.feature 1
+This will run it and skip @javascript good for remote tests
+
+drush behat-run-folder module_name
+This will run all the files in that modules behat_features folder again 1 / 0 to turn Javascript on or off
+
 ### Hooking
 
 This module will look for all modules that are enabled and see if they have a

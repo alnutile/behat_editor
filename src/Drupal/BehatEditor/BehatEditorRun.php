@@ -66,10 +66,15 @@ class BehatEditorRun {
         return $output_file;
     }
 
-    public function exec() {
+    public function exec($javascript = FALSE) {
+        if($javascript == TRUE) {
+            $tags = '';
+        } else {
+            $tags = "--tags '~@javascript'";
+        }
         //@todo come back and just use exec output and response return features.
         //  Could save from writing to the drive
-        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths --tags '~@javascript' $this->absolute_file_path", $output);
+        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths $tags $this->absolute_file_path", $output);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
