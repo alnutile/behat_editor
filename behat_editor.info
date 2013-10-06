@@ -1,5 +1,12 @@
 name = Behat Editor
 description = Edit and View Behat files as well as run tests
 core = 7.x
-dependencies[] = composer_manager
+
 files[] = behat_editor.test
+dependencies[] = composer_manager
+dependencies[] = ctools
+dependencies[] = services
+features[ctools][] = context:context:3
+features[ctools][] = services:services:3
+features[features_api][] = api:2
+features[services_endpoint][] = workflow

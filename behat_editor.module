@@ -4,6 +4,16 @@ define('BEHAT_EDITOR_FOLDER', 'behat_features');
 define('BEHAT_EDITOR_DEFAULT_FOLDER', 'behat_tests');
 define('BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER', 'behat_tests');
 
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function behat_editor_ctools_plugin_api() {
+    list($module, $api) = func_get_args();
+    if ($module == "services" && $api == "services") {
+        return array("version" => "3");
+    }
+}
+
 function behat_editor_permission() {
     $items['behat view test'] = array(
        'title' => t('View a test file'),
@@ -248,7 +258,6 @@ function _show_file_link($file_name, $module_name) {
  * @param $module_name
  * @return string
  */
-
 function _show_link($file_name, $module_name, $link_text = 'view') {
     if(strpos($file_name, 'private_') === FALSE ) {
         $results = l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
@@ -256,4 +265,48 @@ function _show_link($file_name, $module_name, $link_text = 'view') {
         $results = 'not allowed';
     }
     return $results;
+}
+
+
+/**
+ * Implementation of hook_services_resources().
+ */
+function behat_editor_services_resources() {
+    $path = drupal_get_path('module', 'behat_editor');
+    return array('behat_editor' =>
+            array('targeted_actions' => array(
+                'run' => array(
+                    'help' => 'Retrieves a Behat Test File',
+                    'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_run'),
+                    'callback' => 'behat_editor_run',
+                    'access callback' => 'user_access',
+                    'access arguments' => array('behat run test'),
+                    'access arguments append' => FALSE,
+                    'args' => array(
+                        array(
+                            'name' => 'method',
+                            'type' => 'string',
+                            'description' => 'View or Create new file before running the tests',
+                            'source' => array('data'),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'module',
+                            'type' => 'string',
+                            'description' => 'The module which this feature is stored',
+                            'source' => array('path' => 1),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'module',
+                            'type' => 'string',
+                            'description' => 'The name of the file',
+                            'source' => array('path' => 2),
+                            'optional' => FALSE,
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    );
 }
