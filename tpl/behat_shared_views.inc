@@ -19,7 +19,7 @@ function _behat_editor_produce_table_array($files_array) {
                 array
                 (
                     _show_file_link($file_name, $module_name),
-                    _show_module_name($module_name),
+                    _show_module_name($file_name, $module_name),
                     $tags,
                     _show_link($file_name, $module_name, $link_text = 'view'),
                     _show_link($file_name, $module_name, $link_text = 'edit'),
