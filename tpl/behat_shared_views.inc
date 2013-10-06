@@ -18,12 +18,12 @@ function _behat_editor_produce_table_array($files_array) {
                 'data' =>
                 array
                 (
-                    l($file_name, 'admin/behat/view/' . $module_name . '/' . $file_name),
-                    $module_name,
+                    _show_file_link($file_name, $module_name),
+                    _show_module_name($module_name),
                     $tags,
-                    l('view', 'admin/behat/view/' . $module_name . '/' . $file_name),
-                    l('edit', 'admin/behat/edit/' . $module_name . '/' . $file_name),
-                    l('delete', 'admin/behat/delete/' . $module_name . '/' . $file_name)
+                    _show_link($file_name, $module_name, $link_text = 'view'),
+                    _show_link($file_name, $module_name, $link_text = 'edit'),
+                    _show_link($file_name, $module_name, $link_text = 'delete'),
                 )
             );
         }
