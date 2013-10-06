@@ -1,6 +1,5 @@
 {
     "require": {
-        "pfizer/behat": "*",
         "behat/behat": "2.4.*@stable",
         "behat/mink": "dev-FindWindowNames as 1.5.x-dev",
         "behat/mink-goutte-driver": "*",
@@ -15,9 +14,6 @@
     },
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/alnutile/behat"
-        },        {
             "type": "git",
             "url": "https://github.com/pthurmond/Mink.git"
         },
