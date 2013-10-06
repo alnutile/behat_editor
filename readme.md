@@ -23,10 +23,12 @@ There will be a submodule that will show how you can connect this to SauceLabs.
 
 After you download this repo go setup the module per drupal install steps
 you will need to have composer_manager installed so it can download behat into it's vendor directory.
-Behat [http://docs.behat.org/] explains how to run composer to install the module.
-It relies on the Mink extension.
 
-Also, if using selenium make sure you run it in the background.
+**Since this module replies on a private github repo there is an issue using it util we open that up.**
+
+Also, if using selenium make sure you run it in the background. You can see more notes here 
+
+[http://mink.behat.org/#seleniumdriver]
 
 Download the jar file to your computer/server
 
@@ -46,9 +48,16 @@ So you should be able to run
 vendor/behat/behat/bin/behat
 ```
 
-after you are done.
+from your drupal sites directory.
 
-The module comes with an Example button so when you visit node/add/gherkin-generator you
+## What now
+
+ * admin/behat/index to see all files
+ * admin/behat/add to add a file
+ * Click on a file to View, Edit
+ * Save a file to your modules directory
+
+The module comes with an Example button so when you visit admin/behat/add you
 can click the "Just click here to load example" link and load that test.
 You should be able to run it and see the results on the right.
 
@@ -63,7 +72,7 @@ This will run the test in javascript good for local tests
 drush br module_name file.feature 1
 This will run it and skip @javascript good for remote tests
 
-drush behat-run-folder module_name
+drush brf module_name
 This will run all the files in that modules behat_features folder again 1 / 0 to turn Javascript on or off
 
 ### Hooking
