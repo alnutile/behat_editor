@@ -1,25 +1,28 @@
 {
+    "name": "alnutile/behat-poc",
+    "description": "Alter pfizer/behat-poc to include a patched Mink driver",
+    "keywords": ["behat"],
+    "homepage": "https://github.com/alnutile/behat-poc",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "All blame to ",
+            "email": "alfrednutile@gmail.com",
+            "homepage": "http://alfrednutile.inco"
+        }
+    ],
     "require": {
-        "sauce/sausage": ">=0.9.1",
-        "pfizer/behat": "*",
-        "behat/behat": "2.4.*@stable",
-        "behat/mink": "1.4@stable",
-        "behat/mink-browserkit-driver": "1.0.*",
-        "behat/mink-goutte-driver": "*",
-        "behat/mink-selenium-driver": "*",
-        "behat/mink-selenium2-driver": "*",
-        "behat/mink-extension": "*",
-        "behat/mink-sahi-driver": "*"
+        "alnutile/behat": "master"
 
     },
-    "minimum-stability": "dev",
     "config": {
         "bin-dir": "bin/"
     },
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/pfizer/behat"
+            "url": "https://github.com/alnutile/behat-poc"
         }
     ],
     "autoload": {
