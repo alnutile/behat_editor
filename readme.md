@@ -25,7 +25,8 @@ This module lives at alnutile/behat_editor_saucelabs
 After you download this repo go setup the module per drupal install steps
 you will need to have composer_manager installed so it can download behat into it's vendor directory.
 
-**Since this module replies on a private github repo there is an issue using it util we open that up.**
+copy behat/behat.yml.sample to behat/behat.yml
+Update your behat/behat.yml file as needed. 
 
 Also, if using selenium make sure you run it in the background. You can see more notes here 
 
