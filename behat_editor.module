@@ -242,8 +242,8 @@ function _show_file_link($file_name, $module_name) {
 /**
  * Show module name if private or not
  */
-function _show_module_name($module_name) {
-    if(strpos($module_name, 'private_') === FALSE ) {
+function _show_module_name($file_name, $module_name) {
+    if(strpos($file_name, 'private_') === FALSE ) {
         $results = $module_name;
     } else {
         $results = 'private';
