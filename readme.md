@@ -17,7 +17,8 @@ Depending on the permissions of the user they can
  5. Edit a file and Run it to verify it is working
  6. Edit a file and save it back to the system or /tmp folder for download.
 
-There will be a submodule that will show how you can connect this to SauceLabs.
+### Saucelabs 
+This module lives at alnutile/behat_editor_saucelabs
 
 ### Setup
 
