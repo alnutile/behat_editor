@@ -239,6 +239,17 @@ function _show_file_link($file_name, $module_name) {
     return $results;
 }
 
+/**
+ * Show module name if private or not
+ */
+function _show_module_name($module_name) {
+    if(strpos($module_name, 'private_') === FALSE ) {
+        $results = $module_name;
+    } else {
+        $results = 'private';
+    }
+    return $results;
+}
 
 /**
  * Make link to actions but
