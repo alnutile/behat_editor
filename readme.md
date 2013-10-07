@@ -17,13 +17,14 @@ Depending on the permissions of the user they can
  5. Edit a file and Run it to verify it is working
  6. Edit a file and save it back to the system or /tmp folder for download.
 
-### Saucelabs 
+### Saucelabs Integration
 This module lives at alnutile/behat_editor_saucelabs
 
 ### Setup
 
 After you download this repo go setup the module per drupal install steps
 you will need to have composer_manager installed so it can download behat into it's vendor directory.
+If you enable via drush composer_manager will kick in and download the needed behat files.
 
 **Since this module replies on a private github repo there is an issue using it util we open that up.**
 
