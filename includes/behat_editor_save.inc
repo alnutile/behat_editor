@@ -2,7 +2,17 @@
 use Drupal\BehatEditor;
 
 /**
- * @todo this is running and saving it should only run
+ * @file functions needed to save the file
+ * You can see the related js file as well in the js folder
+ */
+
+/**
+ * Save the file to the module folder or tmp folder
+ *
+ * @param module
+ *   this should be the machine_name
+ * @param filename
+ *   this should be the filename.feature extension
  */
 function behat_editor_save($module, $filename) {
     composer_manager_register_autoloader();

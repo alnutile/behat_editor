@@ -2,9 +2,19 @@
 use Drupal\BehatEditor;
 
 /**
- * @param $module to get the path
- * @param $filename the filename to get that as well
- * @return content
+ * @file File for viewing the Tests
+ * You can see the related js file as well in the js folder
+ */
+
+/**
+ * View form to see the file in a new editable state
+ *
+ * @param module
+ *   this should be the machine_name
+ * @param filename
+ *   this should be the filename.feature extension
+ * @return array
+ *
  */
 
 function behat_editor_view_form($form, $form_state, $module, $filename) {

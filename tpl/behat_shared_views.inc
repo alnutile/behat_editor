@@ -2,11 +2,11 @@
 use Drupal\BehatEditor;
 
 /**
- * @files returned from _behat_editor_build_array_of_available_files
+ * Create the table on the Admin page
  *
+ * @files returned from _behat_editor_build_array_of_available_files
  * return table
  */
-
 function _behat_editor_produce_table_array($files_array) {
     $rows = array();
     foreach($files_array as $key => $value) {
@@ -47,7 +47,14 @@ function _behat_editor_produce_table_array($files_array) {
     return $behat_table;
 }
 
-
+/**
+ * Build out the html edit table
+ * This is the output that allows the
+ * user to edit the test
+ *
+ * @param $vars
+ * @return mixed
+ */
 function theme_behat_editor_file_to_html_edit($vars) {
     $build['file_text'] = array(
         '#markup' => $vars['file_text']
@@ -55,6 +62,13 @@ function theme_behat_editor_file_to_html_edit($vars) {
     return $build;
 }
 
+/**
+ * Hook the theme to alter the output
+ * Keeping more complex code in the preprocess
+ * function.
+ *
+ * @param $variables
+ */
 function template_preprocess_behat_editor_file_to_html_edit(&$variables) {
     composer_manager_register_autoloader();
     $file_text = $variables['file_text'];
@@ -68,6 +82,8 @@ function template_preprocess_behat_editor_file_to_html_edit(&$variables) {
 
 /**
  * from theme_item_list
+ * need a bit more control over the format.
+ *
  * @param $variables
  * @return string
  */
@@ -117,6 +133,14 @@ function theme_behat_editor_item_list($variables) {
     return $output;
 }
 
+/**
+ * Render out the row in the item list
+ *
+ * @param $value
+ * @return string
+ *
+ * @todo use drupal_render instead
+ */
 function _behat_editor_check_for_render_field($value) {
     $field_name = key($value);
 
@@ -129,7 +153,12 @@ function _behat_editor_check_for_render_field($value) {
 }
 
 
-//@todo move the preprocess work into here
+/**
+ * Output file to HTML View only
+ *
+ * @param $vars
+ * @return mixed
+ */
 function theme_behat_editor_file_to_html_view($vars) {
     $build['file_text'] = array(
         '#markup' => $vars['file_text']
@@ -137,7 +166,11 @@ function theme_behat_editor_file_to_html_view($vars) {
     return $build;
 }
 
-
+/**
+ * Preprocess the html to view only
+ *
+ * @param $variables
+ */
 function template_preprocess_behat_editor_file_to_html_view(&$variables) {
     composer_manager_register_autoloader();
     $file_text = $variables['file_text'];
@@ -147,6 +180,11 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
     $variables['file_text'] = $make_it_html;
 }
 
+/**
+ * Shared questions
+ *
+ * @return mixed
+ */
 function _behat_editor_questions_form() {
     $form['questions'] = array(
         '#type' => 'container',
@@ -301,6 +339,11 @@ function _behat_editor_questions_form() {
     return $form;
 }
 
+/**
+ * Output existing tests
+ *
+ * @return mixed
+ */
 function _behat_editor_existing_test() {
 
     $form['existing_test'] = array(
@@ -316,8 +359,8 @@ function _behat_editor_existing_test() {
 }
 
 /**
- * the goal here to out these fields in the above form should have
- * been doable with hide render.
+ * the goal here to output these fields in the questions form.
+ * But this should have been doable with hide / render.
  * @todo come back and see what my render mistake is
  */
 function template_preprocess_behat_editor_questions_area_edit(&$variables) {
@@ -334,6 +377,11 @@ function template_preprocess_behat_editor_questions_area_edit(&$variables) {
     );
 }
 
+/**
+ * Render the file to html
+ *
+ * @param $array
+ */
 function theme_behat_editor_create_html($array) {
 
 }
