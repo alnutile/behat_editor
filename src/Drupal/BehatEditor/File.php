@@ -265,17 +265,30 @@ class File {
         }
     }
 
+    /**
+     * Different functions used to parse the file
+     * Later we can add scenario_outline, background etc.
+     *
+     * @return array
+     */
     private function _string_types() {
         $options = array('behat_editor_string_feature', 'behat_editor_string_scenario', 'behat_editor_string_steps');
-        drupal_alter('behat_editor_string_types', $options);
         return $options;
     }
 
+    /**
+     * Search for the Feature text
+     *
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return array
+     */
     private function behat_editor_string_feature($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
         $options = array('Feature:');
-        drupal_alter('behat_editor_string_feature', $options);
         if(in_array($first_word, $options)) {
             switch($direction) {
                 case 'file':
@@ -328,6 +341,15 @@ class File {
         }
     }
 
+    /**
+     * Search for the Scenario Text
+     *
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return array
+     */
     private function behat_editor_string_scenario($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
@@ -380,6 +402,12 @@ class File {
         }
     }
 
+    /**
+     * Search for Tags in Scenario
+     *
+     * @param $scenario_array
+     * @return array
+     */
     private function _parse_tags($scenario_array) {
         $tags = array();
         foreach($scenario_array as $key => $value) {
@@ -390,12 +418,22 @@ class File {
         }
         return $tags;
     }
+
+    /**
+     * Search for tags when
+     * searching for Features and Scenario lines
+     *
+     * @param $scenario
+     * @param $count
+     * @param int $spaces
+     * @param $direction
+     * @return array|mixed
+     */
     private function _string_tags($scenario, $count, $spaces = 0, $direction) {
 
         if(array_key_exists($count, $scenario)) {
             $string = $scenario[$count];
             $options = array('@');
-            drupal_alter('behat_editor_string_tags', $options);
             foreach($options as $key => $value) {
                 if(strpos($string, $value) !== false) {
                     switch($direction) {
@@ -421,6 +459,15 @@ class File {
         }
     }
 
+    /**
+     * Parse Steps
+     *
+     * @param $string
+     * @param $parent
+     * @param $count
+     * @param $direction
+     * @return array
+     */
     private function behat_editor_string_steps($string, $parent, $count, $direction) {
         $first_word = self::_pop_first_word($string);
         $options = array('Given', 'When', 'Then', 'And', 'But');
@@ -448,15 +495,32 @@ class File {
         }
     }
 
+    /**
+     * Get the first word from a line
+     *
+     * @param $string
+     * @return mixed
+     */
     private function _pop_first_word($string){
         $first_word = explode(' ', $string);
         return array_shift($first_word);
     }
 
+    /**
+     * Wrap the editable questions in the close string
+     *
+     * @param $string
+     * @return string
+     */
     private function _question_wrapper($string) {
         return '<i class="icon-move pull-left"></i>' . $string . '<i class="remove icon-remove-circle"></i>';
     }
 
+    /**
+     * Format the file creation from the array
+     *
+     * @return string
+     */
     private function _create_file(){
         $file = '';
         foreach($this->scenario_array as $key) {
@@ -468,6 +532,12 @@ class File {
         return $file;
     }
 
+    /**
+     * New line parse
+     *
+     * @param $new_line
+     * @return string
+     */
     private function _new_line($new_line) {
         if($new_line == 1) {
             return "\r\n";
@@ -476,6 +546,13 @@ class File {
         }
     }
 
+    /**
+     * Spaces needed to output the HTML or file to look
+     * right.
+     *
+     * @param $spaces
+     * @return string
+     */
     private function _spaces($spaces) {
         $spaces_return = '';
         for($i = 0; $i <= $spaces; $i++) {
