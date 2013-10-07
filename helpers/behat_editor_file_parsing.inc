@@ -1,9 +1,14 @@
 <?php
 
+/**
+ * @file functions needed to parse scenaro files to and from html
+ */
+
 
 /**
- * @todo this needs to not do count but text
- *   since a test can be numerous scenarios
+ * Parse Questions and depending on the direction
+ * will output the format array/text as needed.
+ *
  * @param $scenario
  * @param $direction eg to html or to file format
  * @return string format of file
@@ -30,13 +35,11 @@ function _behat_editor_parse_questions($scenario, $direction = 'file') {
 
 
 /**
+ * Build an array of string types
+ * to process. Features, Scenarios, And, Given etc.
+ *
  * @param $string
- *   The row in the gherkin test to review
- *   and decide what place it fits in the gherkin file.
- * @return the array as needed
- *   string
- *   spaces
- *   new_line
+ * @return array
  */
 function behat_editor_string_type($string, $scenario, $count, $direction) {
     $compare = behat_editor_string_types();
@@ -55,7 +58,6 @@ function behat_editor_string_type($string, $scenario, $count, $direction) {
 
 function behat_editor_string_types() {
     $options = array('behat_editor_string_feature', 'behat_editor_string_scenario', 'behat_editor_string_steps');
-    drupal_alter('behat_editor_string_types', $options);
     return $options;
 }
 
@@ -71,7 +73,6 @@ function behat_editor_string_feature($string, $scenario, $count, $direction) {
     $results = array();
     $first_word = _behat_editor_pop_first_word($string);
     $options = array('Feature:');
-    drupal_alter('behat_editor_string_feature', $options);
     if(in_array($first_word, $options)) {
         switch($direction) {
             case 'file':
@@ -129,7 +130,6 @@ function behat_editor_string_scenario($string, $scenario, $count, $direction) {
     $results = array();
     $first_word = _behat_editor_pop_first_word($string);
     $options = array('Scenario:');
-    drupal_alter('behat_editor_string_feature', $options);
     if(in_array($first_word, $options)) {
         switch($direction) {
             case 'file':
@@ -182,7 +182,6 @@ function behat_editor_string_tags($scenario, $count, $spaces = 0, $direction) {
     if(array_key_exists($count, $scenario)) {
         $string = $scenario[$count];
         $options = array('@');
-        drupal_alter('behat_editor_string_tags', $options);
         foreach($options as $key => $value) {
             if(strpos($string, $value) !== false) {
                 switch($direction) {
@@ -211,7 +210,6 @@ function behat_editor_string_tags($scenario, $count, $spaces = 0, $direction) {
 function behat_editor_string_steps($string, $parent, $count, $direction) {
     $first_word = _behat_editor_pop_first_word($string);
     $options = array('Given', 'When', 'Then', 'And', 'But');
-    drupal_alter('behat_editor_string_steps', $options);
     if(in_array($first_word, $options)) {
         switch($direction) {
             case 'file':
