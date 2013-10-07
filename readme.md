@@ -26,7 +26,8 @@ After you download this repo go setup the module per drupal install steps
 you will need to have composer_manager installed so it can download behat into it's vendor directory.
 If you enable via drush composer_manager will kick in and download the needed behat files.
 
-**Since this module replies on a private github repo there is an issue using it util we open that up.**
+copy behat/behat.yml.sample to behat/behat.yml
+Update your behat/behat.yml file as needed. 
 
 Also, if using selenium make sure you run it in the background. You can see more notes here 
 
