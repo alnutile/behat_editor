@@ -91,19 +91,6 @@ gherkin_features folder.
 If they do and the user has permissions then any test can be saved to that folder.
 Later this will hook into the administration area as well to run tests.
 
-There are other hooks as well.
-Since gherkin allows for different languages you can add keys to the lists of keys that are checked for
-as a new file is made or html is parsed
-
-hook_behat_editor_string_feature
-
-hook_behat_editor_string_scenario
---a feature can have multiple features
-
-hook_behat_editor_string_tags
---later we can hook and limit tags as needed.
-
-hook_behat_editor_string_steps
 
 You can add other types here hook_behat_editor_string_types
 which later can include Scenario Overviews, Backgrounds etc.

@@ -1,9 +1,19 @@
 <?php
 
+
+//Default folder to store tests for modules
 define('BEHAT_EDITOR_FOLDER', 'behat_features');
+//Name of "tmp" module to help build the array of
+//module with behat_features folders.
 define('BEHAT_EDITOR_DEFAULT_FOLDER', 'behat_tests');
+//The name of the folder that stores the non module based
+//tests eg files/behat_tests
 define('BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER', 'behat_tests');
 
+
+/**
+ * Implements hook_permission().
+ */
 function behat_editor_permission() {
     $items['behat view test'] = array(
        'title' => t('View a test file'),
@@ -32,6 +42,11 @@ function behat_editor_permission() {
    return $items;
 }
 
+/**
+ * Implements hook_menu().
+ *
+ * @todo use services for the run endpoint
+ */
 function behat_editor_menu() {
     $path = drupal_get_path('module', 'behat_editor');
     $items['admin/behat/index'] = array(
@@ -78,6 +93,9 @@ function behat_editor_menu() {
     return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function behat_editor_theme() {
     $items['behat_editor_view'] = array(
         'variables' => array(
@@ -134,6 +152,16 @@ function behat_editor_theme() {
     return $items;
 }
 
+
+/**
+ * Implements hook_library().
+ *
+ * Pulling in Tag-it for the nice
+ * effect on the Feature tags
+ *
+ * Jquery DataTable for
+ * admin area.
+ */
 function behat_editor_library() {
     $path = drupal_get_path('module', 'behat_editor');
     $libraries['tag_it'] = array(
@@ -171,6 +199,11 @@ function behat_editor_library() {
     return $libraries;
 }
 
+/**
+ * Implements hook_form_alter().
+ *
+ * Centralize some shared code
+ */
 function behat_editor_form_alter(&$form, $form_state, $form_id) {
     $forms = array('behat_editor_view_form', 'behat_editor_edit_form', 'behat_editor_add_form');
     if(in_array($form_id, $forms)) {
@@ -185,13 +218,14 @@ function behat_editor_form_alter(&$form, $form_state, $form_id) {
     }
 }
 
+/**
+ * Get a quick path to the behat/bin exec
+ * in the vendor dir
+ *
+ * @return string
+ */
 function _behat_editor_behat_bin_folder() {
     return composer_manager_vendor_dir() . '/behat/behat/';
-}
-
-
-function behat_editor_page_alter(&$page) {
-
 }
 
 /**
@@ -225,6 +259,7 @@ function behat_editor_help($path, $arg) {
 /**
  * Make link to file but
  * Protect Private file output
+ * if file marked private_
  *
  * @param $file_name
  * @param $module_name
@@ -239,8 +274,14 @@ function _show_file_link($file_name, $module_name) {
     return $results;
 }
 
+
 /**
- * Show module name if private or not
+ * Protect module name if
+ * Private
+ *
+ * @param $file_name
+ * @param $module_name
+ * @return string
  */
 function _show_module_name($file_name, $module_name) {
     if(strpos($file_name, 'private_') === FALSE ) {
@@ -259,7 +300,6 @@ function _show_module_name($file_name, $module_name) {
  * @param $module_name
  * @return string
  */
-
 function _show_link($file_name, $module_name, $link_text = 'view') {
     if(strpos($file_name, 'private_') === FALSE ) {
         $results = l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);

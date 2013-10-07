@@ -2,7 +2,23 @@
 use Drupal\BehatEditor;
 
 /**
+ * @file functions need to run a test
+ */
+
+/**
+ * Takes the request and either runs the test
+ * or saves the file and runs the tests.
+ * You can see the related js file as well in the js folder
+ *
+ *
+ * @param module
+ *   this should be the machine_name
+ * @param filename
+ *   this should be the filename.feature extension
+ *
  * @todo this is running and saving it should only run
+ * @todo turn this into a service
+ * @todo better REST logic
  */
 function behat_editor_run($module, $filename) {
     composer_manager_register_autoloader();
