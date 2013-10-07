@@ -22,7 +22,8 @@ This module lives at alnutile/behat_editor_saucelabs
 
 ### Setup
 
-After you download this repo go setup the module per drupal install steps
+After you download this repo go setup the module per drupal install steps.
+See [https://drupal.org/project/composer_manager] for installing Composer Manager first.
 you will need to have composer_manager installed so it can download behat into it's vendor directory.
 If you enable via drush composer_manager will kick in and download the needed behat files.
 
@@ -56,7 +57,7 @@ from your drupal sites directory.
 ## What now
 
  * admin/behat/index to see all files
- * admin/behat/add to add a file
+ * Click the Add file there to add one.
  * Click on a file to View, Edit
  * Save a file to your modules directory
 
@@ -66,10 +67,14 @@ You should be able to run it and see the results on the right.
 
 If there are any errors check out the drupal reports area under this modules name.
 
+Or see drush below and run some of the tests that come with it.
 
 ### Drush
 
+drush cc drush
+
 drush br module_name file.feature 1
+
 This will run the test in javascript good for local tests
 
 drush br module_name file.feature 1
@@ -105,6 +110,19 @@ which later can include Scenario Overviews, Backgrounds etc.
 
 And for parsing we can consider gherkins table and PyString features.
 
+### FeatureContext.php
+
+The FeatureContext.php can be extended if you need custom gherkin commands.
+For example you may need a longer wait and the I wait is not good enough.
+
+And I wait longer.
+
+You would get a warning that the Step does not exists and behat would show you how
+to make it.
+
+You would then copy the vender/behat/behat/features/bootstrap/FeatureContex.php file
+to behat/features/bootstrap in the behat_editor module's folder.
+Then you would add that code there.
 
 ### Todo
 
