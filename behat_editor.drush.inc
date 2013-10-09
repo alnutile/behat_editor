@@ -67,7 +67,7 @@ function drush_behat_editor_behat_run() {
     print "Running Tests...\n";
     $output = $run->execDrush($javascript);
     $results = implode("\n\r", $output);
-    return $results;
+    return drush_print($results);
 }
 
 //@todo add profile switch as well
@@ -92,6 +92,6 @@ function drush_behat_editor_behat_run_folder() {
     print "Running Tests...\n";
     $output = $run->execDrushAll($full_path, $javascript);
     $results = implode("\n\r", $output);
-    return $results;
+    return drush_print($results);
 }
 
