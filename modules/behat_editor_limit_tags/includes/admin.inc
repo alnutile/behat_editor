@@ -19,6 +19,32 @@ function behat_editor_limit_tags_form($form, &$form_state) {
     return $form;
 }
 
+function behat_editor_limit_tags_form_validate($form, &$form_state) {
+    $matches = array();
+    $spaces = array();
+    //Make sure all tags start with @
+    $tags = $form_state['values']['behat_editor_limit_tags_allowed_tags'];
+    $array = _behat_editor_tags_create_array($tags);
+    foreach($array as $key) {
+        $test = preg_match('/^@/', $key);
+        if($test == 0) {
+            $matches[] = $key;
+        }
+    }
+    if(count($matches)) {
+        form_set_error('behat_editor_limit_tags_allowed_tags', t('Please make sure your tags start with @. @tag was missing at @ sign', array("@tag" => implode(', ', $matches))));
+    }
+    //Make sure there are no other characters
+    foreach($array as $key) {
+        $test = preg_match('/[\s,\,,\"]/', $key);
+        if($test == 1) {
+            $spaces[] = $key;
+        }
+    }
+    if(count($spaces)) {
+        form_set_error('behat_editor_limit_tags_allowed_tags', t('Please make sure your tags do not have spaces, commas etc. These @tag had issues.', array("@tag" => implode(', ', $spaces))));
+    }
+}
 
 function behat_editor_limit_tags_form_submit($form, &$form_state) {
     if(!empty($form_state['values']['behat_editor_limit_tags_allowed_tags'])) {
