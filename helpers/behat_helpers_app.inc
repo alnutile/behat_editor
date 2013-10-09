@@ -1,6 +1,6 @@
 <?php
 
-use Drupal\BehatEditor;
+use Drupal\BehatEditor\File;
 
 /*
  * @file helper functions used by different files
@@ -94,7 +94,7 @@ function _behat_editor_scan_directories($module, $path) {
     $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
     foreach($files as $key => $value) {
         $filename = $files[$key]->filename;
-        $file = new Drupal\BehatEditor\File(array(), $module, $filename, 'file');
+        $file = new File(array(), $module, $filename, 'file');
         $file_data[$key] = $file->get_file_info();
     }
     return $file_data;
