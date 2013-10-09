@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file behat_editor_limit_tags.module
+ *
+ * Allow admin to limit test tags
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function behat_editor_limit_tags_menu() {
+  $path = drupal_get_path('module', 'behat_editor_limit_tags');
+  $items['admin/behat_editor/allowed_tags'] = array(
+    'title' => 'Example Page',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('behat_editor_limit_tags_form'),
+    'access arguments' => array('behat admin tags'),
+    'type' => MENU_CALLBACK,
+    'file' => 'admin.inc',
+    'file path' => "$path/includes/"
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function behat_editor_limit_tags_permission() {
+    $items['behat admin tags'] = array(
+        'title' => t('Admin Behat Tags'),
+        'description' => t('Can Admin Tags')
+    );
+    return $items;
+}
+
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Hook the forms used by behat_editor to replace the js tag_it
+ */
+function behat_editor_limit_tags_form_alter(&$form, $form_state, $form_id) {
+    $forms = array('behat_editor_edit_form', 'behat_editor_add_form');
+    if(in_array($form_id, $forms)) {
+        drupal_add_css('#dialog {display:none;}',$option['type'] = 'inline');
+        drupal_add_library('system', 'ui.dialog');
+        $tags = variable_get('behat_editor_limit_tags_allowed_tags', array());
+        drupal_add_js(array('tags_allowed' => $tags), array('type' => 'setting'));
+        $form['tag_dialog'] = array(
+            '#markup' => "<div id='dialog' title='Tag Not Allowed'>...</div>"
+        );
+    }
+}
+
+
+
