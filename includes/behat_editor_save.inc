@@ -1,5 +1,5 @@
 <?php
-use Drupal\BehatEditor;
+use Drupal\BehatEditor\File;
 
 /**
  * @file functions needed to save the file
@@ -19,7 +19,7 @@ function behat_editor_save($module, $filename) {
     $response = '';
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     if(isset($_REQUEST['scenario'])) {
-        $file = new Drupal\BehatEditor\File($_REQUEST, $module, $filename, 'file');
+        $file = new File($_REQUEST, $module, $filename, 'file');
         $response = $file->save_html_to_file();
         if($response['file'] != FALSE){
             $file_object = $file->get_file_info();
