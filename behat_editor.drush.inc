@@ -1,6 +1,7 @@
 <?php
 
-use Drupal\BehatEditor;
+use Drupal\BehatEditor\BehatEditorRun,
+    Drupal\BehatEditor\File;
 
 /**
  * @file
@@ -60,10 +61,10 @@ function drush_behat_editor_behat_run() {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
 
 
-    $file = new Drupal\BehatEditor\File(array(), $module, $filename, FALSE);
+    $file = new File(array(), $module, $filename, FALSE);
     $file_object = $file->get_file_info();
 
-    $run = new Drupal\BehatEditor\BehatEditorRun($file_object);
+    $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
     $output = $run->execDrush($javascript);
     $results = implode("\n\r", $output);
@@ -88,7 +89,7 @@ function drush_behat_editor_behat_run_folder() {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
 
     $file_object = array();
-    $run = new Drupal\BehatEditor\BehatEditorRun($file_object);
+    $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
     $output = $run->execDrushAll($full_path, $javascript);
     $results = implode("\n\r", $output);
