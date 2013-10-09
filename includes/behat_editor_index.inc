@@ -22,7 +22,7 @@ function behat_editor_index() {
 
     $build['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('span11', 'well'))
+        '#attributes' => array('class' => array('col-lg-12', 'well'))
     );
 
     $build['actions']['add_test'] = array(

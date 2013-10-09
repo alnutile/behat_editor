@@ -195,7 +195,7 @@ function _behat_editor_questions_form() {
     $form['questions']['test_name']['name'] = array(
         '#type' => 'textfield',
         '#title' => t('What do you want to call this test?'),
-        '#attributes' => array('class' => array('span12'), 'placeholder' =>  t('A simple descriptive name of the test')),
+        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('A simple descriptive name of the test')),
 
     );
 
@@ -216,7 +216,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('When I go to'),
         '#name' => 'url',
-        '#attributes' => array('class' => array('span12'), 'placeholder' =>  t('a full website address')),
+        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('a full website address')),
     );
 
     $form['questions']['when_i_go_to']['url_button'] = array(
@@ -237,7 +237,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('And I fill in'),
         '#name' => 'form_field_and_fill_in',
-        '#attributes' => array('class' => array('span12'), 'placeholder' =>  t('a form field name')),
+        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('a form field name')),
     );
 
     $form['questions']['and_i_fill_in']['with'] = array(
@@ -249,7 +249,7 @@ function _behat_editor_questions_form() {
     $form['questions']['and_i_fill_in']['field_text'] = array(
         '#type' => 'textfield',
         '#name' => 'field_with_text',
-        '#attributes' => array('class' => array('span12'), 'placeholder' =>  t('with the following text field')),
+        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('with the following text field')),
     );
 
     $form['questions']['and_i_fill_in']['field_text_button'] = array(
@@ -285,7 +285,7 @@ function _behat_editor_questions_form() {
     $form['questions']['and_i_click_on_a']['field_text'] = array(
         '#type' => 'textfield',
         '#name' => 'click_on_text',
-        '#attributes' => array('class' => array('span12'), 'placeholder' =>  t('enter a link of button name here'))
+        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('enter a link of button name here'))
     );
 
     $form['questions']['and_i_click_on_a']['click_on_a'] = array(
@@ -317,7 +317,7 @@ function _behat_editor_questions_form() {
     $form['questions']['then_i_should_see']['see_not_see_some_text'] = array(
         '#type' => 'textfield',
         '#name' => 'see_not_see_some_text',
-        '#attributes' => array('class' => array('span12'), 'placeholder' =>  t('some text on that page'))
+        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('some text on that page'))
     );
 
     $form['questions']['then_i_should_see']['see_not_see'] = array(

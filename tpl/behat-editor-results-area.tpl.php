@@ -2,7 +2,7 @@
     $messages =  array('Working on things...', 'Give me a moment....', 'Doing as you command...');
     $message = array_rand($messages, 1);
 ?>
-<div class="span6 well pull-right">
+<div class="panel panel-default col-md-5 col-md-pull-12 col-md-offset-1">
     <h4>Your results will show here...</h4>
     <div id="messages">
         <div class="alert alert-success running-tests">

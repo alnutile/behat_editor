@@ -47,7 +47,7 @@ function behat_editor_add_form($form, $form_state) {
 
     $form['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('span11', 'well'))
+        '#attributes' => array('class' => array('col-md-12', 'well'))
     );
 
     $form['actions']['run_test'] = array(
@@ -76,12 +76,12 @@ function behat_editor_add_form($form, $form_state) {
 
     $form['left-side'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('span5'))
+        '#attributes' => array('class' => array('col-md-6'))
     );
 
     $form['left-side']['intro'] = array(
         '#theme' => 'behat_editor_questions_area_intro',
-        '#prefix' => '<div class="well">',
+        '#prefix' => '<div class="nothing-here">',
         '#suffix' => '</div>',
     );
 

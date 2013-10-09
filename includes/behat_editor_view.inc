@@ -42,7 +42,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
 
     $form['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('span11', 'well'))
+        '#attributes' => array('class' => array('col-lg-12', 'well'))
     );
 
     $form['actions']['run_test'] = array(
@@ -70,7 +70,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     );
 
     $form['question'] = array(
-        '#prefix' => '<div class="well span5">',
+        '#prefix' => '<div class="panel panel-default col-md-6">',
         '#suffix' => '</div>',
         '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
     );
