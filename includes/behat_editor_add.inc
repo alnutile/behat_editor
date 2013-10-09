@@ -1,13 +1,23 @@
 <?php
 
 /**
- * @param $module to get the path
- * @param $filename the filename to get that as well
- * @return content
+ * @file functions need to make the Add interface
+ */
+
+/**
+ * Implements hook_form().
+ *
+ * Form for Add file interface
+ * You can see the related js file as well in the js folder
+ *
+ * @param module
+ *   this should be the machine_name
+ * @param filename
+ *   this should be the filename.feature extension
+ * @return array
  *
  * @todo my "controller" seems to have a ton of view related work?
  */
-
 function behat_editor_add_form($form, $form_state) {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
@@ -37,7 +47,7 @@ function behat_editor_add_form($form, $form_state) {
 
     $form['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('span11', 'well'))
+        '#attributes' => array('class' => array('col-md-12', 'well'))
     );
 
     $form['actions']['run_test'] = array(
@@ -66,12 +76,12 @@ function behat_editor_add_form($form, $form_state) {
 
     $form['left-side'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('span5'))
+        '#attributes' => array('class' => array('col-md-6'))
     );
 
     $form['left-side']['intro'] = array(
         '#theme' => 'behat_editor_questions_area_intro',
-        '#prefix' => '<div class="well">',
+        '#prefix' => '<div class="nothing-here">',
         '#suffix' => '</div>',
     );
 

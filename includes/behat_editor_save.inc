@@ -1,15 +1,25 @@
 <?php
-use Drupal\BehatEditor;
+use Drupal\BehatEditor\File;
 
 /**
- * @todo this is running and saving it should only run
+ * @file functions needed to save the file
+ * You can see the related js file as well in the js folder
+ */
+
+/**
+ * Save the file to the module folder or tmp folder
+ *
+ * @param module
+ *   this should be the machine_name
+ * @param filename
+ *   this should be the filename.feature extension
  */
 function behat_editor_save($module, $filename) {
     composer_manager_register_autoloader();
     $response = '';
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     if(isset($_REQUEST['scenario'])) {
-        $file = new Drupal\BehatEditor\File($_REQUEST, $module, $filename, 'file');
+        $file = new File($_REQUEST, $module, $filename, 'file');
         $response = $file->save_html_to_file();
         if($response['file'] != FALSE){
             $file_object = $file->get_file_info();

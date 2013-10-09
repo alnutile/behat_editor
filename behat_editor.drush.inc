@@ -1,5 +1,8 @@
 <?php
 
+use Drupal\BehatEditor\BehatEditorRun,
+    Drupal\BehatEditor\File;
+
 /**
  * @file
  * Drush hook implementations for BehatEditor
@@ -52,22 +55,20 @@ function drush_behat_editor_behat_run() {
     } else {
         $javascript = 0;
     }
-    //@todo validate args
+
     composer_manager_register_autoloader();
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     //@todo get composer to load this
-    $path = drupal_get_path('module', 'behat_editor');
-    $path = $path . '/src/Drupal/BehatEditor/BehatEditorRun.php';
-    $path = drupal_realpath($path);
-    require_once("$path");
-    $file = new Drupal\BehatEditor\File(array(), $module, $filename, FALSE);
+    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
+
+
+    $file = new File(array(), $module, $filename, FALSE);
     $file_object = $file->get_file_info();
 
-    $run = new Drupal\BehatEditor\BehatEditorRun($file_object);
+    $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
     $output = $run->execDrush($javascript);
     $results = implode("\n\r", $output);
-    return $results;
+    return drush_print($results);
 }
 
 //@todo add profile switch as well
@@ -84,17 +85,14 @@ function drush_behat_editor_behat_run_folder() {
     $full_path = drupal_realpath($folder);
 
     composer_manager_register_autoloader();
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     //@todo get composer to load this
-    $path = drupal_get_path('module', 'behat_editor');
-    $path = $path . '/src/Drupal/BehatEditor/BehatEditorRun.php';
-    $path = drupal_realpath($path);
-    require_once("$path");
+    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
+
     $file_object = array();
-    $run = new Drupal\BehatEditor\BehatEditorRun($file_object);
+    $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
     $output = $run->execDrushAll($full_path, $javascript);
     $results = implode("\n\r", $output);
-    return $results;
+    return drush_print($results);
 }
 

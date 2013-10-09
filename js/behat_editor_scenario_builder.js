@@ -4,7 +4,7 @@
 (function ($) {
     Drupal.theme.prototype.tagItWrapper  = function(id) {
         var wrapper =  "<li class='tag'><input id='scenario-values-" + id + "' class='section-tag' type='hidden'></li>";
-            wrapper += "<li class='ignore'><i class='icon-move pull-left'></i><ul id='scenario-input-"+id+"'></ul></li>";
+            wrapper += "<li class='ignore'><i class='glyphicon glyphicon-move pull-left'></i><ul id='scenario-input-"+id+"'></ul></li>";
         return wrapper;
     };
     Drupal.behaviors.behat_editor_scenario_builder = {};
@@ -34,7 +34,7 @@
                     destination_wrapper += data_value;
                     (middle_words.length) ? destination_wrapper += ' ' + middle_words : '';
                     (data_value2.length) ? destination_wrapper += ' ' + data_value2 : '';
-                    destination_wrapper += ' <i class="remove icon-remove-circle"></i>';
+                    destination_wrapper += ' <i class="remove glyphicon glyphicon-remove-circle"></i>';
                     destination_wrapper += '</li>';
                 return destination_wrapper;
             };
@@ -64,7 +64,7 @@
             };
 
             var sortableQuestion = function(row) {
-                var sortIcon = '<i class="icon-move"> ';
+                var sortIcon = '<i class="glyphicon glyphicon-move"> ';
                 if(row != 'feature') {
                     return sortIcon;
                 } else {

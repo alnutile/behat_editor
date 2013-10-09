@@ -1,10 +1,20 @@
 <?php
-use Drupal\BehatEditor;
+use Drupal\BehatEditor\File;
 
 /**
- * @param $module to get the path
- * @param $filename the filename to get that as well
- * @return content
+ * @file File for viewing the Tests
+ * You can see the related js file as well in the js folder
+ */
+
+/**
+ * View form to see the file in a new editable state
+ *
+ * @param module
+ *   this should be the machine_name
+ * @param filename
+ *   this should be the filename.feature extension
+ * @return array
+ *
  */
 
 function behat_editor_view_form($form, $form_state, $module, $filename) {
@@ -12,7 +22,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
 
-    $file = new Drupal\BehatEditor\File($_REQUEST, $module, $filename, FALSE);
+    $file = new File($_REQUEST, $module, $filename, FALSE);
     $file_info = $file->get_file_info();
 
     $path = drupal_get_path('module', 'behat_editor');
@@ -32,7 +42,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
 
     $form['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('span11', 'well'))
+        '#attributes' => array('class' => array('col-lg-12', 'well'))
     );
 
     $form['actions']['run_test'] = array(
@@ -60,7 +70,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     );
 
     $form['question'] = array(
-        '#prefix' => '<div class="well span5">',
+        '#prefix' => '<div class="panel panel-default col-md-6">',
         '#suffix' => '</div>',
         '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
     );

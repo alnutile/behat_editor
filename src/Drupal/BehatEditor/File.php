@@ -1,7 +1,28 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\BehatEditor\File.
+ */
 
 namespace Drupal\BehatEditor;
 
+/**
+ * Class File
+ * Methods needed to run a process the test file.
+ *
+ * @params request
+ *   The request input
+ * @params module
+ *   The machine name of the module
+ * @params filename
+ *   The filename to process
+ * @params parse_type
+ *   Defines the format to create eg html-view, html-edit, file, FALSE
+ *
+ * @package Drupal\BehatEditor
+ *
+ * @todo use the File class to create the file object during __construct
+ */
 class File {
     public $module = '';
     public $filename = '';
@@ -17,6 +38,11 @@ class File {
         $this->scenario = (isset($request['scenario'])) ? $request['scenario'] : array();
     }
 
+    /**
+     * Save HTML and make File
+     *
+     * @return array
+     */
     public function save_html_to_file() {
         $this->scenario_array = self::_parse_questions();
         $this->feature =  self::_create_file();
@@ -24,12 +50,23 @@ class File {
         return $output;
     }
 
+    /**
+     * Make HTML array from a file
+     *
+     * @param $file_text
+     * @return array
+     */
     public function output_file_text_to_html_array($file_text) {
         $this->scenario = self::_turn_file_to_array($file_text);
         $this->scenario_array = self::_parse_questions();
         return $this->scenario_array;
     }
 
+    /**
+     * Build out the file_object used in most functions.
+     *
+     * @return array
+     */
     public function get_file_info() {
         if ($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
             $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
@@ -58,6 +95,13 @@ class File {
         return $file_data;
     }
 
+    /**
+     * Build out a tags array of a file
+     *
+     * @param $file
+     * @param $module_name
+     * @return array
+     */
     private function _tags_array($file, $module_name) {
         $file_to_array = self::_turn_file_to_array($file);
         $tags = array();
@@ -73,6 +117,12 @@ class File {
         return $tags;
     }
 
+    /**
+     * Read file
+     *
+     * @param $full_path_with_file
+     * @return string
+     */
     public function read_file($full_path_with_file) {
         if(filesize($full_path_with_file) > 0) {
             $file_open = fopen($full_path_with_file, "r");
@@ -81,6 +131,12 @@ class File {
         }
     }
 
+    /**
+     * Quick Helper to figure out save path
+     * based on permissions.
+     *
+     * @return array
+     */
     private function _figure_out_where_to_save_file(){
         if (user_access('behat add test') && $this->module != variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER)) {
             /* Derived from features.admin.inc module */
@@ -92,6 +148,11 @@ class File {
         }
     }
 
+    /**
+     * Save to module folder
+     *
+     * @return array
+     */
     private function _save_file_to_module_folder() {
         $full_path = self::_save_path();
         $response = file_put_contents("{$full_path}/{$this->filename}", $this->feature);
@@ -109,11 +170,21 @@ class File {
         return $output;
     }
 
+    /**
+     * Make a linkable path to the file.
+     *
+     * @return string
+     */
     private function _linkable_path() {
         $module_path = drupal_get_path('module', $this->module);
         return $module_path . '/' . variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER) . '/' . $this->filename;
     }
 
+    /**
+     * Make a save path for the file
+     *
+     * @return string
+     */
     private function _save_path() {
         $module_path = drupal_get_path('module', $this->module);
         return  DRUPAL_ROOT . '/' . $module_path . '/' . variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER);
@@ -136,9 +207,14 @@ class File {
         return $output;
     }
 
+    /**
+     * Turn the file into an array
+     *
+     * @return array
+     */
     private function _parse_questions(){
         $scenario_array = array();
-        $count = 0;                                                                // used to get tags
+        $count = 0;                                                                      // used to get tags
         $direction = $this->parse_type;
         $scenario = array_values($this->scenario);                                       //reset keys since some unset work
         foreach($scenario as $value) {
@@ -157,6 +233,12 @@ class File {
         return $scenario_array;
     }
 
+    /**
+     * Quick helper to turn a file into a simple array
+     *
+     * @param $file
+     * @return array
+     */
     private function _turn_file_to_array($file) {
         $array = explode("\n", $file);
         foreach($array as $key => $value) {
@@ -167,6 +249,13 @@ class File {
         return $array;
     }
 
+    /**
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return mixed
+     */
     private function _string_type($string, $scenario, $count, $direction){
         $compare = self::_string_types();
         foreach($compare as $key) {
@@ -176,17 +265,30 @@ class File {
         }
     }
 
+    /**
+     * Different functions used to parse the file
+     * Later we can add scenario_outline, background etc.
+     *
+     * @return array
+     */
     private function _string_types() {
         $options = array('behat_editor_string_feature', 'behat_editor_string_scenario', 'behat_editor_string_steps');
-        drupal_alter('behat_editor_string_types', $options);
         return $options;
     }
 
+    /**
+     * Search for the Feature text
+     *
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return array
+     */
     private function behat_editor_string_feature($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
         $options = array('Feature:');
-        drupal_alter('behat_editor_string_feature', $options);
         if(in_array($first_word, $options)) {
             switch($direction) {
                 case 'file':
@@ -239,6 +341,15 @@ class File {
         }
     }
 
+    /**
+     * Search for the Scenario Text
+     *
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return array
+     */
     private function behat_editor_string_scenario($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
@@ -276,7 +387,7 @@ class File {
                         'class' => array('tag')
                     );
                     $scenario_tag_it[2] = array(
-                        'data' => '<i class="icon-move pull-left"></i><ul id="scenario-input-' . $uid . '" class="tagit" data-scenario-id="'.$uid.'"></ul>',
+                        'data' => '<i class="glyphicon glyphicon-move pull-left"></i><ul id="scenario-input-' . $uid . '" class="tagit" data-scenario-id="'.$uid.'"></ul>',
                         'class' => array('ignore'),
                     );
                     $scenario_line[3] = array(
@@ -291,6 +402,12 @@ class File {
         }
     }
 
+    /**
+     * Search for Tags in Scenario
+     *
+     * @param $scenario_array
+     * @return array
+     */
     private function _parse_tags($scenario_array) {
         $tags = array();
         foreach($scenario_array as $key => $value) {
@@ -301,12 +418,22 @@ class File {
         }
         return $tags;
     }
+
+    /**
+     * Search for tags when
+     * searching for Features and Scenario lines
+     *
+     * @param $scenario
+     * @param $count
+     * @param int $spaces
+     * @param $direction
+     * @return array|mixed
+     */
     private function _string_tags($scenario, $count, $spaces = 0, $direction) {
 
         if(array_key_exists($count, $scenario)) {
             $string = $scenario[$count];
             $options = array('@');
-            drupal_alter('behat_editor_string_tags', $options);
             foreach($options as $key => $value) {
                 if(strpos($string, $value) !== false) {
                     switch($direction) {
@@ -332,6 +459,15 @@ class File {
         }
     }
 
+    /**
+     * Parse Steps
+     *
+     * @param $string
+     * @param $parent
+     * @param $count
+     * @param $direction
+     * @return array
+     */
     private function behat_editor_string_steps($string, $parent, $count, $direction) {
         $first_word = self::_pop_first_word($string);
         $options = array('Given', 'When', 'Then', 'And', 'But');
@@ -359,15 +495,32 @@ class File {
         }
     }
 
+    /**
+     * Get the first word from a line
+     *
+     * @param $string
+     * @return mixed
+     */
     private function _pop_first_word($string){
         $first_word = explode(' ', $string);
         return array_shift($first_word);
     }
 
+    /**
+     * Wrap the editable questions in the close string
+     *
+     * @param $string
+     * @return string
+     */
     private function _question_wrapper($string) {
-        return '<i class="icon-move pull-left"></i>' . $string . '<i class="remove icon-remove-circle"></i>';
+        return '<i class="glyphicon glyphicon-move pull-left"></i>' . $string . '<i class="remove glyphicon glyphicon-remove-circle"></i>';
     }
 
+    /**
+     * Format the file creation from the array
+     *
+     * @return string
+     */
     private function _create_file(){
         $file = '';
         foreach($this->scenario_array as $key) {
@@ -379,6 +532,12 @@ class File {
         return $file;
     }
 
+    /**
+     * New line parse
+     *
+     * @param $new_line
+     * @return string
+     */
     private function _new_line($new_line) {
         if($new_line == 1) {
             return "\r\n";
@@ -387,6 +546,13 @@ class File {
         }
     }
 
+    /**
+     * Spaces needed to output the HTML or file to look
+     * right.
+     *
+     * @param $spaces
+     * @return string
+     */
     private function _spaces($spaces) {
         $spaces_return = '';
         for($i = 0; $i <= $spaces; $i++) {

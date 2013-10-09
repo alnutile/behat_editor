@@ -1,9 +1,17 @@
 <?php
 
-use Drupal\BehatEditor;
+use Drupal\BehatEditor\File;
+
+/*
+ * @file helper functions used by different files
+ *
+ */
 
 /**
- * @return modules that have behat_feature folders
+ * Check for all the modules that have behat_features
+ * folders
+ *
+ * @return array
  */
 function _behat_editor_check_for_modules() {
     if($cached = cache_get('behat_editor_modules', 'cache')) {
@@ -22,12 +30,14 @@ function _behat_editor_check_for_modules() {
 }
 
 /**
+ * Helper to see if has behat_editor folder
+ *
  * @param $module
  *   the module to check if it has a folder
  * @return array
  *   exists = TRUE/FALSE
  *   writable = TRUE/FALSE
- *   nice_name = Yup
+ *   nice_name = module nice_name
  */
 function _behat_editor_has_folder($module) {
     $status = array();
@@ -44,6 +54,9 @@ function _behat_editor_has_folder($module) {
 }
 
 /**
+ * Helper function to make the array of
+ * available files in the folder
+ *
  * @param $modules
  *  return value of _behat_editor_has_folder
  * @return array
@@ -66,6 +79,8 @@ function _behat_editor_build_array_of_available_files($modules) {
 }
 
 /*
+ * Helper function to scan directories
+ *
  * @module
  *   the machine name
  * @filename
@@ -79,7 +94,7 @@ function _behat_editor_scan_directories($module, $path) {
     $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
     foreach($files as $key => $value) {
         $filename = $files[$key]->filename;
-        $file = new Drupal\BehatEditor\File(array(), $module, $filename, 'file');
+        $file = new File(array(), $module, $filename, 'file');
         $file_data[$key] = $file->get_file_info();
     }
     return $file_data;
