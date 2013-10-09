@@ -194,9 +194,8 @@ function _behat_editor_questions_form() {
 
     $form['questions']['test_name']['name'] = array(
         '#type' => 'textfield',
-        '#title' => t('What do you want to call this test?'),
+        '#title' => t('What do you want to call this Scenario?'),
         '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('A simple descriptive name of the test')),
-
     );
 
     $form['questions']['test_name']['name_button'] = array(
