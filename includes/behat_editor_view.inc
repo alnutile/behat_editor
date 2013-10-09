@@ -1,5 +1,5 @@
 <?php
-use Drupal\BehatEditor;
+use Drupal\BehatEditor\File;
 
 /**
  * @file File for viewing the Tests
@@ -22,7 +22,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
 
-    $file = new Drupal\BehatEditor\File($_REQUEST, $module, $filename, FALSE);
+    $file = new File($_REQUEST, $module, $filename, FALSE);
     $file_info = $file->get_file_info();
 
     $path = drupal_get_path('module', 'behat_editor');
