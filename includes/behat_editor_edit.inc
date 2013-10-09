@@ -86,7 +86,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     $form['left-side']['intro'] = array(
         '#theme' => 'behat_editor_questions_area_intro',
-        '#prefix' => '<div class="panel panel-default">',
+        '#prefix' => '<div class="nothing-here">',
         '#suffix' => '</div>',
     );
 

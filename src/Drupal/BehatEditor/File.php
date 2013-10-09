@@ -387,7 +387,7 @@ class File {
                         'class' => array('tag')
                     );
                     $scenario_tag_it[2] = array(
-                        'data' => '<i class="icon-move pull-left"></i><ul id="scenario-input-' . $uid . '" class="tagit" data-scenario-id="'.$uid.'"></ul>',
+                        'data' => '<i class="glyphicon glyphicon-move pull-left"></i><ul id="scenario-input-' . $uid . '" class="tagit" data-scenario-id="'.$uid.'"></ul>',
                         'class' => array('ignore'),
                     );
                     $scenario_line[3] = array(
@@ -513,7 +513,7 @@ class File {
      * @return string
      */
     private function _question_wrapper($string) {
-        return '<i class="icon-move pull-left"></i>' . $string . '<i class="remove icon-remove-circle"></i>';
+        return '<i class="glyphicon glyphicon-move pull-left"></i>' . $string . '<i class="remove glyphicon glyphicon-remove-circle"></i>';
     }
 
     /**
