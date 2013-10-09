@@ -9,7 +9,22 @@
                         {
                             singleField: true,
                             singleFieldNode: $('#scenario-values-'+id+''),
-                            placeholderText: placeholder
+                            placeholderText: placeholder,
+                            availableTags: Drupal.settings.tags_allowed,
+                            showAutocompleteOnFocus: true,
+                            autocomplete: {delay: 0, minLength: 1},
+                            beforeTagAdded:  function(event, ui) {
+                                var tag = ui.tagLabel;
+                                if($(Drupal.settings.tags_allowed).length) {
+                                    var allowed = Drupal.settings.tags_allowed;
+                                    if(jQuery.inArray( tag, allowed, 0) == -1) {
+                                        if (!ui.duringInitialization) {
+                                            $("#dialog").empty().html("Tag " + tag + " not allowed. <br> It will not be saved. ").dialog();
+                                            event.preventDefault();
+                                        }
+                                    }
+                                }
+                            }
                         }
                     );
                 }
@@ -24,7 +39,22 @@
                 {
                     singleField: true,
                     singleFieldNode: $('#'+source_id_values+''),
-                    placeholderText: placeholder
+                    placeholderText: placeholder,
+                    showAutocompleteOnFocus: true,
+                    availableTags: Drupal.settings.tags_allowed,
+                    autocomplete: {delay: 0, minLength: 1},
+                    beforeTagAdded:  function(event, ui) {
+                        var tag = ui.tagLabel;
+                        if($(Drupal.settings.tags_allowed).length) {
+                            var allowed = Drupal.settings.tags_allowed;
+                            if(jQuery.inArray( tag, allowed, 0) == -1) {
+                                if (!ui.duringInitialization) {
+                                    $("#dialog").empty().html("Tag " + tag + " not allowed. <br> It will not be saved. ").dialog();
+                                    event.preventDefault();
+                                }
+                            }
+                        }
+                    }
                 }
             );
             return this;

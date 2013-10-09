@@ -1,7 +1,7 @@
 name = Behat Editor Limit Tags
 description = Limit tags allowed by the user for tests
 dependencies[] = behat_editor
-package = Behat
+package = Behat Editor
 core = 7.x
 files[] = tests/behat_editor_limit_tags.test
 configure = admin/behat_editor/allowed_tags
