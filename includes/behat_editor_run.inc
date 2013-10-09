@@ -1,5 +1,6 @@
 <?php
-use Drupal\BehatEditor;
+use Drupal\BehatEditor\File,
+    Drupal\BehatEditor\BehatEditorRun;
 
 /**
  * @file functions need to run a test
@@ -28,9 +29,9 @@ function behat_editor_run($module, $filename) {
         module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
         module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
 
-        $file = new Drupal\BehatEditor\File($_REQUEST, $module, $filename, FALSE);
+        $file = new File($_REQUEST, $module, $filename, FALSE);
         $file_object = $file->get_file_info();
-        $res = new Drupal\BehatEditor\BehatEditorRun($file_object);
+        $res = new BehatEditorRun($file_object);
         $run_test_response = $res->exec();
         $response = $run_test_response['response'];
 
@@ -56,12 +57,12 @@ function behat_editor_run($module, $filename) {
         module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
         //Make sure it is a good request
         if(isset($_REQUEST['scenario'])) {
-            $file = new Drupal\BehatEditor\File($_REQUEST, $module, $filename, 'file');
+            $file = new File($_REQUEST, $module, $filename, 'file');
             $response = $file->save_html_to_file();
             //Make sure the file was made
             if($response['file'] != FALSE){
                 $file_object = $file->get_file_info();
-                $res = new Drupal\BehatEditor\BehatEditorRun($file_object);
+                $res = new BehatEditorRun($file_object);
                 $run_test_response = $res->exec();
                 $response = $run_test_response['response'];
                 //Check the Response from Running the Tests
