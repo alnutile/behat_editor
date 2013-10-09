@@ -1,42 +1,6 @@
- @tag1 @tag2 @javascript
- Feature: Tests for http://www.alfrednutile.info/about
+ @javascript
+ Feature: Tests for /admin/behat/view/behat_editor/aa_mock.feature
  
    Scenario: Test
-     Given I am on "http://www.alfrednutile.info/about"
-     Then I should see "Alfred"
- 
-   Scenario: Mink Rocks
- 
-   Scenario: Testing Rocks
- 
-   Scenario: Mink Rocks
- 
-   Scenario: Testing Rocks
- 
-   Scenario: Mink Rocks
- 
-   Scenario: Testing Rocks
- 
-   Scenario: Mink Rocks
- 
-   Scenario: Testing Rocks
- 
-   Scenario: Mink Rocks
- 
-   Scenario: Testing Rocks
- 
-   Scenario: Mink Rocks
- 
-   Scenario: Testing Rocks
- 
-   Scenario: Mink Rocks
- 
-   Scenario: Testing Rocks
- 
-   Scenario: Mink Rocks
- 
-   Scenario: Testing Rocks
- 
-   Scenario: Mink Rocks
- 
-   Scenario: Testing Rocks
+     Given I am on "/admin/behat/view/behat_editor/aa_mock.feature"
+     Then I should see "Your results will show here..."

@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * @file functions to show the Admin / Index page
+ */
+
+/**
+ * Build the output for the Index page of files.
+ * You can see the related js file as well in the js folder
+ *
+ * @todo turn this into a form so it will be easier to hook and do
+ * other bulk operations
+ * @return mixed
+ */
+
 function behat_editor_index() {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
@@ -9,7 +22,7 @@ function behat_editor_index() {
 
     $build['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('span11', 'well'))
+        '#attributes' => array('class' => array('col-lg-12', 'well'))
     );
 
     $build['actions']['add_test'] = array(
@@ -32,7 +45,11 @@ function behat_editor_index() {
     return $build;
 }
 
-
+/**
+ * I need to build the array for the files stored in the behat_tmp folder
+ *
+ * @return array
+ */
 function _behat_editor_test_folder_array() {
     return array(
         'behat_tests' => array(

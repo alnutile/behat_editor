@@ -1,6 +1,22 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\BehatEditor\BehatEditorRun.
+ */
+
 namespace Drupal\BehatEditor;
+
+/**
+ * Class BehatEditorRun
+ * Methods needed to run a test.
+ *
+ * @params file_object
+ *      This is created by \Drupal\BehatEditor\File class
+ * @package Drupal\BehatEditor
+ *
+ * @todo use the File class to create the file object during __construct
+ */
 
 class BehatEditorRun {
     public $behat_path = '';
@@ -35,6 +51,11 @@ class BehatEditorRun {
         $this->output_file = self::getPath();
     }
 
+    /**
+     * Decide what path we should be storing files at
+     *
+     * @return string
+     */
     public function getPath() {
         if(user_access('behat add test') && $this->module != variable_get('behat_editor_default_storage_folder', BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER)) {
             return  self::runFromModuleFolder();
@@ -43,6 +64,11 @@ class BehatEditorRun {
         }
     }
 
+    /**
+     * If we are running from the ModuleFolder
+     * @return string
+     * @todo unify this with runFromTmpFolder().
+     */
     public function runFromModuleFolder() {
         //Setup folder to store file with test results
         $file_tmp_folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
@@ -55,6 +81,11 @@ class BehatEditorRun {
         return $output_file;
     }
 
+    /**
+     * If we are running from the Tmp folder
+     * @return string
+     * @todo unify this with runFromModuleFolder().
+     */
     public function runFromTmpFolder() {
         $file_tmp_folder = variable_get('behat_editor_default_storage_folder', BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER);
         $path_results = file_build_uri("/{$file_tmp_folder}/results");
@@ -66,6 +97,14 @@ class BehatEditorRun {
         return $output_file;
     }
 
+    /**
+     * Used to exec the behat command
+     *
+     * @param bool $javascript
+     *   Javascript true will open up a browser locally
+     *   if the user is running selenium
+     * @return array
+     */
     public function exec($javascript = FALSE) {
         if($javascript == TRUE) {
             $tags = '';
@@ -80,6 +119,14 @@ class BehatEditorRun {
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
     }
 
+    /**
+     * Used to exec the behat command by drush
+     *
+     * @param bool $javascript
+     *   Javascript true will open up a browser locally
+     *   if the user is running selenium
+     * @return array
+     */
     public function execDrush($javascript = FALSE) {
         if($javascript == TRUE) {
             $tags = '';
@@ -90,6 +137,16 @@ class BehatEditorRun {
         return $output;
     }
 
+    /**
+     * Used to exec the behat command
+     *
+     * @param bool $javascript
+     *   Javascript true will open up a browser locally
+     *   if the user is running selenium
+     * @return array
+     *
+     * @todo merge with the above command
+     */
     public function execDrushAll($module_path, $javascript = FALSE) {
         if($javascript == TRUE) {
             $tags = '';
@@ -101,6 +158,11 @@ class BehatEditorRun {
         return $output;
     }
 
+    /**
+     * Return the output on a Pass test
+     *
+     * @return array
+     */
     public function generateReturnPassOutput() {
         $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
         $file_url = l($this->filename, $this->relative_path, $options = array('attributes' => array('target' => '_blank', 'id' => 'test-file')));
@@ -115,6 +177,11 @@ class BehatEditorRun {
         return $results;
     }
 
+    /**
+     * Return the html output on a Test
+     *
+     * @return array
+     */
     public function generateHTMLOutput() {
         $results_message = array_slice($this->file_array, -3);
         $results_message_top = array_slice($this->file_array, 0, -3);
@@ -123,6 +190,11 @@ class BehatEditorRun {
         return $output_item_results . $output_item_list;
     }
 
+    /**
+     * Return the output on a Fail test
+     *
+     * @return array
+     */
     public function generateReturnFailOutput() {
         $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
         $file_url = l($this->filename, $this->relative_path, $options = array('attributes' => array('target' => '_blank', 'id' => 'test-file')));

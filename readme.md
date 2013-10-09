@@ -17,16 +17,22 @@ Depending on the permissions of the user they can
  5. Edit a file and Run it to verify it is working
  6. Edit a file and save it back to the system or /tmp folder for download.
 
-There will be a submodule that will show how you can connect this to SauceLabs.
+### Saucelabs Integration
+This module lives at alnutile/behat_editor_saucelabs
 
 ### Setup
 
-After you download this repo go setup the module per drupal install steps
+After you download this repo go setup the module per drupal install steps.
+See [https://drupal.org/project/composer_manager] for installing Composer Manager first.
 you will need to have composer_manager installed so it can download behat into it's vendor directory.
-Behat [http://docs.behat.org/] explains how to run composer to install the module.
-It relies on the Mink extension.
+If you enable via drush composer_manager will kick in and download the needed behat files.
 
-Also, if using selenium make sure you run it in the background.
+copy behat/behat.yml.sample to behat/behat.yml
+Update your behat/behat.yml file as needed. 
+
+Also, if using selenium make sure you run it in the background. You can see more notes here 
+
+[http://mink.behat.org/#seleniumdriver]
 
 Download the jar file to your computer/server
 
@@ -46,24 +52,35 @@ So you should be able to run
 vendor/behat/behat/bin/behat
 ```
 
-after you are done.
+from your drupal sites directory.
 
-The module comes with an Example button so when you visit node/add/gherkin-generator you
+## What now
+
+ * admin/behat/index to see all files
+ * Click the Add file there to add one.
+ * Click on a file to View, Edit
+ * Save a file to your modules directory
+
+The module comes with an Example button so when you visit admin/behat/add you
 can click the "Just click here to load example" link and load that test.
 You should be able to run it and see the results on the right.
 
 If there are any errors check out the drupal reports area under this modules name.
 
+Or see drush below and run some of the tests that come with it.
 
 ### Drush
 
+drush cc drush
+
 drush br module_name file.feature 1
+
 This will run the test in javascript good for local tests
 
 drush br module_name file.feature 1
 This will run it and skip @javascript good for remote tests
 
-drush behat-run-folder module_name
+drush brf module_name
 This will run all the files in that modules behat_features folder again 1 / 0 to turn Javascript on or off
 
 ### Hooking
@@ -74,25 +91,25 @@ gherkin_features folder.
 If they do and the user has permissions then any test can be saved to that folder.
 Later this will hook into the administration area as well to run tests.
 
-There are other hooks as well.
-Since gherkin allows for different languages you can add keys to the lists of keys that are checked for
-as a new file is made or html is parsed
-
-hook_behat_editor_string_feature
-
-hook_behat_editor_string_scenario
---a feature can have multiple features
-
-hook_behat_editor_string_tags
---later we can hook and limit tags as needed.
-
-hook_behat_editor_string_steps
 
 You can add other types here hook_behat_editor_string_types
 which later can include Scenario Overviews, Backgrounds etc.
 
 And for parsing we can consider gherkins table and PyString features.
 
+### FeatureContext.php
+
+The FeatureContext.php can be extended if you need custom gherkin commands.
+For example you may need a longer wait and the I wait is not good enough.
+
+And I wait longer.
+
+You would get a warning that the Step does not exists and behat would show you how
+to make it.
+
+You would then copy the vender/behat/behat/features/bootstrap/FeatureContex.php file
+to behat/features/bootstrap in the behat_editor module's folder.
+Then you would add that code there.
 
 ### Todo
 
