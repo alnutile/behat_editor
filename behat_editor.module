@@ -324,12 +324,12 @@ function _show_link($file_name, $module_name, $link_text = 'view') {
  */
 function behat_editor_services_resources() {
     $path = drupal_get_path('module', 'behat_editor');
-    return array('behat_editor' =>
+    return array('behat_editor_actions' =>
             array('targeted_actions' => array(
                 'run' => array(
                     'help' => 'Retrieves a Behat Test File',
                     'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_run'),
-                    'callback' => 'behat_editor_run',
+                    'callback' => 'behat_editor_run_api',
                     'access callback' => 'user_access',
                     'access arguments' => array('behat run test'),
                     'access arguments append' => FALSE,
