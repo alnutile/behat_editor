@@ -90,4 +90,8 @@ function behat_editor_run($module, $filename) {
     }
 }
 
+function behat_editor_run_api($data) {
+    watchdog('test_api', print_r($data, 1));
+}
+
 
