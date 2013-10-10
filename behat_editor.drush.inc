@@ -1,7 +1,8 @@
 <?php
 
 use Drupal\BehatEditor\BehatEditorRun,
-    Drupal\BehatEditor\File;
+    Drupal\BehatEditor\File,
+    Drupal\BehatEditor\Files;
 
 /**
  * @file
@@ -19,7 +20,7 @@ function behat_editor_drush_command() {
         'allow-additional-options' => TRUE,
         'aliases' => array('br'),
         'examples' => array(
-            'drush run module_name view.feature' => 'This will use the path of the module_name to run that test'
+            'drush br module_name view.feature' => 'This will use the path of the module_name to run that test'
         ),
         'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
         'arguments' => array(
@@ -34,7 +35,7 @@ function behat_editor_drush_command() {
         'allow-additional-options' => TRUE,
         'aliases' => array('brf'),
         'examples' => array(
-            'drush run module_name 1' => 'This will use the path of the module_name to run that test and 1 means you want to include Javascript'
+            'drush brf module_name 1' => 'This will use the path of the module_name to run that test and 1 means you want to include Javascript'
         ),
         'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
         'arguments' => array(
@@ -73,6 +74,9 @@ function drush_behat_editor_behat_run() {
 
 //@todo add profile switch as well
 function drush_behat_editor_behat_run_folder() {
+    print "Running Tests...\n";
+    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
+    composer_manager_register_autoloader();
     //@todo validate args
     $module = func_get_arg(0);
     if(func_num_args() > 1) {
@@ -81,18 +85,24 @@ function drush_behat_editor_behat_run_folder() {
         $javascript = 0;
     }
 
-    $folder = drupal_get_path('module', $module);
-    $full_path = drupal_realpath($folder);
+    $get = new Files();
+    $files_array = $get->getFilesArray();
+    //find those for this module
+    foreach($files_array as $key => $value) {
+        foreach($value as $file_path => $values) {
+            if($module == $values['module']) {
+                $modules_tests[$file_path] = $values;
+            }
+        }
+    }
+    foreach($modules_tests as $key) {
+        $run = new BehatEditorRun($key);
+        print "Running Test {$key['filename']}...\n";
+        $output = $run->execDrush($javascript);
+        $results = implode("\n\r", $output);
+        drush_print($results);
+    }
 
-    composer_manager_register_autoloader();
-    //@todo get composer to load this
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
-
-    $file_object = array();
-    $run = new BehatEditorRun($file_object);
-    print "Running Tests...\n";
-    $output = $run->execDrushAll($full_path, $javascript);
-    $results = implode("\n\r", $output);
-    return drush_print($results);
+    return "All Tests ran for module $module";
 }
 

@@ -7,6 +7,8 @@
 
 namespace Drupal\BehatEditor;
 
+use Drupal\BehatEditor;
+
 /**
  * Class BehatEditorRun
  * Methods needed to run a test.
@@ -19,6 +21,7 @@ namespace Drupal\BehatEditor;
  */
 
 class BehatEditorRun {
+
     public $behat_path = '';
     public $absolute_file_path = '';
     public $output_file = '';
@@ -37,6 +40,9 @@ class BehatEditorRun {
      * check it comes from the class later one
      */
     public function __construct($file_object) {
+        watchdog('test_file_object', print_r($file_object, 1));
+
+        composer_manager_register_autoloader();
         $path = drupal_get_path('module', 'behat_editor');
         $this->yml_path = drupal_realpath($path) . '/behat/behat.yml';
         $this->behat_path = _behat_editor_behat_bin_folder();
@@ -116,6 +122,7 @@ class BehatEditorRun {
         exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths $tags $this->absolute_file_path", $output);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
+        self::saveResults($output);
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
     }
 
@@ -134,27 +141,7 @@ class BehatEditorRun {
             $tags = "--tags '~@javascript'";
         }
         exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tags $this->absolute_file_path", $output, $return_var);
-        return $output;
-    }
-
-    /**
-     * Used to exec the behat command
-     *
-     * @param bool $javascript
-     *   Javascript true will open up a browser locally
-     *   if the user is running selenium
-     * @return array
-     *
-     * @todo merge with the above command
-     */
-    public function execDrushAll($module_path, $javascript = FALSE) {
-        if($javascript == TRUE) {
-            $tags = '';
-        } else {
-            $tags = "--tags '~@javascript'";
-        }
-        //@todo add profile tag
-        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\"  --format=pretty --no-paths $tags $module_path", $output, $return_var);
+        self::saveResults($output);
         return $output;
     }
 
@@ -208,5 +195,22 @@ class BehatEditorRun {
         $output = array('message' => $message, 'file' => $this->filename, 'error' => TRUE);
         $results = array('file' => $file_message, 'test' => $output, 'error' => 1, 'message' => $message);
         return $results;
+    }
+
+    /**
+     * Save the results to the DB
+     *
+     * @param $output
+     *   Test results from exec
+     *
+     */
+    private function saveResults($output) {
+        $saveResults = new Results();
+        $saveResults->fields['filename'] = $this->filename;
+        $saveResults->fields['module'] = $this->module;
+        $saveResults->fields['results'] = serialize($output);
+        $saveResults->fields['duration'] = array_pop($output);;
+        $saveResults->fields['created'] = REQUEST_TIME;
+        $saveResults->insert();
     }
 }
