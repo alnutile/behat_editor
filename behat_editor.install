@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * Add db to track test results
+ */
+function behat_editor_update_7001() {
+    $name = 'behat_editor_results';
+    $schema = behat_editor_schema();
+    $table = $schema[$name];
+    db_create_table($name, $table);
+}
+
+
+
+/**
+ * Version 2 of the CTools schema.
+ */
+function behat_editor_schema() {
+
+    $schema['behat_editor_results'] = array(
+        'description' => 'Save test results for later reference.',
+        'fields' => array(
+            'rid' => array(
+                'type' => 'serial',
+                'description' => 'Result ID',
+                'not null' => TRUE,
+            ),
+            'filename' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'The File name of test',
+            ),
+            'module' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'The module of this file',
+            ),
+            'results' => array(
+                'type' => 'blob',
+                'size' => 'normal',
+                'description' => 'Serialize results',
+                'serialize' => TRUE,
+            ),
+            'duration' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Duration output of behat',
+            ),
+            'created' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'description' => 'Test created at as Unix timestamp.',
+            ),
+        ),
+        'primary key' => array('rid'),
+    );
+
+    return $schema;
+}
