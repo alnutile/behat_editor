@@ -80,7 +80,6 @@ class File {
             $path = DRUPAL_ROOT . '/' . $sub_folder;
             $full_path_with_file = $path . '/' . $this->filename;
         }
-
         $file_text = self::read_file($full_path_with_file);
         $file_data = array(
             'module' => $this->module,

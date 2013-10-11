@@ -34,7 +34,6 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     //  build / edit a test
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
 
-
     $path = drupal_get_path('module', 'behat_editor');
     $form['#attached']['js']['behat_editor_tags'] = $path . '/js/jquery.behat_editor.apply_tags.js';
     $form['#attached']['js']['behat_editor_close'] = $path . '/js/jquery.behat_editor.close_button.js';
@@ -59,7 +58,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
         '#type' => 'link',
         '#title' => t('Run Test'),
         '#name' => 'run_test',
-        '#href' => "admin/behat/run/$module/$filename",
+        '#href' => "behat_editor_v1/behat_editor_actions/feature/create_run/$module/{$file_info['filename_no_ext']}",
         '#attributes' => array('class' => array('btn', 'btn-success', 'run')),
     );
 
