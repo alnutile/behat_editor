@@ -34,9 +34,10 @@
                     request.setRequestHeader("X-CSRF-Token", token);
                 },
                 url: url,
-                data: parameters,
+                data: JSON.stringify(parameters),
                 dataType: "json",
-                async: false
+                async: false,
+                contentType: 'application/json'
             }
         ).done(function(data){
                 results = data;

@@ -157,7 +157,7 @@ class File {
         $response = file_put_contents("{$full_path}/{$this->filename}", $this->feature);
         if($response == FALSE) {
             watchdog('behat_editor', "File could not be made...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
-            $output = array('message' => "Error file could not be save", 'file' => $response, 'error' => '1');
+            $output = array('message' => "Error file could not be saved", 'file' => $response, 'error' => '1');
         } else {
             $gherkin_linkable_path = self::_linkable_path($this->module, $this->filename);
             $url = url($gherkin_linkable_path, $options = array('absolute' => TRUE));
