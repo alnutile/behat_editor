@@ -104,35 +104,6 @@ function behat_editor_menu() {
 
 
 /**
- * Create a token for non-safe REST calls.
- **/
-function behat_editor_header() {
-    $curl_get = curl_init();
-    curl_setopt_array($curl_get, array(
-        CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_URL => url(NULL, array('absolute' => TRUE)) . 'services/session/token',
-    ));
-    $csrf_token = curl_exec($curl_get);
-    curl_close($curl_get);
-    //drupal_add_http_header('X-CSRF-Token', $csrf_token, $append = FALSE);
-    //return $csrf_token;
-    return 'X-CSRF-Token: ' . $csrf_token;
-}
-
-function behat_editor_html_head_alter(&$head_elements) {
-//    $token = behat_editor_header();
-//    $head_elements['behat_editor'] = array(
-//        '#type' => 'html_tag',
-//        '#tag' => 'meta',
-//        '#attributes' => array(
-//            'http-equiv' => 'X-CSRF-Token',
-//            'content' => $token
-//        ),
-//    );
-//    dpm($head_elements);
-}
-
-/**
  * Implements hook_theme().
  */
 function behat_editor_theme() {
@@ -481,13 +452,6 @@ function behat_editor_services_resources() {
                             'source' => array('path' => 3),
                             'optional' => FALSE,
                         ),
-                        array(
-                            'name' => 'method',
-                            'type' => 'string',
-                            'description' => 'Informs Run that what steps to take eg view or create then view.',
-                            'source' => array('data' => 'method'),
-                            'optional' => FALSE,
-                        ),
                     ),
                 ),
                 'create_run' => array(
@@ -517,13 +481,6 @@ function behat_editor_services_resources() {
                             'type' => 'string',
                             'description' => 'The name of the file',
                             'source' => array('path' => 3),
-                            'optional' => FALSE,
-                        ),
-                        array(
-                            'name' => 'method',
-                            'type' => 'string',
-                            'description' => 'Informs Run that what steps to take eg view or create then view.',
-                            'source' => array('data' => 'method'),
                             'optional' => FALSE,
                         ),
                         array(
