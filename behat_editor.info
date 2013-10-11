@@ -9,4 +9,4 @@ dependencies[] = ctools
 dependencies[] = services
 features[ctools][] = services:services:3
 features[features_api][] = api:2
-features[services_endpoint][] = behat_editor_v1
+features[services_endpoint][] = behat_editor_services
