@@ -38,3 +38,21 @@ function behat_editor_save($module, $filename) {
         exit();
     }
 }
+
+function behat_editor_update_api($module, $filename, $query) {
+    watchdog('test_module', print_r($module, 1));
+    watchdog('test_file', print_r($filename, 1));
+    watchdog('test_api_query', print_r($query, 1));
+    composer_manager_register_autoloader();
+    $filename = $filename . ".feature";
+    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
+    $file = new File($query, $module, $filename, 'file');
+    $response = $file->save_html_to_file();
+    if($response['file'] != FALSE){
+        $file_object = $file->get_file_info();
+        $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $file_object);
+        return $results;
+    } else {
+        return array('file' => array('message' => $response), 'error' => 1);
+    }
+}

@@ -75,8 +75,8 @@ function behat_editor_menu() {
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_add_form'),
         'access arguments' => array('behat add test'),
-        'file' => 'behat_editor_add.inc',
-        'file path' => "$path/includes/"
+        'file' => 'behat_editor_add_form.inc',
+        'file path' => "$path/tpl/"
     );
     $items['admin/behat/edit/%/%'] = array(
         'page callback' => 'drupal_get_form',
@@ -310,4 +310,48 @@ function _show_link($file_name, $module_name, $link_text = 'view') {
         $results = 'not allowed';
     }
     return $results;
+}
+
+
+/**
+ * Used in the forms
+ */
+function run_test_array($filename, $module) {
+   return  array(
+        '#type' => 'link',
+        '#title' => t('Run Test'),
+        '#name' => 'run_test',
+        '#href' => "behat_editor_v1/behat_editor_actions/feature/create_run/$module/$filename",
+        '#attributes' => array('class' => array('btn', 'btn-success', 'run')),
+    );
+}
+
+function add_test_array($filename, $module) {
+    return array(
+        '#type' => 'link',
+        '#title' => t('Add Test'),
+        '#name' => 'add_test',
+        '#href' => "behat_editor_v1/behat_editor_actions",
+        '#attributes' => array('class' => array('btn', 'btn-info', 'add'), 'data-filename' => $filename, 'data-module' => $module),
+    );
+}
+
+function admin_button_array(){
+    return array(
+        '#type' => 'link',
+        '#title' => t('Admin'),
+        '#name' => 'admin_area',
+        '#href' => "admin/behat/index",
+        '#attributes' => array('class' => array('btn', 'btn-warning', 'back')),
+    );
+}
+
+function update_test_array($filename, $module) {
+    return array(
+        '#type' => 'link',
+        '#title' => t('Save Test'),
+        '#name' => 'save_test',
+        '#href' => "behat_editor_v1/behat_editor_actions/$module/$filename",
+        '#attributes' => array('class' => array('btn', 'btn-info', 'save')),
+    );
 }
