@@ -102,6 +102,36 @@ function behat_editor_menu() {
     return $items;
 }
 
+
+/**
+ * Create a token for non-safe REST calls.
+ **/
+function behat_editor_header() {
+    $curl_get = curl_init();
+    curl_setopt_array($curl_get, array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => url(NULL, array('absolute' => TRUE)) . 'services/session/token',
+    ));
+    $csrf_token = curl_exec($curl_get);
+    curl_close($curl_get);
+    //drupal_add_http_header('X-CSRF-Token', $csrf_token, $append = FALSE);
+    //return $csrf_token;
+    return 'X-CSRF-Token: ' . $csrf_token;
+}
+
+function behat_editor_html_head_alter(&$head_elements) {
+//    $token = behat_editor_header();
+//    $head_elements['behat_editor'] = array(
+//        '#type' => 'html_tag',
+//        '#tag' => 'meta',
+//        '#attributes' => array(
+//            'http-equiv' => 'X-CSRF-Token',
+//            'content' => $token
+//        ),
+//    );
+//    dpm($head_elements);
+}
+
 /**
  * Implements hook_theme().
  */
@@ -324,27 +354,154 @@ function _show_link($file_name, $module_name, $link_text = 'view') {
  */
 function behat_editor_services_resources() {
     $path = drupal_get_path('module', 'behat_editor');
-    return array('behat_editor_actions' =>
-            array('targeted_actions' => array(
+    $resources = array(
+        'behat_editor_actions' => array(
+            'retrieve' => array(
+                'help' => t('This method returns a job.'),
+                'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_view'),
+                'callback' => 'behat_editor_view_form_service',
+                'access callback' => '_behat_rest',
+                'args' => array(
+                    array(
+                        'name' => 'module',
+                        'type' => 'string',
+                        'description' => t('The id of the job to get.'),
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'filename',
+                        'type' => 'string',
+                        'description' => t('The id of the job to get.'),
+                        'source' => array('path' => '1'),
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'create' => array(
+                'help' => t('This method returns a job.'),
+                'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_view'),
+                'callback' => 'behat_editor_view_form_service',
+                'access callback' => '_behat_rest',
+                'args' => array(
+                    array(
+                        'name' => 'module',
+                        'type' => 'string',
+                        'description' => t('The id of the job to get.'),
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'filename',
+                        'type' => 'string',
+                        'description' => t('The id of the job to get.'),
+                        'source' => array('path' => '1'),
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'update' => array(
+                'help' => t('This method returns a job.'),
+                'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_view'),
+                'callback' => 'behat_editor_view_form_service',
+                'access callback' => '_behat_rest',
+                'args' => array(
+                    array(
+                        'name' => 'module',
+                        'type' => 'string',
+                        'description' => t('The id of the job to get.'),
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'filename',
+                        'type' => 'string',
+                        'description' => t('The id of the job to get.'),
+                        'source' => array('path' => '1'),
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'delete' => array(
+                'help' => t('This method returns a job.'),
+                'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_view'),
+                'callback' => 'behat_editor_view_form_service',
+                'access callback' => '_behat_rest',
+                'args' => array(
+                    array(
+                        'name' => 'module',
+                        'type' => 'string',
+                        'description' => t('The id of the job to get.'),
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'filename',
+                        'type' => 'string',
+                        'description' => t('The id of the job to get.'),
+                        'source' => array('path' => '1'),
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'index' => array(
+                'help' => t('Shows all module features files'),
+                'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_index'),
+                'callback' => 'behat_editor_index',
+                'access callback' => 'user_access',
+                'access arguments' => array('behat run test'),
+            ),
+            'targeted_actions' => array(
                 'run' => array(
                     'help' => 'Retrieves a Behat Test File',
                     'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_run'),
                     'callback' => 'behat_editor_run_api',
-                    'access callback' => 'user_access',
-                    'access arguments' => array('behat run test'),
-                    'access arguments append' => FALSE,
+                    'access callback' => '_behat_rest',
+                    'access arguments' => array('view'),
+                    'access arguments append' => TRUE,
                     'args' => array(
                         array(
-                            'name' => 'method',
+                            'name' => 'action',
                             'type' => 'string',
-                            'description' => 'View or Create new file before running the tests',
-                            'source' => array('data'),
+                            'description' => 'The name of the file',
+                            'source' => array('path' => 1),
                             'optional' => FALSE,
-                        ),
+                            ),
                         array(
                             'name' => 'module',
                             'type' => 'string',
-                            'description' => 'The module which this feature is stored',
+                            'description' => 'The name of the file',
+                            'source' => array('path' => 2),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'filename',
+                            'type' => 'string',
+                            'description' => 'The name of the file',
+                            'source' => array('path' => 3),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'method',
+                            'type' => 'string',
+                            'description' => 'Informs Run that what steps to take eg view or create then view.',
+                            'source' => array('data' => 'method'),
+                            'optional' => FALSE,
+                        ),
+                    ),
+                ),
+                'create_run' => array(
+                    'help' => 'Create the test and run',
+                    'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_run'),
+                    'callback' => 'behat_editor_create_and_run_api',
+                    'access callback' => '_behat_rest',
+                    'access arguments' => array('view'),
+                    'access arguments append' => TRUE,
+                    'args' => array(
+                        array(
+                            'name' => 'action',
+                            'type' => 'string',
+                            'description' => 'action',
                             'source' => array('path' => 1),
                             'optional' => FALSE,
                         ),
@@ -355,9 +512,36 @@ function behat_editor_services_resources() {
                             'source' => array('path' => 2),
                             'optional' => FALSE,
                         ),
+                        array(
+                            'name' => 'filename',
+                            'type' => 'string',
+                            'description' => 'The name of the file',
+                            'source' => array('path' => 3),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'method',
+                            'type' => 'string',
+                            'description' => 'Informs Run that what steps to take eg view or create then view.',
+                            'source' => array('data' => 'method'),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'scenario',
+                            'type' => 'string',
+                            'description' => 'Informs Run that what steps to take eg view or create then view.',
+                            'source' => array('data' => 'scenario'),
+                            'optional' => FALSE,
+                        ),
                     ),
                 ),
             ),
         ),
-    );
+  );
+  return $resources;
+}
+
+function _behat_rest(){
+    watchdog('test_rest_access', print_r('Test', 1));
+    return TRUE;
 }
