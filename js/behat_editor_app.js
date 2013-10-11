@@ -39,7 +39,6 @@
                 async: false
             }
         ).done(function(data){
-                console.log(data);
                 results = data;
          });
         return results;
