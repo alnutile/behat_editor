@@ -49,7 +49,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
         '#type' => 'link',
         '#title' => t('Run Test'),
         '#name' => 'run_test',
-        '#href' => "admin/behat/run/$module/$filename",
+        '#href' => "behat_editor_v1/behat_editor_actions/feature/run/$module/{$file_info['filename_no_ext']}",
         '#attributes' => array('class' => array('btn', 'btn-success', 'run')),
     );
 
@@ -80,4 +80,9 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     );
 
     return $form;
+}
+
+function behat_editor_view_form_service($module, $filename) {
+    watchdog('test_view', print_r("You are at view", 1));
+    return array(1, 2, 3);
 }

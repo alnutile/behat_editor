@@ -90,8 +90,60 @@ function behat_editor_run($module, $filename) {
     }
 }
 
-function behat_editor_run_api($data) {
-    watchdog('test_api', print_r($data, 1));
+function behat_editor_run_api($action, $module, $filename, $query) {
+    watchdog('test_run_api', print_r($query, 1));
+    composer_manager_register_autoloader();
+    $filename = "$filename.feature";
+    //@todo include these in autoloader
+    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
+    module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
+
+    $file = new File($query, $module, $filename, FALSE);
+    $file_object = $file->get_file_info();
+    watchdog('test_file_object', print_r($file, 1));
+    $res = new BehatEditorRun($file_object);
+    $run_test_response = $res->exec();
+    $response = $run_test_response['response'];
+
+    //Check the Response from Running the Tests
+    if($response == 0) {
+        $results = $res->generateReturnPassOutput();
+        return $results;
+    } else {
+        $results = $res->generateReturnFailOutput();
+        return $results;
+    }
 }
+
+function behat_editor_create_and_run_api($action, $module, $filename, $query) {
+    watchdog('test_create_run_api', print_r($query, 1));
+    composer_manager_register_autoloader();
+    $filename = "$filename.feature";
+    //@todo include these in autoloader
+    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
+    module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
+    //Make sure it is a good request
+    $file = new File($query, $module, $filename, 'file');
+    watchdog('test_file_object', print_r($file, 1));
+    $response = $file->save_html_to_file();
+    //Make sure the file was made
+    if($response['file'] != FALSE){
+        $file_object = $file->get_file_info();
+        $res = new BehatEditorRun($file_object);
+        $run_test_response = $res->exec();
+        $response = $run_test_response['response'];
+        //Check the Response from Running the Tests
+        if($response == 0) {
+            $results = $res->generateReturnPassOutput();
+            return $results;
+        } else {
+            $results = $res->generateReturnFailOutput();
+            return $results;
+        }
+    } else {
+        return array('message' => $response['message'], 'file' => array('message' => $response), 'error' => 1);
+    }
+}
+
 
 
