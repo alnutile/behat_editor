@@ -46,7 +46,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
         '#attributes' => array('class' => array('col-lg-12', 'well'))
     );
 
-    $form['actions']['run_test'] = run_test_array($file_info['filename_no_ext'] . ".feature", $module, 'run');
+    $form['actions']['run_test'] = run_test_array($file_info['filename_no_ext'], $module, 'run');
     $form['actions']['admin_area'] = admin_button_array();
     $form['actions']['edit_test'] = edit_test_array($file_info['filename_no_ext'] . ".feature", $module);
 
