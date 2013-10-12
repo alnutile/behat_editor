@@ -27,6 +27,7 @@
     }
 
     Drupal.behat_editor.action = function(type, token, parameters, url) {
+        console.log(parameters);
         var results = '';
         $.ajax({
                 type: type,

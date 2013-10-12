@@ -152,7 +152,7 @@ function behat_editor_services_resources() {
                             'description' => 'The name of the file',
                             'source' => array('path' => 3),
                             'optional' => FALSE,
-                        ),
+                        )
                     ),
                 ),
                 'create_run' => array(

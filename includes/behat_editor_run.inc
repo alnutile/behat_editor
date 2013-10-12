@@ -99,6 +99,7 @@ function behat_editor_run($module, $filename) {
  * @return array
  */
 function behat_editor_run_api($action, $module, $filename) {
+    watchdog('test_run_as', print_r($action, 1));
     composer_manager_register_autoloader();
     $filename = "$filename.feature";
     //@todo include these in autoloader

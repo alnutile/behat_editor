@@ -38,6 +38,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     $form['#attached']['js']['behat_editor_tags'] = $path . '/js/jquery.behat_editor.apply_tags.js';
     $form['#attached']['js']['behat_editor_close'] = $path . '/js/jquery.behat_editor.close_button.js';
     $form['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
+    $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_run.js';
     $form['#attached']['js']['behat_editor_add'] = $path . '/js/behat_editor_edit.js';
     $form['#attached']['js']['behat_editor_save'] = $path . '/js/behat_editor_save.js';
     $form['#attached']['js']['behat_editor_sbuilder'] = $path . '/js/behat_editor_scenario_builder.js';
@@ -56,7 +57,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     $form['actions']['save_test'] = update_test_array($file_info['filename_no_ext'], $module);
 
-    $form['actions']['run_test'] = run_test_array($file_info['filename_no_ext'], $module);
+    $form['actions']['run_test'] = run_test_array($file_info['filename_no_ext'], $module, 'create_run');
 
     $form['actions']['admin_area'] = admin_button_array();
 

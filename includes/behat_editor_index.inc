@@ -14,7 +14,6 @@
  */
 
 function behat_editor_index() {
-    watchdog('test_index', print_r("Running Index Service", 1));
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     drupal_add_library('behat_editor', 'data_table');

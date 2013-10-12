@@ -36,6 +36,7 @@ function behat_editor_add_form($form, $form_state) {
     $form['#attached']['js']['behat_editor_tags'] = $path . '/js/jquery.behat_editor.apply_tags.js';
     $form['#attached']['js']['behat_editor_close'] = $path . '/js/jquery.behat_editor.close_button.js';
     $form['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
+    $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_run.js';
     $form['#attached']['js']['behat_editor_add'] = $path . '/js/behat_editor_add.js';
     $form['#attached']['js']['behat_editor_save'] = $path . '/js/behat_editor_save.js';
     $form['#attached']['js']['behat_editor_sbuilder'] = $path . '/js/behat_editor_scenario_builder.js';
@@ -52,10 +53,8 @@ function behat_editor_add_form($form, $form_state) {
         '#attributes' => array('class' => array('col-md-12', 'well'))
     );
 
-    $form['actions']['run_test'] = run_test_array($filename_no_ext, $default_path);
-
+    $form['actions']['run_test'] = run_test_array($filename_no_ext, $default_path, 'create_run');
     $form['actions']['add_test'] = add_test_array($filename_no_ext, $default_path);
-
     $form['actions']['admin_area'] = admin_button_array();
 
     $form['left-side'] = array(

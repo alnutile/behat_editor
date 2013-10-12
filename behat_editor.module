@@ -302,12 +302,12 @@ function _show_link($file_name, $module_name, $link_text = 'view') {
 /**
  * Used in the forms
  */
-function run_test_array($filename, $module) {
+function run_test_array($filename, $module, $action = 'run') {
    return  array(
         '#type' => 'link',
         '#title' => t('Run Test'),
         '#name' => 'run_test',
-        '#href' => "behat_editor_v1/behat_editor_actions/feature/create_run/$module/$filename",
+        '#href' => "behat_editor_v1/behat_editor_actions/feature/$action/$module/$filename",
         '#attributes' => array('class' => array('btn', 'btn-success', 'run')),
     );
 }
@@ -339,5 +339,15 @@ function update_test_array($filename, $module) {
         '#name' => 'save_test',
         '#href' => "behat_editor_v1/behat_editor_actions/$module/$filename",
         '#attributes' => array('class' => array('btn', 'btn-info', 'save')),
+    );
+}
+
+function edit_test_array($filename, $module) {
+    return array(
+        '#type' => 'link',
+        '#name' => 'edit_test',
+        '#title' => t('Edit Test'),
+        '#href' => "admin/behat/edit/$module/$filename",
+        '#attributes' => array('class' => array('btn', 'btn-info', 'edit')),
     );
 }
