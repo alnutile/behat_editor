@@ -131,6 +131,18 @@ class File {
     }
 
     /**
+     * Read file
+     *
+     * @param $full_path_with_file
+     * @return string
+     */
+    public function delete_file() {
+            $file =self::get_file_info();
+            return $file['absolute_path_with_file'];
+    }
+
+
+    /**
      * Quick Helper to figure out save path
      * based on permissions.
      *
@@ -146,6 +158,7 @@ class File {
             return $output;
         }
     }
+
 
     /**
      * Save to module folder

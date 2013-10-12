@@ -94,9 +94,9 @@ function behat_editor_services_resources() {
                 ),
                 'delete' => array(
                     'help' => t('Method to delete a test file'),
-                    'callback' => '_behat_editor_coming_soon',
+                    'callback' => 'behat_editor_delete_api',
                     'access callback' => '_behat_rest',
-                    'access arguments' => array('behat view test'),
+                    'access arguments' => array('behat delete test'),
                     'access arguments append' => TRUE,
                     'args' => array(
                         array(
