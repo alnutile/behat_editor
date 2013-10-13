@@ -17,6 +17,10 @@
                     "module": module
                 };
                 var data = Drupal.behat_editor.action('POST', token, parameters, url);
+                if(data.error == 0) {
+                    alert("You will be redirected to the Edit page for file " + filename);
+                    window.location.replace("/admin/behat/edit/" + module + "/" + filename + ".feature");
+                }
                 Drupal.behat_editor.renderMessage(data);
             });
         }
