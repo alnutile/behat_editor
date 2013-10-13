@@ -137,8 +137,20 @@ class File {
      * @return string
      */
     public function delete_file() {
-            $file =self::get_file_info();
-            return $file['absolute_path_with_file'];
+            $file = self::get_file_info();
+            $response = file_unmanaged_delete($file['absolute_path_with_file']);
+            if($response == FALSE) {
+                watchdog('behat_editor', "File could not be deleted...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+                $output = array('message' => "Error file could not be deleted", 'file' => $response, 'error' => '1');
+            } else {
+                $gherkin_linkable_path = '';
+                $url = '';
+                $file_url = '';
+                $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+                watchdog('behat_editor', "%date File deleted %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
+                $output =  array('message' => t('@date: <br> File deleted !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
+            }
+            return $output;
     }
 
 

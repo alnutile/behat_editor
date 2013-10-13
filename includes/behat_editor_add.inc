@@ -16,6 +16,7 @@ function behat_editor_create_api($query) {
     if($response['file'] != FALSE){
         $file_object = $file->get_file_info();
         $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $file_object);
+        drupal_set_message("Your file {$filename} has been saved. You are now in edit mode");
         return $results;
     } else {
         return array('file' => array('message' => $response), 'error' => 1);
