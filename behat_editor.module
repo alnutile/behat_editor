@@ -342,6 +342,16 @@ function update_test_array($filename, $module) {
     );
 }
 
+function delete_test_array($filename, $module) {
+    return array(
+        '#type' => 'link',
+        '#title' => t('Delete Test'),
+        '#name' => 'delete_test',
+        '#href' => "behat_editor_v1/behat_editor_actions/$module/$filename",
+        '#attributes' => array('class' => array('btn', 'btn-danger', 'delete'), 'data-filename' => $filename),
+    );
+}
+
 function edit_test_array($filename, $module) {
     return array(
         '#type' => 'link',
