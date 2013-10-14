@@ -80,7 +80,6 @@ class File {
             $path = DRUPAL_ROOT . '/' . $sub_folder;
             $full_path_with_file = $path . '/' . $this->filename;
         }
-
         $file_text = self::read_file($full_path_with_file);
         $file_data = array(
             'module' => $this->module,
@@ -132,6 +131,30 @@ class File {
     }
 
     /**
+     * Read file
+     *
+     * @param $full_path_with_file
+     * @return string
+     */
+    public function delete_file() {
+            $file = self::get_file_info();
+            $response = file_unmanaged_delete($file['absolute_path_with_file']);
+            if($response == FALSE) {
+                watchdog('behat_editor', "File could not be deleted...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+                $output = array('message' => "Error file could not be deleted", 'file' => $response, 'error' => '1');
+            } else {
+                $gherkin_linkable_path = '';
+                $url = '';
+                $file_url = '';
+                $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+                watchdog('behat_editor', "%date File deleted %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
+                $output =  array('message' => t('@date: <br> File deleted !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
+            }
+            return $output;
+    }
+
+
+    /**
      * Quick Helper to figure out save path
      * based on permissions.
      *
@@ -148,6 +171,7 @@ class File {
         }
     }
 
+
     /**
      * Save to module folder
      *
@@ -158,7 +182,7 @@ class File {
         $response = file_put_contents("{$full_path}/{$this->filename}", $this->feature);
         if($response == FALSE) {
             watchdog('behat_editor', "File could not be made...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
-            $output = array('message' => "Error file could not be save", 'file' => $response, 'error' => '1');
+            $output = array('message' => "Error file could not be saved", 'file' => $response, 'error' => '1');
         } else {
             $gherkin_linkable_path = self::_linkable_path($this->module, $this->filename);
             $url = url($gherkin_linkable_path, $options = array('absolute' => TRUE));

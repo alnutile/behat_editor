@@ -29,7 +29,8 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     $form['#theme'] = array('theme_behat_editor_view');
 
     $form['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
-    $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_view.js';
+    $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_run.js';
+    $form['#attached']['js']['behat_editor_view'] = $path . '/js/behat_editor_view.js';
 
     $form['#attached']['css']['behat_app_css'] = $path . '/css/behat_editor_app.css';
     $form['#attached']['css']['behat_view_css'] = $path . '/css/behat_editor_view.css';
@@ -45,29 +46,10 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
         '#attributes' => array('class' => array('col-lg-12', 'well'))
     );
 
-    $form['actions']['run_test'] = array(
-        '#type' => 'link',
-        '#title' => t('Run Test'),
-        '#name' => 'run_test',
-        '#href' => "admin/behat/run/$module/$filename",
-        '#attributes' => array('class' => array('btn', 'btn-success', 'run')),
-    );
+    $form['actions']['run_test'] = run_test_array($file_info['filename_no_ext'], $module, 'run');
+    $form['actions']['admin_area'] = admin_button_array();
+    $form['actions']['edit_test'] = edit_test_array($file_info['filename_no_ext'] . ".feature", $module);
 
-    $form['actions']['edit_test'] = array(
-        '#type' => 'link',
-        '#name' => 'edit_test',
-        '#title' => t('Edit Test'),
-        '#href' => "admin/behat/edit/$module/$filename",
-        '#attributes' => array('class' => array('btn', 'btn-info', 'edit')),
-    );
-
-    $form['actions']['admin_area'] = array(
-        '#type' => 'link',
-        '#title' => t('Admin'),
-        '#name' => 'admin_area',
-        '#href' => "admin/behat/index",
-        '#attributes' => array('class' => array('btn', 'btn-warning', 'back')),
-    );
 
     $form['question'] = array(
         '#prefix' => '<div class="panel panel-default col-md-6">',
@@ -80,4 +62,9 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     );
 
     return $form;
+}
+
+function behat_editor_view_form_service($module, $filename) {
+    watchdog('test_view', print_r("You are at view", 1));
+    return array(1, 2, 3);
 }

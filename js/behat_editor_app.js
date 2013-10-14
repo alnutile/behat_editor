@@ -13,6 +13,38 @@
 
     Drupal.behat_editor = {};
 
+    Drupal.behat_editor.get_token = function() {
+        var token = 'null';
+        $.ajax(
+            {
+                url:'/services/session/token',
+                async: false
+            }
+        ).done(function(data){
+                token = data;
+        });
+        return token;
+    }
+
+    Drupal.behat_editor.action = function(type, token, parameters, url) {
+        var results = '';
+        $.ajax({
+                type: type,
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-CSRF-Token", token);
+                },
+                url: url,
+                data: JSON.stringify(parameters),
+                dataType: "json",
+                async: false,
+                contentType: 'application/json'
+            }
+        ).done(function(data){
+                results = data;
+         });
+        return results;
+    }
+
     Drupal.behat_editor.setResultsIframe = function(url) {
         $('.test-result').empty();
         var iframe = '<iframe src="' + url + '"';
