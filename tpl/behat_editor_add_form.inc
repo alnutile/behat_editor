@@ -75,7 +75,13 @@ function behat_editor_add_form($form, $form_state) {
     $form['left-side']['existing_test'] = _behat_editor_existing_test();
 
     $form['left-side']['questions'] = _behat_editor_questions_form();
-
+    $title =  "Add File";
+    $body = "The file {$filename} will be added and you will be redirected to the Edit page..";
+    $buttons = array(
+        'save' => array('title' => "Continue", 'class' => array('btn', 'btn-danger', 'confirm-add')),
+        'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
+    );
+    $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
 
     return $form;
 }

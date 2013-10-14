@@ -18,8 +18,13 @@ function behat_editor_index() {
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     drupal_add_library('behat_editor', 'data_table');
     $path = drupal_get_path('module', 'behat_editor');
+    drupal_add_js($path . '/js/behat_editor_app.js');
     drupal_add_js($path . '/js/behat_editor_index.js');
 
+    $build['messages_top'] = array(
+        '#markup' => "<div id='messages'></div>",
+        '#weight' => -100
+    );
 
     $build['actions'] = array(
         '#type' => 'container',
@@ -41,6 +46,14 @@ function behat_editor_index() {
     $build['behat_table'] = array(
         '#markup' => $behat_table
     );
+
+    $title =  "Confirm Delete";
+    $body = "The file <span class='filename'>...</span> will be deleted.";
+    $buttons = array(
+        'save' => array('title' => "Confirm", 'class' => array('btn', 'btn-danger', 'confirm-delete')),
+        'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
+    );
+    $build['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
 
     return $build;
 }

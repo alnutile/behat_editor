@@ -1,7 +1,7 @@
 default:
   extensions:
     Behat\MinkExtension\Extension:
-      base_url:  'http://example.com'
+      base_url:  http://example.com
       browser_name: safari
       javascript_session:  'selenium2'
       goutte:              ~
@@ -20,6 +20,18 @@ localdev:
       goutte:              ~
       selenium2:
 
+phantomjs:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url: http://example.com
+            goutte: ~
+            selenium2:
+                wd_host: "http://localhost:8643/wd/hub"
+
+    formatter:
+        name:               pretty,html
+        parameters:
+            output_path:    null,jm_behat_report.html
 
 Webdriver-saucelabs:
   context:

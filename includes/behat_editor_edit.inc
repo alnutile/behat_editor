@@ -89,6 +89,14 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     $form['left-side']['questions'] = _behat_editor_questions_form();
 
+    $title =  "Confirm Delete";
+    $body = "The file {$filename} will be deleted.";
+    $buttons = array(
+                   'save' => array('title' => "Confirm", 'class' => array('btn', 'btn-danger', 'confirm-delete')),
+                   'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
+               );
+    $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
+
 
     return $form;
 }

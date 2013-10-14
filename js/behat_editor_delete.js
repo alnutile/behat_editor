@@ -4,14 +4,20 @@
             var token = Drupal.behat_editor.get_token();
             var data = {};
             $('a.delete').click(function(e){
+                $('#beModal').modal();
                 e.preventDefault();
-                var url = $(this).attr('href');
+            });
+
+            $('button.confirm-delete').click(function(e){
+                $('#beModal').modal('hide');
+            });
+
+            $('#beModal').on('hide.bs.modal', function(){
+                var url = $('a.delete').attr('href');
                 var parameters = {};
                 var data = Drupal.behat_editor.action('DELETE', token, parameters, url);
-                console.log(data);
                 var filename = $(this).data('filename');
                 if(data.error == 0) {
-                    alert("The file will be deleted " + filename);
                     window.location.replace("/admin/behat/index");
                 }
                 Drupal.behat_editor.renderMessage(data);
