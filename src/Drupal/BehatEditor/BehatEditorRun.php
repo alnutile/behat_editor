@@ -134,13 +134,19 @@ class BehatEditorRun {
      *   if the user is running selenium
      * @return array
      */
-    public function execDrush($javascript = FALSE) {
+    public function execDrush($javascript = FALSE, $tag_include = FALSE) {
         if($javascript == TRUE) {
-            $tags = '';
+            $tags_exclude = '';
         } else {
-            $tags = "--tags '~@javascript'";
+            $tags_exclude = "--tags '~@javascript'";
         }
-        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tags $this->absolute_file_path", $output, $return_var);
+
+        if($tag_include) {
+            $tag_include = "--tags '" . $tag_include . "'";
+        } else {
+            $tags_exclude = '';
+        }
+        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include $tags_exclude $this->absolute_file_path", $output, $return_var);
         self::saveResults($output);
         return $output;
     }

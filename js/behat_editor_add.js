@@ -2,22 +2,38 @@
     Drupal.behaviors.behat_editor_add = {
 
         attach: function (context) {
+            var token = Drupal.behat_editor.get_token();
 
-            $('a.run').click(function(e){
+            $('a.add').click(function(e){
+                $('#beModal').modal();
                 e.preventDefault();
-                var method = 'create-mode';
+            });
+
+            $('button.confirm-add').click(function(e){
+                $('#beModal').modal('hide');
+            });
+
+            $('#beModal').on('hide.bs.modal', function(){
+                var add = $('a.add');
                 var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
                 var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
-                var url = $(this).attr('href');
+                var filename = $(add).data('filename');
+                var module = $(add).data('module');
+                var url = $(add).attr('href');
                 var parameters = {
-                    "method": method,
-                    "scenario[]": scenario_array
+                    "scenario": scenario_array,
+                    "filename": filename,
+                    "module": module
                 };
-                $.post(url, parameters, function(data){
-                    Drupal.behat_editor.renderMessage(data);
-                }, "json");
+                var data = Drupal.behat_editor.action('POST', token, parameters, url);
+                if(data.error == 0) {
+                    window.location.replace("/admin/behat/edit/" + module + "/" + filename + ".feature");
+                }
+                Drupal.behat_editor.renderMessage(data);
             });
         }
+
+
     };
 
 })(jQuery);

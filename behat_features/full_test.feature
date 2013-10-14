@@ -24,8 +24,29 @@ Feature: Add Page
     And I follow "Run Test"
     And I ponder life
     And I should see "Test successful!"
+    Then I follow "Save New Test"
+    And I ponder life
+    And I press "Continue"
+    And I ponder life
+    And I ponder life
+    Then I should see "has been saved"
+    And I follow "Run Test"
+    And I ponder life
     And I follow savedTest
     Then I should not see "This is a tool to help"
     And I should see "@local"
     And I should see "Hello Worlds"
     And I should see "@readonly"
+    Then I get first test name
+    And I view first test
+    And I ponder life
+    And I follow "Edit Test"
+    And I ponder life
+    And I ponder life
+    And I follow "Delete Test"
+    And I ponder life for "2" seconds
+    Then I press "Confirm"
+    And I ponder life
+    Then I should see "File deleted"
+
+
