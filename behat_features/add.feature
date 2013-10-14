@@ -1,19 +1,17 @@
 @javascript
 Feature: Add Page
 
+  Scenario: Log In
+    Given I am on "/user/logout"
+    Then I am on "/user/login"
+    And I fill in "Username" with "admin"
+    And I fill in "Password" with "password"
+    And I press "Log in"
+    And I ponder life
+
   Scenario: User Sees
     Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help to generate "
-
-
-  Scenario: User should see questions form
-    Given I am on "/admin/behat/add"
-    Then I should see "When I go to"
-
-
-  Scenario: User should see Results area
-    Given I am on "/admin/behat/add"
-    Then I should see "Your results will show here..."
 
 
   Scenario: User fills in form
@@ -26,8 +24,7 @@ Feature: Add Page
     Then I should see "Hello World"
 
 
-  @anonymous
-  Scenario: Anonymous user adds 2nd scenario
+  Scenario: User adds 2nd scenario
     Given I am on "/admin/behat/add"
     And I follow "click here"
     And I wait
@@ -37,8 +34,7 @@ Feature: Add Page
     Then I should see "Scenario: Mink Rocks"
     And I should see "Scenario: WikiPedia"
 
-  @anonymous @thisone
-  Scenario: Anonymous user adds and looks at file
+  Scenario: User adds and looks at file
     Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help"
     And I follow "click here"
@@ -51,7 +47,6 @@ Feature: Add Page
     Then I should see "Scenario: WikiPedia"
     Then I should not see "This is a tool to help"
 
-  @anonymous
   Scenario: Anonymous user adds feature tag
     Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help"
@@ -62,10 +57,9 @@ Feature: Add Page
     And I wait
     Then I should see "Test successful!"
     And I follow savedTest
-    Then I should see "@tag1"
+    Then I should see "@local"
     Then I should not see "This is a tool to help"
 
-  @anonymous
   Scenario: 2 Tags 2 Scenarios
     Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help"
@@ -80,11 +74,9 @@ Feature: Add Page
     And I wait
     Then I should see "Test successful!"
     And I follow savedTest
-    Then I should see "@tag1"
-    Then I should see "@tag2"
+    Then I should see "@anonymous"
     Then I should not see "This is a tool to help"
 
-@anonymous
 Scenario: User runs a test
   Given I am on "/admin/behat/add"
   And I fill in "name" with "Run Test Test"

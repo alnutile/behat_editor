@@ -298,6 +298,26 @@ function _show_link($file_name, $module_name, $link_text = 'view') {
     return $results;
 }
 
+/**
+ * Make dekete link to actions but
+ * Protect Private file output and
+ * permissions.
+ *
+ * @param $file_name
+ * @param $module_name
+ * @return string
+ */
+function _show_delete_link($file_name, $module_name, $link_text = 'view') {
+
+    if(strpos($file_name, 'private_') === FALSE && user_access("behat delete test")) {
+        $results = l($link_text, "behat_editor_v1/behat_editor_actions/$module_name/$file_name", array('attributes' => array('class' => array('index-delete-test'), 'data-filename' => $file_name)));
+    } else {
+        $results = 'not allowed';
+    }
+    return $results;
+}
+
+
 
 /**
  * Used in the forms
@@ -315,7 +335,7 @@ function run_test_array($filename, $module, $action = 'run') {
 function add_test_array($filename, $module) {
     return array(
         '#type' => 'link',
-        '#title' => t('Add Test'),
+        '#title' => t('Save New Test'),
         '#name' => 'add_test',
         '#href' => "behat_editor_v1/behat_editor_actions",
         '#attributes' => array('class' => array('btn', 'btn-info', 'add'), 'data-filename' => $filename, 'data-module' => $module),
@@ -360,4 +380,64 @@ function edit_test_array($filename, $module) {
         '#href' => "admin/behat/edit/$module/$filename",
         '#attributes' => array('class' => array('btn', 'btn-info', 'edit')),
     );
+}
+
+/**
+ * For my module I just wanted a more simple form of modal
+ * then what I get out of ctools IMO
+ * thanks to twitter bootstrap which I will
+ * include as a library if needed.
+ *
+ * @param $title
+ * @param $body
+ * @param $buttons
+ * @return string
+ */
+function behat_editor_modal($title, $body, $buttons){
+if(count($buttons)) {
+    $button = array();
+    foreach($buttons as $key) {
+        $classes = (count($key['class'])) ? implode(' ', $key['class']) : '';
+        $btitle = $key['title'];
+        $data = (isset($key['data'])) ? _be_build_data($key['data']) : '';
+        $button[] = "<button type='button' class=\"$classes\" $data>$btitle</button>";
+    }
+$buttons = implode($button);
+
+$buttons = <<<HEREDOC
+<div class="modal-footer">
+    $buttons
+</div>
+HEREDOC;
+}
+
+$modal = <<<HEREDOC
+  <div class="modal fade" id="beModal" tabindex="-1" role="dialog" aria-labelledby="beModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">$title</h4>
+        </div>
+        <div class="modal-body">
+          $body
+        </div>
+        $buttons
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+HEREDOC;
+    return $modal;
+}
+
+/**
+ * Build out the data items in a button
+ */
+
+function _be_build_data($data) {
+    $output = array();
+    foreach($data as $key => $value) {
+        $output[] = "data-{$key}=\"$value\"";
+    }
+    return implode(' ', $output);
 }
