@@ -26,6 +26,7 @@ function behat_editor_drush_command() {
             'module' => 'The module name that the test file is in',
             'filename' => 'The file name to test. Should be in present folder',
             'javascript' => '1 if you want to run javascript based tests 0 if not. Javascript means you are running this locally.',
+            'tag' => 'Add tag to only run test on. Eg @anonymous',
         ),
     );
 
@@ -56,6 +57,12 @@ function drush_behat_editor_behat_run() {
         $javascript = 0;
     }
 
+    if(func_num_args() > 3) {
+        $tag = func_get_arg(3);
+    } else {
+        $tag = '';
+    }
+
     composer_manager_register_autoloader();
     //@todo get composer to load this
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
@@ -66,7 +73,7 @@ function drush_behat_editor_behat_run() {
 
     $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
-    $output = $run->execDrush($javascript);
+    $output = $run->execDrush($javascript, $tag);
     $results = implode("\n\r", $output);
     return drush_print($results);
 }
