@@ -11,9 +11,6 @@
 
             $('button.confirm-add').click(function(e){
                 $('#beModal').modal('hide');
-            });
-
-            $('#beModal').on('hide.bs.modal', function(){
                 var add = $('a.add');
                 var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
                 var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
