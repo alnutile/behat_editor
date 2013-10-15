@@ -210,7 +210,7 @@ class BehatEditorRun {
      *   Test results from exec
      *
      */
-    private function saveResults($output) {
+    protected function saveResults($output) {
         $saveResults = new Results();
         $saveResults->fields['filename'] = $this->filename;
         $saveResults->fields['module'] = $this->module;
