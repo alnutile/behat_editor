@@ -23,6 +23,8 @@ Feature: Add Page
     And I press "see_not_see"
     And I follow "Run Test"
     And I ponder life
+    And I ponder life
+    And I ponder life
     And I should see "Test successful!"
     Then I follow "Save New Test"
     And I ponder life
