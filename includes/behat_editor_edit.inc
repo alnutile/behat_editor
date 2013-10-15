@@ -96,7 +96,8 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
                    'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
                );
     $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
-
+    $form['filename'] = array('#type' => 'hidden', '#default_value' => $file_info['filename_no_ext']);
+    $form['module'] = array('#type' => 'hidden', '#default_value' => $module);
 
     return $form;
 }
