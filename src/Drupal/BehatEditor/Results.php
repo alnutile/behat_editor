@@ -35,7 +35,7 @@ class Results {
 
     static public function getResultsForFile($module, $filename) {
         $query = db_select('behat_editor_results', 'b');
-        $query->fields('b', array('rid', 'filename', 'module', 'results', 'duration', 'created'));
+        $query->fields('b');
         $query->condition('b.filename', $filename, 'LIKE');
         $query->condition('b.module', $module, 'LIKE');
         $query->orderBy('b.created', 'DESC');

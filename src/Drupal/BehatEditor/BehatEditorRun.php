@@ -121,8 +121,9 @@ class BehatEditorRun {
         //  Could save from writing to the drive
         exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths $tags $this->absolute_file_path", $output);
         $this->file_array = $output;
+        //@todo why did I not go with exec return_var
         $response = is_array($output) ? 0 : 1;
-        self::saveResults($output);
+        self::saveResults($output, $response);
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
     }
 
@@ -147,7 +148,7 @@ class BehatEditorRun {
             $tags_exclude = '';
         }
         exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include $tags_exclude $this->absolute_file_path", $output, $return_var);
-        self::saveResults($output);
+        self::saveResults($output, $return_var);
         return $output;
     }
 
@@ -210,13 +211,14 @@ class BehatEditorRun {
      *   Test results from exec
      *
      */
-    protected function saveResults($output) {
+    protected function saveResults($output, $return_var = 0) {
         $saveResults = new Results();
         $saveResults->fields['filename'] = $this->filename;
         $saveResults->fields['module'] = $this->module;
         $saveResults->fields['results'] = serialize($output);
         $saveResults->fields['duration'] = array_pop($output);;
         $saveResults->fields['created'] = REQUEST_TIME;
+        $saveResults->fields['status'] = $return_var;
         $saveResults->insert();
     }
 }

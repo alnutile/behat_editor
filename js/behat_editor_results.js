@@ -13,17 +13,24 @@
                 var rows = results['data'];
                 $.each(rows, function(key, value){
                     var date = new Date(value["created"]*1000);
-                    table[key] = [value["filename"], value["module"], value["duration"], date.format('Y-m-d H:i')]
+                    var status;
+                    if(value['status'] == 0 ) {
+                        status = '<i class="glyphicon glyphicon-thumbs-up"></i>';
+                    } else {
+                        status = '<i class="glyphicon glyphicon-thumbs-down"></i>';
+                    }
+                    table[key] = [status, value["duration"], date.format('Y-m-d H:i'), value["rid"]]
                 });
 
                 $('#past-results-table').dataTable(
                     {
                         "aaData": table,
                         "aoColumns": [
-                            {"sTitle": "Filename"},
-                            {"sTitle": "Module"},
+                            {"sTitle": "Results"},
                             {"sTitle": "Duration"},
-                            {"sTitle": "Date"}
+                            {"sTitle": "Date"},
+                            {"sTitle": "View"}
+
                         ]
                     }
                 );

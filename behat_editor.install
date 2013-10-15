@@ -57,9 +57,32 @@ function behat_editor_schema() {
                 'not null' => FALSE,
                 'description' => 'Test created at as Unix timestamp.',
             ),
+            'status' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => '0 for pass 1 for fail',
+            )
         ),
         'primary key' => array('rid'),
     );
 
     return $schema;
+}
+
+
+
+/**
+ * Add status field for pass fail results to BehatEditorResults table
+ */
+function behat_editor_update_7002() {
+    if (!db_field_exists('behat_editor_results', 'status')) {
+        db_add_field('behat_editor_results', 'status', array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => '0 for pass 1 for fail',
+            )
+        );
+    }
 }
