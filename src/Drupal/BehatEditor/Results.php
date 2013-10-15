@@ -33,4 +33,19 @@ class Results {
         return $insert;
     }
 
+    static public function getResultsForFile($module, $filename) {
+        $query = db_select('behat_editor_results', 'b');
+        $query->fields('b', array('rid', 'filename', 'module', 'results', 'duration', 'created'));
+        $query->condition('b.filename', $filename, 'LIKE');
+        $query->condition('b.module', $module, 'LIKE');
+        $result = $query->execute();
+        if ($result) {
+            foreach ($result as $record) {
+                $date = format_date($record->created, $type = 'custom', $format = 'Y-m-d H:i');
+                $rows[] = array($record->filename, $record->module, $record->duration, $date);
+            }
+        }
+        return array('results' => $rows, 'error' => 0);
+    }
+
 }

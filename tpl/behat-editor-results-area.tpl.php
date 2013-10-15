@@ -2,17 +2,19 @@
     $messages =  array('Working on things...', 'Give me a moment....', 'Doing as you command...');
     $message = array_rand($messages, 1);
 ?>
-<div class="panel panel-default col-md-5 col-md-pull-12 col-md-offset-1">
-    <h4>Your results will show here...</h4>
-    <div id="messages">
-        <div class="alert alert-success running-tests">
-            <?php print $messages[$message]; ?><img src='/<?php echo drupal_get_path('module','behat_editor'); ?>/images/ajax-loader.gif'>
+<div id="collapseOne" class="panel-collapse collapse in">
+    <div class="panel-body">
+        <h4>Your results will show here...</h4>
+            <div id="messages">
+                <div class="alert alert-success running-tests hidden">
+                    <?php print $messages[$message]; ?><img src='/<?php echo drupal_get_path('module','behat_editor'); ?>/images/ajax-loader.gif'>
+                </div>
+            <div class="alert alert-success saving-tests">
+                Saving Test... <img src='/<?php echo drupal_get_path('module','behat_editor'); ?>/images/ajax-loader.gif'>
+            </div>
         </div>
-        <div class="alert alert-success saving-tests">
-            Saving Test... <img src='/<?php echo drupal_get_path('module','behat_editor'); ?>/images/ajax-loader.gif'>
-        </div>
-    </div>
-    <div class='test-result'>
+        <div class='test-result'>
 
+        </div>
     </div>
 </div>

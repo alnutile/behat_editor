@@ -10,9 +10,6 @@
 
             $('button.confirm-delete').click(function(e){
                 $('#beModal').modal('hide');
-            });
-
-            $('#beModal').on('hide.bs.modal', function(){
                 var url = $('a.delete').attr('href');
                 var parameters = {};
                 var data = Drupal.behat_editor.action('DELETE', token, parameters, url);
