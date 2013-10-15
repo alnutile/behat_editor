@@ -14,7 +14,13 @@ Feature: Add Page
     Then I should see "This is a tool to help to generate "
     And I fill in "edit-name" with "Hello Worlds"
     And I press "Name it"
+    And I fill in "edit-url" with "http://en.wikipedia.org/wiki/Main_Page"
+    And I press "Add"
+    And I fill in "see_not_see_some_text" with "Wiki"
+    And I press "see_not_see"
     And I follow "Run Test"
+    And I ponder life
+    And I ponder life
     And I ponder life
     And I should see "Test successful!"
     And I fill in sectionOneTag

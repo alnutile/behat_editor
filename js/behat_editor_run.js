@@ -15,8 +15,10 @@
             }
         ).done(function(data){
                 results = data;
-                callbacks = ["Drupal.behat_editor.output_results(results, 'row')", "Drupal.behat_editor.results_modal(context)"];
-                Drupal.behat_editor.get_results(context, callbacks);
+                if($('#past-results-table').length) {
+                    callbacks = ["Drupal.behat_editor.output_results(results, 'row')", "Drupal.behat_editor.results_modal(context)"];
+                    Drupal.behat_editor.get_results(context, callbacks);
+                };
                 Drupal.behat_editor.renderMessage(data);
             });
     };
