@@ -1,7 +1,9 @@
 (function ($) {
     $(document).bind("ajaxSend", function(){
+        Drupal.behat_editor.buttons('disable');
         $('.running-tests').fadeIn();
     }).bind("ajaxComplete", function(){
+        Drupal.behat_editor.buttons('enable');
         $('.running-tests').fadeOut();
     });
 
@@ -60,7 +62,7 @@
                     eval(value);
                 });
         });
-    }
+    };
 
     Drupal.behat_editor.setResultsIframe = function(url) {
         $('.test-result').empty();
@@ -106,12 +108,7 @@
 
 
     Drupal.behat_editor.buttons = function(state) {
-        console.log('running disable ' + state);
-        if(state == 'disable') {
-            $('div.actions a').hide();
-        } else {
-            $('div.actions a').show();
-        }
+        $('div.actions a').toggleClass('disabled');
     }
 
     Drupal.behat_editor.renderMessageCustom = function(message, error_type, context) {
