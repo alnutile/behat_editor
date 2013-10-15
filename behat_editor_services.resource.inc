@@ -136,7 +136,7 @@ function behat_editor_services_resources() {
                         array(
                             'name' => 'action',
                             'type' => 'string',
-                            'description' => 'The name of the action eg run',
+                            'description' => 'The name of the action eg run @todo why is this here?',
                             'source' => array('path' => 1),
                             'optional' => FALSE,
                         ),
@@ -167,7 +167,7 @@ function behat_editor_services_resources() {
                         array(
                             'name' => 'action',
                             'type' => 'string',
-                            'description' => 'Name of the action eg create_run',
+                            'description' => 'Name of the action eg create_run @todo why is this here?',
                             'source' => array('path' => 1),
                             'optional' => FALSE,
                         ),
@@ -192,6 +192,37 @@ function behat_editor_services_resources() {
                             'source' => array('data' => 'scenario'),
                             'optional' => FALSE,
                         ),
+                    ),
+                ),
+                'results' => array(
+                    'help' => 'Show results related to a test',
+                    'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_results'),
+                    'callback' => 'behat_editor_results_api',
+                    'access callback' => '_behat_rest',
+                    'access arguments' => array('behat view test'),
+                    'access arguments append' => TRUE,
+                    'args' => array(
+                        array(
+                            'name' => 'action',
+                            'type' => 'string',
+                            'description' => 'The name of the action eg results @todo why is this here?',
+                            'source' => array('path' => 1),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'module',
+                            'type' => 'string',
+                            'description' => 'The name of the module',
+                            'source' => array('path' => 2),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'filename',
+                            'type' => 'string',
+                            'description' => 'The name of the file',
+                            'source' => array('path' => 3),
+                            'optional' => FALSE,
+                        )
                     ),
                 ),
             ),

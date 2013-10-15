@@ -21,6 +21,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     composer_manager_register_autoloader();
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
+    drupal_add_library('behat_editor', 'data_table');
 
     $file = new File($_REQUEST, $module, $filename, FALSE);
     $file_info = $file->get_file_info();
@@ -31,6 +32,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     $form['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
     $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_run.js';
     $form['#attached']['js']['behat_editor_view'] = $path . '/js/behat_editor_view.js';
+    $form['#attached']['js']['behat_editor_view'] = $path . '/js/behat_editor_results.js';
 
     $form['#attached']['css']['behat_app_css'] = $path . '/css/behat_editor_app.css';
     $form['#attached']['css']['behat_view_css'] = $path . '/css/behat_editor_view.css';
@@ -57,8 +59,40 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
         '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
     );
 
-    $form['results'] = array(
-        '#markup' => theme('behat_editor_results_area', $args = array('params' => array()))
+    $form['results_area'] = array(
+        '#type' => 'container',
+        '#attributes' => array('id' => 'accordion', 'class' => array('col-md-5', 'panel-group'))
+    );
+
+    $form['results_area']['container1'] = array(
+        '#type' => 'container',
+        '#attributes' => array('class' => array('panel', 'panel-default')),
+    );
+
+    $form['results_area']['container1']['results'] = array(
+        '#prefix' => "<div class=\"panel-heading\">
+                        <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\">
+                            <h4 class=\"panel-title\">Current Test</h4>
+                        </a></div>",
+        '#markup' => theme('behat_editor_results_area', $args = array('params' => array())),
+    );
+
+
+    $form['results_area']['container2'] = array(
+        '#type' => 'container',
+        '#attributes' => array('class' => array('panel', 'panel-default')),
+    );
+
+    $form['results_area']['container2']['past_results'] = array(
+        '#prefix' => "<div class=\"panel-heading\">
+                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">
+                                <h4 class=\"panel-title\">Past Results</h4>
+                            </a>
+                        </div>",
+        '#markup' => '<div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                                <table cellpadding="0" cellspacing="0" border="0" class="display" id="past-results-table"></table>
+                        </div>'
     );
 
     return $form;

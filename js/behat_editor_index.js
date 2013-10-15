@@ -17,13 +17,9 @@
 
             $('button.confirm-delete').click(function(e){
                 $('#beModal').modal('hide');
-            });
-
-            $('#beModal').on('hide.bs.modal', function(){
                 var parameters = {};
                 var data = Drupal.behat_editor.action('DELETE', token, parameters, url);
                 if(data.error == 0) {
-                    console.log(data);
                     Drupal.behat_editor.renderMessageCustom("File " + filename + " deleted and row removed", 'success', context);
                     $(row).fadeOut('slow').remove();
                 } else {
