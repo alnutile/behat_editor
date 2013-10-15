@@ -62,7 +62,7 @@ function behat_editor_menu() {
         'page arguments' => array('behat_editor_view_form', 3,4),
         'access arguments' => array('behat view test'),
         'file' => 'behat_editor_view.inc',
-        'file path' => "$path/includes/"
+        'file path' => "$path/tpl/"
     );
     $items['admin/behat/add'] = array(
         'page callback' => 'drupal_get_form',

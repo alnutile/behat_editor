@@ -12,7 +12,6 @@ function behat_editor_results_api($action, $module, $filename) {
     $response = Results::getResultsForFile($module, $filename);
     if($response['error'] === 0){
         //@todo shows that the message object is to specific to files should just pass message and error 1/0
-        watchdog('test_results', print_r($response['results'], 1));
         return array('error' => $response['error'], 'data' => $response['results']);
     } else {
         watchdog('behat_editor', t('Trouble getting results for @filename', array('@filename' => $filename)));

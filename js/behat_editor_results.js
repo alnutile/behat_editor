@@ -11,15 +11,19 @@
             if(results['error'] === 0) {
                 var table = new Array();
                 var rows = results['data'];
+                var status,
+                    view,
+                    test_results;
                 $.each(rows, function(key, value){
                     var date = new Date(value["created"]*1000);
-                    var status;
                     if(value['status'] == 0 ) {
                         status = '<i class="glyphicon glyphicon-thumbs-up"></i>';
                     } else {
                         status = '<i class="glyphicon glyphicon-thumbs-down"></i>';
                     }
-                    table[key] = [status, value["duration"], date.format('Y-m-d H:i'), value["rid"]]
+                    test_results = value['results'];
+                    view = "<a href='#' class='results' id='"+value['rid']+"' data-results='"+test_results+"'><i class='glyphicon glyphicon-eye-open'></i></a>";
+                    table[key] = [status, value["duration"], date.format('Y-m-d H:i'), view]
                 });
 
                 $('#past-results-table').dataTable(
@@ -37,6 +41,14 @@
             } else {
                 Drupal.renderMessageCustom($results['message'], 'warning')
             }
+
+            $('a.results').click(function(e){
+                e.preventDefault();
+                var body = $(this).data('results');
+                body = body.replace(/,/g, "<br />");
+                $('#beModal div.test').html(body);
+                $('#beModal').modal();
+            });
        }
 
 
