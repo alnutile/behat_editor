@@ -78,17 +78,10 @@
     };
 
     Drupal.behaviors.behat_editor_results = {
-
         attach: function (context) {
             var callbacks = new Array;
             callbacks = ["Drupal.behat_editor.output_results(results, 'all')", "Drupal.behat_editor.results_modal(context)"];
             Drupal.behat_editor.get_results(context, callbacks);
-
-            $('a.run', context).click(function(e){
-                callbacks = ["Drupal.behat_editor.output_results(results, 'row')", "Drupal.behat_editor.results_modal(context)"];
-                //Drupal.renderMessageCustom($results['message'], 'warning');
-                Drupal.behat_editor.get_results(context, callbacks);
-            });
        }
 
 
