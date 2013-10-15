@@ -31,3 +31,6 @@ button {
 
 #column-1 {
   margin-right: 10px; }
+
+.running-tests {
+  display: none; }

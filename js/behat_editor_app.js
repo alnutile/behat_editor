@@ -1,15 +1,9 @@
 (function ($) {
-    $( document ).ajaxStart(
-        function(){
-            $('.running-tests').fadeIn();
-        }
-    );
-
-    $( document ).ajaxStop(
-        function(){
-            $('.running-tests').fadeOut();
-        }
-    );
+    $(document).bind("ajaxSend", function(){
+        $('.running-tests').fadeIn();
+    }).bind("ajaxComplete", function(){
+        $('.running-tests').fadeOut();
+    });
 
     Drupal.behat_editor = {};
 
@@ -18,7 +12,8 @@
         $.ajax(
             {
                 url:'/services/session/token',
-                async: false
+                async: false,
+                global: false
             }
         ).done(function(data){
                 token = data;
@@ -41,8 +36,30 @@
             }
         ).done(function(data){
                 results = data;
-         });
+            });
         return results;
+    };
+
+    Drupal.behat_editor.actions = function(type, token, parameters, url, async, globals, callbacks, context){
+        $.ajax({
+                type: type,
+                beforeSend: function (request) {
+                    request.setRequestHeader("X-CSRF-Token", token);
+                },
+                url: url,
+                data: JSON.stringify(parameters),
+                dataType: "json",
+                async: async,
+                global: globals,
+                contentType: 'application/json'
+            }
+        ).done(function(data){
+                results = data;
+                $.each(callbacks, function(index, value){
+                    //using eval for content only system is passing
+                    eval(value);
+                });
+        });
     }
 
     Drupal.behat_editor.setResultsIframe = function(url) {
@@ -86,6 +103,16 @@
             }
         }
     };
+
+
+    Drupal.behat_editor.buttons = function(state) {
+        console.log('running disable ' + state);
+        if(state == 'disable') {
+            $('div.actions a').hide();
+        } else {
+            $('div.actions a').show();
+        }
+    }
 
     Drupal.behat_editor.renderMessageCustom = function(message, error_type, context) {
         var messages = "<div class='alert alert-" + error_type + "'><a href='#' class='close' data-dismiss='alert'>&times;</a>";  //@todo pull out error = FALSE/TRUE

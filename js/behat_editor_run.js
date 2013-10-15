@@ -17,7 +17,8 @@
                     };
                 }
                 var data = Drupal.behat_editor.action('POST', token, parameters, url);
-                Drupal.behat_editor.renderMessage(data);
+                var callbacks = ["Drupal.behat_editor.renderMessage(data)"];
+                Drupal.behat_editor.actions('POST', token, parameters, url, true, true, callbacks, context);
             });
         }
     };
