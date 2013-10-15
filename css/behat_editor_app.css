@@ -10,3 +10,24 @@ button {
 i {
   margin-left: 4px;
   margin-right: 4px; }
+
+.main-container.container {
+  max-width: 1600px; }
+
+.running-tests, .saving-tests {
+  display: none; }
+
+a.btn {
+  margin: 0px 5px 0px 5px; }
+
+button {
+  max-width: 110px; }
+
+.spaces-four {
+  margin-left: 16px; }
+
+.spaces-two {
+  margin-left: 2px; }
+
+#column-1 {
+  margin-right: 10px; }
