@@ -43,6 +43,7 @@ class Results {
         $rows = array();
         if ($result) {
             foreach ($result as $record) {
+                $record->results = unserialize($record->results);
                 $rows[] = (array) $record;
             }
         }
