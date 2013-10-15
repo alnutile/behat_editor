@@ -185,6 +185,14 @@ function behat_editor_library() {
             )
         )
     );
+    $libraries['date_format'] = array(
+        'title' => 'Date Format',
+        'website' => "http://jacwright.com/projects/javascript/date_format/",
+        'version' => '1',
+        'js' => array(
+            $path . '/libraries/date/date_format.js' => array(),
+        )
+    );
     return $libraries;
 }
 

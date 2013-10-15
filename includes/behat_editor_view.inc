@@ -22,6 +22,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     drupal_add_library('behat_editor', 'data_table');
+    drupal_add_library('behat_editor', 'date_format');
 
     $file = new File($_REQUEST, $module, $filename, FALSE);
     $file_info = $file->get_file_info();
@@ -95,6 +96,8 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
                         </div>'
     );
 
+    $form['filename'] = array('#type' => 'hidden', '#default_value' => $file_info['filename_no_ext']);
+    $form['module'] = array('#type' => 'hidden', '#default_value' => $module);
     return $form;
 }
 
