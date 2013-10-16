@@ -7,6 +7,7 @@ files[] = behat_editor.services.inc
 dependencies[] = composer_manager
 dependencies[] = ctools
 dependencies[] = services
+dependencies[] = features
 features[ctools][] = services:services:3
 features[features_api][] = api:2
 features[services_endpoint][] = behat_editor_services
