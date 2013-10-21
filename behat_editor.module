@@ -79,8 +79,8 @@ function behat_editor_menu() {
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_edit_form', 3, 4),
         'access arguments' => array('behat edit test'),
-        'file' => 'behat_editor_edit.inc',
-        'file path' => "$path/includes/",
+        'file' => 'behat-editor-edit.inc',
+        'file path' => "$path/tpl/",
         'type' => MENU_CALLBACK,
     );
     return $items;
