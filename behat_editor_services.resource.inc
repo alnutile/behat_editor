@@ -16,30 +16,24 @@ function behat_editor_services_resources() {
             'operations' => array(
                 'retrieve' => array(
                     'help' => t('Method to return a test file'),
-                    'callback' => '_behat_editor_coming_soon',
+                    'callback' => 'behat_editor_view_service',
+                    'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_view'),
                     'access callback' => '_behat_rest',
                     'access arguments' => array('behat view test'),
                     'access arguments append' => TRUE,
                     'args' => array(
                         array(
-                            'name' => 'action',
-                            'type' => 'string',
-                            'description' => 'The name of the action eg run',
-                            'source' => array('path' => 0),
-                            'optional' => FALSE,
-                        ),
-                        array(
                             'name' => 'module',
                             'type' => 'string',
                             'description' => t('Name of Module'),
-                            'source' => array('path' => '1'),
+                            'source' => array('path' => '0'),
                             'optional' => FALSE,
                         ),
                         array(
                             'name' => 'filename',
                             'type' => 'string',
                             'description' => t('Name of file.'),
-                            'source' => array('path' => '2'),
+                            'source' => array('path' => '1'),
                             'optional' => FALSE,
                         ),
                     ),
