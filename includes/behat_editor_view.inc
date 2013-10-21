@@ -7,7 +7,10 @@ use Drupal\BehatEditor\File;
  */
 
 
-function behat_editor_view_form_service($module, $filename) {
-    watchdog('test_view', print_r("You are at view", 1));
-    return array(1, 2, 3);
+function behat_editor_view_service($module, $filename) {
+    composer_manager_register_autoloader();
+    $file = new File(array(), $module, 'test.feature', FALSE);
+    $file_info = $file->get_file_info();
+    drupal_json_output($file_info);
+    exit();
 }

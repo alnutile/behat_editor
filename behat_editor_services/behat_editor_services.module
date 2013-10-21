@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the behat_editor_services feature.
+ */
+
+include_once 'behat_editor_services.features.inc';
