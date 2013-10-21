@@ -54,6 +54,10 @@ vendor/behat/behat/bin/behat
 
 from your drupal sites directory.
 
+Keep in mind the dependencies in the info file
+JqueryUpdate 1.7 or higher
+
+
 ## What now
 
  * admin/behat/index to see all files
