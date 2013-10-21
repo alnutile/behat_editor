@@ -2,7 +2,7 @@
     $messages =  array('Working on things...', 'Give me a moment....', 'Doing as you command...');
     $message = array_rand($messages, 1);
 ?>
-<div id="collapseOne" class="panel-collapse collapse in">
+<div id="collapseOne" class="panel-collapse collapse in col-md-6">
     <div class="panel-body">
         <h4>Your results will show here...</h4>
             <div id="messages">

@@ -44,6 +44,7 @@ class File {
      * @return array
      */
     public function save_html_to_file() {
+        //@todo throw expection if this is a fail
         $this->scenario_array = self::_parse_questions();
         $this->feature =  self::_create_file();
         $output = self::_figure_out_where_to_save_file();
