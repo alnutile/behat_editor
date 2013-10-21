@@ -1,13 +1,27 @@
 <?php
 
+
+function behat_editor_install(){
+    if(!db_table_exists('behat_editor_results')) {
+        $name = 'behat_editor_results';
+        $schema = behat_editor_schema();
+        $table = $schema[$name];
+        db_create_table($name, $table);
+    }
+    $modules = array('behat_editor_services');
+    module_enable($modules);
+}
+
 /**
  * Add db to track test results
  */
 function behat_editor_update_7001() {
-    $name = 'behat_editor_results';
-    $schema = behat_editor_schema();
-    $table = $schema[$name];
-    db_create_table($name, $table);
+    if(!db_table_exists('behat_editor_results')) {
+        $name = 'behat_editor_results';
+        $schema = behat_editor_schema();
+        $table = $schema[$name];
+        db_create_table($name, $table);
+    }
 }
 
 
