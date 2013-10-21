@@ -80,18 +80,24 @@ class File {
             $path = DRUPAL_ROOT . '/' . $sub_folder;
             $full_path_with_file = $path . '/' . $this->filename;
         }
-        $file_text = self::read_file($full_path_with_file);
-        $file_data = array(
-            'module' => $this->module,
-            'filename' => $this->filename,
-            'absolute_path' => $path,
-            'absolute_path_with_file' => $full_path_with_file,
-            'scenario' => $file_text,
-            'filename_no_ext' => substr($this->filename, 0, -8),
-            'relative_path' => $relative_path,
-            'tags_array' => self::_tags_array($file_text, $this->module)
-        );
-        return $file_data;
+
+        if(file_exists($full_path_with_file) == FALSE) {
+            $message = t('The file does not exist !file', array('!file' => $full_path_with_file));
+            throw new \RuntimeException($message);
+        } else {
+            $file_text = self::read_file($full_path_with_file);
+            $file_data = array(
+                'module' => $this->module,
+                'filename' => $this->filename,
+                'absolute_path' => $path,
+                'absolute_path_with_file' => $full_path_with_file,
+                'scenario' => $file_text,
+                'filename_no_ext' => substr($this->filename, 0, -8),
+                'relative_path' => $relative_path,
+                'tags_array' => self::_tags_array($file_text, $this->module)
+            );
+            return $file_data;
+        }
     }
 
     /**
