@@ -112,7 +112,8 @@ function behat_editor_services_resources() {
                 ),
                 'index' => array(
                     'help' => t('Shows all module features files'),
-                    'callback' => '_behat_editor_coming_soon',
+                    'callback' => 'behat_editor_index_api',
+                    'file' => array('type' => 'inc', 'module' => 'behat_editor', 'name' => 'includes/behat_editor_index'),
                     'access callback' => '_behat_rest',
                     'access arguments' => array('behat view test'),
                     'access arguments append' => TRUE,
