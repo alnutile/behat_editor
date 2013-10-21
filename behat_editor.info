@@ -5,6 +5,7 @@ core = 7.x
 files[] = behat_editor.test
 files[] = behat_editor.services.inc
 dependencies[] = composer_manager
+dependencies[] = jquery_update
 dependencies[] = ctools
 dependencies[] = services
 features[ctools][] = services:services:3

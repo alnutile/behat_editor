@@ -10,6 +10,10 @@ function behat_editor_install(){
     }
     $modules = array('behat_editor_services');
     module_enable($modules);
+    $jquery = variable_get('jquery_update_jquery_version', 0);
+    if($jquery < 1.7) {
+        variable_set('jquery_update_jquery_version', '1.7');
+    }
 }
 
 /**
