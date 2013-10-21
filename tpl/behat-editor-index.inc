@@ -21,6 +21,9 @@ function behat_editor_index() {
     drupal_add_js($path . '/js/behat_editor_app.js');
     drupal_add_js($path . '/js/behat_editor_index.js');
 
+    behat_editor_add_bootstrap();
+
+
     $build['messages_top'] = array(
         '#markup' => "<div id='messages'></div>",
         '#weight' => -100
