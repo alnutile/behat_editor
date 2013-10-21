@@ -480,3 +480,14 @@ function _behat_editor_test_folder_array() {
         )
     );
 }
+
+function behat_editor_add_bootstrap() {
+    $admin_theme = variable_get('admin_theme', FALSE);
+    $default_theme = variable_get('theme_default', FALSE);
+    /* check if bootstrap is default theme or default admin theme */
+    if( ( $admin_theme != 'bootstrap' && $default_theme != 'bootstrap') || ( $admin_theme != 0 && $default_theme != 'bootstrap') ) {
+        $theme_folder = variable_get('composer_manager_vendor_dir', FALSE) . '/twitter/bootstrap/dist/';
+        drupal_add_css($theme_folder . 'css/bootstrap.css', array('type' => 'module', 'preprocess' => FALSE, 'group' => CSS_SYSTEM));
+        drupal_add_js('/' . $theme_folder . 'js/bootstrap.js', array('scope' => 'footer'));
+    };
+}

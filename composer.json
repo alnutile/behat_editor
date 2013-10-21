@@ -6,7 +6,8 @@
         "behat/mink-selenium-driver": "*",
         "behat/mink-selenium2-driver": "dev-FindWindowNamesInSelenium2",
         "behat/mink-extension": "*",
-        "behat/mink-sahi-driver": "*"
+        "behat/mink-sahi-driver": "*",
+        "twitter/bootstrap": "dev-master"
     },
     "minimum-stability": "dev",
     "config": {

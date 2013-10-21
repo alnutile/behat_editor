@@ -16,6 +16,7 @@ use Drupal\BehatEditor\File;
  */
 
 function behat_editor_view_form($form, $form_state, $module, $filename) {
+    behat_editor_add_bootstrap();
     composer_manager_register_autoloader();
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
