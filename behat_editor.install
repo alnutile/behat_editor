@@ -1,7 +1,6 @@
 <?php
 
-
-function behat_editor_install(){
+function behat_editor_enable(){
     if(!db_table_exists('behat_editor_results')) {
         $name = 'behat_editor_results';
         $schema = behat_editor_schema();
@@ -11,11 +10,10 @@ function behat_editor_install(){
     $modules = array('behat_editor_services');
     module_enable($modules);
     $jquery = variable_get('jquery_update_jquery_version', 0);
-    if($jquery < 1.7) {
+    if(!$jquery || $jquery < 1.7) {
         variable_set('jquery_update_jquery_version', '1.7');
     }
 }
-
 /**
  * Add db to track test results
  */
