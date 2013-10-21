@@ -10,8 +10,18 @@ define('BEHAT_EDITOR_DEFAULT_FOLDER', 'behat_tests');
 //tests eg files/behat_tests
 define('BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER', 'behat_tests');
 
-require_once 'behat_editor.features.inc';
 require_once 'behat_editor_services.resource.inc';
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function behat_editor_ctools_plugin_api() {
+    list($module, $api) = func_get_args();
+    if ($module == "services" && $api == "services") {
+        return array("version" => "3");
+    }
+}
+
 
 /**
  * Implements hook_permission().
