@@ -55,8 +55,8 @@ function behat_editor_menu() {
         'title' => 'Admin Behat Files',
         'page callback' => 'behat_editor_index',
         'access arguments' => array('behat view all tests'),
-        'file' => 'behat_editor_index.inc',
-        'file path' => "$path/includes/",
+        'file' => 'behat-editor-index.inc',
+        'file path' => "$path/tpl/",
         'type' => MENU_NORMAL_ITEM | MENU_DEFAULT_LOCAL_TASK
     );
     $items['admin/behat/view/%/%'] = array(
@@ -453,4 +453,20 @@ function _be_build_data($data) {
         $output[] = "data-{$key}=\"$value\"";
     }
     return implode(' ', $output);
+}
+
+
+/**
+ * I need to build the array for the files stored in the behat_tmp folder
+ *
+ * @return array
+ */
+function _behat_editor_test_folder_array() {
+    return array(
+        'behat_tests' => array(
+            'exists' => 1,
+            'writable' => 1,
+            'nice_name' => 'Behat Tmp Folder'
+        )
+    );
 }
