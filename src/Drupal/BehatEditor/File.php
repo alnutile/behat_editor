@@ -31,6 +31,16 @@ class File {
     public $scenario = '';
     public $feature = '';
 
+    /**
+     * Move this into an abstract static class
+     * so that the construct is not so complex.
+     * and make an abstract class for both types of files
+     * to extend eg save_to_temp and save_to_module
+     * @param $request
+     * @param $module
+     * @param $filename
+     * @param $parse_type
+     */
     public function __construct($request, $module, $filename, $parse_type) {
         $this->module = $module;
         $this->filename = $filename;
