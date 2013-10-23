@@ -61,15 +61,17 @@ function behat_editor_permission() {
  */
 function behat_editor_menu() {
     $path = drupal_get_path('module', 'behat_editor');
-    $items['admin/behat/index'] = array(
+    $items['admin/config/behat/index'] = array(
         'title' => 'Admin Behat Files',
         'page callback' => 'behat_editor_index',
         'access arguments' => array('behat view all tests'),
         'file' => 'behat-editor-index.inc',
         'file path' => "$path/tpl/",
-        'type' => MENU_NORMAL_ITEM | MENU_DEFAULT_LOCAL_TASK
+        'description' => 'Behat Editor Index page',
+        'type' => MENU_NORMAL_ITEM
     );
-    $items['admin/behat/view/%/%'] = array(
+
+    $items['admin/config/behat/view/%/%'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_view_form', 3,4),
         'access arguments' => array('behat view test'),
@@ -77,7 +79,7 @@ function behat_editor_menu() {
         'file path' => "$path/tpl/",
         'type' => MENU_CALLBACK,
     );
-    $items['admin/behat/add'] = array(
+    $items['admin/config/behat/add'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_add_form'),
         'access arguments' => array('behat add test'),
@@ -85,7 +87,7 @@ function behat_editor_menu() {
         'file path' => "$path/tpl/",
         'type' => MENU_CALLBACK,
     );
-    $items['admin/behat/edit/%/%'] = array(
+    $items['admin/config/behat/edit/%/%'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_edit_form', 3, 4),
         'access arguments' => array('behat edit test'),
@@ -250,17 +252,17 @@ function behat_editor_help($path, $arg) {
         case 'admin/help#behat_editor':
             $output = '<p>' . t('Visit the <a href="@handbook_url">Behat Editor Handbook</a> for help and information.', array('@handbook_url' => 'http://comingsoon.com')) . '</p>';
             break;
-        case 'admin/behat/index':
+        case 'admin/config/behat/index':
             $output = '<p>' . t('Below are all the feature files found in behat_features folders of all enabled modules') . '</p>';
             $output .= '<p>' . t('From here you can View and Run a test. Or Add a new test.') . '</p>';
             break;
-        case 'admin/behat/view/%/%':
+        case 'admin/config/behat/view/%/%':
             $output = '<p>' . t('You are viewing a file. You can edit or run a test as needed') . '</p>';
             break;
-        case 'admin/behat/add':
+        case 'admin/config/behat/add':
             $output = '<p>' . t('This will create a new test file. As you make it feel free to Run a test.') . '</p>';
             break;
-        case 'admin/behat/edit':
+        case 'admin/config/behat/edit':
             $output = '<p>' . t('You are editing a file on the system. As you Run or click Save your test will be written back to the file.') . '</p>';
             break;
     }
@@ -279,7 +281,7 @@ function behat_editor_help($path, $arg) {
  */
 function _show_file_link($file_name, $module_name) {
     if(strpos($file_name, 'private_') === FALSE ) {
-        $results = l($file_name, 'admin/behat/view/' . $module_name . '/' . $file_name);
+        $results = l($file_name, 'admin/config/behat/view/' . $module_name . '/' . $file_name);
     } else {
         $results = $file_name;
     }
@@ -314,7 +316,7 @@ function _show_module_name($file_name, $module_name) {
  */
 function _show_link($file_name, $module_name, $link_text = 'view') {
     if(strpos($file_name, 'private_') === FALSE ) {
-        $results = l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+        $results = l($link_text, 'admin/config/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
     } else {
         $results = 'not allowed';
     }
@@ -370,7 +372,7 @@ function admin_button_array(){
         '#type' => 'link',
         '#title' => t('Admin'),
         '#name' => 'admin_area',
-        '#href' => "admin/behat/index",
+        '#href' => "admin/config/behat/index",
         '#attributes' => array('class' => array('btn', 'btn-warning', 'back')),
     );
 }
@@ -400,7 +402,7 @@ function edit_test_array($filename, $module) {
         '#type' => 'link',
         '#name' => 'edit_test',
         '#title' => t('Edit Test'),
-        '#href' => "admin/behat/edit/$module/$filename",
+        '#href' => "admin/config/behat/edit/$module/$filename",
         '#attributes' => array('class' => array('btn', 'btn-info', 'edit')),
     );
 }
