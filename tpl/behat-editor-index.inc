@@ -37,7 +37,7 @@ function behat_editor_index() {
     $build['actions']['add_test'] = array(
         '#type' => 'link',
         '#title' => t('Add Test'),
-        '#href' => "admin/behat/add",
+        '#href' => "admin/config/behat/add",
         '#attributes' => array('class' => array('btn', 'btn-success', 'add')),
     );
 

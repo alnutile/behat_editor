@@ -15,7 +15,7 @@
                 var data = Drupal.behat_editor.action('DELETE', token, parameters, url);
                 var filename = $(this).data('filename');
                 if(data.error == 0) {
-                    window.location.replace("/admin/behat/index");
+                    window.location.replace("/admin/config/behat/index");
                 }
                 Drupal.behat_editor.renderMessage(data);
             });

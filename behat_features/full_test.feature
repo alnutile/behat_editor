@@ -10,7 +10,7 @@ Feature: Add Page
     And I ponder life
 
   Scenario: User Sees Add Page
-    Given I am on "/admin/behat/add"
+    Given I am on "/admin/config/behat/add"
     Then I should see "This is a tool to help to generate "
     And I fill in "edit-name" with "Hello Worlds"
     And I press "Name it"
