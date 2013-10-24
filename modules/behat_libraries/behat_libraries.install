@@ -19,7 +19,7 @@ function behat_libraries_requirements($phase) {
             } else {
                 $requirements[$lib]['value'] = $t('Required Library missing @lib',array('@lib'=>$lib));
                 $requirements[$lib]['description'] =  $t('You must download @lib. ',array('@lib'=>$parms['name'])).
-                    l($t('Go to download link'),$library['download url']).'.<br />'.
+                    l($t('Go to download link'), $parms['download url']).'.<br />'.
                     t('You can install @lib with drush typing "drush bl"', array('@lib'=>$lib));
                 $requirements[$lib]['severity'] = REQUIREMENT_ERROR;
             }
