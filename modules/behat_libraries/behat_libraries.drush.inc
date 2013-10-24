@@ -72,9 +72,6 @@ function drush_behat_libraries(){
 
         }
 
-
-        print $libraries[$key]['url'];
-        print $key;
     }
 
 }

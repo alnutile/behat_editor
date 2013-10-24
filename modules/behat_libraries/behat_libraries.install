@@ -4,7 +4,7 @@
  *
  * Make sure libraries are installed
  */
-function behat_editor_requirements($phase) {
+function behat_libraries_requirements($phase) {
     $requirements = array();
     $t = get_t();
     if ($phase == 'runtime') {
