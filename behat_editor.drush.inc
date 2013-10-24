@@ -173,7 +173,7 @@ function drush_behat_libraries(){
             if (!drush_shell_exec('wget ' . $libraries[$key]['url'] . ' -O file.zip')) {
                 drush_shell_exec('curl ' . $libraries[$key]['url'] . ' > file.zip' );
             }
-            //Unzip and remove zip
+            //Unzip and 'remove zip
             if (is_file('file.zip')) {
                 drush_shell_exec('unzip -qqj -o file.zip');
                 drush_op('unlink', 'file.zip');

@@ -27,6 +27,9 @@ See [https://drupal.org/project/composer_manager] for installing Composer Manage
 you will need to have composer_manager installed so it can download behat into it's vendor directory.
 If you enable via drush composer_manager will kick in and download the needed behat files.
 
+Some libraries could not be managed via Composer Manager.
+If using Drush just type drush bl and it will download the libraries for you.
+
 copy behat/behat.yml.sample to behat/behat.yml
 Update your behat/behat.yml file as needed. 
 
