@@ -34,7 +34,7 @@ function behat_editor_requirements($phase) {
         }
 
         $path = 'public://behat_tests/'; // from ctools install
-        if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
+        if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
             $requirements['behat_editor']['description'] = t('The test folder for this module could not be made %path', array('%path' => file_uri_target($path)));
             $requirements['behat_editor']['severity'] = REQUIREMENT_ERROR;
             $requirements['behat_editor']['value'] = t('Unable to create');
