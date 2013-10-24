@@ -159,60 +159,6 @@ function behat_editor_theme() {
 }
 
 /**
- * Implements hook_library().
- *
- * Pulling in Tag-it for the nice
- * effect on the Feature tags
- *
- * Jquery DataTable for
- * admin area.
- */
-function behat_editor_library() {
-    $path = drupal_get_path('module', 'behat_editor');
-    $libraries['tag_it'] = array(
-        'title' => 'jQuery Tagp-it',
-        'website' => "http://aehlke.github.io/tag-it/",
-        'version' => '2.0-x',
-        'js' => array(
-            $path . '/libraries/tag-it/js/tag-it.js' => array(),
-        ),
-        'css' => array(
-            $path . '/libraries/tag-it/css/jquery.tagit.css' => array(
-                'type' => 'file',
-                'media' => 'screen'
-            ),
-            $path . '/libraries/tag-it/css/tagit.ui-zendesk.css' => array(
-                'type' => 'file',
-                'media' => 'screen'
-            )
-        )
-    );
-    $libraries['data_table'] = array(
-        'title' => 'DataTable',
-        'website' => "http://datatables.net/",
-        'version' => '1.9',
-        'js' => array(
-            $path . '/libraries/datatables/media/js/jquery.dataTables.js' => array(),
-        ),
-        'css' => array(
-            $path . '/libraries/datatables/media/css/jquery.dataTables.css' => array(
-                'type' => 'file',
-                'media' => 'screen'
-            )
-        )
-    );
-    $libraries['date_format'] = array(
-        'title' => 'Date Format',
-        'website' => "http://jacwright.com/projects/javascript/date_format/",
-        'version' => '1',
-        'js' => array(
-            $path . '/libraries/date/date_format.js' => array(),
-        )
-    );
-    return $libraries;
-}
-
-/**
  * Implements hook_form_alter().
  *
  * Centralize some shared code

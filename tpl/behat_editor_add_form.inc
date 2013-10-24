@@ -26,7 +26,7 @@ function behat_editor_add_form($form, $form_state) {
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     drupal_add_library('system', 'ui.sortable');
     drupal_add_library('system', 'ui.autocomplete');
-    drupal_add_library('behat_editor', 'tag_it') ;
+    libraries_load('behat_editor_tag_it');
     $filename_no_ext = REQUEST_TIME;
     $filename = $filename_no_ext . '.feature';
     $default_path = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
