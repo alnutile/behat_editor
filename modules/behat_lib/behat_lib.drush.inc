@@ -46,9 +46,9 @@ function drush_behat_lib(){
     chdir($path);
 
     $libraries = array(
-        'tag_it' => array('url' => 'https://codeload.github.com/aehlke/tag-it/zip/master'),
-        'data_table' => array('url' => 'http://datatables.net/releases/DataTables-1.9.4.zip'),
-        'date_format' => array('url' => 'https://codeload.github.com/alnutile/jacob_wright_date_format/zip/master')
+        'tag_it' => array('url' => 'https://codeload.github.com/aehlke/tag-it/zip/master', 'filename' => 'tag-it-master'),
+        'data_table' => array('url' => 'http://datatables.net/releases/DataTables-1.9.4.zip', 'filename' => 'DataTables-1.9.4'),
+        'date_format' => array('url' => 'https://codeload.github.com/alnutile/jacob_wright_date_format/zip/master', 'filename' => 'jacob_wright_date_format-master')
     );
 
     foreach($libraries as $key => $value) {
@@ -64,8 +64,9 @@ function drush_behat_lib(){
             }
             //Unzip and 'remove zip
             if (is_file('file.zip')) {
-                drush_shell_exec('unzip -qqj -o file.zip');
+                drush_shell_exec('unzip -qq -o file.zip');
                 drush_op('unlink', 'file.zip');
+                drush_shell_exec("mv {$libraries[$key]['filename']}  $key");
             }
             //Down go back to the root library folder
             chdir('../');

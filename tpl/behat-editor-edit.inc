@@ -27,7 +27,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     drupal_add_library('system', 'ui.sortable');
     drupal_add_library('system', 'ui.autocomplete');
-    drupal_add_library('behat_editor', 'tag_it') ;
+    libraries_load('behat_editor_tag_it');
     composer_manager_register_autoloader();
     $file = new Drupal\BehatEditor\File(array(), $module, $filename, FALSE);
     $file_info = $file->get_file_info();

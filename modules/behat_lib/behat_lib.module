@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Implements hook_libraries_info().
+ */
 
 function behat_lib_libraries_info() {
     $libraries['behat_editor_tag_it'] = array(
@@ -7,12 +10,12 @@ function behat_lib_libraries_info() {
         'vendor url' => 'https://github.com/aehlke/tag-it',
         'download url' => 'https://codeload.github.com/aehlke/tag-it/zip/master',
         'version arguments' => array(
-            'file' => 'tag-it.js',
+            'file' => 'tag_it/js/tag-it.js',
             'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
         ),
         'files' => array(
-            'js' => array('tag-it.js'),
-            'css' => array('jquery.tagit.css', 'css/tagit.ui-zendesk.css')
+            'js' => array('tag_it/js/tag-it.js'),
+            'css' => array('tag_it/css/jquery.tagit.css', 'css/tagit.ui-zendesk.css')
         ),
     );
 
@@ -21,12 +24,12 @@ function behat_lib_libraries_info() {
         'vendor url' => 'http://datatables.net/',
         'download url' => 'http://datatables.net/releases/DataTables-1.9.4.zip',
         'version arguments' => array(
-            'file' => 'jquery.dataTables.js',
+            'file' => 'data_table/media/js/jquery.dataTables.js',
             'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
         ),
         'files' => array(
-            'js' => array('query.dataTables.js'),
-            'css' => array('jquery.dataTables.css')
+            'js' => array('data_table/media/js/jquery.dataTables.js'),
+            'css' => array('data_table/media/css/jquery.dataTables.css')
         ),
     );
 
@@ -35,11 +38,11 @@ function behat_lib_libraries_info() {
         'vendor url' => 'http://jacwright.com/projects/javascript/date_format/',
         'download url' => 'https://codeload.github.com/alnutile/jacob_wright_date_format/zip/master',
         'version arguments' => array(
-            'file' => 'readme.md',
+            'file' => 'date_format/readme.md',
             'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
         ),
         'files' => array(
-            'js' => array('date_format.js')
+            'js' => array('date_format/date_format.js')
         ),
     );
     return $libraries;

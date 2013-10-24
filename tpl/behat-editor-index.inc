@@ -16,7 +16,7 @@
 function behat_editor_index() {
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
-    drupal_add_library('behat_editor', 'data_table');
+    libraries_load('behat_editor_data_table');
     $path = drupal_get_path('module', 'behat_editor');
     drupal_add_js($path . '/js/behat_editor_app.js');
     drupal_add_js($path . '/js/behat_editor_index.js');
