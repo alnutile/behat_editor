@@ -10,6 +10,11 @@ function behat_editor_requirements($phase) {
     $t = get_t();
     if ($phase == 'install') {
 
+        if(!module_enable('behat_lib')) {
+            $modules = array('behat_lib');
+            module_enable($modules);
+        }
+
         $libs = behat_lib_libraries_info();
         foreach ($libs as $lib=>$parms){
             $library = libraries_detect($lib);
@@ -27,6 +32,7 @@ function behat_editor_requirements($phase) {
                 $requirements[$lib]['value'] = 'Not installed';
             }
         }
+
     }
     return $requirements;
 }
