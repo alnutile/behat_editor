@@ -10,7 +10,7 @@ function behat_editor_requirements($phase) {
     $t = get_t();
     if ($phase == 'install') {
 
-        if(!module_enable('behat_lib')) {
+        if(!module_exists('behat_lib')) {
             $modules = array('behat_lib');
             module_enable($modules);
         }
