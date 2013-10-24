@@ -4,11 +4,11 @@
 /**
  * Implements hook_drush_command().
  */
-function behat_libraries_drush_command() {
+function behat_lib_drush_command() {
     $items = array();
 
     $items['behat-libraries'] = array(
-        'callback' => 'drush_behat_libraries',
+        'callback' => 'drush_behat_lib',
         'description' => dt("Download all the needed libraries"),
         'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
         'arguments' => array(
@@ -22,7 +22,7 @@ function behat_libraries_drush_command() {
 /**
  * Thanks to https://drupal.org/node/1231378
  */
-function drush_behat_libraries(){
+function drush_behat_lib(){
     if (!drush_shell_exec('type unzip')) {
         return drush_set_error(dt('Missing dependency: unzip. Install it before using this command.'));
     }

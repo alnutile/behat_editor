@@ -9,7 +9,7 @@ dependencies[] = jquery_update
 dependencies[] = ctools
 dependencies[] = services
 dependencies[] = libraries (>=2.x)
-dependencies[] = behat_libraries
+dependencies[] = behat_lib
 features[ctools][] = services:services:3
 features[features_api][] = api:2
 features[services_endpoint][] = behat_editor_services
