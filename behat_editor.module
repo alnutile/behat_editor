@@ -158,7 +158,6 @@ function behat_editor_theme() {
     return $items;
 }
 
-
 /**
  * Implements hook_library().
  *
