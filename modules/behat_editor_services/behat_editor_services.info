@@ -1,7 +1,7 @@
-name = behat_editor_services
+name = Behat Editor Services
 description = Services for Behat
 core = 7.x
-package = Features
+package = Behat
 version = 7.x-1.0
 project = behat_editor_services
 dependencies[] = ctools
