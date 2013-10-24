@@ -12,14 +12,13 @@ function behat_libraries_requirements($phase) {
         $libs = behat_editor_library_info();
         foreach ($libs as $lib=>$parms){
             $library = libraries_detect($lib);
-            $requirements[$lib] = array( 'title' => $t($parms['title']),);
+            $requirements[$lib] = array( 'name' => $t($parms['name']),);
             if ($library['installed']) {
                 $requirements[$lib]['description'] = '';
-                $requirements[$lib]['value'] = $library['version'];
                 $requirements[$lib]['severity'] = REQUIREMENT_OK;
             } else {
                 $requirements[$lib]['value'] = $t('Required Library missing @lib',array('@lib'=>$lib));
-                $requirements[$lib]['description'] =  $t('You must download @lib. ',array('@lib'=>$parms['title'])).
+                $requirements[$lib]['description'] =  $t('You must download @lib. ',array('@lib'=>$parms['name'])).
                     l($t('Go to download link'),$library['download url']).'.<br />'.
                     t('You can install @lib with drush typing "drush bl"', array('@lib'=>$lib));
                 $requirements[$lib]['severity'] = REQUIREMENT_ERROR;
