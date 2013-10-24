@@ -10,7 +10,7 @@ Feature: Add Page
     And I ponder life
 
   Scenario: User Sees Add Page
-    Given I am on "/admin/config/behat/add"
+    Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help to generate "
     And I fill in "edit-name" with "Hello Worlds"
     And I press "Name it"
@@ -19,7 +19,6 @@ Feature: Add Page
     And I fill in "see_not_see_some_text" with "Wiki"
     And I press "see_not_see"
     And I follow "Run Test"
-    And I ponder life
     And I ponder life
     And I ponder life
     And I should see "Test successful!"

@@ -34,3 +34,9 @@ button {
 
 .running-tests {
   display: none; }
+
+input[type=hidden], ul.hidden, li.tag {
+  display: none; }
+
+ul.scenario {
+  list-style-type: none; }

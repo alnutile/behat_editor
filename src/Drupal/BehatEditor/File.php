@@ -79,6 +79,7 @@ class File {
      * @return array
      */
     public function get_file_info() {
+        watchdog('test_83', print_r($this->module, 1));
         if ($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
             $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
             $files_folder =  file_build_uri("/{$sub_folder}/");
