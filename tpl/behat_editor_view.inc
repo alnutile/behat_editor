@@ -20,7 +20,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     composer_manager_register_autoloader();
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
-    libraries_load('behat_editor_tag_it');
+    libraries_load('behat_editor_data_table');
     libraries_load('behat_editor_date_format');
 
     $file = new File($_REQUEST, $module, $filename, FALSE);
