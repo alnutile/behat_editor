@@ -68,7 +68,7 @@ function behat_editor_menu() {
         'file' => 'behat-editor-index.inc',
         'file path' => "$path/tpl/",
         'description' => 'Behat Editor Index page',
-        'type' => MENU_NORMAL_ITEM
+        'type' => MENU_CALLBACK
     );
 
     $items['admin/behat/view/%/%'] = array(
