@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * Implements hook_libraries_info().
+ */
+
+function behat_lib_libraries_info() {
+    $libraries['behat_editor_tag_it'] = array(
+        'name' => 'Tag It Library',
+        'vendor url' => 'https://github.com/aehlke/tag-it',
+        'download url' => 'https://codeload.github.com/aehlke/tag-it/zip/master',
+        'version arguments' => array(
+            'file' => 'tag_it/js/tag-it.js',
+            'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
+        ),
+        'files' => array(
+            'js' => array('tag_it/js/tag-it.js'),
+            'css' => array('tag_it/css/jquery.tagit.css', 'css/tagit.ui-zendesk.css')
+        ),
+    );
+
+    $libraries['behat_editor_data_table'] = array(
+        'name' => 'DataTable',
+        'vendor url' => 'http://datatables.net/',
+        'download url' => 'http://datatables.net/releases/DataTables-1.9.4.zip',
+        'version arguments' => array(
+            'file' => 'data_table/media/js/jquery.dataTables.js',
+            'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
+        ),
+        'files' => array(
+            'js' => array('data_table/media/js/jquery.dataTables.js'),
+            'css' => array('data_table/media/css/jquery.dataTables.css')
+        ),
+    );
+
+    $libraries['behat_editor_date_format'] = array(
+        'name' => 'JS Date Format Helper',
+        'vendor url' => 'http://jacwright.com/projects/javascript/date_format/',
+        'download url' => 'https://codeload.github.com/alnutile/jacob_wright_date_format/zip/master',
+        'version arguments' => array(
+            'file' => 'date_format/readme.md',
+            'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
+        ),
+        'files' => array(
+            'js' => array('date_format/date_format.js')
+        ),
+    );
+    return $libraries;
+}

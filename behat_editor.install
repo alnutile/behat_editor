@@ -1,13 +1,66 @@
 <?php
 
 /**
+ * Implements hook_requirements().
+ *
+ * Make sure libraries are installed
+ */
+function behat_editor_requirements($phase) {
+    $requirements = array();
+    $t = get_t();
+    if ($phase == 'install') {
+
+        if(!module_exists('behat_lib')) {
+            $modules = array('behat_lib');
+            module_enable($modules);
+        }
+
+        $libs = behat_lib_libraries_info();
+        foreach ($libs as $lib=>$parms){
+            $library = libraries_detect($lib);
+            $requirements[$lib] = array( 'title' => $t($parms['name']),);
+            if ($library['installed']) {
+                $requirements[$lib]['description'] = '';
+                $requirements[$lib]['value'] = '> 0';
+                $requirements[$lib]['severity'] = REQUIREMENT_OK;
+            } else {
+                $requirements[$lib]['value'] = $t('Required Library missing @lib',array('@lib'=>$lib));
+                $requirements[$lib]['description'] =  $t('You must download @lib. ',array('@lib'=>$parms['name'])).
+                    l($t('Go to download link'), $parms['download url']).'.<br />'.
+                    t('<b>Also you can install @lib with drush typing "drush bl"</b><br>', array('@lib'=>$lib));
+                $requirements[$lib]['severity'] = REQUIREMENT_ERROR;
+                $requirements[$lib]['value'] = 'Not installed';
+            }
+        }
+
+    }
+    return $requirements;
+}
+
+function behat_editor_enable(){
+    if(!db_table_exists('behat_editor_results')) {
+        $name = 'behat_editor_results';
+        $schema = behat_editor_schema();
+        $table = $schema[$name];
+        db_create_table($name, $table);
+    }
+    $modules = array('behat_editor_services');
+    module_enable($modules);
+    $jquery = variable_get('jquery_update_jquery_version', 0);
+    if(!$jquery || $jquery < 1.7) {
+        variable_set('jquery_update_jquery_version', '1.7');
+    }
+}
+/**
  * Add db to track test results
  */
 function behat_editor_update_7001() {
-    $name = 'behat_editor_results';
-    $schema = behat_editor_schema();
-    $table = $schema[$name];
-    db_create_table($name, $table);
+    if(!db_table_exists('behat_editor_results')) {
+        $name = 'behat_editor_results';
+        $schema = behat_editor_schema();
+        $table = $schema[$name];
+        db_create_table($name, $table);
+    }
 }
 
 

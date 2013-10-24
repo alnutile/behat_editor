@@ -21,7 +21,6 @@ Feature: Add Page
     And I follow "Run Test"
     And I ponder life
     And I ponder life
-    And I ponder life
     And I should see "Test successful!"
     And I fill in sectionOneTag
     And I fill in featuresTag
