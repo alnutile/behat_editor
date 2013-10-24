@@ -9,17 +9,7 @@ function behat_libraries_requirements($phase) {
     $t = get_t();
     if ($phase == 'runtime') {
 
-        $libs = array(
-            'behat_editor_tag_it' => array(
-                'title' => 'Tag It Library',
-            ),
-            'behat_editor_data_table' => array(
-                'title' => 'DataTable',
-            ),
-            'behat_editor_date_format' => array(
-                'title' => 'JS Date Format Helper',
-            ),
-        );
+        $libs = behat_editor_library_info();
         foreach ($libs as $lib=>$parms){
             $library = libraries_detect($lib);
             $requirements[$lib] = array( 'title' => $t($parms['title']),);
