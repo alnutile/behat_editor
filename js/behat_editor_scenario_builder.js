@@ -109,7 +109,8 @@
             $('ul.sortable').sortable();
 
 
-            $('button.steps', context).click(function(){
+            $('button.steps, input.steps', context).click(function(e){
+                event.preventDefault(e);
                 var label = '';
                 var label_text = '';
 

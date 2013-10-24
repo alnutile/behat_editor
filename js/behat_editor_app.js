@@ -85,22 +85,23 @@
             var messages = "<div class='alert alert-error'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
             messages += message;
             messages += "</div>";
-            $('#messages').append(messages);
+            $('#messages-behat').append(messages);
         } else {
             if(data.file) {
                 var message = data.file.message;
                 var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                 messages += message;
                 messages += "</div>";
-                $('#messages').append(messages);
+                $('#messages-behat').append(messages);
             }
 
             if(data.test) {
+                console.log(data.test);
                 var message = data.test.message;
                 var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                 messages += message;
                 messages += "</div>";
-                $('#messages').append(messages);
+                $('#messages-behat').append(messages);
                 Drupal.behat_editor.setResultsBox(data.test.test_output);
             }
         }
@@ -115,7 +116,7 @@
         var messages = "<div class='alert alert-" + error_type + "'><a href='#' class='close' data-dismiss='alert'>&times;</a>";  //@todo pull out error = FALSE/TRUE
         messages += message;                                            //@todo pull out error type eg error, info, success etc
         messages += "</div>";
-        $('#messages', context).append(messages);
+        $('#messages-behat', context).append(messages);
     };
 
 

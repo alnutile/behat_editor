@@ -10,8 +10,18 @@ define('BEHAT_EDITOR_DEFAULT_FOLDER', 'behat_tests');
 //tests eg files/behat_tests
 define('BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER', 'behat_tests');
 
-require_once 'behat_editor.features.inc';
 require_once 'behat_editor_services.resource.inc';
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function behat_editor_ctools_plugin_api() {
+    list($module, $api) = func_get_args();
+    if ($module == "services" && $api == "services") {
+        return array("version" => "3");
+    }
+}
+
 
 /**
  * Implements hook_permission().
@@ -57,8 +67,10 @@ function behat_editor_menu() {
         'access arguments' => array('behat view all tests'),
         'file' => 'behat-editor-index.inc',
         'file path' => "$path/tpl/",
-        'type' => MENU_NORMAL_ITEM | MENU_DEFAULT_LOCAL_TASK
+        'description' => 'Behat Editor Index page',
+        'type' => MENU_CALLBACK
     );
+
     $items['admin/behat/view/%/%'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_view_form', 3,4),
@@ -146,61 +158,6 @@ function behat_editor_theme() {
     return $items;
 }
 
-
-/**
- * Implements hook_library().
- *
- * Pulling in Tag-it for the nice
- * effect on the Feature tags
- *
- * Jquery DataTable for
- * admin area.
- */
-function behat_editor_library() {
-    $path = drupal_get_path('module', 'behat_editor');
-    $libraries['tag_it'] = array(
-        'title' => 'jQuery Tagp-it',
-        'website' => "http://aehlke.github.io/tag-it/",
-        'version' => '2.0-x',
-        'js' => array(
-            $path . '/libraries/tag-it/js/tag-it.js' => array(),
-        ),
-        'css' => array(
-            $path . '/libraries/tag-it/css/jquery.tagit.css' => array(
-                'type' => 'file',
-                'media' => 'screen'
-            ),
-            $path . '/libraries/tag-it/css/tagit.ui-zendesk.css' => array(
-                'type' => 'file',
-                'media' => 'screen'
-            )
-        )
-    );
-    $libraries['data_table'] = array(
-        'title' => 'DataTable',
-        'website' => "http://datatables.net/",
-        'version' => '1.9',
-        'js' => array(
-            $path . '/libraries/datatables/media/js/jquery.dataTables.js' => array(),
-        ),
-        'css' => array(
-            $path . '/libraries/datatables/media/css/jquery.dataTables.css' => array(
-                'type' => 'file',
-                'media' => 'screen'
-            )
-        )
-    );
-    $libraries['date_format'] = array(
-        'title' => 'Date Format',
-        'website' => "http://jacwright.com/projects/javascript/date_format/",
-        'version' => '1',
-        'js' => array(
-            $path . '/libraries/date/date_format.js' => array(),
-        )
-    );
-    return $libraries;
-}
-
 /**
  * Implements hook_form_alter().
  *
@@ -214,7 +171,7 @@ function behat_editor_form_alter(&$form, $form_state, $form_id) {
             drupal_set_message(t("You do not have a vendor folder setup. Did you finish setting up Composer Manager?", 'error'));
         } elseif(!file_exists($vendor .'/behat/behat/bin/behat' )) {
             drupal_set_message(t('You do not have a behat loaded yet. Did you run !composer_install via the Composer Manager?',
-                array('!composer_install' => l('composer install', 'admin/config/system/composer-manager'))), 'error');
+                array('!composer_install' => l('composer install', 'admin/system/composer-manager'))), 'error');
         }
         drupal_set_message(t('!icon Any @javascript tag will not be run. Only on SauceLabs can that tag be used.', array('!icon' => '<i class="glyphicon glyphicon-comment glyphicon-white"></i>')), 'info');
     }
@@ -469,4 +426,15 @@ function _behat_editor_test_folder_array() {
             'nice_name' => 'Behat Tmp Folder'
         )
     );
+}
+
+function behat_editor_add_bootstrap() {
+    $admin_theme = variable_get('admin_theme', FALSE);
+    $default_theme = variable_get('theme_default', FALSE);
+    /* check if bootstrap is default theme or default admin theme */
+    if( ( $admin_theme != 'bootstrap' && $default_theme != 'bootstrap') || ( $admin_theme != 0 && $default_theme != 'bootstrap') ) {
+        $theme_folder = variable_get('composer_manager_vendor_dir', FALSE) . '/twitter/bootstrap/dist/';
+        drupal_add_css($theme_folder . 'css/bootstrap.css', array('type' => 'module', 'preprocess' => FALSE, 'group' => CSS_SYSTEM));
+        drupal_add_js('/' . $theme_folder . 'js/bootstrap.js', array('scope' => 'footer'));
+    };
 }

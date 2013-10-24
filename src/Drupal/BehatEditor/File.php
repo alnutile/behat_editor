@@ -31,6 +31,16 @@ class File {
     public $scenario = '';
     public $feature = '';
 
+    /**
+     * Move this into an abstract static class
+     * so that the construct is not so complex.
+     * and make an abstract class for both types of files
+     * to extend eg save_to_temp and save_to_module
+     * @param $request
+     * @param $module
+     * @param $filename
+     * @param $parse_type
+     */
     public function __construct($request, $module, $filename, $parse_type) {
         $this->module = $module;
         $this->filename = $filename;
@@ -226,8 +236,8 @@ class File {
         $path = file_build_uri("/{$folder}/");
         $response = file_unmanaged_save_data($this->feature, $path . '/' . $this->filename, $replace = FILE_EXISTS_REPLACE);
         if($response == FALSE) {
-            watchdog('behat_editor', "File could not be made.", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
-            $output = array('message' => "Error file could not be save", 'file' => $response, 'error' => '1');
+            $message = t('The file could not be saved !file', array('!file' => $path . '/' . $this->filename));
+            throw new \RuntimeException($message);
         } else {
             $file_uri = $response;
             $file_url = l('click here', file_create_url($response), array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));

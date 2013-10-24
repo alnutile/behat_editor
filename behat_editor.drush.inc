@@ -119,4 +119,3 @@ function drush_behat_editor_behat_run_folder() {
 
     return "All Tests ran for module $module";
 }
-
