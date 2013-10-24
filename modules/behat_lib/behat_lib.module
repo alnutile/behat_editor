@@ -1,18 +1,18 @@
 <?php
 
 
-function behat_editor_library_info() {
+function behat_lib_libraries_info() {
     $libraries['behat_editor_tag_it'] = array(
         'name' => 'Tag It Library',
         'vendor url' => 'https://github.com/aehlke/tag-it',
         'download url' => 'https://codeload.github.com/aehlke/tag-it/zip/master',
         'version arguments' => array(
-            'file' => 'js/tag-it.js',
+            'file' => 'tag-it.js',
             'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
         ),
         'files' => array(
-            'js' => array('js/tag-it.js'),
-            'css' => array('css/jquery.tagit.css', 'css/tagit.ui-zendesk.css')
+            'js' => array('tag-it.js'),
+            'css' => array('jquery.tagit.css', 'css/tagit.ui-zendesk.css')
         ),
     );
 

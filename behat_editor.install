@@ -10,33 +10,21 @@ function behat_editor_requirements($phase) {
     $t = get_t();
     if ($phase == 'install') {
 
-        $libs = array(
-            'behat_editor_tag_it' => array(
-                'title' => 'Tag It Library',
-            ),
-            'behat_editor_data_table' => array(
-                'title' => 'DataTable',
-            ),
-            'behat_editor_date_format' => array(
-                'title' => 'JS Date Format Helper',
-            ),
-        );
+        $libs = behat_lib_libraries_info();
         foreach ($libs as $lib=>$parms){
             $library = libraries_detect($lib);
-            $requirements[$lib] = array( 'title' => $t($parms['title']),);
+            $requirements[$lib] = array( 'title' => $t($parms['name']),);
             if ($library['installed']) {
                 $requirements[$lib]['description'] = '';
-                $requirements[$lib]['value'] = $library['version'];
+                $requirements[$lib]['value'] = '> 0';
                 $requirements[$lib]['severity'] = REQUIREMENT_OK;
             } else {
                 $requirements[$lib]['value'] = $t('Required Library missing @lib',array('@lib'=>$lib));
-                $requirements[$lib]['description'] =  $t('You must download @lib. ',array('@lib'=>$parms['title'])).
-                    l($t('Go to download link'),$library['download url']).'.<br />'.
-                    t('You can install @lib with drush typing "drush bl"', array('@lib'=>$lib));
+                $requirements[$lib]['description'] =  $t('You must download @lib. ',array('@lib'=>$parms['name'])).
+                    l($t('Go to download link'), $parms['download url']).'.<br />'.
+                    t('<b>Also you can install @lib with drush typing "drush bl"</b><br>', array('@lib'=>$lib));
                 $requirements[$lib]['severity'] = REQUIREMENT_ERROR;
-            }
-            if ( $requirements[$lib]['description'] ){
-                drupal_set_message("{$requirements[$lib]['value']}.<br /> {$requirements[$lib]['description']}",'error');
+                $requirements[$lib]['value'] = 'Not installed';
             }
         }
     }
