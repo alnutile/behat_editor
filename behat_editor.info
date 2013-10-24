@@ -8,6 +8,7 @@ dependencies[] = composer_manager
 dependencies[] = jquery_update
 dependencies[] = ctools
 dependencies[] = services
+dependencies[] = behat_editor_services
 dependencies[] = libraries (>=2.x)
 dependencies[] = behat_lib
 features[ctools][] = services:services:3
