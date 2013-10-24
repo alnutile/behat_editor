@@ -1,0 +1,5 @@
+name = Behat Libraries
+description = Setups up the libraries needed for behat
+core = 7.x
+
+dependencies[] = libraries (>=2.x)

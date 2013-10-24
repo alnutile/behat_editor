@@ -1,0 +1,43 @@
+<?php
+/**
+ * Implements hook_requirements().
+ *
+ * Make sure libraries are installed
+ */
+function behat_editor_requirements($phase) {
+    $requirements = array();
+    $t = get_t();
+    if ($phase == 'runtime') {
+
+        $libs = array(
+            'behat_editor_tag_it' => array(
+                'title' => 'Tag It Library',
+            ),
+            'behat_editor_data_table' => array(
+                'title' => 'DataTable',
+            ),
+            'behat_editor_date_format' => array(
+                'title' => 'JS Date Format Helper',
+            ),
+        );
+        foreach ($libs as $lib=>$parms){
+            $library = libraries_detect($lib);
+            $requirements[$lib] = array( 'title' => $t($parms['title']),);
+            if ($library['installed']) {
+                $requirements[$lib]['description'] = '';
+                $requirements[$lib]['value'] = $library['version'];
+                $requirements[$lib]['severity'] = REQUIREMENT_OK;
+            } else {
+                $requirements[$lib]['value'] = $t('Required Library missing @lib',array('@lib'=>$lib));
+                $requirements[$lib]['description'] =  $t('You must download @lib. ',array('@lib'=>$parms['title'])).
+                    l($t('Go to download link'),$library['download url']).'.<br />'.
+                    t('You can install @lib with drush typing "drush bl"', array('@lib'=>$lib));
+                $requirements[$lib]['severity'] = REQUIREMENT_ERROR;
+            }
+            if ( $requirements[$lib]['description'] ){
+                drupal_set_message("{$requirements[$lib]['value']}.<br /> {$requirements[$lib]['description']}",'error');
+            }
+        }
+    }
+    return $requirements;
+}
