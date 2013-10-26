@@ -44,4 +44,6 @@ ul.scenario {
 /* not sure why my buttons are not working style wise */
 #edit-actions a {
   height: 40px;
-  width: 140px; }
+  width: 140px;
+  margin-top: 0px;
+  padding-top: 9px; }
