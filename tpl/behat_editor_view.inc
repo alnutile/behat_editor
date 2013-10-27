@@ -61,7 +61,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
 
     $form['results_area'] = array(
         '#type' => 'container',
-        '#attributes' => array('id' => 'accordion', 'class' => array('col-md-5', 'panel-group'))
+        '#attributes' => array('id' => 'accordion', 'class' => array('col-md-6', 'panel-group'))
     );
 
     $form['results_area']['container1'] = array(
