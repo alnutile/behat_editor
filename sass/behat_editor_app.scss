@@ -55,3 +55,11 @@ input[type=hidden], ul.hidden, li.tag {
 ul.scenario {
  list-style-type: none;
 }
+
+/* not sure why my buttons are not working style wise */
+#edit-actions a {
+    height: 40px;
+    width: 140px;
+    margin-top: 0px;
+    padding-top: 9px;
+}

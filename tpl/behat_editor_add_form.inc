@@ -27,6 +27,9 @@ function behat_editor_add_form($form, $form_state) {
     drupal_add_library('system', 'ui.sortable');
     drupal_add_library('system', 'ui.autocomplete');
     libraries_load('behat_editor_tag_it');
+    libraries_load('behat_editor_data_table');
+    libraries_load('behat_editor_date_format');
+    $module = BEHAT_EDITOR_DEFAULT_FOLDER;
     $filename_no_ext = REQUEST_TIME;
     $filename = $filename_no_ext . '.feature';
     $default_path = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
@@ -37,6 +40,8 @@ function behat_editor_add_form($form, $form_state) {
     $form['#attached']['js']['behat_editor_tags'] = $path . '/js/jquery.behat_editor.apply_tags.js';
     $form['#attached']['js']['behat_editor_close'] = $path . '/js/jquery.behat_editor.close_button.js';
     $form['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
+    $form['#attached']['js']['behat_editor_results'] = $path . '/js/behat_editor_results.js';
+
     $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_run.js';
     $form['#attached']['js']['behat_editor_add'] = $path . '/js/behat_editor_add.js';
     $form['#attached']['js']['behat_editor_save'] = $path . '/js/behat_editor_save.js';
@@ -51,31 +56,65 @@ function behat_editor_add_form($form, $form_state) {
 
     $form['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('col-md-12', 'well'))
+        '#attributes' => array('class' => array('col-lg-12', 'well', 'actions'))
     );
+
 
     $form['actions']['run_test'] = run_test_array($filename_no_ext, $default_path, 'create_run');
     $form['actions']['add_test'] = add_test_array($filename_no_ext, $default_path);
     $form['actions']['admin_area'] = admin_button_array();
 
-    $form['left-side'] = array(
+
+    $form['questions_area'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('col-md-6'))
+        '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-md-6', 'panel-group'))
     );
 
-    $form['left-side']['intro'] = array(
+    $form['questions_area']['intro'] = array(
         '#theme' => 'behat_editor_questions_area_intro',
         '#prefix' => '<div class="nothing-here">',
         '#suffix' => '</div>',
     );
+    $form['questions_area']['existing_test'] = _behat_editor_existing_test();
 
-    $form['results'] = array(
-        '#markup' => theme('behat_editor_results_area', $args = array('params' => array()))
+    $form['questions_area']['question'] =  _behat_editor_questions_form();
+
+    $form['results_area'] = array(
+        '#type' => 'container',
+        '#attributes' => array('id' => 'accordion', 'class' => array('col-md-6', 'panel-group'))
     );
 
-    $form['left-side']['existing_test'] = _behat_editor_existing_test();
+    $form['results_area']['container1'] = array(
+        '#type' => 'container',
+        '#attributes' => array('class' => array('panel', 'panel-default')),
+    );
 
-    $form['left-side']['questions'] = _behat_editor_questions_form();
+    $form['results_area']['container1']['results'] = array(
+        '#prefix' => "<div class=\"panel-heading\">
+                        <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\">
+                            <h4 class=\"panel-title\">Current Test</h4>
+                        </a></div>",
+        '#markup' => theme('behat_editor_results_area', $args = array('params' => array())),
+    );
+
+
+    $form['results_area']['container2'] = array(
+        '#type' => 'container',
+        '#attributes' => array('class' => array('panel', 'panel-default')),
+    );
+
+    $form['results_area']['container2']['past_results'] = array(
+        '#prefix' => "<div class=\"panel-heading\">
+                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">
+                                <h4 class=\"panel-title\">Past Results</h4>
+                            </a>
+                        </div>",
+        '#markup' => '<div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body">
+                                <table cellpadding="0" cellspacing="0" border="0" class="display" id="past-results-table"></table>
+                        </div>'
+    );
+
     $title =  "Add File";
     $body = "The file {$filename} will be added and you will be redirected to the Edit page..";
     $buttons = array(
