@@ -115,15 +115,13 @@ function behat_editor_add_form($form, $form_state) {
                         </div>'
     );
 
-    $title = "Preview of test";
-    $body = "<div class='test'></div>";
+    $title =  "Add File";
+    $body = "The file {$filename} will be added and you will be redirected to the Edit page..";
     $buttons = array(
-        'close' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
+        'save' => array('title' => "Continue", 'class' => array('btn', 'btn-danger', 'confirm-add')),
+        'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
     );
     $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
-
-    $form['filename'] = array('#type' => 'hidden', '#default_value' => $filename_no_ext);
-    $form['module'] = array('#type' => 'hidden', '#default_value' => $module);
 
     return $form;
 }
