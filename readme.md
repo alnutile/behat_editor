@@ -1,5 +1,5 @@
 # Behat Editor and Gherkin Generator
-..
+....
 ### About
 
 This module will allow a user to make Gherkin formatted test files for behat.
