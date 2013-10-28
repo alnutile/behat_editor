@@ -79,41 +79,8 @@ function behat_editor_add_form($form, $form_state) {
 
     $form['questions_area']['question'] =  _behat_editor_questions_form();
 
-    $form['results_area'] = array(
-        '#type' => 'container',
-        '#attributes' => array('id' => 'accordion', 'class' => array('col-md-6', 'panel-group'))
-    );
+    behat_editor_current_test_container($form);
 
-    $form['results_area']['container1'] = array(
-        '#type' => 'container',
-        '#attributes' => array('class' => array('panel', 'panel-default')),
-    );
-
-    $form['results_area']['container1']['results'] = array(
-        '#prefix' => "<div class=\"panel-heading\">
-                        <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\">
-                            <h4 class=\"panel-title\">Current Test</h4>
-                        </a></div>",
-        '#markup' => theme('behat_editor_results_area', $args = array('params' => array())),
-    );
-
-
-    $form['results_area']['container2'] = array(
-        '#type' => 'container',
-        '#attributes' => array('class' => array('panel', 'panel-default')),
-    );
-
-    $form['results_area']['container2']['past_results'] = array(
-        '#prefix' => "<div class=\"panel-heading\">
-                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">
-                                <h4 class=\"panel-title\">Past Results</h4>
-                            </a>
-                        </div>",
-        '#markup' => '<div id="collapseTwo" class="panel-collapse collapse">
-                        <div class="panel-body">
-                                <table cellpadding="0" cellspacing="0" border="0" class="display" id="past-results-table"></table>
-                        </div>'
-    );
 
     $title =  "Add File";
     $body = "The file {$filename} will be added and you will be redirected to the Edit page..";
