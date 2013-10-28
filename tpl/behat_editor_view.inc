@@ -59,48 +59,9 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
         '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
     );
 
-    $form['results_area'] = array(
-        '#type' => 'container',
-        '#attributes' => array('id' => 'accordion', 'class' => array('col-md-6', 'panel-group'))
-    );
-
-    $form['results_area']['container1'] = array(
-        '#type' => 'container',
-        '#attributes' => array('class' => array('panel', 'panel-default')),
-    );
-
-    $form['results_area']['container1']['results'] = array(
-        '#prefix' => "<div class=\"panel-heading\">
-                        <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\">
-                            <h4 class=\"panel-title\">Current Test</h4>
-                        </a></div>",
-        '#markup' => theme('behat_editor_results_area', $args = array('params' => array())),
-    );
-
-
-    $form['results_area']['container2'] = array(
-        '#type' => 'container',
-        '#attributes' => array('class' => array('panel', 'panel-default')),
-    );
-
-    $form['results_area']['container2']['past_results'] = array(
-        '#prefix' => "<div class=\"panel-heading\">
-                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">
-                                <h4 class=\"panel-title\">Past Results</h4>
-                            </a>
-                        </div>",
-        '#markup' => '<div id="collapseTwo" class="panel-collapse collapse">
-                        <div class="panel-body">
-                                <table cellpadding="0" cellspacing="0" border="0" class="display" id="past-results-table"></table>
-                        </div>'
-    );
-
-    $title = "Preview of test";
-    $body = "<div class='test'></div>";
-    $buttons = array(
-        'close' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
-    );
-    $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
+    behat_editor_current_test_container($form);
+    behat_editor_results_container($form);
+    behat_editor_results_history_modal($form);
 
     $form['filename'] = array('#type' => 'hidden', '#default_value' => $file_info['filename_no_ext']);
     $form['module'] = array('#type' => 'hidden', '#default_value' => $module);
