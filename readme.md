@@ -172,3 +172,10 @@ cp ../../vendor/behat/behat/features/bootstrap/FeatureContext.php behat/features
 
 ### Todo
 lots
+
+
+### Tips
+
+There is a run_tests.php file. It triggers the full_tests.php test. It is a quick way
+to run the tests for this module before committing code.
+You can link it to your git pre-commit hook as well.
