@@ -40,7 +40,6 @@ class BehatEditorRun {
      * check it comes from the class later one
      */
     public function __construct($file_object) {
-        watchdog('test_file_object', print_r($file_object, 1));
 
         composer_manager_register_autoloader();
         $path = drupal_get_path('module', 'behat_editor');
