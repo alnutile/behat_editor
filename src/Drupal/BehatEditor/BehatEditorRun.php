@@ -145,7 +145,6 @@ class BehatEditorRun {
         } else {
             $tag_include = '';
         }
-        watchdog('test_command', print_r("./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include $tags_exclude --profile=$profile $this->absolute_file_path", 1));
         exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include --profile=$profile $tags_exclude $this->absolute_file_path", $output, $return_var);
         self::saveResults($output, $return_var);
         return $output;

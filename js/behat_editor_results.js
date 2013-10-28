@@ -6,12 +6,11 @@
 
     Drupal.behat_editor.results_modal = function(context) {
         $('a.results', context).on('click', function(e){
-            console.log("clicked");
             e.preventDefault();
             var body = $(this).data('results');
             body = body.replace(/,/g, "<br />");
-            $('#beModal div.test').html(body);
-            $('#beModal').modal();
+            $('#modalResults div.test').html(body);
+            $('#modalResults').modal();
         });
     }
 
