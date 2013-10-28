@@ -1,0 +1,263 @@
+<?php
+
+    use Behat\Behat\Context\ClosuredContextInterface,
+        Behat\Behat\Context\TranslatedContextInterface,
+        Behat\Behat\Context\BehatContext,
+        Behat\Behat\Exception\PendingException;
+    use Behat\Gherkin\Node\PyStringNode,
+        Behat\Gherkin\Node\TableNode;
+    use Behat\MinkExtension\Context\MinkContext;
+    use Behat\Behat\Event\ScenarioEvent;
+    use Behat\Mink\Driver\Selenium2Driver;
+    use Behat\Mink\Session;
+    use Symfony\Component\Yaml\Yaml;
+    use Guzzle\Http;
+
+/**
+ * Features context.
+ */
+class FeatureContext extends MinkContext {
+
+    private $_restObject        = null;
+    private $_restObjectType    = null;
+    private $_restObjectMethod  = 'get';
+    private $_client            = null;
+    private $_response          = null;
+    private $_requestUrl        = null;
+
+    public $firstTestUrl = '';
+
+
+    /**
+     * Initializes context.
+     * Every scenario gets it's own context object.
+     *
+     * @param array $parameters context parameters (set them up through behat.yml)
+     */
+    public function __construct(array $parameters){
+        #Add initialization code here
+    }
+
+    /**
+    * @Given /^I click the "([^"]*)" form submit button in the "([^"]*)" form$/
+    */
+    public function iClickTheFormSubmitButton($button, $formClass)
+    {
+        $form = $this->getSession()->getPage()->find('css', 'form.'.$formClass);
+        $form->findButton($button)->press();
+    }
+
+
+    /**
+     * @Given /^I wait$/
+     */
+    public function iWait()
+    {
+        $this->getSession()->wait(3000,
+            "jQuery('.alert.alert-info a').text() == 'click here'"
+        );
+    }
+
+    /**
+     * @Given /^I get redirected to home page$/
+     */
+    public function iGetRedirectedToHomePage()
+    {
+        $this->getSession()->wait(3000,
+            "jQuery('a.logout-link').text() == 'Log out'"
+        );
+    }
+
+
+    /**
+     * @Given /^I follow savedTest$/
+     */
+    public function iFollowSavedtest()
+    {
+        $test_file = $this->getSession()->getPage()->find('css', 'a#test-file')->getAttribute('href');
+        $this->visit($test_file);
+    }
+
+    /**
+     * @Given /^I fill in featuresTag$/
+     */
+    public function iFillInFeaturestag()
+    {
+        $registerForm = $this->getSession()->getPage()->find('css', 'form.scenario-builder');
+        $el = $registerForm->find('css', 'input.ui-widget-content');
+        $el->setValue('@local ');
+    }
+
+    /**
+     * @Given /^I fill in sectionOneTag$/
+     */
+    public function iFillInSectiononetag()
+    {
+        $registerForm = $this->getSession()->getPage()->find('css', 'form.scenario-builder');
+        $el = $registerForm->findAll('css', 'li.tagit-new input.ui-widget-content');
+        $el[1]->setValue('@readonly ');
+    }
+
+
+    /**
+     * @Given /^I fill in sectionTwoTag$/
+     */
+    public function iFillInSectiontwotag()
+    {
+        $registerForm = $this->getSession()->getPage()->find('css', 'form.scenario-builder');
+        $el = $registerForm->findAll('css', 'li.tagit-new input.ui-widget-content');
+        $el[2]->setValue('@anonymous ');
+    }
+
+
+    /**
+     * @Given /^I get first test name$/
+     */
+    public function iGetFirstTestName()
+    {
+        $this->getSession()->visit($this->locatePath('/admin/behat/index'));
+        $table = $this->getSession()->getPage()->find('css', 'table#admin-features');
+        $el = $table->findAll('css', 'a');
+        $link = $el[0]->getAttribute('href');
+        $this->firstTestUrl = $link;
+    }
+
+
+    /**
+     * @Given /^I view first test$/
+     */
+    public function iViewFirstTest()
+    {
+        $this->visit($this->firstTestUrl);
+    }
+
+
+    /**
+     * @Then /^I switch to popup by pressing "([^"]*)"$/
+     */
+    public function iSwitchToPopupByClicking($arg1) {
+        $originalWindowName = $this->getSession()->getWindowName(); //Get the original name
+        if (empty($this->originalWindowName)) {
+            $this->originalWindowName = $originalWindowName;
+        }
+
+        $this->getSession()->getPage()->pressButton("$arg1"); //Pressing the withdraw button
+
+        $popupName = $this->getNewPopup($originalWindowName);
+
+        //Switch to the popup Window
+        $this->getSession()->switchToWindow($popupName);
+    }
+
+    /**
+     * @Then /^I should see cookie "([^"]*)"$/
+     */
+    public function iShouldSeeCookie($cookie_name) {
+       if($this->getSession()->getCookie('welcome_info_name') == $cookie_name) {
+           return TRUE;
+        } else {
+           throw new Exception('Cookie not found');
+       }
+    }
+
+    /**
+     * @Then /^I wait for home page$/
+     */
+    public function iWaitForHomePage()
+    {
+        $this->getSession()->switchToWindow($this->originalWindowName);
+        $this->getSession()->wait(3000,
+            "jQuery('a.logout-link').text() == 'Log out'"
+        );
+    }
+
+    /**
+     * @Then /^I see and press log out$/
+     */
+    public function iSeeAndPressLogOut()
+    {
+        $this->getSession()->switchToWindow($this->originalWindowName);
+        $log_out = $this->getSession()->getPage()->find('css', 'a.logout-link')->getAttribute('href');
+        $this->visit($log_out);
+    }
+
+    /**
+     * @Then /^I switch back to original window$/
+     */
+    public function iSwitchBackToOriginalWindow() {
+        //Switch to the original window
+        $this->getSession()->switchToWindow($this->originalWindowName);
+    }
+
+    /**
+     * @Then /^I wait till I see if page is redirected from "([^"]*)" to "([^"]*)"$/
+     */
+    public function iWaitTillISeeIfPageIsRedirectedFromTo($arg1, $arg2) {
+        //There is a redirect after log back to /login that then goes to home
+        //this tries to force that visit one mrore time
+        $this->getSession()->visit($arg1);
+
+        if($this->getSession()->getCurrentUrl() == $arg2) {
+            throw new Exception('Looks like you were redirected back to the login page');
+        }
+    }
+
+    /**
+     * @Then /^I destroy my cookies$/
+     */
+    public function iDestroyMyCookies() {
+        $this->getSession()->reset();
+    }
+
+    /**
+     * @Then /^the url should redirect to "([^"]*)"$/
+     */
+    public function theUrlShouldRedirectTo($arg1)
+    {
+        if($this->getSession()->getCurrentUrl() != $arg1) {
+            throw new Exception('You are not on the expected URL');
+        }
+    }
+
+    /**
+     * @Given /^I ponder life$/
+     */
+    public function iPonderLife() {
+        sleep(3);
+    }
+
+    /**
+     * @Given /^I ponder life for "([^"]*)" seconds$/
+     */
+    public function iPonderLifeForSeconds($arg1) {
+        sleep($arg1);
+    }
+
+    /**
+     * @Given /^I switch to previous window$/
+     */
+    public function iSwitchPreviousToWindow()
+    {
+        $this->getSession()->switchToWindow();
+    }
+
+    /**
+     * This gets the window name of the new popup.
+     */
+    private function getNewPopup($originalWindowName = NULL) {
+        //Get all of the window names first
+        $names = $this->getSession()->getWindowNames();
+
+        //Now it should be the last window name
+        $last = array_pop($names);
+
+        if (!empty($originalWindowName)) {
+            while ($last == $originalWindowName && !empty($names)) {
+                $last = array_pop($names);
+            }
+        }
+
+        return $last;
+    }
+
+}
