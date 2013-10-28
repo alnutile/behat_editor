@@ -113,11 +113,14 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
                         </div>'
     );
 
-    $title = "Preview of test";
-    $body = "<div class='test'></div>";
+    $title =  "Confirm Delete";
+    $body = "The file {$filename} will be deleted.";
+
     $buttons = array(
-        'close' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
+        'save' => array('title' => "Confirm", 'class' => array('btn', 'btn-danger', 'confirm-delete')),
+        'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
     );
+
     $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
 
     $form['filename'] = array('#type' => 'hidden', '#default_value' => $file_info['filename_no_ext']);
