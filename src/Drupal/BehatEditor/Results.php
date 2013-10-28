@@ -24,6 +24,7 @@ class Results {
             'results' => '',
             'duration' => '',
             'created' => '',
+            'status' => '',
         );
     }
 
