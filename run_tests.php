@@ -10,16 +10,24 @@
  * 
 */
 
-define("WORKING_PATH", '/Users/alfrednutile/Drupal/pfizertestinstall/sites/all/modules/custom/behat_editor');
+define("WORKING_PATH", '/Users/alfrednutile/Drupal/screenshots/sites/all/modules/custom/behat_editor');
 define("RUN_TEST", 'full_test.feature');
 chdir(WORKING_PATH);
-exec('git pull origin development', $output, $return_var);
+//exec('git pull origin development', $output, $return_var);
 exec("drush cc all");
 exec("drush br behat_editor " .RUN_TEST. " 1 0 0", $output, $return_var);
-if ( !$return_var ) {
-	$message = "Failed Tests " . RUN_TEST;
+
+$errors = array_pop($output);
+if(strpos($errors, 'failed') !== FALSE) {
+    $errors = TRUE;
 } else {
-	$message = "Passed Tests " . RUN_TEST;
+    $errors = FALSE;
+}
+
+if ( $errors ) {
+	$message = "Failed Tests " . RUN_TEST . "\n";
+} else {
+	$message = "Passed Tests " . RUN_TEST . "\n";
 }
 
 shell_exec('say "'.$message.'"');
