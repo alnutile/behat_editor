@@ -71,11 +71,15 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     $form['actions']['admin_area'] = admin_button_array();
 
-    $form['question'] = array(
-        '#prefix' => '<div class="panel panel-default col-md-6">',
-        '#suffix' => '</div>',
-        '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
+
+    $form['questions_area'] = array(
+        '#type' => 'container',
+        '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-md-6', 'panel-group'))
     );
+
+    $form['questions_area']['existing_test']['#markup'] = theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()));
+
+    $form['questions_area']['question'] =  _behat_editor_questions_form();
 
     behat_editor_current_test_container($form);
     behat_editor_results_container($form);
