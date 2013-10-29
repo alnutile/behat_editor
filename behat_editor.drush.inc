@@ -82,7 +82,7 @@ function drush_behat_editor_behat_run() {
     $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
     $output = $run->execDrush($javascript, $tag, $profile);
-    $results = implode("\n\r", $output);
+    $results = implode("\n\r", $output['output_array']);
     return drush_print($results);
 }
 
@@ -113,7 +113,7 @@ function drush_behat_editor_behat_run_folder() {
         $run = new BehatEditorRun($key);
         print "Running Test {$key['filename']}...\n";
         $output = $run->execDrush($javascript);
-        $results = implode("\n\r", $output);
+        $results = implode("\n\r", $output['output_array']);
         drush_print($results);
     }
 
