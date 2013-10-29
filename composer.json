@@ -1,4 +1,12 @@
 {
+    "name": "alnutile/behat_editor",
+    "description": "yml file and FeatureContext.php needed for other modules to extend it",
+    "license": "GPL2.0+",
+    "type": "library",
+    "authors": {
+      "name": "Alfred Nutile",
+      "email": "alfrednutile@gmail.com"
+    },
     "require": {
         "behat/behat": "2.4.*@stable",
         "behat/mink": "dev-FindWindowNames as 1.5.x-dev",
