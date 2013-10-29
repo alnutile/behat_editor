@@ -116,10 +116,11 @@ class BehatEditorRun {
         } else {
             $tags = "--tags '~@javascript'";
         }
-        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths $tags $this->absolute_file_path", $output, $return_var);
+        $command = "cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths $tags $this->absolute_file_path";
+        $context1 = 'behat_run';
+        drupal_alter('behat_editor_command', $command, $context1);
+        exec($command, $output, $return_var);
         $this->file_array = $output;
-        //Just getting behat errors
-        //  return_var is the output of the test
         $response = is_array($output) ? 0 : 1;
         self::saveResults($output, $return_var);
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
@@ -145,9 +146,14 @@ class BehatEditorRun {
         } else {
             $tag_include = '';
         }
-        exec("cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include --profile=$profile $tags_exclude $this->absolute_file_path", $output, $return_var);
+        $command = "cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include --profile=$profile $tags_exclude $this->absolute_file_path";
+        $context1 = 'behat_run';
+        drupal_alter('behat_editor_command', $command, $context1);
+        exec($command, $output, $return_var);
+        $this->file_array = $output;
+        $response = is_array($output) ? 0 : 1;
         self::saveResults($output, $return_var);
-        return $output;
+        return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
     }
 
     /**
