@@ -502,3 +502,15 @@ function behat_editor_current_test_container(&$form){
         '#markup' => theme('behat_editor_results_area', $args = array('params' => array())),
     );
 }
+
+function behat_editor_save_modal(&$form, $filename) {
+    $title =  "Confirm Save";
+    $body = "The file {$filename} will be saved and you will be redirected.";
+
+    $buttons = array(
+        'save' => array('title' => "Confirm", 'class' => array('btn', 'btn-danger', 'confirm-delete')),
+        'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
+    );
+
+    $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
+}
