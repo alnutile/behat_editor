@@ -93,16 +93,19 @@ Though why do that when drush has a bunch of commands you can use see **DRUSH** 
 JqueryUpdate 1.7 or higher will be set**
 
 
-#### 5. (optional) FeatureContext.php.sample file
+#### 5. (finally!) FeatureContext.php.sample file
 
-You can rename the behat/features/bootstrap/FeatureContext.php.sample file 
+Rename the behat/features/bootstrap/FeatureContext.php.sample file 
 
 to
 
 behat/features/bootstrap/FeatureContext.php
 
 Then you can add custom step definitions in there that your app may need.
+This is kept out of git so that if there are updates to the module your custom work does not get lost.
+
 [http://docs.behat.org/quick_intro.html#writing-your-step-definitions]
+
 
 
 ## What now
