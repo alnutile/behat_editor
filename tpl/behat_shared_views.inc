@@ -232,24 +232,45 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
-
+    /**
+     * Using this group to test
+     * more dyanamic method of
+     * redering forms and later js
+     */
     $form['questions']['and_i_fill_in']['form_field_name'] = array(
         '#type' => 'textfield',
         '#title' => t('And I fill in'),
         '#name' => 'form_field_and_fill_in',
-        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('a form field name')),
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'and_i_fill_in_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('a form field name'),
+        ),
     );
-
+    /**
+     * Type works good for the qualifier type text
+     * but the type needs to be in the prefix due to how it is
+     * rendered.
+     * @todo test in non bootstrap render
+     */
     $form['questions']['and_i_fill_in']['with'] = array(
-        '#markup' => 'with',
-        '#prefix' => '<div class="qualifier">',
+        '#title' => 'with',
+        '#type' => 'item',
+        '#prefix' => '<div data-type="qualifier" class="and_i_fill_in_group">',
         '#suffix' => '</div>',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'and_i_fill_in_group'),
+        ),
     );
 
     $form['questions']['and_i_fill_in']['field_text'] = array(
         '#type' => 'textfield',
         '#name' => 'field_with_text',
-        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('with the following text field')),
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'and_i_fill_in_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('with the following text field'),
+        ),
     );
 
     $form['questions']['and_i_fill_in']['field_text_button'] = array(
@@ -257,11 +278,8 @@ function _behat_editor_questions_form() {
         '#name' => 'field_text_add',
         '#value' => t('Add'),
         '#attributes' => array(
+            'data-step-group' => array('and_i_fill_in_group'),
             'data-method' => array('append'),
-            'data-test-message' => array('And I fill in'),
-            'data-parent-input' => array('form_field_and_fill_in'),
-            'data-value-2' => array('field_with_text'),
-            'data-middle-words' => array('with'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'
