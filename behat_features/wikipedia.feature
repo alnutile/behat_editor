@@ -1,4 +1,4 @@
- 
+ @external
  Feature: Example Test for WikiPedia
 
    @anonymous @external
@@ -12,3 +12,6 @@
      Then I should see "Thanks"
      Given I ponder life for 30 seconds
      And I fill in "Test1" with "Test2"
+
+   @admin
+   Scenario: "Test this is the new group"

@@ -193,19 +193,25 @@ function _behat_editor_questions_form() {
         '#weight' => -100
     );
 
-    $form['questions']['test_name']['name'] = array(
+    $form['questions']['test_name']['scenario'] = array(
         '#type' => 'textfield',
-        '#title' => t('What do you want to call this Scenario?'),
-        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('A simple descriptive name of the test')),
+        '#name' => 'scenario',
+        '#title' => t('Scenario:'),
+        '#description' => t('What do you want to call this Scenario?'),
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'scenario_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('A simple descriptive name of the test'),
+        ),
     );
 
-    $form['questions']['test_name']['name_button'] = array(
+    $form['questions']['test_name']['scenario_button'] = array(
         '#type' => 'button',
         '#value' => t('Name it'),
+        '#name' => 'scenario_button',
         '#attributes' => array(
-            'data-method' => array('replaceWith'),
-            'data-test-message' => array('Scenario'),
-            'data-parent-input' => array('name'),
+            'data-step-group' => array('scenario_group'),
+            'data-method' => array('append'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'
@@ -214,9 +220,15 @@ function _behat_editor_questions_form() {
 
     $form['questions']['when_i_go_to']['url'] = array(
         '#type' => 'textfield',
-        '#title' => t('When I go to'),
+        '#title' => t('Given I am on'),
+        '#description' => t('When I go to a URL. Full URL is best'),
         '#name' => 'url',
-        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('a full website address')),
+        '#attributes' => array(
+            'placeholder' =>  t('a full website address'),
+            'class' => array('col-mg-12', 'url_group'),
+            'data-type' => array('textfield'),
+        ),
+        '#suffix' => '<hr>'
     );
 
     $form['questions']['when_i_go_to']['url_button'] = array(
@@ -224,9 +236,8 @@ function _behat_editor_questions_form() {
         '#name' => 'go_to',
         '#value' => t('Add'),
         '#attributes' => array(
-            'data-method' => array('replaceWith'),
-            'data-test-message' => array('Given I am on'),
-            'data-parent-input' => array('url'),
+            'data-step-group' => array('url_group'),
+            'data-method' => array('append'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'
@@ -234,8 +245,8 @@ function _behat_editor_questions_form() {
 
     /**
      * Using this group to test
-     * more dyanamic method of
-     * redering forms and later js
+     * more dynamic method of
+     * rendering forms and later js
      */
     $form['questions']['and_i_fill_in']['form_field_name'] = array(
         '#type' => 'textfield',
@@ -288,22 +299,25 @@ function _behat_editor_questions_form() {
 
     $form['questions']['and_i_click_on_a']['click_on_type'] = array(
         '#type' => 'select',
+        '#title' => t('And I'),
         '#name' => 'click_on_type',
-        '#title' => t('And I click on a'),
+        '#description' => t('And I click or press on a link or button <b>called</b>'),
         '#options' => array('follow' => t('link'), 'press' => t('button')),
-        '#validated' => TRUE
-    );
-
-    $form['questions']['and_i_click_on_a']['called'] = array(
-        '#prefix' => '<div class="qualifier">',
-        '#suffix' => '</div>',
-        '#markup' => 'called',
+        '#validated' => TRUE,
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'and_i_click_on_a_group'),
+            'data-type' => array('select'),
+        ),
     );
 
     $form['questions']['and_i_click_on_a']['field_text'] = array(
         '#type' => 'textfield',
         '#name' => 'click_on_text',
-        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('enter a link of button name here'))
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'and_i_click_on_a_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('enter a link of button name here'),
+        ),
     );
 
     $form['questions']['and_i_click_on_a']['click_on_a'] = array(
@@ -312,11 +326,7 @@ function _behat_editor_questions_form() {
         '#value' => t('Add'),
         '#attributes' => array(
             'data-method' => array('append'),
-            'data-element-type' => array('select'),
-            'data-target' => array('click_on'),
-            'data-test-message' => array('And I'),
-            'data-parent-input' => array('click_on_type'),
-            'data-value-2' => array('click_on_text'),
+            'data-step-group' => array('and_i_click_on_a_group'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'
@@ -327,15 +337,24 @@ function _behat_editor_questions_form() {
         '#name' => 'should_see',
         '#prefix' => '<div class="qualifier">',
         '#suffix' => '</div>',
-        '#title' => t('Then I should see'),
+        '#title' => t('Then I'),
+        '#description' => t('Then I should see or not see the following text'),
         '#options' => array('should see' => t('see'), 'should not see' => t('not see')),
-        '#validated' => TRUE
+        '#validated' => TRUE,
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'then_i_should_see_group'),
+            'data-type' => array('select'),
+        ),
     );
 
     $form['questions']['then_i_should_see']['see_not_see_some_text'] = array(
         '#type' => 'textfield',
         '#name' => 'see_not_see_some_text',
-        '#attributes' => array('class' => array('col-mg-12'), 'placeholder' =>  t('some text on that page'))
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'then_i_should_see_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('some text on that page'),
+        ),
     );
 
     $form['questions']['then_i_should_see']['see_not_see'] = array(
@@ -344,11 +363,7 @@ function _behat_editor_questions_form() {
         '#value' => t('Add'),
         '#attributes' => array(
             'data-method' => array('append'),
-            'data-target' => array('see'),
-            'data-element-type' => array('select'),
-            'data-test-message' => array('Then I'),
-            'data-parent-input' => array('should_see'),
-            'data-value-2' => array('see_not_see_some_text'),
+            'data-step-group' => array('then_i_should_see_group'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'

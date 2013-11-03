@@ -43,7 +43,7 @@
             var createOutputv2 = function(leaf_class, sortable, draggable_step_string) {
                 var data_field = '';
                 var destination_wrapper = '';
-                if(leaf_class == 'name') {
+                if(leaf_class == 'scenario_group') {
                     var id = new Date().getTime();
                     destination_wrapper += Drupal.theme('tagItWrapper', id);
                     data_field = 'data-scenario-tag-box="' + id + '"';
@@ -169,6 +169,7 @@
                     if($(this).data('type') == 'qualifier') {
                         draggable_step_string += $('div label', this).text();
                     } else {
+                        var val = '';
                         //1. Get the Label
                         var label_text;
                         label_text = jQuery("label[for='"+jQuery(this).attr('id')+"']");
@@ -179,12 +180,16 @@
                             (label_text == 'Scenario') ? label += ':' : false;
                             draggable_step_string += label;
                         }
-                        var val = $(this).val();
-                        draggable_step_string += '"'+val+'" ';
+                        if($(this).data('type') == 'select') {
+                            val = $(':selected', this).val();
+                            draggable_step_string += val + ' ';
+                        } else {
+                            val = $(this).val();
+                            draggable_step_string += '"'+val+'" ';
+
+                        }
                     }
                 });
-                console.log("This is the string so far");
-                console.log(draggable_step_string);
                 //2. For each item in the Group
                 //  a. get type
 
@@ -242,10 +247,11 @@
 
                 if(draggable_step_string){
                  destination_wrapper = createOutputv2(leaf_class, sortable, draggable_step_string);
+                 $('ul.scenario', context).append(destination_wrapper).applyTagIts('@scenario_tag', 'scenario_v2');
                 } else {
                  destination_wrapper = createOutput(leaf_class, sortable, label, data_value, middle_words, data_value2, label_text, ending_words);
+                 $('ul.scenario', context).append(destination_wrapper).applyTagIts('@scenario_tag', 'scenario');
                 }
-                $('ul.scenario', context).append(destination_wrapper).applyTagIts('@scenario_tag', 'scenario');
 
                 checkIfCanRun();
             });
