@@ -57,22 +57,6 @@
             };
 
 
-            var parseSecondWordSetp = function(value, label_text, self) {
-                var data_value2 = '';
-                var middle_words = '';
-                var get_value2 = value;
-                    data_value2 += wrapperCheck(label_text);
-                    data_value2 += $('input[name='+get_value2+']').val();
-                    data_value2 += wrapperCheck(label_text);
-                if($(self).data('middle-words')) {
-                    middle_words = $(self).data('middle-words');
-                }
-                return  {
-                            "data_value2": data_value2,
-                            "middle_words": middle_words
-                };
-            };
-
             var wrapperCheck = function(label_text) {
                if (label_text == 'Given I am on' || label_text.search('Then I') != -1 || label_text.search('And I') != -1) {
                     return '"';
@@ -190,58 +174,6 @@
                         }
                     }
                 });
-                //2. For each item in the Group
-                //  a. get type
-
-                //  b. build text from type
-
-
-                if($(this).data('test-message')) {
-                    label_text = $(this).data('test-message');
-                    label += label_text;
-                    (label_text == 'Scenario') ? label += ':' : false;
-                    label += ' '; //ending space
-                }
-
-                if($(this).data('parent-input')) {
-                    //Set the target class
-                    destination_class = $(this).data('parent-input');
-                };
-
-                if($(this).data('target')) {                                    //If different target
-                    destination_class = $(this).data('target');                 //than existing targets
-                };
-
-                if($(this).data('parent-input')) {
-                    leaf_class = $(this).data('parent-input');                  //Set more uses of this term
-                    get_value = $(this).data('parent-input');
-                }
-
-                if($(this).data('element-type')) {                              // eg select
-                    if($(this).data('element-type') == 'select') {              // default is input
-                        label = $(this).data('test-message') + ' ';
-                        label += $('select[name='+get_value+'] :selected').val();
-                        data_value = '';
-                    }
-                } else {
-                    var val = $('input[name='+get_value+']').val();
-                    setFeature(destination_class, val);
-                    data_value += wrapperCheck(label_text);
-                    data_value += val;
-                    data_value += wrapperCheck(label_text);
-                }
-
-
-
-                if($(this).data('value-2')) {
-                    var results = parseSecondWordSetp($(this).data('value-2'), label_text, this);
-                    data_value2 = results['data_value2'];
-                    middle_words = results['middle_words'];
-                }
-
-                if($(this).data('ending-words')) {
-                    ending_words = $(this).data('ending-words')
-                }
 
                 var sortable = sortableQuestion(destination_class);
 

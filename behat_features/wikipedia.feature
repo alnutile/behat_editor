@@ -15,3 +15,6 @@
 
    @admin
    Scenario: "Test this is the new group"
+     Given I click the  "facebook"  social button
+     Given I am on the  "test "  page
+     Given I change the text size to  "10"
