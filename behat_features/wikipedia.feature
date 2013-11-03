@@ -6,6 +6,9 @@
      Given I am on "http://en.wikipedia.org/wiki/Main_Page"
      Then I should see "WikiPedia"
      And I follow "Donate"
+     Given I ponder life
      And I ponder life
      Then I should not see "Bob"
      Then I should see "Thanks"
+     Given I ponder life for 30 seconds
+     And I fill in "Test1" with "Test2"
