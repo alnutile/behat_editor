@@ -43,12 +43,13 @@
             var createOutputv2 = function(leaf_class, sortable, draggable_step_string) {
                 var data_field = '';
                 var destination_wrapper = '';
+                var spaces = (leaf_class != 'scenario_group') ? ' spaces-four ' : '';
                 if(leaf_class == 'scenario_group') {
                     var id = new Date().getTime();
                     destination_wrapper += Drupal.theme('tagItWrapper', id);
                     data_field = 'data-scenario-tag-box="' + id + '"';
                 }
-                destination_wrapper += '<li class="' +leaf_class+ '" ' + data_field + '>';      //Apply elements to the Steps area.
+                destination_wrapper += '<li class="' +leaf_class+spaces+ '" ' + data_field + '>';      //Apply elements to the Steps area.
                 destination_wrapper += sortable + '</i>';
                 destination_wrapper += draggable_step_string;
                 destination_wrapper += ' <i class="remove glyphicon glyphicon-remove-circle"></i>';
@@ -145,7 +146,7 @@
                 destination_class = group;
                 leaf_class = group;
                 get_value = group;
-                $('.'+group).each(function(){
+                $('.'+group+':not(li)').each(function(){
                     /**
                       * @todo need to figure out if middle or end or
                       * Make it so it does not matter and just append
@@ -156,7 +157,7 @@
                         var val = '';
                         //1. Get the Label
                         var label_text;
-                        label_text = jQuery("label[for='"+jQuery(this).attr('id')+"']");
+                        label_text = $("label[for='"+$(this).attr('id')+"']");
                         //  quick : colon check
                         if(label_text.length)
                         {

@@ -18,3 +18,14 @@
      Given I click the  "facebook"  social button
      Given I am on the  "test "  page
      Given I change the text size to  "10"
+     Given I hover over the  ""  menu item
+     Given I hover over the  ""  menu item
+     Given I hover over the  ""  menu item
+     Given I click the  ""  social button
+     Given I saw page loaded
+     Then I should see "Test"
+     Given I click the  "test"  social button
+     Given I am on the  "test"  page
+     Then I wait till I see if page is redirected from  "test"  to  "test"
+     Given I hover over the "Test" menu item
+     Given I am on the "Test" page
