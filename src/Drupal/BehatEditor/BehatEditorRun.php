@@ -116,9 +116,11 @@ class BehatEditorRun {
         } else {
             $tags = "--tags '~@javascript'";
         }
-        $command = "cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths $tags $this->absolute_file_path";
+        $command = self::behatCommandArray($tags);
+        //$command = "cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --no-paths $tags $this->absolute_file_path";
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
+        $command = implode(' ', $command);
         exec($command, $output, $return_var);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
@@ -206,6 +208,19 @@ class BehatEditorRun {
         $output = array('message' => $message, 'file' => $this->filename, 'error' => TRUE);
         $results = array('file' => $file_message, 'test' => $output, 'error' => 1, 'message' => $message);
         return $results;
+    }
+
+    public function behatCommandArray($tags) {
+        return array(
+            'pre_command' => "cd $this->behat_path &&",
+            'run' => "./bin/behat",
+            'config' => "--config=\"$this->yml_path\"",
+            'path' => '--no-paths',
+            'tags' => "$tags",
+            'profile' => "--profile=default",
+            'misc' => '',
+            'file_path' => "$this->absolute_file_path"
+        );
     }
 
     /**
