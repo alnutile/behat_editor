@@ -121,6 +121,7 @@ class BehatEditorRun {
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
+        watchdog('test_command', print_r($command, 1));
         exec($command, $output, $return_var);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
@@ -148,9 +149,21 @@ class BehatEditorRun {
         } else {
             $tag_include = '';
         }
-        $command = "cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include --profile=$profile $tags_exclude $this->absolute_file_path";
+
+        //if user passes 0 for profile
+        if($profile === 0) {
+            $profile = 'default';
+        }
+
+        //$command = "cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include --profile=$profile $tags_exclude $this->absolute_file_path";
+        $tags = "$tag_include $tags_exclude";
+        $command = self::behatCommandArray($tags);
+        $command['profile'] = "--profile=$profile";
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
+        $command['format'] = '--format=pretty';
+        watchdog('test_command', print_r($command, 1));
+        $command = implode(' ', $command);
         exec($command, $output, $return_var);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
@@ -217,6 +230,7 @@ class BehatEditorRun {
             'config' => "--config=\"$this->yml_path\"",
             'path' => '--no-paths',
             'tags' => "$tags",
+            'format' => '',
             'profile' => "--profile=default",
             'misc' => '',
             'file_path' => "$this->absolute_file_path"
@@ -235,7 +249,7 @@ class BehatEditorRun {
         $saveResults->fields['filename'] = $this->filename;
         $saveResults->fields['module'] = $this->module;
         $saveResults->fields['results'] = serialize($output);
-        $saveResults->fields['duration'] = array_pop($output);;
+        $saveResults->fields['duration'] = (array_pop($output)) ? array_pop($output): '0m0s';
         $saveResults->fields['created'] = REQUEST_TIME;
         $saveResults->fields['status'] = $return_var;
         $saveResults->insert();
