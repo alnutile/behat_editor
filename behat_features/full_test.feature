@@ -12,7 +12,7 @@ Feature: Add Page
   Scenario: User Sees Add Page
     Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help to generate "
-    And I fill in "edit-name" with "Hello Worlds"
+    And I fill in "edit-scenario" with "Hello Worlds"
     And I press "Name it"
     And I fill in "edit-url" with "http://en.wikipedia.org/wiki/Main_Page"
     And I press "Add"
