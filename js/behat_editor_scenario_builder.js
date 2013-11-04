@@ -20,6 +20,9 @@
                     }
             };
 
+            /**
+             * @todo remove v2 takes over
+             */
             var createOutput = function(leaf_class, sortable, label, data_value, middle_words, data_value2, label_text, ending_words) {
                 var data_field = '';
                 var destination_wrapper = '';
