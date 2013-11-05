@@ -486,7 +486,7 @@ function behat_editor_delete_modal(&$form, $filename) {
 function behat_editor_current_test_container(&$form){
     $form['results_area'] = array(
         '#type' => 'container',
-        '#attributes' => array('id' => 'accordion', 'class' => array('col-md-6', 'panel-group'))
+        '#attributes' => array('id' => 'accordion', 'class' => array('col-sm-6', 'panel-group'))
     );
 
     $form['results_area']['container1'] = array(
