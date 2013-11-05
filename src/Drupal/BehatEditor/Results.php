@@ -29,8 +29,7 @@ class Results {
     }
 
     public function insert() {
-        $insert = db_insert('behat_editor_results')->fields($this->fields);
-        $insert->execute();
+        $insert = db_insert('behat_editor_results')->fields($this->fields)->execute();
         return $insert;
     }
 

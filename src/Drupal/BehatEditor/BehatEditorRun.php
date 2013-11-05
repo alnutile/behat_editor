@@ -125,8 +125,8 @@ class BehatEditorRun {
         exec($command, $output, $return_var);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
-        self::saveResults($output, $return_var);
-        return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
+        $rid = self::saveResults($output, $return_var);
+        return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
     }
 
     /**
@@ -167,8 +167,9 @@ class BehatEditorRun {
         exec($command, $output, $return_var);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
-        self::saveResults($output, $return_var);
-        return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output);
+        $rid = self::saveResults($output, $return_var);
+
+        return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
     }
 
     /**
@@ -252,6 +253,8 @@ class BehatEditorRun {
         $saveResults->fields['duration'] = (array_pop($output)) ? array_pop($output): '0m0s';
         $saveResults->fields['created'] = REQUEST_TIME;
         $saveResults->fields['status'] = $return_var;
-        $saveResults->insert();
+
+        drupal_alter('behat_editor_save_results', $saveResults);
+        return $saveResults->insert();
     }
 }
