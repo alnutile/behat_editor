@@ -125,7 +125,7 @@ class File {
             if(strpos($value, '@') !== FALSE && !strpos($value, '"')) {
                 foreach(explode(' ', $value) as $tag) {
                     if(!empty($tag)) {
-                        $tags[] = $tag;
+                        $tags[] = trim($tag);
                     }
                 }
             }

@@ -188,10 +188,14 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
  */
 function _behat_editor_questions_form() {
     $form['questions'] = array(
-        '#type' => 'container',
-        '#attributes' => array('class' => array('well', 'pull-left')),
-        '#weight' => -100
+        '#type' => 'fieldset',
+        '#title' => t('Build your test using Steps below'),
+        '#attributes' => array('class' => ''),
+        '#weight' => -100,
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE,
     );
+
 
     $form['questions']['test_name']['scenario'] = array(
         '#type' => 'textfield',

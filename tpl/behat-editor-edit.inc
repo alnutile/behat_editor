@@ -74,10 +74,25 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     $form['questions_area'] = array(
         '#type' => 'container',
-        '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-md-6', 'panel-group'))
+        '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-sm-6', 'panel-group'))
     );
 
-    $form['questions_area']['existing_test']['#markup'] = theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()));
+    $form['questions_area']['filename'] = array(
+        '#type' => 'textfield',
+        '#name' => 'filename',
+        '#title' => t('Filename:'),
+        '#default_value' => $filename,
+        '#attributes' => array('disabled' => array('disabled')),
+        '#description' => t('What do you want to call this test? Only lowercase alpha/numeric with underscores. Finally end the name in .feature'),
+        '#prefix' => '<div class="well">',
+        "#suffix" => '</div>'
+    );
+
+    $form['questions_area']['existing_test'] = array(
+        '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array())),
+        '#prefix' => '<div class="well test"><h4>Your Test</h4><hr>',
+        '#suffix' => '</div>'
+    );
 
     $form['questions_area']['question'] =  _behat_editor_questions_form();
 

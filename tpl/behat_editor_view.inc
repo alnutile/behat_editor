@@ -59,11 +59,14 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
         '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()))
     );
 
+
+
+
     behat_editor_current_test_container($form);
     behat_editor_results_container($form);
     behat_editor_results_history_modal($form);
 
-    $form['filename'] = array('#type' => 'hidden', '#default_value' => $file_info['filename_no_ext']);
+    $form['filename'] = array('#type' => 'hidden', '#name' => 'filename', '#default_value' => $file_info['filename_no_ext']);
     $form['module'] = array('#type' => 'hidden', '#default_value' => $module);
     return $form;
 }
