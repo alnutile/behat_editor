@@ -33,6 +33,7 @@
                 e.preventDefault();
                 var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
                 var url = $(this).attr('href');
+                var filename = Drupal.behat_editor.split_filename($('input[name=filename]').val());
                 //See if I need to pass scenario
                 if(url.split('/')[4] == 'run') {
                     var parameters = {};
@@ -42,7 +43,7 @@
                         "scenario": scenario_array
                     };
                 }
-                Drupal.behat_editor.run_actions('POST', token, parameters, url, true, true, context);
+                Drupal.behat_editor.run_actions('POST', token, parameters, url + filename, true, true, context);
             });
         }
     };

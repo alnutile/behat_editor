@@ -13,7 +13,7 @@
                 var url = $('a.delete').attr('href');
                 var parameters = {};
                 var data = Drupal.behat_editor.action('DELETE', token, parameters, url);
-                var filename = $(this).data('filename');
+                var filename = Drupal.behat_editor.split_filename($('input[name=filename]').val());
                 if(data.error == 0) {
                     window.location.replace("/admin/behat/index");
                 }

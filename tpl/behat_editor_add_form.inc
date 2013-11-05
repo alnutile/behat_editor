@@ -59,11 +59,9 @@ function behat_editor_add_form($form, $form_state) {
         '#attributes' => array('class' => array('col-lg-12', 'well', 'actions'))
     );
 
-
     $form['actions']['run_test'] = run_test_array($filename_no_ext, $default_path, 'create_run');
     $form['actions']['add_test'] = add_test_array($filename_no_ext, $default_path);
     $form['actions']['admin_area'] = admin_button_array();
-
 
     $form['questions_area'] = array(
         '#type' => 'container',
@@ -93,7 +91,7 @@ function behat_editor_add_form($form, $form_state) {
     behat_editor_current_test_container($form);
 
     $title =  "Add File";
-    $body = "The file {$filename} will be added and you will be redirected to the Edit page..";
+    $body = "The file <span class='filename'>coming soon..</span> will be added and you will be redirected to the Edit page..";
     $buttons = array(
         'save' => array('title' => "Continue", 'class' => array('btn', 'btn-danger', 'confirm-add')),
         'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
