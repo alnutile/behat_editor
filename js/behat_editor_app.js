@@ -9,6 +9,11 @@
 
     Drupal.behat_editor = {};
 
+    Drupal.behat_editor.split_filename = function(filename) {
+        var filename_array = filename.split('.');
+        return filename_array[0];
+    }
+
     Drupal.behat_editor.get_token = function() {
         var token = 'null';
         $.ajax(
@@ -96,7 +101,6 @@
             }
 
             if(data.test) {
-                console.log(data.test);
                 var message = data.test.message;
                 var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                 messages += message;
