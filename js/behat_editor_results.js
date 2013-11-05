@@ -65,15 +65,19 @@
     };
 
     Drupal.behat_editor.get_results = function(context, callbacks) {
-        var token = Drupal.behat_editor.get_token();
-        var filename = $('input[name=filename]').val();
-        var module = $('input[name=module]').val();
-        var url = '/behat_editor_v1/behat_editor_actions/feature/results/' + module + '/' + filename;
-        var parameters = {};
-        var async = true;
-        var globals = false;
-        var type = "POST";
-        Drupal.behat_editor.actions(type, token, parameters, url, async, globals, callbacks, context);
+        //@todo something is trigger this on load
+        // this type of prevents this while I fix it.
+        if(typeof context !== 'object'){
+            var token = Drupal.behat_editor.get_token();
+            var filename = Drupal.behat_editor.split_filename($('input[name=filename]').val());
+            var module = $('input[name=module]').val();
+            var url = '/behat_editor_v1/behat_editor_actions/feature/results/' + module + '/' + filename;
+            var parameters = {};
+            var async = true;
+            var globals = false;
+            var type = "POST";
+            Drupal.behat_editor.actions(type, token, parameters, url, async, globals, callbacks, context);
+        }
     };
 
     Drupal.behaviors.behat_editor_results = {
