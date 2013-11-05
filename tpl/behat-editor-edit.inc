@@ -74,7 +74,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     $form['questions_area'] = array(
         '#type' => 'container',
-        '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-md-6', 'panel-group'))
+        '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-md-12', 'panel-group'))
     );
 
     $form['questions_area']['existing_test']['#markup'] = theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array()));
