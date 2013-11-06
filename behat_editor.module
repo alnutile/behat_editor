@@ -352,6 +352,17 @@ function edit_test_array($filename, $module) {
     );
 }
 
+function clone_test_array($filename, $module) {
+    //Default for no to behat_tests
+    $module = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
+    return array(
+        '#type' => 'link',
+        '#name' => 'clone_test',
+        '#title' => t('Clone Test'),
+        '#href' => "behat_editor_v1/behat_editor_actions",
+        '#attributes' => array('class' => array('btn', 'btn-default', 'clone'), 'data-filename' => $filename, 'data-module' => $module),
+    );
+}
 /**
  * For my module I just wanted a more simple form of modal
  * then what I get out of ctools IMO
@@ -449,6 +460,24 @@ function behat_editor_results_history_modal(&$form) {
 
     $id = 'modalResults';
     $form['results_history']['#markup'] = behat_editor_modal($title, $body, $buttons, $id);
+}
+
+
+function behat_editor_clone_modal(&$form) {
+    $title =  "Clone File";
+    $body = "The file <span class='filename'>coming soon..</span> will be cloned and you will be redirected to the Edit page..";
+    $body .= "<div class='form-group'>
+                    <label for='clone-name' class='col-sm-3 control-label'>New Name:</label>
+                    <div class='col-sm-6'>
+                        <input id='clone-name' class='new-clone-name form-control' value placeholder='name_morename.feature'>
+                    </div>
+              </div>";
+    $buttons = array(
+        'save' => array('title' => "Continue", 'class' => array('btn', 'btn-danger', 'confirm-clone')),
+        'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
+    );
+    $id = 'beModalClone';
+    $form['clone_test_modal']['#markup'] = behat_editor_modal($title, $body, $buttons, $id);
 }
 
 function behat_editor_results_container(&$form) {
