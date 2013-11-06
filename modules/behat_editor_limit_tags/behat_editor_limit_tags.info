@@ -4,4 +4,4 @@ dependencies[] = behat_editor
 package = Behat Editor
 core = 7.x
 files[] = tests/behat_editor_limit_tags.test
-configure = admin/behat_editor/allowed_tags
+configure = admin/config/behat_editor/allowed_tags

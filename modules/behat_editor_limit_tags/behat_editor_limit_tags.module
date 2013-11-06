@@ -11,14 +11,14 @@
  */
 function behat_editor_limit_tags_menu() {
   $path = drupal_get_path('module', 'behat_editor_limit_tags');
-  $items['admin/behat_editor/allowed_tags'] = array(
-    'title' => 'Example Page',
+  $items['admin/config/behat_editor/allowed_tags'] = array(
+    'title' => 'Manage Behat Tags',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('behat_editor_limit_tags_form'),
     'access arguments' => array('behat admin tags'),
-    'type' => MENU_CALLBACK,
+    'description' => "Setup Behat Tags",
     'file' => 'admin.inc',
-    'file path' => "$path/includes/"
+    'file path' => "$path/includes/",
   );
 
   return $items;
@@ -30,7 +30,7 @@ function behat_editor_limit_tags_menu() {
 function behat_editor_limit_tags_permission() {
     $items['behat admin tags'] = array(
         'title' => t('Admin Behat Tags'),
-        'description' => t('Can Admin Tags')
+        'description' => t('Can Admin Tags'),
     );
     return $items;
 }
