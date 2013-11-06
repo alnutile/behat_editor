@@ -33,6 +33,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     $form['#attached']['js']['behat_editor_results'] = $path . '/js/behat_editor_results.js';
     $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_run.js';
     $form['#attached']['js']['behat_editor_view'] = $path . '/js/behat_editor_view.js';
+    $form['#attached']['js']['behat_editor_clone'] = $path . '/js/behat_editor_clone.js';
 
     $form['#attached']['css']['behat_app_css'] = $path . '/css/behat_editor_app.css';
     $form['#attached']['css']['behat_view_css'] = $path . '/css/behat_editor_view.css';
@@ -51,6 +52,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     $form['actions']['run_test'] = run_test_array($file_info['filename_no_ext'], $module, 'run');
     $form['actions']['admin_area'] = admin_button_array();
     $form['actions']['edit_test'] = edit_test_array($file_info['filename_no_ext'] . ".feature", $module);
+    $form['actions']['clone_test'] = clone_test_array($file_info['filename_no_ext'] . ".feature", $module);
 
 
     $form['question'] = array(
@@ -65,8 +67,11 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     behat_editor_current_test_container($form);
     behat_editor_results_container($form);
     behat_editor_results_history_modal($form);
+    behat_editor_clone_modal($form);
+
 
     $form['filename'] = array('#type' => 'hidden', '#name' => 'filename', '#default_value' => $file_info['filename_no_ext']);
     $form['module'] = array('#type' => 'hidden', '#default_value' => $module);
+
     return $form;
 }
