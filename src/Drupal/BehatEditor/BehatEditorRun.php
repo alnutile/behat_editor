@@ -121,7 +121,7 @@ class BehatEditorRun {
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
-        watchdog('test_command', print_r($command, 1));
+        watchdog('test_command_post_alter_exec', print_r($command, 1));
         exec($command, $output, $return_var);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
@@ -162,8 +162,8 @@ class BehatEditorRun {
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command['format'] = '--format=pretty';
-        watchdog('test_command', print_r($command, 1));
         $command = implode(' ', $command);
+        watchdog('test_command_post_alter_exec_drush', print_r($command, 1));
         exec($command, $output, $return_var);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
