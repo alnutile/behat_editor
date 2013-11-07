@@ -9,9 +9,10 @@ Feature: Add Page
     And I press "Log in"
     And I wait
 
-  Scenario: User Sees Add Page
+  Scenario: User clicks Add and Saves tests
     Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help to generate "
+    And I fill in "filename" with "tests_of_tests.feature"
     And I fill in "feature" with "My Feature Name"
     And I press "feature_button"
     Then I should see "Feature: My Feature Name"
@@ -40,6 +41,7 @@ Feature: Add Page
     And I wait
     And I wait
     Then I should see "has been saved"
+    And I should see "tests_of_tests.feature"
     And I follow "Run Test"
     And I wait
     And I follow savedTest
@@ -47,8 +49,10 @@ Feature: Add Page
     And I should see "@local"
     And I should see "Hello Worlds"
     And I should see "@readonly"
-    Then I get first test name
-    And I view first test
+
+  Scenario: Admin Index page Edit and Delete
+    Given I am on "/admin/behat/index"
+    Then I follow "tests_of_tests.feature"
     And I wait
     And I follow "Edit Test"
     And I wait
