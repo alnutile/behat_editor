@@ -41,7 +41,14 @@ function behat_editor_index() {
         '#type' => 'link',
         '#title' => t('Add Test'),
         '#href' => "admin/behat/add",
-        '#attributes' => array('class' => array('btn', 'btn-success', 'add')),
+        '#attributes' => array('role' => 'button', 'class' => array('btn', 'btn-success', 'btn-md', 'add')),
+    );
+
+    $build['actions']['manage_tags'] = array(
+        '#type' => 'link',
+        '#title' => t('Manage Tags'),
+        '#href' => "admin/config/behat_editor/allowed_tags",
+        '#attributes' => array('role' => 'button', 'class' => array('btn', 'btn-default', 'btn-md',  'manage_tags')),
     );
 
     $build['file_form_fieldset'] = drupal_get_form('behat_editor_file_uploader');

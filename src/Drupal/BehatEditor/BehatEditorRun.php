@@ -158,10 +158,13 @@ class BehatEditorRun {
         //$command = "cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include --profile=$profile $tags_exclude $this->absolute_file_path";
         $tags = "$tag_include $tags_exclude";
         $command = self::behatCommandArray($tags);
-        $command['profile'] = "--profile=$profile";
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command['format'] = '--format=pretty';
+        //since this is drush we are allowing the user
+        //to send an override to the profile
+        $command['profile'] = "--profile=$profile";
+
         $command = implode(' ', $command);
         exec($command, $output, $return_var);
         $this->file_array = $output;
