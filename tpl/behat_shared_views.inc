@@ -196,6 +196,29 @@ function _behat_editor_questions_form() {
         '#collapsed' => FALSE,
     );
 
+    $form['questions']['feature_name']['feature'] = array(
+        '#type' => 'textfield',
+        '#name' => 'feature',
+        '#title' => t('Feature:'),
+        '#description' => t('Name the Feature. This will name the Test'),
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'feature_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('A simple descriptive name of the feature'),
+        ),
+    );
+
+    $form['questions']['feature_name']['feature_button'] = array(
+        '#type' => 'button',
+        '#value' => t('Name it'),
+        '#name' => 'feature_button',
+        '#attributes' => array(
+            'data-step-group' => array('feature_group'),
+            'data-method' => array('replace'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
 
     $form['questions']['test_name']['scenario'] = array(
         '#type' => 'textfield',
@@ -205,7 +228,7 @@ function _behat_editor_questions_form() {
         '#attributes' => array(
             'class' => array('col-mg-12', 'scenario_group'),
             'data-type' => array('textfield'),
-            'placeholder' =>  t('A simple descriptive name of the test'),
+            'placeholder' =>  t('A simple descriptive name of the scenario'),
         ),
     );
 
