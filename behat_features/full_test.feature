@@ -12,6 +12,9 @@ Feature: Add Page
   Scenario: User Sees Add Page
     Given I am on "/admin/behat/add"
     Then I should see "This is a tool to help to generate "
+    And I fill in "feature" with "My Feature Name"
+    And I press "feature_button"
+    Then I should see "Feature: My Feature Name"
     And I fill in "edit-scenario" with "Hello Worlds"
     And I press "scenario_button"
     And I fill in "edit-url" with "http://en.wikipedia.org/wiki/Main_Page"
