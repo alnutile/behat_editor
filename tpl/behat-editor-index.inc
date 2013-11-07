@@ -4,6 +4,8 @@
  * @file functions to show the Admin / Index page
  */
 
+
+
 /**
  * Build the output for the Index page of files.
  * You can see the related js file as well in the js folder
@@ -31,17 +33,28 @@ function behat_editor_index() {
 
     $build['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('col-lg-12', 'well'))
+        '#attributes' => array('class' => array('col-lg-12', 'well')),
+        '#weight' => -100
     );
 
     $build['actions']['add_test'] = array(
         '#type' => 'link',
         '#title' => t('Add Test'),
         '#href' => "admin/behat/add",
-        '#attributes' => array('class' => array('btn', 'btn-success', 'add')),
+        '#attributes' => array('role' => 'button', 'class' => array('btn', 'btn-success', 'btn-md', 'add')),
     );
 
-    //@todo convert to Files class
+    $build['actions']['manage_tags'] = array(
+        '#type' => 'link',
+        '#title' => t('Manage Tags'),
+        '#href' => "admin/config/behat_editor/allowed_tags",
+        '#attributes' => array('role' => 'button', 'class' => array('btn', 'btn-default', 'btn-md',  'manage_tags')),
+    );
+
+    $build['file_form_fieldset'] = drupal_get_form('behat_editor_file_uploader');
+
+    //@todo convert to using the json index output
+    //  see ticket #85 on github
     $modules = _behat_editor_check_for_modules();
     $modules = array_merge($modules, _behat_editor_test_folder_array());
     $files_array = _behat_editor_build_array_of_available_files($modules);

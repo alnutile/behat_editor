@@ -121,9 +121,9 @@ class BehatEditorRun {
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
-        watchdog('test_command_post_alter_exec', print_r($command, 1));
         exec($command, $output, $return_var);
         $this->file_array = $output;
+        //@todo this is not a good enough response to figure out if pass or fail!
         $response = is_array($output) ? 0 : 1;
         $rid = self::saveResults($output, $return_var);
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
@@ -158,17 +158,18 @@ class BehatEditorRun {
         //$command = "cd $this->behat_path && ./bin/behat --config=\"$this->yml_path\" --format=pretty --no-paths $tag_include --profile=$profile $tags_exclude $this->absolute_file_path";
         $tags = "$tag_include $tags_exclude";
         $command = self::behatCommandArray($tags);
-        $command['profile'] = "--profile=$profile";
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command['format'] = '--format=pretty';
+        //since this is drush we are allowing the user
+        //to send an override to the profile
+        $command['profile'] = "--profile=$profile";
+
         $command = implode(' ', $command);
-        watchdog('test_command_post_alter_exec_drush', print_r($command, 1));
         exec($command, $output, $return_var);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
         $rid = self::saveResults($output, $return_var);
-
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
     }
 
