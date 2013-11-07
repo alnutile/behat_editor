@@ -95,7 +95,97 @@ function behat_editor_menu() {
         'file path' => "$path/tpl/",
         'type' => MENU_CALLBACK,
     );
+
+    $items['admin/behat/upload_test'] =  array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('behat_editor_file_uploader'),
+        'access arguments' => array('behat add test'),
+        'type' => MENU_CALLBACK,
+    );
+
     return $items;
+}
+
+
+/**
+ * Could not figure out how to only do my validation on
+ * this one form
+ * @param $file
+ */
+function behat_editor_file_validate_custom($file) {
+    $error = FALSE;
+    $message = '';
+    $filename = explode('.', $file->filename);
+    //from field_create_field
+    if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $filename[0])) {
+        $error = 1;
+        $message = "Only lowercase letters, underscores and numbers are allowed in the name";
+    };
+    return array('error' => $error, 'message' => $message);
+}
+
+
+function behat_editor_file_uploader($form_state) {
+
+    $form['file_container'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Upload a test'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+    );
+    $form['file_container']['file'] = array(
+        '#type' => 'file',
+        '#title' => t("Upload an already written test"),
+        '#description' => t('Filename must end in .feature. It must be written in properly formatted gherkin. The name can only contain alpha numeric characters'),
+    );
+
+    $form['file_container']['overwrite'] = array(
+        '#type' => 'checkbox',
+        '#title' => "Overwrite",
+        '#description' => t('Overwrite file if it exists'),
+        '#size' => 22,
+    );
+
+    $form['file_container']['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t("Submit")
+    );
+
+    return $form;
+}
+
+function behat_editor_file_uploader_validate($form, &$form_state) {
+    $file = file_save_upload(
+        'file',
+        $validators = array('file_validate_extensions' => array('feature')),
+        $destination = "temporary://",
+        $replace = FILE_EXISTS_REPLACE
+    );
+
+    if($file) {
+        //Check machine name
+        $machine_name = behat_editor_file_validate_custom($file);
+        if($machine_name['error'] === 1) {
+            form_set_error('file', $machine_name['message']);
+        } else {
+            $form_state['values']['file'] = $file;
+        }
+    }
+}
+
+
+function behat_editor_file_uploader_submit($form, &$form_state) {
+    if($form_state['values']['file']) {
+        $file = $form_state['values']['file'];
+        if($form_state['values']['overwrite'] == 1) {
+            $how = FILE_EXISTS_REPLACE;
+        } else {
+            $how = FILE_EXISTS_RENAME;
+        }
+        $file_copy = file_unmanaged_copy($file->uri, "public://" . BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER, $how);
+        $new_name = explode('/', $file_copy);
+        drupal_set_message(t("Your file has been saved !click to edit it.", array('!click' => l($file->filename, 'admin/behat/edit/' . BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER . '/' . array_pop($new_name)))), 'status');
+    }
 }
 
 
