@@ -80,8 +80,8 @@
 
 
             var setFeature = function(destination_class, data_value) {
-                if(destination_class == 'url') {
-                    $('.feature').empty().append('Feature: Tests for ' + data_value);
+                if(destination_class == 'feature_group') {
+                    $('.feature').empty().append('Feature: ' + data_value);
                 }
             };
 
@@ -159,13 +159,12 @@
                     } else {
                         var val = '';
                         //1. Get the Label
-                        var label_text;
                         label_text = $("label[for='"+$(this).attr('id')+"']");
                         //  quick : colon check
                         if(label_text.length)
                         {
                             label += label_text.text();
-                            (label_text == 'Scenario') ? label += ':' : false;
+                            (label_text == 'Scenario' || label_text == 'Feature') ? label += ':' : false;
                             draggable_step_string += label;
                         }
                         if($(this).data('type') == 'select') {
@@ -174,19 +173,16 @@
                         } else {
                             val = $(this).val();
                             draggable_step_string += '"'+val+'" ';
-
+                            setFeature(destination_class, val);
                         }
                     }
                 });
 
                 var sortable = sortableQuestion(destination_class);
 
-                if(draggable_step_string){
+                if(draggable_step_string && $.trim(label_text.text()) !== 'Feature:'){
                  destination_wrapper = createOutputv2(leaf_class, sortable, draggable_step_string);
                  $('ul.scenario', context).append(destination_wrapper).applyTagIts('@scenario_tag', 'scenario_v2');
-                } else {
-                 destination_wrapper = createOutput(leaf_class, sortable, label, data_value, middle_words, data_value2, label_text, ending_words);
-                 $('ul.scenario', context).append(destination_wrapper).applyTagIts('@scenario_tag', 'scenario');
                 }
 
                 checkIfCanRun();
