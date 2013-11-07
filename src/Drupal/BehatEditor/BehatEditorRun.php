@@ -121,9 +121,9 @@ class BehatEditorRun {
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
-        watchdog('test_command_post_alter_exec', print_r($command, 1));
         exec($command, $output, $return_var);
         $this->file_array = $output;
+        //@todo this is not a good enough response to figure out if pass or fail!
         $response = is_array($output) ? 0 : 1;
         $rid = self::saveResults($output, $return_var);
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
@@ -163,12 +163,10 @@ class BehatEditorRun {
         drupal_alter('behat_editor_command', $command, $context1);
         $command['format'] = '--format=pretty';
         $command = implode(' ', $command);
-        watchdog('test_command_post_alter_exec_drush', print_r($command, 1));
         exec($command, $output, $return_var);
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
         $rid = self::saveResults($output, $return_var);
-
         return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
     }
 

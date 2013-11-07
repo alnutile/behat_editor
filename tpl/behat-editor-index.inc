@@ -4,6 +4,8 @@
  * @file functions to show the Admin / Index page
  */
 
+
+
 /**
  * Build the output for the Index page of files.
  * You can see the related js file as well in the js folder
@@ -31,7 +33,8 @@ function behat_editor_index() {
 
     $build['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('col-lg-12', 'well'))
+        '#attributes' => array('class' => array('col-lg-12', 'well')),
+        '#weight' => -100
     );
 
     $build['actions']['add_test'] = array(
@@ -41,7 +44,10 @@ function behat_editor_index() {
         '#attributes' => array('class' => array('btn', 'btn-success', 'add')),
     );
 
-    //@todo convert to Files class
+    $build['file_form_fieldset'] = drupal_get_form('behat_editor_file_uploader');
+
+    //@todo convert to using the json index output
+    //  see ticket #85 on github
     $modules = _behat_editor_check_for_modules();
     $modules = array_merge($modules, _behat_editor_test_folder_array());
     $files_array = _behat_editor_build_array_of_available_files($modules);
