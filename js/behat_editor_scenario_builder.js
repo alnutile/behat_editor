@@ -180,7 +180,7 @@
 
                 var sortable = sortableQuestion(destination_class);
 
-                if(draggable_step_string && $.trim(label_text.text()) !== 'Feature:'){
+                if(draggable_step_string && draggable_step_string.indexOf('Feature:') == -1){
                  destination_wrapper = createOutputv2(leaf_class, sortable, draggable_step_string);
                  $('ul.scenario', context).append(destination_wrapper).applyTagIts('@scenario_tag', 'scenario_v2');
                 }
