@@ -101,7 +101,7 @@ function drush_behat_editor_behat_run_folder() {
     }
 
 
-    $fileObject = BehatEditorRun::fileObjecBuilder();
+    $fileObject = File::fileObjecBuilder();
     $path = drupal_get_path('module', $module);
     $file_tests_folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
     $path = drupal_realpath($path) . '/' . $file_tests_folder;

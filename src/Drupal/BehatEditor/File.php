@@ -65,7 +65,6 @@ class File {
          *     public $full_path_with_file = '';
          *     public $full_path = '';
          */
-
         if ($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
             $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
             if($this->subpath) {
@@ -131,8 +130,10 @@ class File {
                 'scenario' => $file_text,
                 'filename_no_ext' => substr($this->filename, 0, -8),
                 'relative_path' => $this->relative_path,
+                'subpath' => $this->subpath,
                 'tags_array' => self::_tags_array($file_text, $this->module)
             );
+            $file_data = array_merge( self::fileObjecBuilder(), $file_data);
             return $file_data;
         }
     }
@@ -626,5 +627,22 @@ class File {
             $spaces_return = $spaces_return . " ";
         }
         return $spaces_return;
+    }
+
+    public static function fileObjecBuilder() {
+        composer_manager_register_autoloader();
+        $path = drupal_get_path('module', 'behat_editor');
+        $file_object['yml_path'] = drupal_realpath($path) . '/behat/behat.yml';
+        $file_object['behat_path'] = _behat_editor_behat_bin_folder();
+        $file_object['absolute_file_path'] = '';
+        $file_object['file_full_path'] = '';
+        $file_object['absolute_file_path'] = '';
+        $file_object['relative_path'] = '';
+        $file_object['filename'] = '';
+        $file_object['subpath'] = FALSE;
+        $file_object['filename_no_ext'] = '';
+        $file_object['module'] = '';
+
+        return $file_object;
     }
 }
