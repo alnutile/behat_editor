@@ -116,7 +116,7 @@ function behat_editor_menu() {
         'access arguments' => array('behat run a test'),
         'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
         'weight' => 2,
-        'file' => 'behat_editor.bulk.inc',
+        'file' => 'behat_editor.batch.inc',
     );
 
     $items['admin/behat/bulk/dashboard'] =  array(
@@ -132,7 +132,7 @@ function behat_editor_menu() {
         'access arguments' => array('behat run a test'),
         'type' => MENU_LOCAL_TASK,
         'weight' => 5,
-        'file' => 'behat_editor.bulk.inc',
+        'file' => 'behat_editor.batch.inc',
     );
     return $items;
 }

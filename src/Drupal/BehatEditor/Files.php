@@ -39,13 +39,21 @@ class Files {
     }
 
     private function _checkForModules() {
-        if($cached = cache_get('behat_editor_modules', 'cache')) {
-            return $cached->data;
+        if( $this->cache !== FALSE ) {
+            if($cached = cache_get('behat_editor_modules', 'cache')) {
+                return $cached->data;
+            } else {
+                $module_array = self::getModuleFolders();
+                if($this->cache != FALSE) {
+                    cache_set('behat_editor_modules', $module_array, 'cache', CACHE_TEMPORARY);
+                }
+            }
         } else {
-            $module_array = self::getModuleFolders();
-            //cache_set('behat_editor_modules', $module_array, 'cache', CACHE_TEMPORARY);
-            return $module_array;
+             $module_array = self::getModuleFolders();
         }
+
+        return $module_array;
+
     }
 
     public static function getModuleFolders() {
@@ -121,11 +129,6 @@ class Files {
         }
         return $file_data;
     }
-/*
- *
- *  $modules = _behat_editor_check_for_modules();
-    $modules = array_merge($modules, _behat_editor_test_folder_array());
-    $files_array = _behat_editor_build_array_of_available_files($modules);
- */
+
 
 }
