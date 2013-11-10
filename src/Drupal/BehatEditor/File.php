@@ -30,6 +30,10 @@ class File {
     public $scenario_array = array();
     public $scenario = '';
     public $feature = '';
+    public $subpath = '';
+    public $relative_path = '';
+    public $full_path_with_file = '';
+    public $full_path = '';
 
     /**
      * Move this into an abstract static class
@@ -37,15 +41,50 @@ class File {
      * and make an abstract class for both types of files
      * to extend eg save_to_temp and save_to_module
      * @param $request
-     * @param $module
+     * @param $module string
      * @param $filename
      * @param $parse_type
      */
-    public function __construct($request, $module, $filename, $parse_type) {
+    public function __construct($request, $module, $filename, $parse_type, $subpath = FALSE) {
         $this->module = $module;
         $this->filename = $filename;
         $this->parse_type = $parse_type;
+        $this->subpath = $subpath;
         $this->scenario = (isset($request['scenario'])) ? $request['scenario'] : array();
+        self::build_paths();
+    }
+
+
+    /**
+     *
+     */
+
+    protected function build_paths(){
+        /**
+         *     public $relative_path = '';
+         *     public $full_path_with_file = '';
+         *     public $full_path = '';
+         */
+
+        if ($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
+            $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
+            if($this->subpath) {
+                $sub_folder = $sub_folder . '/' . $this->subpath;
+            }
+            $files_folder =  file_build_uri("/{$sub_folder}/");
+            $this->relative_path = url($path = file_create_url("$files_folder/$this->filename"));
+            $this->full_path = drupal_realpath($files_folder);
+            $this->full_path_with_file = $this->full_path . '/' . $this->filename;
+        } else {
+            $sub_folder = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
+            if($this->subpath) {
+                $sub_folder = $sub_folder . '/' . $this->subpath;
+            }
+            $this->relative_path = $sub_folder . '/' . $this->filename;
+            $this->full_path = DRUPAL_ROOT . '/' . $sub_folder;
+            $this->full_path_with_file = $this->full_path . '/' . $this->filename;
+        }
+
     }
 
     /**
@@ -79,32 +118,19 @@ class File {
      * @return array
      */
     public function get_file_info() {
-        if ($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
-            $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
-            $files_folder =  file_build_uri("/{$sub_folder}/");
-            $relative_path = url($path = file_create_url("$files_folder/$this->filename"));
-            $path = drupal_realpath($files_folder);
-            $full_path_with_file = $path . '/' . $this->filename;
-        } else {
-            $sub_folder = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
-            $relative_path = $sub_folder . '/' . $this->filename;
-            $path = DRUPAL_ROOT . '/' . $sub_folder;
-            $full_path_with_file = $path . '/' . $this->filename;
-        }
-
-        if(file_exists($full_path_with_file) == FALSE) {
-            $message = t('The file does not exist !file', array('!file' => $full_path_with_file));
+        if(file_exists($this->full_path_with_file) == FALSE) {
+            $message = t('The file does not exist !file', array('!file' => $this->full_path_with_file));
             throw new \RuntimeException($message);
         } else {
-            $file_text = self::read_file($full_path_with_file);
+            $file_text = self::read_file($this->full_path_with_file);
             $file_data = array(
                 'module' => $this->module,
                 'filename' => $this->filename,
-                'absolute_path' => $path,
-                'absolute_path_with_file' => $full_path_with_file,
+                'absolute_path' => $this->full_path,
+                'absolute_path_with_file' => $this->full_path_with_file,
                 'scenario' => $file_text,
                 'filename_no_ext' => substr($this->filename, 0, -8),
-                'relative_path' => $relative_path,
+                'relative_path' => $this->relative_path,
                 'tags_array' => self::_tags_array($file_text, $this->module)
             );
             return $file_data;

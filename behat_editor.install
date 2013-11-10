@@ -54,14 +54,13 @@ function behat_editor_requirements($phase) {
 }
 
 function behat_editor_enable(){
-
-
-    if(!db_table_exists('behat_editor_results')) {
-        $name = 'behat_editor_results';
-        $schema = behat_editor_schema();
-        $table = $schema[$name];
-        db_create_table($name, $table);
+    $tables = behat_editor_schema();
+    foreach($tables as $key => $value) {
+        if(!db_table_exists($key)) {
+            db_create_table($key, $value);
+        }
     }
+
     $modules = array('behat_editor_services');
     module_enable($modules);
     $jquery = variable_get('jquery_update_jquery_version', 0);
@@ -69,18 +68,6 @@ function behat_editor_enable(){
         variable_set('jquery_update_jquery_version', '1.7');
     }
 }
-/**
- * Add db to track test results
- */
-function behat_editor_update_7001() {
-    if(!db_table_exists('behat_editor_results')) {
-        $name = 'behat_editor_results';
-        $schema = behat_editor_schema();
-        $table = $schema[$name];
-        db_create_table($name, $table);
-    }
-}
-
 
 
 /**
@@ -138,9 +125,103 @@ function behat_editor_schema() {
         'primary key' => array('rid'),
     );
 
+    $schema['behat_editor_batch_results'] = array(
+        'description' => 'Save Test Results for Batch Runs',
+        'fields' => array(
+            'rid' => array(
+                'type' => 'serial',
+                'description' => 'Auot ID',
+                'not null' => TRUE,
+            ),
+            'bid' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => '0',
+                'description' => 'Batch ID for later reference',
+            ),
+            'jid' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => '0',
+                'description' => 'Job ID if related to outside process',
+            ),
+            'uid' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'default' => 0,
+                'description' => 'User who ran the tests',
+            ),
+            'created' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'description' => 'Test created at as Unix timestamp.',
+            ),
+            'duration' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'Duration output of behat',
+            ),
+            'module' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => '',
+                'description' => 'The module of that was chosen',
+            ),
+            'folder' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => '',
+                'description' => 'Defaults to behat_features for module based tests.',
+            ),
+            'subfolder' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => '',
+                'description' => 'If the user chooses a subfolder',
+            ),
+            'tag' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => '',
+                'description' => 'They may choose a tag over a module',
+            ),
+            'results' => array(
+                'type' => 'blob',
+                'size' => 'normal',
+                'description' => 'Serialize results from the test output',
+                'serialize' => TRUE,
+            ),
+            'status' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 3,
+                'description' => '0 for pass 1 for fail 3 for no results yet',
+            )
+        ),
+        'primary key' => array('rid'),
+    );
     return $schema;
 }
 
+/**
+ * Add db to track test results
+ */
+function behat_editor_update_7001() {
+    if(!db_table_exists('behat_editor_results')) {
+        $name = 'behat_editor_results';
+        $schema = behat_editor_schema();
+        $table = $schema[$name];
+        db_create_table($name, $table);
+    }
+}
 
 
 /**
@@ -157,3 +238,16 @@ function behat_editor_update_7002() {
         );
     }
 }
+
+/**
+ * Add db to track test results for batch API
+ */
+function behat_editor_update_7003() {
+    if(!db_table_exists('behat_editor_batch_results')) {
+        $name = 'behat_editor_batch_results';
+        $schema = behat_editor_schema();
+        $table = $schema[$name];
+        db_create_table($name, $table);
+    }
+}
+

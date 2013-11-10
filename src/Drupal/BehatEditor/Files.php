@@ -14,8 +14,14 @@ use Drupal\BehatEditor;
  */
 class Files {
     public $files = '';
+    public $subpath = '';
+    public $modules = array();
+    public $cache = TRUE;
 
-    public function __construct() {
+    public function __construct(array $modules = array(), $subpath = FALSE, $cache = TRUE) {
+        $this->subpath = FALSE;
+        $this->cache = $cache;
+        $this->modules = $modules;
         $this->files = self::_buildModuleFilesArray();
     }
 
@@ -24,9 +30,11 @@ class Files {
     }
 
     private function _buildModuleFilesArray() {
-        $modules = self::_checkForModules();
-        $modules = array_merge($modules, self::_hasTestFolderArray());
-        $files_array = self::_buildArrayOfAvailableFiles($modules);
+        if(empty($this->modules)) {
+            $modules = self::_checkForModules();
+            $this->modules = array_merge($modules, self::_hasTestFolderArray());
+        }
+        $files_array = self::_buildArrayOfAvailableFiles();
         return $files_array;
     }
 
@@ -34,22 +42,30 @@ class Files {
         if($cached = cache_get('behat_editor_modules', 'cache')) {
             return $cached->data;
         } else {
-            $module_array = array();
-            $modules = module_list();
-            foreach ($modules as $module) {
-                if ($status = self::_hasFolder($module)) {
-                    $module_array[$module] = $status;
-                }
-            }
+            $module_array = self::getModuleFolders();
             cache_set('behat_editor_modules', $module_array, 'cache', CACHE_TEMPORARY);
             return $module_array;
         }
     }
 
-    private function _hasFolder($module) {
+    public static function getModuleFolders() {
+        $module_array = array();
+        $modules = module_list();
+        foreach ($modules as $module) {
+            $path = drupal_get_path('module', $module);
+            if ($status = self::_hasFolder($module, $path)) {
+                $module_array[$module] = $status;
+            }
+        }
+        return $module_array;
+    }
+
+    private static function _hasFolder($module, $path, $subpath = FALSE) {
         $status = array();
-        $path = drupal_get_path('module', $module);
         $full_path = $path . '/' . BEHAT_EDITOR_FOLDER;
+        if($subpath) {
+            $full_path = $full_path . '/' . $subpath;
+        }
         if(drupal_realpath($full_path)) {
             $status['exists'] = TRUE;
             $status['writable'] = (is_writeable($full_path)) ? TRUE : FALSE;
@@ -60,7 +76,7 @@ class Files {
         }
     }
 
-    private function _hasTestFolderArray() {
+    public static function _hasTestFolderArray() {
         return array(
             'behat_tests' => array(
                 'exists' => 1,
@@ -70,9 +86,9 @@ class Files {
         );
     }
 
-    private function _buildArrayOfAvailableFiles($modules) {
+    protected function _buildArrayOfAvailableFiles() {
         $files_found = array();
-        foreach($modules as $machine_name => $nice_name) {
+        foreach($this->modules as $machine_name => $nice_name) {
             if ($machine_name == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
                 $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
                 $files_folder =  file_build_uri("/{$sub_folder}/");
@@ -86,12 +102,16 @@ class Files {
         return $files_found;
     }
 
-    private function _behatEditorScanDirectories($module, $path) {
+    protected function _behatEditorScanDirectories($module, $path) {
             $file_data = array();
-            $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => FALSE), $depth = 0);
+            $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => TRUE), $depth = 0);
+            dpm($files);
             foreach($files as $key => $value) {
+                if($files[$key]->uri != drupal_realpath(drupal_get_path('module', $module))) {
+
+                }
                 $filename = $files[$key]->filename;
-                $file = new File(array(), $module, $filename, 'file');
+                $file = new File(array(), $module, $filename, 'file', $this->subpath);
                 $file_data[$key] = $file->get_file_info();
             }
             return $file_data;

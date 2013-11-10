@@ -61,14 +61,19 @@ function behat_editor_permission() {
  */
 function behat_editor_menu() {
     $path = drupal_get_path('module', 'behat_editor');
-    $items['admin/behat/index'] = array(
+    $items['admin/behat'] = array(
         'title' => 'Admin Behat Files',
         'page callback' => 'behat_editor_index',
         'access arguments' => array('behat view all tests'),
         'file' => 'behat-editor-index.inc',
         'file path' => "$path/tpl/",
         'description' => 'Behat Editor Index page',
-        'type' => MENU_CALLBACK
+    );
+
+    $items['admin/behat/index'] = array(
+        'title' => 'Admin Behat Files',
+        'weight' => 1,
+        'type' => MENU_DEFAULT_LOCAL_TASK
     );
 
     $items['admin/behat/view/%/%'] = array(
@@ -79,6 +84,7 @@ function behat_editor_menu() {
         'file path' => "$path/tpl/",
         'type' => MENU_CALLBACK,
     );
+
     $items['admin/behat/add'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_add_form'),
@@ -87,6 +93,7 @@ function behat_editor_menu() {
         'file path' => "$path/tpl/",
         'type' => MENU_CALLBACK,
     );
+
     $items['admin/behat/edit/%/%'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('behat_editor_edit_form', 3, 4),
@@ -103,6 +110,30 @@ function behat_editor_menu() {
         'type' => MENU_CALLBACK,
     );
 
+    $items['admin/behat/bulk'] =  array(
+        'page callback' => 'behat_editor_bulk',
+        'title' => 'Batch Behat Manager',
+        'access arguments' => array('behat run a test'),
+        'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
+        'weight' => 2,
+        'file' => 'behat_editor.bulk.inc',
+    );
+
+    $items['admin/behat/bulk/dashboard'] =  array(
+        'title' => 'Batch Tests by Module',
+        'access arguments' => array('behat run a test'),
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'weight' => -10,
+    );
+
+    $items['admin/behat/bulk/tags'] =  array(
+        'page callback' => 'behat_editor_bulk_tags',
+        'title' => 'Batch Tests by Tags',
+        'access arguments' => array('behat run a test'),
+        'type' => MENU_LOCAL_TASK,
+        'weight' => 5,
+        'file' => 'behat_editor.bulk.inc',
+    );
     return $items;
 }
 
