@@ -43,7 +43,7 @@ class Files {
             return $cached->data;
         } else {
             $module_array = self::getModuleFolders();
-            cache_set('behat_editor_modules', $module_array, 'cache', CACHE_TEMPORARY);
+            //cache_set('behat_editor_modules', $module_array, 'cache', CACHE_TEMPORARY);
             return $module_array;
         }
     }
@@ -103,18 +103,23 @@ class Files {
     }
 
     protected function _behatEditorScanDirectories($module, $path) {
-            $file_data = array();
-            $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => TRUE), $depth = 0);
-            dpm($files);
-            foreach($files as $key => $value) {
-                if($files[$key]->uri != drupal_realpath(drupal_get_path('module', $module))) {
-
-                }
-                $filename = $files[$key]->filename;
-                $file = new File(array(), $module, $filename, 'file', $this->subpath);
-                $file_data[$key] = $file->get_file_info();
+        $file_data = array();
+        $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => TRUE), $depth = 0);
+        foreach($files as $key => $value) {
+            $subpath = $this->subpath;
+            $array_key = $key;
+            $found_uri = array_slice(explode('/', $files[$key]->uri), 0, -1); //remove file name
+            $base_uri = explode('/', $path);
+            if(count($found_uri) > count($base_uri)) {
+                $subpath = array_slice($found_uri, count($base_uri), 1);
+                $subpath = $subpath[0];
+                $array_key = $array_key . $subpath;
             }
-            return $file_data;
+            $filename = $files[$key]->filename;
+            $file = new File(array(), $module, $filename, 'file', $subpath);
+            $file_data[$array_key] = $file->get_file_info();
+        }
+        return $file_data;
     }
 /*
  *

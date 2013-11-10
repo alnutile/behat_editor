@@ -4,7 +4,7 @@
  * @file functions to show the Admin / Index page
  */
 
-
+use Drupal\BehatEditor;
 
 /**
  * Build the output for the Index page of files.
@@ -16,6 +16,7 @@
  */
 
 function behat_editor_index() {
+    composer_manager_register_autoloader();
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     libraries_load('behat_editor_data_table');
@@ -55,9 +56,9 @@ function behat_editor_index() {
 
     //@todo convert to using the json index output
     //  see ticket #85 on github
-    $modules = _behat_editor_check_for_modules();
-    $modules = array_merge($modules, _behat_editor_test_folder_array());
-    $files_array = _behat_editor_build_array_of_available_files($modules);
+
+    $modules = new BehatEditor\Files();
+    $files_array = $modules->getFilesArray();
     $behat_table =_behat_editor_produce_table_array($files_array);
     $build['behat_table'] = array(
         '#markup' => $behat_table
@@ -72,4 +73,29 @@ function behat_editor_index() {
     $build['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
 
     return $build;
+}
+
+/**
+ * Helper function to make the array of
+ * available files in the folder
+ *
+ * @param $modules
+ *  return value of _behat_editor_has_folder
+ * @return array
+ *  and array keyed by module names of files folders etc.
+ */
+function _behat_editor_build_array_of_available_files_v2($modules) {
+    $files_found = array();
+    foreach($modules as $machine_name => $nice_name) {
+        if ($machine_name == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
+            $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
+            $files_folder =  file_build_uri("/{$sub_folder}/");
+            $path = drupal_realpath($files_folder);
+            $files_found[$machine_name] = _behat_editor_scan_directories($machine_name, $path);
+        } else {
+            $path = DRUPAL_ROOT . '/' . drupal_get_path('module', $machine_name) . '/' . BEHAT_EDITOR_FOLDER;
+            $files_found[$machine_name] =  _behat_editor_scan_directories($machine_name, $path);
+        }
+    }
+    return $files_found;
 }
