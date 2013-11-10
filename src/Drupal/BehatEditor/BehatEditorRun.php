@@ -239,6 +239,22 @@ class BehatEditorRun {
         );
     }
 
+    public static function fileObjecBuilder() {
+        composer_manager_register_autoloader();
+        $path = drupal_get_path('module', 'behat_editor');
+        $file_object['yml_path'] = drupal_realpath($path) . '/behat/behat.yml';
+        $file_object['behat_path'] = _behat_editor_behat_bin_folder();
+        $file_object['absolute_file_path'] = '';
+        $file_object['file_full_path'] = '';
+        $file_object['absolute_file_path'] = '';
+        $file_object['relative_path'] = '';
+        $file_object['filename'] = '';
+        $file_object['filename_no_ext'] = '';
+        $file_object['module'] = '';
+
+        return $file_object;
+    }
+
     /**
      * Save the results to the DB
      *
