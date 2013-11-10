@@ -13,7 +13,6 @@ function behat_editor_delete_api($module, $filename) {
     $filename = $filename . ".feature";
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     $file = new File(array(), $module, $filename, 'file');
-    watchdog('test_delete', print_r($file, 1));
     $response = $file->delete_file();
     if($response != FALSE){
         $results = array('file' => $filename, 'test' => '', 'error' => 0, 'message' => 'File Deleted');
