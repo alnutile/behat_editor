@@ -199,6 +199,12 @@ function behat_editor_schema() {
                 'description' => 'Serialize results from the test output',
                 'serialize' => TRUE,
             ),
+            'batch_status' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'Is batch job running still 0 yes 1 done',
+            ),
             'status' => array(
                 'type' => 'int',
                 'not null' => TRUE,
@@ -248,6 +254,31 @@ function behat_editor_update_7003() {
         $schema = behat_editor_schema();
         $table = $schema[$name];
         db_create_table($name, $table);
+    }
+}
+
+
+/**
+ *
+ */
+function behat_editor_update_7004() {
+
+}
+
+
+
+/**
+ * Add db to track test results to batch status
+ */
+function behat_editor_update_7005() {
+    if (!db_field_exists('behat_editor_batch_results', 'batch_status')) {
+        db_add_field('behat_editor_batch_results', 'batch_status', array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'Is batch job running still 0 yes 1 done',
+            )
+        );
     }
 }
 
