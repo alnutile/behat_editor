@@ -37,4 +37,7 @@ abstract class BehatEditorBatchType {
     abstract function batchDone($success, $results, $operations, $message);
     abstract function setupResultsUpdate();
     abstract function batchRun($module, $subfolder, $rid);
+    private function definePaths() {
+
+    }
 }

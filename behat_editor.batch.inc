@@ -135,7 +135,6 @@ function bulk_editor_run_module_based_submit($form, &$form_state) {
     if($operation == 'gui') {
         $start = new BehatEditor\BehatEditorBatchRunGui();
         $batch = $start->batchSubmit('module', $machine_name_and_subfolder);
-        watchdog('test_batch', print_r($batch->getBatch(), 1));
         batch_set($batch->getBatch());
     }
 }

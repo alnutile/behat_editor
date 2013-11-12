@@ -18,9 +18,14 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType{
     public $method;
     public $batch;
     public $rid;
+    public $temp;
     public $subfolder;
     public $test_results;
     public $form_values;
+    public $file_object;
+    public $module;
+    public $absolute_path;
+    public $path;
 
     function __construct(){
         composer_manager_register_autoloader();
@@ -87,15 +92,38 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType{
     }
 
     function batchRun($module, $subfolder, $rid) {
-        $this->rid = $rid;
         $this->module = $module;
         $this->subfolder = $subfolder;
-        $run = new BehatEditor\BehatEditorRunModuleFolderBasedTests($module, $subfolder, $rid);
-        $this->test_results = $run->runTests();
+        self::definePaths();
+        $this->rid = $rid;
+        $this->file_object = BehatEditor\File::fileObjecBuilder();
+        $this->file_object['module'] = $this->module;
+        $this->file_object['absolute_path_with_file'] = $this->absolute_path;
+        $this->file_object['relative_path'] = $this->path;
+        $tests = new BehatEditor\BehatEditorRun($this->file_object);
+        $results = $tests->exec(1);
+        $this->test_results = $results;
+    }
+
+    public function definePaths() {
+        if($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
+            $this->temp = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
+            $this->path = file_build_uri("/{$this->temp}");
+            if($this->subfolder !== FALSE && $this->subfolder !== 0) {
+                $this->path = $this->path . '/' . $this->subfolder;
+            }
+            $this->absolute_path = drupal_realpath($this->path);
+        } else {
+            $this->path = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
+            if($this->subfolder !== FALSE && $this->subfolder !== 0) {
+                $this->path = $this->path . '/' . $this->subfolder;
+            }
+            $this->absolute_path = realpath($this->path);
+        }
     }
 
     function batchItemDone() {
-        $results_of_test = $this->test_results['results'];
+        $results_of_test = $this->test_results;
         $resultsUpdate = BehatEditor\ResultsBatch::getResultsByRid($this->rid);
         $fields = $resultsUpdate['results'];
         $rids = (is_array(unserialize($fields['results']))) ? unserialize($fields['results']) : array();
@@ -105,7 +133,8 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType{
         $fields['pass_fail'] = ( $fields['pass_fail'] != 1 ) ? $results_of_test['response'] : 1; //leave as fail
         $pass_fail = BehatEditor\ResultsBatch::getResultsPassFail($results_of_test['response']);
         drupal_set_message(t("Ran batch test for @module @folder with a result of \"@result\"", array('@module' => $this->module, '@folder' => $this->subfolder, '@result' => $pass_fail)));
-        //Only change is not already Fail since it is a FAIL if one test fails
+        // Only change is not already Fail
+        // since it is a FAIL if one test fails
         if($fields['results_count'] == $fields['test_count']) { $fields['batch_status'] = 2; }
 
         $updateResults = new BehatEditor\ResultsBatch();
@@ -113,6 +142,8 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType{
 
         return $updateResults;
     }
+
+
 
     function batchDone($success, $results, $operations, $message) {
 
