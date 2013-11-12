@@ -7,7 +7,7 @@ Feature: Add Page
     And I fill in "Username" with "admin"
     And I fill in "Password" with "password"
     And I press "Log in"
-    And I wait for "1" seconds
+    And I wait for "2" seconds
 
   Scenario: User clicks Add and Saves tests
     Given I am on "/admin/behat/add"
@@ -23,7 +23,7 @@ Feature: Add Page
     And I fill in "see_not_see_some_text" with "Wiki"
     And I press "see_not_see"
     And I follow "Run Test"
-    And I wait for "3" seconds
+    And I wait for "5" seconds
     And I should see "Test successful!"
     And I fill in sectionOneTag
     And I fill in featuresTag
@@ -39,8 +39,8 @@ Feature: Add Page
     Then I should see "has been saved"
     And I should see "tests_of_tests.feature"
     And I follow "Run Test"
-    And I wait for "1" seconds
-    And I follow savedTest
+    And I wait for "3" seconds
+    And I follow "tests_of_tests.feature"
     Then I should not see "This is a tool to help"
     And I should see "@local"
     And I should see "Hello Worlds"
@@ -64,5 +64,3 @@ Feature: Add Page
     And I follow "Upload a test"
     And I wait for "1" seconds
     Then I should see "Filename must end in .feature"
-
-
