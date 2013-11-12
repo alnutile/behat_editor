@@ -165,33 +165,25 @@ function behat_editor_schema() {
                 'default' => '',
                 'description' => 'Duration output of behat',
             ),
-            'module' => array(
+            'method' => array(
                 'type' => 'varchar',
                 'length' => '255',
                 'not null' => FALSE,
-                'default' => '',
-                'description' => 'The module of that was chosen',
+                'default' => NULL,
+                'description' => 'Module, Tag or other',
             ),
-            'folder' => array(
-                'type' => 'varchar',
-                'length' => '255',
-                'not null' => FALSE,
-                'default' => '',
-                'description' => 'Defaults to behat_features for module based tests.',
+            'operations' => array(
+                'type' => 'blob',
+                'size' => 'normal',
+                'description' => 'Passed operations',
+                'serialize' => TRUE,
             ),
-            'subfolder' => array(
+            'repo' => array(
                 'type' => 'varchar',
                 'length' => '255',
                 'not null' => FALSE,
-                'default' => '',
-                'description' => 'If the user chooses a subfolder',
-            ),
-            'tag' => array(
-                'type' => 'varchar',
-                'length' => '255',
-                'not null' => FALSE,
-                'default' => '',
-                'description' => 'They may choose a tag over a module',
+                'default' => NULL,
+                'description' => 'Can be triggered by a repo as well',
             ),
             'results' => array(
                 'type' => 'blob',
@@ -203,7 +195,25 @@ function behat_editor_schema() {
                 'type' => 'int',
                 'not null' => TRUE,
                 'default' => 0,
-                'description' => 'Is batch job running still 0 yes 1 done',
+                'description' => 'Is batch job running still 1 = yes 2 = done 0 = pending. e.g test_count == results_count',
+            ),
+            'test_count' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'How many tests are there.',
+            ),
+            'count_at' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'What test are we running',
+            ),
+            'results_count' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'How many tests have returned results.',
             ),
             'status' => array(
                 'type' => 'int',
@@ -257,15 +267,12 @@ function behat_editor_update_7003() {
     }
 }
 
-
 /**
  *
  */
 function behat_editor_update_7004() {
 
 }
-
-
 
 /**
  * Add db to track test results to batch status
@@ -282,3 +289,54 @@ function behat_editor_update_7005() {
     }
 }
 
+/**
+ * Add to the table some rows to better track test progress
+ */
+function behat_editor_update_7006() {
+    $fields = array('results_count', 'count_at', 'test_count', 'repo');
+    $schema = behat_editor_schema();
+    $table = $schema['behat_editor_batch_results'];
+    foreach($fields as $field) {
+        if (!db_field_exists('behat_editor_batch_results', $field)) {
+            db_add_field('behat_editor_batch_results', $field, $table['fields'][$field]);
+        }
+    }
+}
+
+
+/**
+ * Add some needed fields
+ */
+function behat_editor_update_7007() {
+    $fields = array('operations', 'method');
+    $schema = behat_editor_schema();
+    $table = $schema['behat_editor_batch_results'];
+    foreach($fields as $field) {
+        if (!db_field_exists('behat_editor_batch_results', $field)) {
+            db_add_field('behat_editor_batch_results', $field, $table['fields'][$field]);
+        }
+    }
+}
+
+/**
+ * Remove some fields
+ */
+function behat_editor_update_7008() {
+    $fields = array('module', 'folder', 'subfolder', 'tag');
+    foreach($fields as $field) {
+        if (db_field_exists('behat_editor_batch_results', $field)) {
+            db_drop_field('behat_editor_batch_results', $field);
+        }
+    }
+}
+
+/**
+ * Rename field to make it more clear
+ */
+function behat_editor_update_7009() {
+        $schema = behat_editor_schema();
+        $field = $schema['behat_editor_batch_results']['fields']['status'];
+        if (db_field_exists('behat_editor_batch_results', 'status')) {
+            db_change_field('behat_editor_batch_results', 'status', 'pass_fail', $field);
+        }
+}

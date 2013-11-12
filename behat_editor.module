@@ -134,6 +134,16 @@ function behat_editor_menu() {
         'weight' => 5,
         'file' => 'behat_editor.batch.inc',
     );
+
+    $items['admin/behat/report'] = array(
+        'page callback' => 'behat_editor_report',
+        'title' => 'Report',
+        'access arguments' => array('behat view test'),
+        'type' => MENU_CALLBACK,
+        'weight' => 5,
+        'file' => 'behat_editor_report_page.inc',
+        'file path' => "$path/tpl/",
+    );
     return $items;
 }
 
