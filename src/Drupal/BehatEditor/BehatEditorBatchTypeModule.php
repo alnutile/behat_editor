@@ -12,32 +12,20 @@ use Drupal\BehatEditor;
  * etc
  */
 
-class BehatEditorBatchTypeModule extends  BehatEditorBatchType{
-    public $done_method;
-    public $operations;
-    public $method;
-    public $batch;
-    public $rid;
-    public $temp;
-    public $subfolder;
-    public $test_results;
-    public $form_values;
-    public $file_object;
-    public $module;
-    public $absolute_path;
-    public $path;
-    public $type;
+class BehatEditorBatchTypeModule extends  BehatEditorBatchType {
+
 
     function __construct(){
-        composer_manager_register_autoloader();
+        parent::__construct();
     }
 
     function setUp($method, $args, $type) {
         $this->method = $method;
         $this->form_values = $args;
-        self::setupResults();
+        $this->type = $type;
+        parent::setupResults();
         $this->operations = self::parseOperations($args);
-        self::setupResultsUpdate();
+        parent::setupResultsUpdate();
         self::setBatch();
     }
 
@@ -52,10 +40,6 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType{
                 'progress_message' => t('Running tests for @number modules. Will return shortly with results.', array('@number' => count($this->operations))),
             );
             $this->batch = $batch;
-    }
-
-    function getBatch() {
-        return $this->batch;
     }
 
     private function parseOperations($args) {
@@ -75,20 +59,10 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType{
     }
 
 
-
-    function setupResultsUpdate(){
-        $results = BehatEditor\ResultsBatch::getResultsByRid($this->rid);
-        $fields = $results['results'];
-        $fields['rid'] = $this->rid;
-        $fields['test_count'] = count($this->operations);
-        $update = new BehatEditor\ResultsBatch();
-        $update->update($this->rid, $fields);
-    }
-
     function batchRun(array $params) {
         $this->module = $params['module'];
         $this->subfolder = $params['subfolder'];
-        self::definePaths();
+        parent::definePaths();
         $this->rid = $params['rid'];
         $this->file_object = BehatEditor\File::fileObjecBuilder();
         $this->file_object['module'] = $this->module;
@@ -99,48 +73,5 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType{
         $this->test_results = $results;
     }
 
-    public function definePaths() {
-        if($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
-            $this->temp = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
-            $this->path = file_build_uri("/{$this->temp}");
-            if($this->subfolder !== FALSE && $this->subfolder !== 0) {
-                $this->path = $this->path . '/' . $this->subfolder;
-            }
-            $this->absolute_path = drupal_realpath($this->path);
-        } else {
-            $this->path = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
-            if($this->subfolder !== FALSE && $this->subfolder !== 0) {
-                $this->path = $this->path . '/' . $this->subfolder;
-            }
-            $this->absolute_path = realpath($this->path);
-        }
-    }
 
-    function batchItemDone() {
-        $results_of_test = $this->test_results;
-        $resultsUpdate = BehatEditor\ResultsBatch::getResultsByRid($this->rid);
-        $fields = $resultsUpdate['results'];
-        $rids = (is_array(unserialize($fields['results']))) ? unserialize($fields['results']) : array();
-        $fields['results'] = serialize(drupal_map_assoc(array($results_of_test['rid'])) + $rids);
-        $fields['count_at'] = $fields['count_at'] + 1;
-        $fields['results_count'] = $fields['results_count'] + 1;
-        $fields['pass_fail'] = ( $fields['pass_fail'] != 1 ) ? $results_of_test['response'] : 1; //leave as fail
-        $pass_fail = BehatEditor\ResultsBatch::getResultsPassFail($results_of_test['response']);
-        drupal_set_message(t("Ran batch test for @module @folder with a result of \"@result\"", array('@module' => $this->module, '@folder' => $this->subfolder, '@result' => $pass_fail)));
-        // Only change is not already Fail
-        // since it is a FAIL if one test fails
-        if($fields['results_count'] == $fields['test_count']) { $fields['batch_status'] = 2; }
-
-        $updateResults = new BehatEditor\ResultsBatch();
-        $updateResults->update($this->rid, $fields);
-
-        return $updateResults;
-    }
-
-
-
-    function batchDone($success, $results, $operations, $message) {
-
-        return t("@message", array('@message' => $message));
-    }
 }
