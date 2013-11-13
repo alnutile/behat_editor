@@ -120,6 +120,12 @@ function behat_editor_schema() {
                 'not null' => TRUE,
                 'default' => 0,
                 'description' => '0 for pass 1 for fail',
+            ),
+            'uid' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'User who ran the test',
             )
         ),
         'primary key' => array('rid'),
@@ -220,6 +226,12 @@ function behat_editor_schema() {
                 'not null' => TRUE,
                 'default' => 3,
                 'description' => '0 for pass 1 for fail 3 for no results yet',
+            ),
+            'uid' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'User who ran the test',
             )
         ),
         'primary key' => array('rid'),
@@ -350,4 +362,68 @@ function behat_editor_update_7010() {
     if (db_field_exists('behat_editor_batch_results', 'duration')) {
         db_change_field('behat_editor_batch_results', 'duration', 'type', $field);
     }
+}
+
+
+/**
+ * Add user uid field
+ */
+function behat_editor_update_7011() {
+    if (!db_field_exists('behat_editor_results', 'uid')) {
+        $schema = behat_editor_schema();
+        $field = $schema['behat_editor_results']['fields']['uid'];
+        db_add_field('behat_editor_results', 'uid', $field);
+        db_update('behat_editor_results')
+          ->fields(array('uid' => 0))
+          ->condition('uid', 'IS NULL')
+          ->execute();
+    }
+}
+
+
+/**
+ * clear up null
+ */
+/**
+ * Add user uid field and clear up null
+ */
+function behat_editor_update_7012() {
+
+}
+
+
+/**
+ * clear up null
+ */
+/**
+ * Add user uid field and clear up null
+ */
+function behat_editor_update_7013() {
+
+}
+
+
+/**
+ * clear up null
+ */
+/**
+ * Add user uid field and clear up null
+ */
+function behat_editor_update_7014() {
+
+}
+
+
+
+/**
+ * clear up null
+ */
+/**
+ * Add user uid field and clear up null
+ */
+function behat_editor_update_7015() {
+    db_update('behat_editor_results')
+        ->fields(array('uid' => '0'))
+        ->condition('uid', '', '=')
+        ->execute();
 }
