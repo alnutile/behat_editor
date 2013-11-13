@@ -18,6 +18,7 @@ class Results {
     public $fields = array();
 
     public function __construct() {
+        global $user;
         $this->fields = array(
             'filename' => '',
             'module' => '',
@@ -25,6 +26,7 @@ class Results {
             'duration' => '',
             'created' => '',
             'status' => '',
+            'uid' => $user->uid,
         );
     }
 
