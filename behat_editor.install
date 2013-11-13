@@ -158,12 +158,12 @@ function behat_editor_schema() {
                 'not null' => FALSE,
                 'description' => 'Test created at as Unix timestamp.',
             ),
-            'duration' => array(
+            'type' => array(
                 'type' => 'varchar',
                 'length' => '255',
                 'not null' => TRUE,
                 'default' => '',
-                'description' => 'Duration output of behat',
+                'description' => 'background non_background',
             ),
             'method' => array(
                 'type' => 'varchar',
@@ -339,4 +339,15 @@ function behat_editor_update_7009() {
         if (db_field_exists('behat_editor_batch_results', 'status')) {
             db_change_field('behat_editor_batch_results', 'status', 'pass_fail', $field);
         }
+}
+
+/**
+ * Rename field to make it more clear
+ */
+function behat_editor_update_7010() {
+    $schema = behat_editor_schema();
+    $field = $schema['behat_editor_batch_results']['fields']['type'];
+    if (db_field_exists('behat_editor_batch_results', 'duration')) {
+        db_change_field('behat_editor_batch_results', 'duration', 'type', $field);
+    }
 }

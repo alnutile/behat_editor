@@ -94,6 +94,25 @@ class Files {
         );
     }
 
+    public static function getFilesByTag(array $tag) {
+        $files_found = array();
+        $files = new Files();
+        $files_pre = $files->getFilesArray();
+        foreach($files_pre as $key => $value) {
+            foreach($value as $key2 => $value2) {
+                //Some tags had ending string so had to
+                if(isset($value2['tags_array'])) {
+                    foreach($value2['tags_array'] as $tag_key => $tag_value) {
+                        if(in_array(trim($tag_value), $tag)) {
+                            $files_found[$key2] = $value2;
+                        }
+                    }
+                }
+            }
+        }
+        return $files_found;
+    }
+
     protected function _buildArrayOfAvailableFiles() {
         $files_found = array();
         foreach($this->modules as $machine_name => $nice_name) {
@@ -129,6 +148,5 @@ class Files {
         }
         return $file_data;
     }
-
 
 }
