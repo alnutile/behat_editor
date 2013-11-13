@@ -12,30 +12,36 @@ use Drupal\BehatEditor;
  */
 
 abstract class BehatEditorBatchType {
-    public $done_method;
-    public $operations;
-    public $method;
-    public $batch;
-    public $rid;
-    public $temp;
-    public $subfolder;
-    public $test_results;
-    public $form_values;
-    public $file_object;
-    public $module;
-    public $absolute_path;
-    public $path;
-    public $type;
-    public $tag;
+    protected $done_method;
+    protected $operations;
+    protected $method;
+    protected $batch;
+    protected $rid;
+    protected $temp;
+    protected $subfolder;
+    protected $test_results;
+    protected $form_values;
+    protected $file_object;
+    protected $module;
+    protected $absolute_path;
+    protected $path;
+    protected $type;
+    protected $tag;
     public $message;
-    public $temp_uri;
-    public $pass_fail;
+    protected $temp_uri;
+    protected $pass_fail;
 
     function __construct(){
         composer_manager_register_autoloader();
 
     }
 
+    /**
+     * Kicks off the process to decide wthat type to use
+     *   Module or Tag and later GitHub etc.
+     * @param $method
+     * @return BehatEditorBatchTypeModule|BehatEditorBatchTypeTag
+     */
     static function type($method) {
         if($method == 'module') {
             $batchType = new BehatEditorBatchTypeModule();
@@ -46,7 +52,16 @@ abstract class BehatEditorBatchType {
         }
     }
 
-    function setUp($method, $args, $type) {}
+    function setUp($method, $args, $type) {
+        $this->method = $method;
+        $this->form_values = $args;
+        $this->type = $type;
+        $this->setupResults();
+        $this->operations = $this->parseOperations($args);
+        $this->setupResultsUpdate();
+        $this->setBatch();
+    }
+
 
     protected function setBatch() {}
 
@@ -54,7 +69,7 @@ abstract class BehatEditorBatchType {
         return $this->batch;
     }
 
-    private function parseOperations($operations) {}
+    protected function parseOperations($operations) {}
 
 
     function setupResults() {
@@ -65,8 +80,6 @@ abstract class BehatEditorBatchType {
         $rid = $results->insert();
         $this->rid = $rid;
     }
-
-
 
     function batchItemDone(array $params) {
         $results_of_test = $this->test_results;
@@ -83,14 +96,22 @@ abstract class BehatEditorBatchType {
         drupal_set_message($this->message);
         watchdog("behat_editor_batch", $this->message, WATCHDOG_INFO);
 
-        // Only change is not already Fail
-        // since it is a FAIL if one test fails
-        if($fields['results_count'] == $fields['test_count']) { $fields['batch_status'] = 2; }
-
+        $this->wrapUp($fields);
         $updateResults = new BehatEditor\ResultsBatch();
         $updateResults->update($this->rid, $fields);
-
         return $this->message;
+    }
+
+    /**
+     * Wrap up tests
+     *   Set Batch Results to 2 for DONE
+     *   Clean up any files if any
+     * @param $fields
+     */
+    protected function wrapUp(&$fields) {
+        if($fields['results_count'] == $fields['test_count']) {
+            $fields['batch_status'] = 2;
+        }
     }
 
 
@@ -128,7 +149,4 @@ abstract class BehatEditorBatchType {
         }
     }
 
-
-    private function findFiles() {}
-    private function copyFiles() {}
 }

@@ -19,15 +19,7 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType {
         parent::__construct();
     }
 
-    function setUp($method, $args, $type) {
-        $this->method = $method;
-        $this->form_values = $args;
-        $this->type = $type;
-        parent::setupResults();
-        $this->operations = self::parseOperations($args);
-        parent::setupResultsUpdate();
-        self::setBatch();
-    }
+
 
     function setBatch(){
             $batch = array(
@@ -42,7 +34,7 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType {
             $this->batch = $batch;
     }
 
-    private function parseOperations($args) {
+    protected function parseOperations($args) {
         $operations = array();
         foreach($args as $key) {
             if(strpos($key, '|')) {
@@ -62,10 +54,11 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType {
     function batchRun(array $params) {
         $this->module = $params['module'];
         $this->subfolder = $params['subfolder'];
-        parent::definePaths();
+        $this->definePaths();
         $this->rid = $params['rid'];
         $this->file_object = BehatEditor\File::fileObjecBuilder();
         $this->file_object['module'] = $this->module;
+        $this->file_object['filename'] = "behat_batch|{$this->rid}";
         $this->file_object['absolute_path_with_file'] = $this->absolute_path;
         $this->file_object['relative_path'] = $this->path;
         $tests = new BehatEditor\BehatEditorRun($this->file_object);

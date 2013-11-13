@@ -11,7 +11,7 @@ use Drupal\BehatEditor;
 
 
 
-class BehatEditorBatchRunBackground extends BehatEditorBatchRun {
+class BehatEditorBatchRunBackground {
     public function __construct(){
         composer_manager_register_autoloader();
     }

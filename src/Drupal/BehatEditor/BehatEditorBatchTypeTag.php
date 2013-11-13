@@ -19,16 +19,6 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         parent::__construct();
     }
 
-    function setUp($method, $args, $type) {
-        $this->method = $method;
-        $this->form_values = $args;
-        $this->type = $type;
-        parent::setupResults();
-        $this->operations = self::parseOperations($args);
-        parent::setupResultsUpdate();
-        self::setBatch();
-    }
-
     function setBatch(){
         $batch = array(
             'operations' => $this->operations,
@@ -42,7 +32,7 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         $this->batch = $batch;
     }
 
-    private function parseOperations($args) {
+    protected function parseOperations($args) {
         $operations = array();
         foreach($args as $key => $value) {
             $operations[] = array('bulk_editor_batch_run_tag', array($value, $this->rid));
@@ -62,15 +52,23 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
             $message = t('Temp path could not be created !path', array('!path' => $this->temp_uri));
             throw new \RuntimeException($message);
         }
-        self::findFilesAndSetupDirectory();
+        $this->findFilesAndSetupDirectory();
 
         $this->file_object = BehatEditor\File::fileObjecBuilder();
         $this->file_object['module'] = 'behat_batch';
+        $this->file_object['filename'] = "behat_batch|{$this->rid}";
         $this->file_object['absolute_path_with_file'] = drupal_realpath($this->temp_uri);
         $this->file_object['relative_path'] = $this->temp_uri;
+
         $tests = new BehatEditor\BehatEditorRun($this->file_object);
         $results = $tests->exec(1);
         $this->test_results = $results;
+        //$this->batchItemDone(array('item' => $this->tag[0]));
+    }
+
+    protected function wrapUp(&$fields) {
+        file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
+        parent::wrapUp($field);
     }
 
     private function findFilesAndSetupDirectory() {
