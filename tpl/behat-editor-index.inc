@@ -83,6 +83,9 @@ function behat_editor_index() {
  *  return value of _behat_editor_has_folder
  * @return array
  *  and array keyed by module names of files folders etc.
+ *
+ * @todo this gets repeated in several places need to bring it into a class
+ *   to use as needed.
  */
 function _behat_editor_build_array_of_available_files_v2($modules) {
     $files_found = array();

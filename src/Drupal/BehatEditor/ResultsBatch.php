@@ -119,7 +119,7 @@ class ResultsBatch {
         $fields['jid'] = 0;
         $fields['uid'] = $user->uid;
         $fields['created'] = REQUEST_TIME;
-        $fields['duration'] = 0;
+        $fields['type'] = 'non_background';
         $fields['method'] = NULL;
         $fields['operations'] = NULL;
         $fields['results'] = NULL;
