@@ -139,12 +139,10 @@ function bulk_editor_run_module_based_submit($form, &$form_state) {
 
 function bulk_editor_batch_run_module($module, $subfolder, $rid){
     composer_manager_register_autoloader();
-    watchdog("behat_editor_batch", t("Module @mod, Folder @fol", array('@mod' => $module, '@fol' => $subfolder)));
-
     $run = new BehatEditor\BehatEditorBatchTypeModule();
     $run->batchRun(array('module' => $module, 'subfolder' => $subfolder, 'rid' => $rid));
-    $run->batchItemDone();
-    $context['message'] = t("Module @mod, Folder @fol", array('@mod' => $module, '@fol' => $subfolder));
+    $run->batchItemDone(array('item' => $module));
+    $context['message'] = $run->message;
 }
 
 function bulk_editor_batch_module_done($success, $results, $operations, $duration){

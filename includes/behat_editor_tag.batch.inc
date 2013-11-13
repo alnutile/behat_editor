@@ -99,13 +99,11 @@ function bulk_editor_run_tag_based_submit($form, &$form_state) {
 
 function bulk_editor_batch_run_tag($tag, $rid){
     composer_manager_register_autoloader();
-    $message = t("Tag @tag tests are being run", array('@tag' => $tag));
-    watchdog("behat_editor_batch", $message);
 
     $run = new BehatEditor\BehatEditorBatchTypeTag();
     $run->batchRun(array('tag' => array($tag), 'rid' => $rid));
-    $run->batchItemDone();
-    $context['message'] = $message;
+    $run->batchItemDone(array('item' => $tag));
+    $context['message'] = $run->message;
 }
 
 function bulk_editor_batch_tag_done($success, $results, $operations){
