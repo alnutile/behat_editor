@@ -120,12 +120,26 @@ function bulk_editor_batch_tag_done($success, $results, $operations){
 function behat_editor_build_rows_tags() {
     $tags = behat_editor_tags_get();
     $rows = array();
+
     foreach($tags as $key => $value) {
+        $last_run = 'n/a';
+        $status = 'n/a';
+        $pass_fail = 'n/a';
+        $view = 'n/a';
+        $results = BehatEditor\ResultsBatch::getResultsForByTag($value);
+        if(!empty($results['results'])) {
+            $results = $results['results'][0];
+            $args = implode('/', $results['results']);
+            $view = l('view', 'admin/behat/report/' . $args, array('attributes' => array('target' => '_blank')));
+            $last_run = format_date($results['created'], 'medium');
+            $status = BehatEditor\ResultsBatch::getBatchRunningStatus($results['batch_status']);
+            $pass_fail = BehatEditor\ResultsBatch::getResultsPassFail($results['pass_fail']);
+        }
         $row['machinename'] = $value;
-        $row['last_run'] = 'n/a';
-        $row['batch_status'] = 'n/a';
-        $row['pass_fail'] = 'n/a';
-        $row['report'] = 'n/a';
+        $row['last_run'] = $last_run;
+        $row['batch_status'] = $status;
+        $row['pass_fail'] = $pass_fail;
+        $row['report'] = $view;
         $rows["$value"] = $row;
     }
     return $rows;

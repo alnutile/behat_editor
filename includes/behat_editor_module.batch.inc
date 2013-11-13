@@ -92,7 +92,7 @@ function buildRowsModules() {
                 if(!empty($results['results'])) {
                     $results = $results['results'][0];
                     $args = implode('/', $results['results']);
-                    $view = l('view', 'admin/behat/reports/' . $args, array('attributes' => array('target' => '_blank')));
+                    $view = l('view', 'admin/behat/report/' . $args, array('attributes' => array('target' => '_blank')));
                     $last_run = format_date($results['created'], 'medium');
                     $status = BehatEditor\ResultsBatch::getBatchRunningStatus($results['batch_status']);
                     $pass_fail = BehatEditor\ResultsBatch::getResultsPassFail($results['pass_fail']);

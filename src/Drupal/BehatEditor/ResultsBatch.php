@@ -53,6 +53,7 @@ class ResultsBatch {
         $query = db_select('behat_editor_batch_results', 'b');
         $query->fields('b');
         $query->condition('b.operations', "%\"$array_key\"%", 'LIKE');
+        $query->condition('b.method', "module", 'LIKE');
         $query->orderBy('b.created', 'DESC');
         $query->range(0, 1);
         $result = $query->execute();
@@ -66,12 +67,13 @@ class ResultsBatch {
         return array('results' => $rows, 'error' => 0);
     }
 
-    static public function getResultsForByTag($module, $folder, $tags) {
+    static public function getResultsForByTag($tags) {
         $query = db_select('behat_editor_batch_results', 'b');
         $query->fields('b');
-        $query->condition('b.folder', $folder, 'LIKE');
-        $query->condition('b.module', $module, 'LIKE');
+        $query->condition('b.operations', "%\"$tags\"%", 'LIKE');
+        $query->condition('b.method', "tags", 'LIKE');
         $query->orderBy('b.created', 'DESC');
+        $query->range(0, 1);
         $result = $query->execute();
         $rows = array();
         if ($result) {

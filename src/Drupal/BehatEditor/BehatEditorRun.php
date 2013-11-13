@@ -193,6 +193,8 @@ class BehatEditorRun {
      * Return the html output on a Test
      *
      * @return array
+     *
+     * @todo move results and reporting into a separate class
      */
     public function generateHTMLOutput() {
         $results_message = array_slice($this->file_array, -3);
