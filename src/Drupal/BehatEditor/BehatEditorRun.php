@@ -248,7 +248,7 @@ class BehatEditorRun {
         $saveResults->fields['filename'] = $this->filename;
         $saveResults->fields['module'] = $this->module;
         $saveResults->fields['results'] = serialize($output);
-        $saveResults->fields['duration'] = (array_pop($output)) ? array_pop($output): '0m0s';
+        $saveResults->fields['duration'] = (is_array($output)) ? array_pop($output): '0m0s';
         $saveResults->fields['created'] = REQUEST_TIME;
         $saveResults->fields['status'] = $return_var;
 
