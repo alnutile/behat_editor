@@ -373,10 +373,6 @@ function behat_editor_update_7011() {
         $schema = behat_editor_schema();
         $field = $schema['behat_editor_results']['fields']['uid'];
         db_add_field('behat_editor_results', 'uid', $field);
-        db_update('behat_editor_results')
-          ->fields(array('uid' => 0))
-          ->condition('uid', 'IS NULL')
-          ->execute();
     }
 }
 
