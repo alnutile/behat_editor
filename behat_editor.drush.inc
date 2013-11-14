@@ -43,6 +43,7 @@ function behat_editor_drush_command() {
         'arguments' => array(
             'module' => 'The module name that the test files are in',
             'javascript' => '1 if you want to run javascript based tests 0 if not. Javascript means you are running this locally.',
+            'subfolder' => '(Optional) if this is a folder in the behat_features folder',
         ),
     );
 
@@ -99,23 +100,21 @@ function drush_behat_editor_behat_run_folder() {
         $javascript = 0;
     }
 
-    $get = new Files();
-    $files_array = $get->getFilesArray();
-    //find those for this module
-    foreach($files_array as $key => $value) {
-        foreach($value as $file_path => $values) {
-            if($module == $values['module']) {
-                $modules_tests[$file_path] = $values;
-            }
-        }
+
+    $fileObject = File::fileObjecBuilder();
+    $path = drupal_get_path('module', $module);
+    $file_tests_folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
+    $path = drupal_realpath($path) . '/' . $file_tests_folder;
+    if(func_num_args() > 2) {
+        $path = $path . '/' . func_get_arg(2);
     }
-    foreach($modules_tests as $key) {
-        $run = new BehatEditorRun($key);
-        print "Running Test {$key['filename']}...\n";
-        $output = $run->execDrush($javascript);
-        $results = implode("\n\r", $output['output_array']);
-        drush_print($results);
-    }
+    $fileObject->absolute_file_path = $path;
+    $run = new BehatEditorRun($fileObject);
+    print "Running Tests in folder  {$fileObject['filename']}...\n";
+    $output = $run->exec($javascript);
+    $results = implode("\n\r", $output['output_array']);
+    drush_print($results);
+
 
     return "All Tests ran for module $module";
 }

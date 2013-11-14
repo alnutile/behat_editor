@@ -54,14 +54,13 @@ function behat_editor_requirements($phase) {
 }
 
 function behat_editor_enable(){
-
-
-    if(!db_table_exists('behat_editor_results')) {
-        $name = 'behat_editor_results';
-        $schema = behat_editor_schema();
-        $table = $schema[$name];
-        db_create_table($name, $table);
+    $tables = behat_editor_schema();
+    foreach($tables as $key => $value) {
+        if(!db_table_exists($key)) {
+            db_create_table($key, $value);
+        }
     }
+
     $modules = array('behat_editor_services');
     module_enable($modules);
     $jquery = variable_get('jquery_update_jquery_version', 0);
@@ -69,18 +68,6 @@ function behat_editor_enable(){
         variable_set('jquery_update_jquery_version', '1.7');
     }
 }
-/**
- * Add db to track test results
- */
-function behat_editor_update_7001() {
-    if(!db_table_exists('behat_editor_results')) {
-        $name = 'behat_editor_results';
-        $schema = behat_editor_schema();
-        $table = $schema[$name];
-        db_create_table($name, $table);
-    }
-}
-
 
 
 /**
@@ -133,14 +120,136 @@ function behat_editor_schema() {
                 'not null' => TRUE,
                 'default' => 0,
                 'description' => '0 for pass 1 for fail',
+            ),
+            'uid' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'User who ran the test',
             )
         ),
         'primary key' => array('rid'),
     );
 
+    $schema['behat_editor_batch_results'] = array(
+        'description' => 'Save Test Results for Batch Runs',
+        'fields' => array(
+            'rid' => array(
+                'type' => 'serial',
+                'description' => 'Auot ID',
+                'not null' => TRUE,
+            ),
+            'bid' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => '0',
+                'description' => 'Batch ID for later reference',
+            ),
+            'jid' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => '0',
+                'description' => 'Job ID if related to outside process',
+            ),
+            'uid' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'default' => 0,
+                'description' => 'User who ran the tests',
+            ),
+            'created' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'description' => 'Test created at as Unix timestamp.',
+            ),
+            'type' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => TRUE,
+                'default' => '',
+                'description' => 'background non_background',
+            ),
+            'method' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => NULL,
+                'description' => 'Module, Tag or other',
+            ),
+            'operations' => array(
+                'type' => 'blob',
+                'size' => 'normal',
+                'description' => 'Passed operations',
+                'serialize' => TRUE,
+            ),
+            'repo' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => NULL,
+                'description' => 'Can be triggered by a repo as well',
+            ),
+            'results' => array(
+                'type' => 'blob',
+                'size' => 'normal',
+                'description' => 'Serialize results from the test output',
+                'serialize' => TRUE,
+            ),
+            'batch_status' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'Is batch job running still 1 = yes 2 = done 0 = pending. e.g test_count == results_count',
+            ),
+            'test_count' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'How many tests are there.',
+            ),
+            'count_at' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'What test are we running',
+            ),
+            'results_count' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'How many tests have returned results.',
+            ),
+            'status' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 3,
+                'description' => '0 for pass 1 for fail 3 for no results yet',
+            ),
+            'uid' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'User who ran the test',
+            )
+        ),
+        'primary key' => array('rid'),
+    );
     return $schema;
 }
 
+/**
+ * Add db to track test results
+ */
+function behat_editor_update_7001() {
+    if(!db_table_exists('behat_editor_results')) {
+        $name = 'behat_editor_results';
+        $schema = behat_editor_schema();
+        $table = $schema[$name];
+        db_create_table($name, $table);
+    }
+}
 
 
 /**
@@ -156,4 +265,165 @@ function behat_editor_update_7002() {
             )
         );
     }
+}
+
+/**
+ * Add db to track test results for batch API
+ */
+function behat_editor_update_7003() {
+    if(!db_table_exists('behat_editor_batch_results')) {
+        $name = 'behat_editor_batch_results';
+        $schema = behat_editor_schema();
+        $table = $schema[$name];
+        db_create_table($name, $table);
+    }
+}
+
+/**
+ *
+ */
+function behat_editor_update_7004() {
+
+}
+
+/**
+ * Add db to track test results to batch status
+ */
+function behat_editor_update_7005() {
+    if (!db_field_exists('behat_editor_batch_results', 'batch_status')) {
+        db_add_field('behat_editor_batch_results', 'batch_status', array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'Is batch job running still 0 yes 1 done',
+            )
+        );
+    }
+}
+
+/**
+ * Add to the table some rows to better track test progress
+ */
+function behat_editor_update_7006() {
+    $fields = array('results_count', 'count_at', 'test_count', 'repo');
+    $schema = behat_editor_schema();
+    $table = $schema['behat_editor_batch_results'];
+    foreach($fields as $field) {
+        if (!db_field_exists('behat_editor_batch_results', $field)) {
+            db_add_field('behat_editor_batch_results', $field, $table['fields'][$field]);
+        }
+    }
+}
+
+
+/**
+ * Add some needed fields
+ */
+function behat_editor_update_7007() {
+    $fields = array('operations', 'method');
+    $schema = behat_editor_schema();
+    $table = $schema['behat_editor_batch_results'];
+    foreach($fields as $field) {
+        if (!db_field_exists('behat_editor_batch_results', $field)) {
+            db_add_field('behat_editor_batch_results', $field, $table['fields'][$field]);
+        }
+    }
+}
+
+/**
+ * Remove some fields
+ */
+function behat_editor_update_7008() {
+    $fields = array('module', 'folder', 'subfolder', 'tag');
+    foreach($fields as $field) {
+        if (db_field_exists('behat_editor_batch_results', $field)) {
+            db_drop_field('behat_editor_batch_results', $field);
+        }
+    }
+}
+
+/**
+ * Rename field to make it more clear
+ */
+function behat_editor_update_7009() {
+        $schema = behat_editor_schema();
+        $field = $schema['behat_editor_batch_results']['fields']['status'];
+        if (db_field_exists('behat_editor_batch_results', 'status')) {
+            db_change_field('behat_editor_batch_results', 'status', 'pass_fail', $field);
+        }
+}
+
+/**
+ * Rename field to make it more clear
+ */
+function behat_editor_update_7010() {
+    $schema = behat_editor_schema();
+    $field = $schema['behat_editor_batch_results']['fields']['type'];
+    if (db_field_exists('behat_editor_batch_results', 'duration')) {
+        db_change_field('behat_editor_batch_results', 'duration', 'type', $field);
+    }
+}
+
+
+/**
+ * Add user uid field
+ */
+function behat_editor_update_7011() {
+    if (!db_field_exists('behat_editor_results', 'uid')) {
+        $schema = behat_editor_schema();
+        $field = $schema['behat_editor_results']['fields']['uid'];
+        db_add_field('behat_editor_results', 'uid', $field);
+        db_update('behat_editor_results')
+          ->fields(array('uid' => 0))
+          ->condition('uid', 'IS NULL')
+          ->execute();
+    }
+}
+
+
+/**
+ * clear up null
+ */
+/**
+ * Add user uid field and clear up null
+ */
+function behat_editor_update_7012() {
+
+}
+
+
+/**
+ * clear up null
+ */
+/**
+ * Add user uid field and clear up null
+ */
+function behat_editor_update_7013() {
+
+}
+
+
+/**
+ * clear up null
+ */
+/**
+ * Add user uid field and clear up null
+ */
+function behat_editor_update_7014() {
+
+}
+
+
+
+/**
+ * clear up null
+ */
+/**
+ * Add user uid field and clear up null
+ */
+function behat_editor_update_7015() {
+    db_update('behat_editor_results')
+        ->fields(array('uid' => '0'))
+        ->condition('uid', '', '=')
+        ->execute();
 }
