@@ -29,9 +29,8 @@ function behat_editor_run_api($action, $module, $filename) {
     $res = new BehatEditorRun($file_object);
     $run_test_response = $res->exec();
     $response = $run_test_response['response'];
-
     //Check the Response from Running the Tests
-    if($response == 0) {
+    if($run_test_response['rid']) {
         $results = $res->generateReturnPassOutput();
         return $results;
     } else {
@@ -66,8 +65,8 @@ function behat_editor_create_and_run_api($action, $module, $filename, $query) {
         $res = new BehatEditorRun($file_object);
         $run_test_response = $res->exec();
         $response = $run_test_response['response'];
-        //Check the Response from Running the Tests
-        if($response == 0) {
+
+        if($run_test_response['rid']) {
             $results = $res->generateReturnPassOutput();
             return $results;
         } else {

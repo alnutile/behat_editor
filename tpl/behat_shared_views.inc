@@ -73,7 +73,7 @@ function theme_behat_editor_file_to_html_edit($vars) {
 function template_preprocess_behat_editor_file_to_html_edit(&$variables) {
     composer_manager_register_autoloader();
     $file_text = $variables['file_text'];
-    //@todo should not have to pass all this to instantiate File class
+    //@todo should not have` to pass all this to instantiate File class
     $request['scenario'] = $file_text;
     $file = new Drupal\BehatEditor\File($request, FALSE, FALSE, 'html_edit');
     $make_it_html = theme('behat_editor_item_list', $vars = array('items' => $file->output_file_text_to_html_array($file_text), 'attributes' => array('class' => 'scenario sortable ui-sortable', 'data-mode' => 'create-mode')));
@@ -270,11 +270,121 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
+    /** CHECKBOX or Radio */
+
+    $form['questions']['when_i_check']['header']['#markup'] = t('<h2>Checkboxes and Radio Buttons</h2>');
+    $form['questions']['when_i_check']['checkbox'] = array(
+        '#type' => 'textfield',
+        '#title' => t('And I check'),
+        '#name' => 'checkbox',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'when_i_check_group'),
+            'placeholder' =>  t('id|name|label|value of element'),
+            'data-type' => array('textfield'),
+        ),
+        '#suffix' => '<hr>'
+    );
+
+    $form['questions']['when_i_check']['checkbox_button'] = array(
+        '#type' => 'button',
+        '#name' => 'checkbox_button',
+        '#description' => t('Used on Checkbox and Radio buttons'),
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('when_i_check_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+
+    /** UN-CHECK CHECKBOX */
+    $form['questions']['when_i_uncheck']['uncheckbox'] = array(
+        '#type' => 'textfield',
+        '#title' => t('And I uncheck'),
+        '#name' => 'uncheckbox',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'when_i_uncheck_group'),
+            'placeholder' =>  t('value of element'),
+            'data-type' => array('textfield'),
+        ),
+        '#suffix' => '<hr>'
+    );
+
+
+    $form['questions']['when_i_uncheck']['uncheckbox_button'] = array(
+        '#type' => 'button',
+        '#name' => 'uncheckbox_button',
+        '#description' => t('Used on Checkbox to Uncheck'),
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('when_i_uncheck_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+
+
+    /** SELECT LIST */
+    $form['questions']['and_i_select']['header']['#markup'] = t('<h2>Select List</h2>');
+
+    $form['questions']['and_i_select']['select_option'] = array(
+        '#type' => 'textfield',
+        '#title' => t('And I select'),
+        '#name' => 'form_field_and_i_select',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'and_i_select_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('the select list option goes here'),
+        ),
+    );
+
+    $form['questions']['and_i_select']['from'] = array(
+        '#title' => 'from',
+        '#type' => 'item',
+        '#prefix' => '<div data-type="qualifier" class="and_i_select_group">',
+        '#suffix' => '</div>',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'and_i_select_group'),
+        ),
+    );
+
+    $form['questions']['and_i_select']['select_name'] = array(
+        '#type' => 'textfield',
+        '#name' => 'select_name',
+        '#description' => t('This can be used on Select'),
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'and_i_select_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('Label, Name or ID of the Select List'),
+        ),
+    );
+
+    $form['questions']['and_i_select']['field_select_button'] = array(
+        '#type' => 'button',
+        '#name' => 'field_select_button',
+        '#value' => t('Add'),
+        '#description' => t('Choose which element to select from a select list.'),
+        '#attributes' => array(
+            'data-step-group' => array('and_i_select_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+
+
+    /** Fill in Field */
+
+
     /**
      * Using this group to test
      * more dynamic method of
      * rendering forms and later js
      */
+    $form['questions']['and_i_fill_in']['header']['#markup'] = t('<h2>Text Fields, Links and Buttons</h2>');
+
     $form['questions']['and_i_fill_in']['form_field_name'] = array(
         '#type' => 'textfield',
         '#title' => t('And I fill in'),
@@ -285,6 +395,7 @@ function _behat_editor_questions_form() {
             'placeholder' =>  t('a form field name'),
         ),
     );
+
     /**
      * Type works good for the qualifier type text
      * but the type needs to be in the prefix due to how it is
