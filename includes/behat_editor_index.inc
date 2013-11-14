@@ -3,6 +3,7 @@
 /**
  * @file functions to show the Admin / Index page
  */
+use Drupal\BehatEditor;
 
 /**
  * Build the output for the Index page of files.
