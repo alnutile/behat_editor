@@ -1,6 +1,8 @@
 <?php
 use Drupal\BehatEditor;
 
+require_once(drupal_get_path('module', 'behat_editor') . '/includes/behat_editor_settings_shared.inc');
+
 function behat_settings_base_url_user() {
 
     $output = drupal_get_form('behat_editor_base_url_settings_user');
@@ -77,6 +79,7 @@ function behat_editor_base_url_settings_user_add() {
 }
 
 function behat_editor_base_url_settings_user_edit_form($form, &$form_state){
+    dpm($_POST);
     global $user;
     composer_manager_register_autoloader();
 
@@ -194,11 +197,20 @@ function behat_editor_base_url_settings_user_edit($sid) {
 }
 
 function behat_editor_base_url_settings_user_validate($form, &$form_state) {
-
+    // Error if there are no items to select.
+    if (!is_array($form_state['values']['dashboard']) || !count(array_filter($form_state['values']['dashboard']))) {
+        form_set_error('', t('No items selected.'));
+    }
 }
 
 function behat_editor_base_url_settings_user_submit($form, &$form_state) {
-    dpm($form_state);
+    composer_manager_register_autoloader();
+    $operation = $form_state['values']['operation'];
+    $sids = array_filter($form_state['values']['dashboard']);
+    if($operation == 'delete') {
+        BehatEditor\BehatSettingsBaseUrl::delete($sids);
+        drupal_set_message("Your settings where deleted");
+    }
 }
 
 /** HELPERS */
