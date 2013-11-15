@@ -164,6 +164,7 @@ class BehatEditorRun {
 
         $command = implode(' ', $command);
         exec($command, $output, $return_var);
+
         $this->file_array = $output;
         $response = is_array($output) ? 0 : 1;
         $rid = self::saveResults($output, $return_var);
@@ -244,6 +245,7 @@ class BehatEditorRun {
      * @param $output
      *   Test results from exec
      *
+     * @todo break this out into it's own class.
      */
     protected function saveResults($output, $return_var = 0) {
         $saveResults = new Results();

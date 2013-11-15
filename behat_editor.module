@@ -51,6 +51,10 @@ function behat_editor_permission() {
         'title' => t('Can delete a test'),
         'description' => t('Can delete a test')
     );
+    $items['behat admin settings'] = array(
+        'title' => t('Can Admin Settings'),
+        'description' => t('Can Admin Settings')
+    );
    return $items;
 }
 
@@ -136,6 +140,24 @@ function behat_editor_menu() {
         'type' => MENU_DEFAULT_LOCAL_TASK ,
         'weight' => -5,
     );
+
+    $items['admin/behat/settings'] =  array(
+        'title' => 'Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
+        'weight' => 10,
+        'page callback' => 'behat_settings_base_url',
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url.inc',
+    );
+
+    $items['admin/behat/settings/base_url'] =  array(
+        'title' => 'Base URL SEttings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_DEFAULT_LOCAL_TASK ,
+        'weight' => -5,
+    );
+
 
     $items['admin/behat/report'] = array(
         'page callback' => 'behat_editor_report',
