@@ -146,18 +146,50 @@ function behat_editor_menu() {
         'access arguments' => array('behat admin settings'),
         'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
         'weight' => 10,
-        'page callback' => 'behat_settings_base_url',
+        'page callback' => 'behat_settings_base_url_user',
         'file path' => "$path/includes/",
-        'file' => 'behat_settings_base_url.inc',
+        'file' => 'behat_settings_base_url_user.inc',
     );
 
-    $items['admin/behat/settings/base_url'] =  array(
-        'title' => 'Base URL SEttings',
+
+    $items['admin/behat/settings/base_url/user'] =  array(
+        'title' => 'Base URL Settings by User',
         'access arguments' => array('behat admin settings'),
         'type' => MENU_DEFAULT_LOCAL_TASK ,
         'weight' => -5,
     );
 
+    $items['admin/behat/settings/base_url/groups'] =  array(
+        'title' => 'Behat URL Settings by Group',
+        'access arguments' => array('behat run a test'),
+        'type' => MENU_LOCAL_TASK,
+        'weight' => 10,
+        'page callback' => 'behat_settings_base_url_group',
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_group.inc',
+    );
+
+    $items['admin/behat/settings/base_url/user/add'] =  array(
+        'title' => 'Add User Level Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_CALLBACK,
+        'weight' => 10,
+        'page callback' => 'behat_editor_base_url_settings_user_add',
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_user.inc',
+    );
+
+
+    $items['admin/behat/settings/base_url/user/edit/%'] =  array(
+        'title' => 'Add User Level Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_CALLBACK,
+        'weight' => 10,
+        'page callback' => 'behat_editor_base_url_settings_user_edit',
+        'page arguments' => array(6),
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_user.inc',
+    );
 
     $items['admin/behat/report'] = array(
         'page callback' => 'behat_editor_report',

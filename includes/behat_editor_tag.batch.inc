@@ -17,11 +17,7 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
     composer_manager_register_autoloader();
     $build = array();
 
-    $build['overview'] = array(
-        '#prefix' => '<div>',
-        '#markup' => t("Choose which tags to run the tests for."),
-        '#suffix' => '</div>',
-    );
+
     composer_manager_register_autoloader();
 
     $build['overview'] = array(

@@ -226,16 +226,59 @@ function behat_editor_schema() {
                 'not null' => TRUE,
                 'default' => 3,
                 'description' => '0 for pass 1 for fail 3 for no results yet',
-            ),
-            'uid' => array(
-                'type' => 'int',
-                'not null' => TRUE,
-                'default' => 0,
-                'description' => 'User who ran the test',
             )
         ),
         'primary key' => array('rid'),
     );
+    $schema['behat_editor_base_url_settings'] = array(
+        'description' => 'Settings for Base URL',
+        'fields' => array(
+            'sid' => array(
+                'type' => 'serial',
+                'description' => 'Settings ID',
+                'not null' => TRUE,
+            ),
+            'uid' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'description' => 'User who made settings',
+            ),
+            'gid' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'default' => 0,
+                'description' => 'Group the user made settings for',
+            ),
+            'nice_name' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => NULL,
+                'description' => 'Nice Name of the URL',
+            ),
+            'base_url' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'default' => NULL,
+                'description' => 'Base url can include AUTH eg http://admin:password@google.com',
+            ),
+            'default_url' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'default' => 0,
+                'description' => 'Is default Base URL',
+            ),
+            'active' => array(
+                'type' => 'int',
+                'not null' => FALSE,
+                'default' => 1,
+                'description' => 'Is Active',
+            ),
+        ),
+        'primary key' => array('sid'),
+    );
+
     return $schema;
 }
 
@@ -422,4 +465,42 @@ function behat_editor_update_7015() {
         ->fields(array('uid' => '0'))
         ->condition('uid', '', '=')
         ->execute();
+}
+
+/**
+ * Add Settings Table
+ */
+function behat_editor_update_7016() {
+    if(!db_table_exists('behat_editor_base_url_settings')) {
+        $name = 'behat_editor_base_url_settings';
+        $schema = behat_editor_schema();
+        $table = $schema[$name];
+        db_create_table($name, $table);
+    }
+}
+
+/**
+ * Add nice name field to settings
+ */
+function behat_editor_update_7017() {
+    if (!db_field_exists('behat_editor_base_url_settings', 'nice_name')) {
+        $schema = behat_editor_schema();
+        $field = $schema['behat_editor_base_url_settings']['fields']['nice_name'];
+        db_add_field('behat_editor_base_url_settings', 'nice_name', $field);
+    }
+}
+
+/**
+ * Rename field since default broke sql
+ */
+function behat_editor_update_7018() {
+
+}
+
+
+/**
+ * Rename field since default broke sql
+ */
+function behat_editor_update_7019() {
+
 }
