@@ -48,12 +48,29 @@ class BehatSettingsBaseUrl {
         return array('results' => $rows, 'error' => 0);
     }
 
+    static public function getSettingsBySID($sid) {
+        $query = db_select('behat_editor_base_url_settings', 'b');
+        $query->fields('b');
+        $query->condition('b.sid', $sid, '=');
+        $result = $query->execute()->fetchAssoc();
+        return array('results' => $result, 'error' => 0);
+    }
+
+
     public function insert() {
         $insert = db_insert('behat_editor_base_url_settings')->fields($this->fields)->execute();
         if($this->fields['default_url'] == 1) {
             self::resetDefault($insert);
         }
         return $insert;
+    }
+
+    public function update($sid) {
+        $update = db_update('behat_editor_base_url_settings')
+            ->fields($this->fields)
+            ->condition('sid', $sid, '=')
+            ->execute();
+        return $update;
     }
 
     private function resetDefault($insert) {

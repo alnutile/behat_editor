@@ -14,7 +14,7 @@ function behat_editor_base_url_settings_user($form, &$form_state) {
     global $user;
 
     $build['intro'] = array(
-        '#markup' => t('You are here')
+        '#markup' => t('Manage your tests. See other tab for group related tests')
     );
 
     //Get Settings for User eg uid = $user->uid and gid = 0
@@ -28,6 +28,7 @@ function behat_editor_base_url_settings_user($form, &$form_state) {
         'base_url' => array('data' => t('URL')),
         'default_url' => array('data' => t('Default')),
         'active' => array('data' => t('Active')),
+        'edit' => array('data' => t('Edit')),
     );
 
     $rows = _behat_editor_build_rows_settings($userSettings);
@@ -41,8 +42,8 @@ function behat_editor_base_url_settings_user($form, &$form_state) {
 
     $options = array(
         'delete' => t('Delete'),
-        'add' => t('Add'),
-        'update' => t('Update'),
+        'deactivate' => t('Set to not-active'),
+        'active' => t('Set to active'),
     );
 
     $build['operations']['operation'] = array(
@@ -77,6 +78,8 @@ function behat_editor_base_url_settings_user_add() {
 
 function behat_editor_base_url_settings_user_edit_form($form, &$form_state){
     global $user;
+    composer_manager_register_autoloader();
+
     $sid = '';
     $base_url = '';
     $nice_name = '';
@@ -84,16 +87,29 @@ function behat_editor_base_url_settings_user_edit_form($form, &$form_state){
     $default_url = 0;
     $uid = $user->uid;
     $gid = '';
-
+    $button = "Add";
+    if(isset($form_state['build_info']['args'][0]['sid'])) {
+        $sid = $form_state['build_info']['args'][0]['sid'];
+        $settings = BehatEditor\BehatSettingsBaseUrl::getSettingsBySID($sid);
+        list($sid, $uid, $gid, $base_url, $default_url, $active, $nice_name) = array_values($settings['results']);
+        $button = "Update";
+    }
 
     $form['sid'] = array(
         '#type' => 'hidden',
         '#default_value' => $sid,
     );
+
     $form['gid'] = array(
         '#type' => 'hidden',
         '#default_value' => $gid,
     );
+
+    $form['uid'] = array(
+        '#type' => 'hidden',
+        '#default_value' => $uid,
+    );
+
     $form['nice_name'] = array(
         '#type' => 'textfield',
         '#default_value' => $nice_name,
@@ -102,6 +118,7 @@ function behat_editor_base_url_settings_user_edit_form($form, &$form_state){
             'placeholder' => t('Nice Name Here...')
         )
     );
+
     $form['base_url'] = array(
         '#type' => 'textfield',
         '#default_value' => $base_url,
@@ -110,19 +127,22 @@ function behat_editor_base_url_settings_user_edit_form($form, &$form_state){
             'placeholder' => t('http://example.com')
         )
     );
+
     $form['default_url'] = array(
         '#type' => 'checkbox',
         '#default_value' => $default_url,
         '#description' => t('Set to Default'),
     );
+
     $form['active'] = array(
         '#type' => 'checkbox',
         '#default_value' => $active,
         '#description' => t('Set to active'),
     );
+
     $form['add'] = array(
         '#type' => "submit",
-        '#value' => "Add",
+        '#value' => t($button),
     );
 
     return $form;
@@ -146,14 +166,31 @@ function behat_editor_base_url_settings_user_edit_form_submit($form, &$form_stat
     $settings->fields['active'] = $form_state['values']['active'];
     $settings->fields['base_url'] = $form_state['values']['base_url'];
     $settings->fields['nice_name'] = $form_state['values']['nice_name'];
-    $sid = $settings->insert();
-    drupal_set_message(t("You base_url was added. To edit it !edit", array('!edit' => l('click here', 'admin/behat/settings/base_url/user/edit/' . $sid))));
-    drupal_set_message(t("Return to admin !admin", array('!admin' => l('click here', 'admin/behat/settings/base_url/user'))));
+    $nice_name = $settings->fields['nice_name'];
+    //Update or Add
+    if($form_state['values']['sid'] > 0) {
+        $sid = $form_state['values']['sid'];
+        $settings->fields['sid'] = $sid;
+        $settings->fields['gid'] = $form_state['values']['gid'];
+        $sid = $settings->update($sid);
+        $messages[] = t("Your base_url @name was updated", array('@name' => $nice_name));
+        $messages[] = t("!admin", array('!admin' => l('Return to admin area', 'admin/behat/settings/base_url/user')));
+    } else {
+        $sid = $settings->insert();
+        $messages[] = t("Your base_url @name was added, !edit", array('@name' => $nice_name, '!edit' => l('edit settings further?', 'admin/behat/settings/base_url/user/edit/' . $sid)));
+        $messages[] = t("!admin", array('!admin' => l('Return to admin area', 'admin/behat/settings/base_url/user')));
+    }
+    foreach($messages as $message) {
+        drupal_set_message($message);
+    }
 }
 
 
 function behat_editor_base_url_settings_user_edit($sid) {
-    dpm("Time to Edit a row");
+
+    drupal_set_message(t('You are editing test @name', array('@name' => "Name")));
+    $output = drupal_get_form('behat_editor_base_url_settings_user_edit_form', array('sid' => $sid));
+    return $output;
 }
 
 function behat_editor_base_url_settings_user_validate($form, &$form_state) {
@@ -173,5 +210,12 @@ function behat_editor_base_url_settings_user_submit($form, &$form_state) {
  */
 function _behat_editor_build_rows_settings($rows) {
     $rows = $rows['results'];
+
+    foreach($rows as $key => $value) {
+        $rows[$key]['nice_name'] = l($value['nice_name'], 'admin/behat/settings/base_url/user/edit/' . $value['sid']);
+        $rows[$key]['edit'] = l('edit', 'admin/behat/settings/base_url/user/edit/' . $value['sid']);
+    }
+
+
     return $rows;
 }
