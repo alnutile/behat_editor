@@ -73,6 +73,13 @@ class BehatSettingsBaseUrl {
         return $update;
     }
 
+    static function delete(array $sids) {
+        db_delete('behat_editor_base_url_settings')
+            ->condition('sid', $sids, 'IN')
+            ->execute();
+    }
+
+
     private function resetDefault($insert) {
         //Select all for this user and group = id in $this->fields['gid']
         // set default 0 unless it = this $insert sid
