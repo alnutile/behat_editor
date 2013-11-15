@@ -9,8 +9,6 @@ function behat_settings_base_url_user() {
     return $output;
 }
 
-
-
 function behat_editor_base_url_settings_user($form, &$form_state) {
     composer_manager_register_autoloader();
     global $user;
@@ -79,7 +77,6 @@ function behat_editor_base_url_settings_user_add() {
 }
 
 function behat_editor_base_url_settings_user_edit_form($form, &$form_state){
-    dpm($_POST);
     global $user;
     composer_manager_register_autoloader();
 
@@ -91,6 +88,7 @@ function behat_editor_base_url_settings_user_edit_form($form, &$form_state){
     $uid = $user->uid;
     $gid = '';
     $button = "Add";
+
     if(isset($form_state['build_info']['args'][0]['sid'])) {
         $sid = $form_state['build_info']['args'][0]['sid'];
         $settings = BehatEditor\BehatSettingsBaseUrl::getSettingsBySID($sid);

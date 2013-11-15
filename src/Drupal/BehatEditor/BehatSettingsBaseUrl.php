@@ -48,6 +48,21 @@ class BehatSettingsBaseUrl {
         return array('results' => $rows, 'error' => 0);
     }
 
+    static public function getSettingsByGID(array $gids) {
+        $query = db_select('behat_editor_base_url_settings', 'b');
+        $query->fields('b');
+        $query->condition('b.gid', $gids, 'IN');
+        $query->orderBy('b.sid', 'DESC');
+        $result = $query->execute();
+        $rows = array();
+        if ($result) {
+            foreach ($result as $record) {
+                $rows[] = (array) $record;
+            }
+        }
+        return array('results' => $rows, 'error' => 0);
+    }
+
     static public function getSettingsBySID($sid) {
         $query = db_select('behat_editor_base_url_settings', 'b');
         $query->fields('b');
@@ -55,7 +70,6 @@ class BehatSettingsBaseUrl {
         $result = $query->execute()->fetchAssoc();
         return array('results' => $result, 'error' => 0);
     }
-
 
     public function insert() {
         $insert = db_insert('behat_editor_base_url_settings')->fields($this->fields)->execute();
@@ -97,7 +111,6 @@ class BehatSettingsBaseUrl {
         $query->condition('sid', $sid, '!=');
         $query->execute();
     }
-
 
     private function fields() {
         global $user;
