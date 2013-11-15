@@ -19,7 +19,7 @@
      Then I should see "Feature: My Feature Name"
      And I fill in "edit-scenario" with "Hello Worlds"
      And I press "scenario_button"
-     And I fill in "edit-url" with "http://test.localhost.com/"
+     And I fill in "edit-url" with "http://saucelabs.com/test/guinea-pig"
      And I press "Add"
      And I fill in "see_not_see_some_text" with "Selenium"
      And I press "see_not_see"
