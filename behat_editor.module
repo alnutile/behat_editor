@@ -191,6 +191,28 @@ function behat_editor_menu() {
         'file' => 'behat_settings_base_url_user.inc',
     );
 
+    $items['admin/behat/settings/base_url/group/add'] =  array(
+        'title' => 'Add Group Level Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_CALLBACK,
+        'weight' => 10,
+        'page callback' => 'behat_editor_base_url_settings_group_add',
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_group.inc',
+    );
+
+
+    $items['admin/behat/settings/base_url/group/edit/%'] =  array(
+        'title' => 'Add Group Level Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_CALLBACK,
+        'weight' => 10,
+        'page callback' => 'behat_editor_base_url_settings_group_edit',
+        'page arguments' => array(6),
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_group.inc',
+    );
+
     $items['admin/behat/report'] = array(
         'page callback' => 'behat_editor_report',
         'title' => 'Report',
