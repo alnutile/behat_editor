@@ -1,8 +1,6 @@
 <?php
 use Drupal\BehatEditor;
 
-require_once(drupal_get_path('module', 'behat_editor') . '/includes/behat_editor_settings_shared.inc');
-
 function behat_settings_base_url_user() {
 
     $output = drupal_get_form('behat_editor_base_url_settings_user');
@@ -31,7 +29,7 @@ function behat_editor_base_url_settings_user($form, &$form_state) {
         'edit' => array('data' => t('Edit')),
     );
 
-    $rows = _behat_editor_build_rows_settings($userSettings);
+    $rows = BehatEditor\BehatSettingsFormHelper::rowBuilder($userSettings);
 
     $build['dashboard'] = array(
         '#type' => 'tableselect',
@@ -55,7 +53,7 @@ function behat_editor_base_url_settings_user($form, &$form_state) {
 
     $build['operations']['submit'] = array(
         '#type' => 'submit',
-        '#value' => t('Submit User Settings'),
+        '#value' => t('Submit Settings'),
         '#validate' => array('behat_editor_base_url_settings_user_validate'),
         '#submit' => array('behat_editor_base_url_settings_user_submit'),
     );
@@ -93,6 +91,7 @@ function behat_editor_base_url_settings_user_edit_form($form, &$form_state){
         $sid = $form_state['build_info']['args'][0]['sid'];
         $settings = BehatEditor\BehatSettingsBaseUrl::getSettingsBySID($sid);
         list($sid, $uid, $gid, $base_url, $default_url, $active, $nice_name) = array_values($settings['results']);
+        drupal_set_message(t('You are editing @name', array('@name' => $nice_name)));
         $button = "Update";
     }
 
@@ -158,6 +157,7 @@ function behat_editor_base_url_settings_user_edit_form($form, &$form_state){
  *
  */
 function behat_editor_base_url_settings_user_edit_form_validate($form, &$form_state) {
+    BehatEditor\BehatSettingsFormHelper::sharedValidations($form_state);
 }
 
 function behat_editor_base_url_settings_user_edit_form_submit($form, &$form_state) {
@@ -188,8 +188,6 @@ function behat_editor_base_url_settings_user_edit_form_submit($form, &$form_stat
 
 
 function behat_editor_base_url_settings_user_edit($sid) {
-
-    drupal_set_message(t('You are editing test @name', array('@name' => "Name")));
     $output = drupal_get_form('behat_editor_base_url_settings_user_edit_form', array('sid' => $sid));
     return $output;
 }
@@ -207,25 +205,9 @@ function behat_editor_base_url_settings_user_submit($form, &$form_state) {
     $sids = array_filter($form_state['values']['dashboard']);
     if($operation == 'delete') {
         BehatEditor\BehatSettingsBaseUrl::delete($sids);
-        drupal_set_message("Your settings where deleted");
+        drupal_set_message("Your settings were deleted");
     }
 }
 
 /** HELPERS */
 
-/**
- * Later may want to make this editable fields
- * @param $rows
- * @return mixed
- */
-function _behat_editor_build_rows_settings($rows) {
-    $rows = $rows['results'];
-
-    foreach($rows as $key => $value) {
-        $rows[$key]['nice_name'] = l($value['nice_name'], 'admin/behat/settings/base_url/user/edit/' . $value['sid']);
-        $rows[$key]['edit'] = l('edit', 'admin/behat/settings/base_url/user/edit/' . $value['sid']);
-    }
-
-
-    return $rows;
-}
