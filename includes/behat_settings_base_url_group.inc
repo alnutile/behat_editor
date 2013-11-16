@@ -1,8 +1,6 @@
 <?php
 use Drupal\BehatEditor;
 
-require_once(drupal_get_path('module', 'behat_editor') . '/includes/behat_editor_settings_shared.inc');
-
 function behat_settings_base_url_group() {
 
     $output = drupal_get_form('behat_editor_base_url_settings_group');
@@ -23,7 +21,6 @@ function behat_editor_base_url_settings_group($form, &$form_state) {
         '#markup' => t('Manage your Group tests. See other tab for your non group replated tests')
     );
 
-
     //Get Settings for User eg uid = $user->uid and gid = 0
     $behatSettings = new BehatEditor\BehatSettingsBaseUrl();
 
@@ -39,7 +36,7 @@ function behat_editor_base_url_settings_group($form, &$form_state) {
         'edit' => array('data' => t('Edit')),
     );
 
-    $rows = _behat_editor_build_rows_settings($userSettings);
+    $rows = BehatEditor\BehatSettingsFormHelper::rowBuilder($userSettings, 'group');
 
     $build['dashboard'] = array(
         '#type' => 'tableselect',
@@ -63,7 +60,7 @@ function behat_editor_base_url_settings_group($form, &$form_state) {
 
     $build['operations']['submit'] = array(
         '#type' => 'submit',
-        '#value' => t('Submit Group Settings'),
+        '#value' => t('Submit Settings'),
         '#validate' => array('behat_editor_base_url_settings_group_validate'),
         '#submit' => array('behat_editor_base_url_settings_group_submit'),
     );
@@ -86,14 +83,7 @@ function behat_editor_base_url_settings_group_add() {
     return $output;
 }
 
-function _behat_editor_group_gid_and_title_options_list($gids) {
-    $nodes = og_membership_load_multiple($gids);
-    $options = array();
-    foreach($nodes as $gid => $value) {
-        $options[$value->gid] = node_load($value->gid)->title;
-    }
-    return $options;
-}
+
 
 function behat_editor_base_url_settings_group_edit_form($form, &$form_state){
     global $user;
@@ -182,6 +172,7 @@ function behat_editor_base_url_settings_group_edit_form($form, &$form_state){
  *
  */
 function behat_editor_base_url_settings_group_edit_form_validate($form, &$form_state) {
+    BehatEditor\BehatSettingsFormHelper::sharedValidations($form_state);
 }
 
 function behat_editor_base_url_settings_group_edit_form_submit($form, &$form_state) {
@@ -199,11 +190,11 @@ function behat_editor_base_url_settings_group_edit_form_submit($form, &$form_sta
         $settings->fields['sid'] = $sid;
         $sid = $settings->update($sid);
         $messages[] = t("Your base_url @name was updated", array('@name' => $nice_name));
-        $messages[] = t("!admin", array('!admin' => l('Return to admin area', 'admin/behat/settings/base_url/group')));
+        $messages[] = t("!admin", array('!admin' => l('Return to admin area', 'admin/behat/settings/base_url/groups')));
     } else {
         $sid = $settings->insert();
         $messages[] = t("Your base_url @name was added, !edit", array('@name' => $nice_name, '!edit' => l('edit settings further?', 'admin/behat/settings/base_url/group/edit/' . $sid)));
-        $messages[] = t("!admin", array('!admin' => l('Return to admin area', 'admin/behat/settings/base_url/group')));
+        $messages[] = t("!admin", array('!admin' => l('Return to admin area', 'admin/behat/settings/base_url/groups')));
     }
     foreach($messages as $message) {
         drupal_set_message($message);
@@ -213,7 +204,7 @@ function behat_editor_base_url_settings_group_edit_form_submit($form, &$form_sta
 
 function behat_editor_base_url_settings_group_edit($sid) {
 
-    drupal_set_message(t('You are editing test @name', array('@name' => "Name")));
+    drupal_set_message(t('You are editing @name', array('@name' => "Name")));
     $output = drupal_get_form('behat_editor_base_url_settings_group_edit_form', array('sid' => $sid));
     return $output;
 }
@@ -231,25 +222,8 @@ function behat_editor_base_url_settings_group_submit($form, &$form_state) {
     $sids = array_filter($form_state['values']['dashboard']);
     if($operation == 'delete') {
         BehatEditor\BehatSettingsBaseUrl::delete($sids);
-        drupal_set_message("Your settings where deleted");
+        drupal_set_message("Your settings were deleted");
     }
 }
 
 /** HELPERS */
-
-/**
- * Later may want to make this editable fields
- * @param $rows
- * @return mixed
- */
-function _behat_editor_build_rows_settings($rows) {
-    $rows = $rows['results'];
-
-    foreach($rows as $key => $value) {
-        $rows[$key]['nice_name'] = l($value['nice_name'], 'admin/behat/settings/base_url/user/edit/' . $value['sid']);
-        $rows[$key]['edit'] = l('edit', 'admin/behat/settings/base_url/user/edit/' . $value['sid']);
-    }
-
-
-    return $rows;
-}

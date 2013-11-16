@@ -5,6 +5,7 @@
  *
  */
 
+use Drupal\BehatEditor;
 
 /**
  * Implements hook_form().
@@ -21,6 +22,7 @@
  * @todo my "controller" seems to have a ton of view related work?
  */
 function behat_editor_add_form($form, $form_state) {
+    composer_manager_register_autoloader();
     behat_editor_add_bootstrap();
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
@@ -89,6 +91,8 @@ function behat_editor_add_form($form, $form_state) {
     $form['questions_area']['question'] =  _behat_editor_questions_form();
 
     behat_editor_current_test_container($form);
+
+    BehatEditor\BehatSettingsFormHelper::behatSettingsContainer($form);
 
     $title =  "Add File";
     $body = "The file <span class='filename'>coming soon..</span> will be added and you will be redirected to the Edit page..";

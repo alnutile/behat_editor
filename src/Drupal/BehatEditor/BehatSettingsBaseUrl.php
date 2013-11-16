@@ -17,7 +17,6 @@ class BehatSettingsBaseUrl {
 
     function getUsersSettings($uid) {
         $this->uid = $uid;
-
     }
 
     function getGroupSettingsForUser($uid, array $groups) {
@@ -37,6 +36,7 @@ class BehatSettingsBaseUrl {
         $query = db_select('behat_editor_base_url_settings', 'b');
         $query->fields('b');
         $query->condition('b.uid', "$uid", '=');
+        $query->condition('b.gid', 0, '=');
         $query->orderBy('b.sid', 'DESC');
         $result = $query->execute();
         $rows = array();

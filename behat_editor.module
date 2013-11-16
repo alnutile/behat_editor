@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\BehatEditor;
+
 
 //Default folder to store tests for modules
 define('BEHAT_EDITOR_FOLDER', 'behat_features');
@@ -741,6 +743,8 @@ function behat_editor_current_test_container(&$form){
     );
 }
 
+
+
 function behat_editor_save_modal(&$form, $filename) {
     $title =  "Confirm Save";
     $body = "The file {$filename} will be saved and you will be redirected.";
@@ -751,4 +755,13 @@ function behat_editor_save_modal(&$form, $filename) {
     );
 
     $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
+}
+
+function _behat_editor_group_gid_and_title_options_list($gids) {
+    $nodes = og_membership_load_multiple($gids);
+    $options = array();
+    foreach($nodes as $gid => $value) {
+        $options[$value->gid] = node_load($value->gid)->title;
+    }
+    return $options;
 }
