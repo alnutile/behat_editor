@@ -126,7 +126,13 @@ function behat_editor_schema() {
                 'not null' => TRUE,
                 'default' => 0,
                 'description' => 'User who ran the test',
-            )
+            ),
+            'settings' => array(
+                'type' => 'blob',
+                'size' => 'normal',
+                'description' => 'Settings passed during the test',
+                'serialize' => TRUE,
+            ),
         ),
         'primary key' => array('rid'),
     );
@@ -226,7 +232,13 @@ function behat_editor_schema() {
                 'not null' => TRUE,
                 'default' => 3,
                 'description' => '0 for pass 1 for fail 3 for no results yet',
-            )
+            ),
+            'settings' => array(
+                'type' => 'blob',
+                'size' => 'normal',
+                'description' => 'Settings passed during the test',
+                'serialize' => TRUE,
+            ),
         ),
         'primary key' => array('rid'),
     );
@@ -503,4 +515,21 @@ function behat_editor_update_7018() {
  */
 function behat_editor_update_7019() {
 
+}
+
+
+/**
+ * Add nice name field to settings
+ */
+function behat_editor_update_7020() {
+    if (!db_field_exists('behat_editor_results', 'settings')) {
+        $schema = behat_editor_schema();
+        $field = $schema['behat_editor_results']['fields']['settings'];
+        db_add_field('behat_editor_results', 'settings', $field);
+    }
+    if (!db_field_exists('behat_editor_batch_results', 'settings')) {
+        $schema = behat_editor_schema();
+        $field = $schema['behat_editor_batch_results']['fields']['settings'];
+        db_add_field('behat_editor_batch_results', 'settings', $field);
+    }
 }

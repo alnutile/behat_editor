@@ -1,4 +1,6 @@
 default:
+  context:
+    class:  'FeatureContext'
   extensions:
     Behat\MinkExtension\Extension:
       base_url:  http://example.com
@@ -7,60 +9,3 @@ default:
       goutte:              ~
       selenium2:
 
-subcontexts:
-  context:
-    class:      'SubContext'
-
-localdev:
-  extensions:
-    Behat\MinkExtension\Extension:
-      base_url:  'http://localhost.example.com'
-      browser_name: safari
-      javascript_session:  'selenium2'
-      goutte:              ~
-      selenium2:
-
-phantomjs:
-    extensions:
-        Behat\MinkExtension\Extension:
-            base_url: http://example.com
-            goutte: ~
-            selenium2:
-                wd_host: "http://localhost:8643/wd/hub"
-
-    formatter:
-        name:               pretty,html
-        parameters:
-            output_path:    null,jm_behat_report.html
-
-Webdriver-saucelabs:
-  context:
-    class:  'FeatureContext'
-  extensions:
-    Behat\MinkExtension\Extension:
-      selenium2:
-        browser: iexplore
-        wd_host: username@api_key@ondemand.saucelabs.com/wd/hub
-        capabilities: { "platform": "VISTA", "browser": "iexplore", "version": "9"}
-
-
-Selenium-saucelabs2:
-  context:
-    class:  'FeatureContext'
-  extensions:
-    Behat\MinkExtension\Extension:
-      base_url:  'http://example.com/'
-      javascript_session:  'selenium'
-      goutte:              ~
-      selenium:
-        host: ondemand.saucelabs.com
-        port: 80
-        browser: >
-          {
-            "username":         "username",
-            "access-key":       "your key here",
-            "browser":          "firefox",
-            "browser-version":  "7",
-            "os":               "Windows 2003",
-            "name":             "Testing Selenium with Behat"
-          }

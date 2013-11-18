@@ -87,7 +87,7 @@ class BehatEditorRun {
     }
 
     /**
-     * If we are running from the Tmp folder
+     * If we are running from the Tmp foldser
      * @return string
      * @todo unify this with runFromModuleFolder().
      */
@@ -108,22 +108,34 @@ class BehatEditorRun {
      * @param bool $javascript
      *   Javascript true will open up a browser locally
      *   if the user is running selenium
+     * @param array $settings
+     *   This can include the user settings id, group settings id
+     *   and more.
      * @return array
      */
-    public function exec($javascript = FALSE) {
+    public function exec($javascript = FALSE, $settings = array()) {
         if($javascript == TRUE) {
             $tags = '';
         } else {
             $tags = "--tags '~@javascript'";
         }
+
         $command = self::behatCommandArray($tags);
+        $behat_yml_path = new GenerateBehatYml($settings);
+        $behat_yml = $behat_yml_path->writeBehatYmlFile();
+        $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
+        $saved_settings['sid'] = $settings;
+
+        $command['config'] = "--config=\"$behat_yml\"";
+        //above should be pulled out of here
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
         exec($command, $output, $return_var);
+        watchdog('test_command_string', print_r($command, 1));
         $this->file_array = $output;
         //@todo this is not a good enough response to figure out if pass or fail!
-        $rid = self::saveResults($output, $return_var);
+        $rid = self::saveResults($output, $return_var, $saved_settings);
         return array('response' => $return_var, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
     }
 
@@ -244,10 +256,14 @@ class BehatEditorRun {
      *
      * @param $output
      *   Test results from exec
+     * @param $return_var
+     *   The output from exec for 0/1 pass fail of the tests
+     * @param $settings
+     *   This can include path, user and group settings etc.
      *
      * @todo break this out into it's own class.
      */
-    protected function saveResults($output, $return_var = 0) {
+    protected function saveResults($output, $return_var = 0, $settings = array()) {
         $saveResults = new Results();
         $saveResults->fields['filename'] = $this->filename;
         $saveResults->fields['module'] = $this->module;
@@ -255,6 +271,7 @@ class BehatEditorRun {
         $saveResults->fields['duration'] = (is_array($output)) ? array_pop($output): '0m0s';
         $saveResults->fields['created'] = REQUEST_TIME;
         $saveResults->fields['status'] = $return_var;
+        $saveResults->fields['settings'] = serialize($settings);
 
         drupal_alter('behat_editor_save_results', $saveResults);
         return $saveResults->insert();

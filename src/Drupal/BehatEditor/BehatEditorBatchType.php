@@ -93,8 +93,10 @@ abstract class BehatEditorBatchType {
         $this->pass_fail = BehatEditor\ResultsBatch::getResultsPassFail($results_of_test['response']);
 
         $this->message = t("Ran batch test for @item with a result of \"@result\"", array('@item' => $params['item'], '@result' => $this->pass_fail));
-        drupal_set_message($this->message);
-        watchdog("behat_editor_batch", $this->message, WATCHDOG_INFO);
+        //@bug cause a dblog error to pass $this->message to the two next lines will
+        //  need to dry this up though
+        drupal_set_message(t("Ran batch test for @item with a result of \"@result\"", array('@item' => $params['item'], '@result' => $this->pass_fail)));
+        watchdog("behat_editor_batch", t("Ran batch test for @item with a result of \"@result\"", array('@item' => $params['item'], '@result' => $this->pass_fail)), WATCHDOG_INFO);
 
         $this->wrapUp($fields);
         $updateResults = new BehatEditor\ResultsBatch();
