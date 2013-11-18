@@ -28,6 +28,7 @@ class Results {
             'created' => '',
             'status' => '',
             'uid' => $user->uid,
+            'settings' => array(),
         );
     }
 

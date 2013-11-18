@@ -43,11 +43,11 @@ class BehatSettingsFormHelper {
             '#type' => 'container',
             '#prefix' => "<div class=\"panel-default panel\">
                         <div class=\"panel-heading\">
-                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">
+                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#settings\">
                                 <h4 class=\"panel-title\">Settings</h4>
                             </a>
                       </div>
-                      <div id=\"collapseTwo\" class=\"panel-collapse collapse\">
+                      <div id=\"settings\" class=\"panel-collapse collapse\">
                         <div class=\"panel-body\">
                         <p>If you choose a group it will be the base url used.
                            Otherwise the system will default to your user's defaul base url setting.</p>

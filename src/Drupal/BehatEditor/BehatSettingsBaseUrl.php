@@ -93,6 +93,24 @@ class BehatSettingsBaseUrl {
             ->execute();
     }
 
+    public function getBaseUrlFromSidArray($settings = array()) {
+        $path_to_behat = FALSE;
+        if($settings) {
+            //Produce the base_url needed for this
+            //  return group level first
+            if($settings['base_url_gsid']) {
+                $group_sid = self::getSettingsBySID($settings['base_url_gsid']);
+                return $group_sid['results']['base_url'];
+            } elseif($settings['base_url_usid']) {
+                $user_sid = self::getSettingsBySID($settings['base_url_usid']);
+                return $user_sid['results']['base_url'];
+            } else {
+                return FALSE;
+            }
+
+        }
+        return $path_to_behat;
+    }
 
     private function resetDefault($insert) {
         //Select all for this user and group = id in $this->fields['gid']
