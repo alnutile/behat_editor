@@ -36,10 +36,10 @@ abstract class BehatEditorBatchRun {
      *   array('module' => array('form values')
      *
      */
-    static public function runType($type, $method, array $args) {
+    static public function runType($type, $method, array $args, $settings) {
         if($type == 'gui') {
             $run = new BehatEditorBatchRunGui();
-            $run->batchSubmit($method, $args, $type);
+            $run->batchSubmit($method, $args, $type, $settings);
             return $run;
         }
     }
