@@ -42,18 +42,21 @@ class BehatSettingsFormHelper {
         $form['results_area']['settings'] = array(
             '#type' => 'container',
             '#prefix' => "<div class=\"panel-default panel\">
-                        <div class=\"panel-heading\">
-                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#settings\">
+                            <div class=\"panel-heading\">
+                              <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#settings\">
                                 <h4 class=\"panel-title\">Settings</h4>
-                            </a>
-                      </div>
-                      <div id=\"settings\" class=\"panel-collapse collapse\">
-                        <div class=\"panel-body\">
-                        <p>If you choose a group it will be the base url used.
-                           Otherwise the system will default to your user's defaul base url setting.</p>
-                        ",
-            '#suffix' => '</div>
-                    </div>'
+                              </a>
+                            </div>
+                            <div id=\"settings\" class=\"panel-collapse collapse in\">
+                              <div class=\"panel-body\">
+                                <p class='alert alert-warning'>If you choose a Group's base_url it will be the base url used for the test.
+                                   Otherwise the system will default to your user's default base url settings.
+                                    <br>
+                                   You can <a href='/admin/behat/settings' target='_blank'>click here</a> to manage them.
+                                </p>",
+            '#suffix' => '</div><!--end panel-body-->
+                    </div><!--end panel-collapse-->
+                    </div><!--end panel-->'
 
         );
 

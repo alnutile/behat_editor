@@ -700,11 +700,11 @@ function behat_editor_results_container(&$form) {
 
     $form['results_area']['container2']['past_results'] = array(
         '#prefix' => "<div class=\"panel-heading\">
-                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">
+                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#results-container\">
                                 <h4 class=\"panel-title\">Past Results</h4>
                             </a>
                         </div>",
-        '#markup' => '<div id="collapseTwo" class="panel-collapse collapse">
+        '#markup' => '<div id="results-container" class="panel-collapse collapse">
                         <div class="panel-body">
                                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="past-results-table"></table>
                         </div>'

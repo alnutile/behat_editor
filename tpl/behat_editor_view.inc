@@ -1,5 +1,6 @@
 <?php
-use Drupal\BehatEditor\File;
+use Drupal\BehatEditor\File,
+    Drupal\BehatEditor;
 /**
  * @file output the form on the View page
  */
@@ -65,6 +66,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
 
 
     behat_editor_current_test_container($form);
+    BehatEditor\BehatSettingsFormHelper::behatSettingsContainer($form);
     behat_editor_results_container($form);
     behat_editor_results_history_modal($form);
     behat_editor_clone_modal($form);
