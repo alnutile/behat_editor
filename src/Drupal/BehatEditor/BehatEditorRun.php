@@ -132,7 +132,7 @@ class BehatEditorRun {
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
         exec($command, $output, $return_var);
-        watchdog('test_command_string', print_r($command, 1));
+        watchdog('test_batch_command', print_r($command, 1));
         $this->file_array = $output;
         //@todo this is not a good enough response to figure out if pass or fail!
         $rid = self::saveResults($output, $return_var, $saved_settings);
@@ -147,7 +147,7 @@ class BehatEditorRun {
      *   if the user is running selenium
      * @return array
      */
-    public function execDrush($javascript = FALSE, $tag_include = FALSE, $profile = 'default') {
+    public function execDrush($javascript = FALSE, $tag_include = FALSE, $profile = 'default', $settings = array()) {
         if($javascript == TRUE) {
             $tags_exclude = '';
         } else {
@@ -164,23 +164,24 @@ class BehatEditorRun {
         if($profile === 0) {
             $profile = 'default';
         }
-
         $tags = "$tag_include $tags_exclude";
         $command = self::behatCommandArray($tags);
+        $behat_yml_path = new GenerateBehatYml($settings);
+        $behat_yml = $behat_yml_path->writeBehatYmlFile();
+        $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
+        $saved_settings['sid'] = $settings;
+        $command['config'] = "--config=\"$behat_yml\"";
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command['format'] = '--format=pretty';
-        //since this is drush we are allowing the user
-        //to send an override to the profile
-        $command['profile'] = "--profile=$profile";
 
         $command = implode(' ', $command);
         exec($command, $output, $return_var);
+        watchdog('test_command_drush', print_r($command, 1));
 
         $this->file_array = $output;
-        $response = is_array($output) ? 0 : 1;
-        $rid = self::saveResults($output, $return_var);
-        return array('response' => $response, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
+        $rid = self::saveResults($output, $return_var, $settings);
+        return array('response' => $return_var, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
     }
 
     /**

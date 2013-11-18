@@ -37,7 +37,7 @@ function behat_editor_bulk_form_modules($form, &$form_state) {
         '#options' => $rows,
         '#empty' => t('No Tests Files'),
     );
-
+    BehatEditor\BehatSettingsFormHelper::behatSettingsFields($build);
     $options = array(
         'gui' => t('Run in Webbrowser'),
 //        'stop' => t('Stop'),
@@ -126,21 +126,25 @@ function bulk_editor_run_module_based_validate($form, &$form_state) {
  * Submit callback for the dashboard form.
  */
 function bulk_editor_run_module_based_submit($form, &$form_state) {
+    $settings = array(
+        'base_url_usid' => $form_state['values']['users'],
+        'base_url_gsid' => $form_state['values']['group']
+    );
 
     $operation = $form_state['values']['operation'];
     $machine_name_and_subfolder = array_filter($form_state['values']['dashboard']);
 
     if($operation == 'gui') {
         $start = new BehatEditor\BehatEditorBatchRunGui();
-        $batch = $start->batchSubmit('module', $machine_name_and_subfolder, 'non_background');
+        $batch = $start->batchSubmit('module', $machine_name_and_subfolder, 'non_background', $settings);
         batch_set($batch->getBatch());
     }
 }
 
-function bulk_editor_batch_run_module($module, $subfolder, $rid){
+function bulk_editor_batch_run_module($module, $subfolder, $rid, $settings){
     composer_manager_register_autoloader();
     $run = new BehatEditor\BehatEditorBatchTypeModule();
-    $run->batchRun(array('module' => $module, 'subfolder' => $subfolder, 'rid' => $rid));
+    $run->batchRun(array('module' => $module, 'subfolder' => $subfolder, 'rid' => $rid, 'settings' => $settings));
     $run->batchItemDone(array('item' => $module));
     $context['message'] = $run->message;
 }

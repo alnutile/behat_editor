@@ -52,6 +52,7 @@ class BehatSettingsBaseUrl {
         $query = db_select('behat_editor_base_url_settings', 'b');
         $query->fields('b');
         $query->condition('b.gid', $gids, 'IN');
+        $query->condition('b.gid', 0, '!=');
         $query->orderBy('b.sid', 'DESC');
         $result = $query->execute();
         $rows = array();

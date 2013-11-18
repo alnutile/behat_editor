@@ -37,6 +37,76 @@ class BehatSettingsFormHelper {
         }
     }
 
+    static function behatSettingsFields(&$form) {
+        global $user;
+        $form['settings'] = array(
+            '#type' => 'container'
+        );
+
+        $form['settings']['intro'] = array(
+            '#markup' => "<p class='alert alert-warning'>If you choose a Group's base_url it will be the base url used for the test.
+                                   Otherwise the system will default to your user's default base url settings.
+                                    <br>
+                                   You can <a href='/admin/behat/settings' target='_blank'>click here</a> to manage them.
+                                </p>",
+        );
+        //List of user tests to choose from
+        $user_settings = BehatEditor\BehatSettingsBaseUrl::getSettingsByUID($user->uid);
+
+        $default_sid = '';
+        $options = array();
+        if(empty($user_settings['results'])) {
+            drupal_set_message(t('You do not have a default URL setup please update your !settings', array('!settings' => l('settings', 'admin/behat/settings'))), 'warning');
+        } else {
+            foreach($user_settings['results'] as $key => $value) {
+                if($value['default_url'] == 1) {
+                    $default_sid = $value['sid'];
+                }
+                $options[$value['sid']] = $value['nice_name'];
+            }
+        }
+
+        $form['settings']['users'] = array(
+            '#type' => 'select',
+            '#options' => $options,
+            '#title' => t('Your base url settings'),
+            '#default_value' => $default_sid,
+        );
+
+
+        $groups_gids = new BehatEditor\BehatPermissions($user->uid);
+        $groups_options = BehatSettingsBaseUrl::getSettingsByGID($groups_gids->getGroupIDs());
+
+        $options = array();
+        if(empty($groups_options['results'])) {
+            drupal_set_message(t('You do not have a default Group URL setup you can, but it is not required, update your !settings', array('!settings' => l('settings', 'admin/behat/settings'))), 'error');
+        } else {
+            foreach($groups_options['results'] as $key => $value) {
+                if($value['default_url'] == 1) {
+                    $default_sid = $value['sid'];
+                }
+                $options[$value['sid']] = $value['nice_name'];
+            }
+        }
+
+        $form['settings']['group'] = array(
+            '#type' => 'select',
+            '#options' => $options,
+            '#title' => t('Your Groups base url settings'),
+            '#empty_option' => t('--none--')
+        );
+
+    }
+
+    public function _behat_editor_group_gid_and_title_options_list($gids) {
+        $nodes = og_membership_load_multiple($gids);
+        $options = array();
+        foreach($nodes as $gid => $value) {
+            $options[$value->gid] = node_load($value->gid)->title;
+        }
+        return $options;
+    }
+
     static function behatSettingsContainer(&$form) {
         global $user;
         $form['results_area']['settings'] = array(
@@ -86,15 +156,26 @@ class BehatSettingsFormHelper {
 
         //Get Settings for User eg uid = $user->uid and gid = 0
 
-        $groups = array();
+        $groups_gids = new BehatEditor\BehatPermissions($user->uid);
+        $groups_options = BehatSettingsBaseUrl::getSettingsByGID($groups_gids->getGroupIDs());
 
-        $groups = new BehatEditor\BehatPermissions($user->uid);
-        $groups = _behat_editor_group_gid_and_title_options_list($groups->getGroupIDs());
+        $options = array();
+        if(empty($groups_options['results'])) {
+            drupal_set_message(t('You do not have a default Group URL setup you can, but it is not required, update your !settings', array('!settings' => l('settings', 'admin/behat/settings'))), 'error');
+        } else {
+            foreach($groups_options['results'] as $key => $value) {
+                if($value['default_url'] == 1) {
+                    $default_sid = $value['sid'];
+                }
+                $options[$value['sid']] = $value['nice_name'];
+            }
+        }
+
 
 
         $form['results_area']['settings']['group'] = array(
             '#type' => 'select',
-            '#options' => $groups,
+            '#options' => $options,
             '#title' => t('Your Groups base url settings'),
             '#empty_option' => t('--none--')
         );

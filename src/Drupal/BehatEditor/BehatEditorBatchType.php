@@ -30,6 +30,7 @@ abstract class BehatEditorBatchType {
     public $message;
     protected $temp_uri;
     protected $pass_fail;
+    protected $settings;
 
     function __construct(){
         composer_manager_register_autoloader();
@@ -52,12 +53,13 @@ abstract class BehatEditorBatchType {
         }
     }
 
-    function setUp($method, $args, $type) {
+    function setUp($method, $args, $type, $settings) {
         $this->method = $method;
+        $this->settings = $settings;
         $this->form_values = $args;
         $this->type = $type;
         $this->setupResults();
-        $this->operations = $this->parseOperations($args);
+        $this->operations = $this->parseOperations($args, $settings);
         $this->setupResultsUpdate();
         $this->setBatch();
     }
@@ -69,13 +71,14 @@ abstract class BehatEditorBatchType {
         return $this->batch;
     }
 
-    protected function parseOperations($operations) {}
+    protected function parseOperations($operations, $settings) {}
 
 
     function setupResults() {
         $results = new ResultsBatch();
         $results->fields['batch_status'] = 1;
         $results->fields['operations'] = serialize($this->form_values);
+        $results->fields['settings'] = serialize($this->settings);
         $results->fields['method'] = $this->method;
         $rid = $results->insert();
         $this->rid = $rid;
@@ -96,7 +99,7 @@ abstract class BehatEditorBatchType {
         //@bug cause a dblog error to pass $this->message to the two next lines will
         //  need to dry this up though
         drupal_set_message(t("Ran batch test for @item with a result of \"@result\"", array('@item' => $params['item'], '@result' => $this->pass_fail)));
-        watchdog("behat_editor_batch", t("Ran batch test for @item with a result of \"@result\"", array('@item' => $params['item'], '@result' => $this->pass_fail)), WATCHDOG_INFO);
+        watchdog("behat_editor_batch", t("Ran batch test for @item with a result of \"@result\""), array('@item' => $params['item'], '@result' => $this->pass_fail), WATCHDOG_INFO);
 
         $this->wrapUp($fields);
         $updateResults = new BehatEditor\ResultsBatch();

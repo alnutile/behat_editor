@@ -89,7 +89,8 @@ function behat_editor_base_url_settings_group_edit_form($form, &$form_state){
     global $user;
     composer_manager_register_autoloader();
     $groups = new BehatEditor\BehatPermissions($user->uid);
-    $groups = _behat_editor_group_gid_and_title_options_list($groups->getGroupIDs());
+    $form_helper = new BehatEditor\BehatSettingsFormHelper();
+    $groups = $form_helper->_behat_editor_group_gid_and_title_options_list($groups->getGroupIDs());
 
 
     $sid = '';
