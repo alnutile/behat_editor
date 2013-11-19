@@ -131,6 +131,7 @@ class ResultsBatch {
         $fields['results_count'] = 0;
         $fields['pass_fail'] = 3;
         $fields['repo'] = NULL;
+        $fields['settings'] = array();
         return $fields;
     }
 

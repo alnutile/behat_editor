@@ -148,7 +148,14 @@ function behat_editor_services_resources() {
                             'description' => 'The name of the file',
                             'source' => array('path' => 3),
                             'optional' => FALSE,
-                        )
+                        ),
+                        array(
+                            'name' => 'settings',
+                            'type' => 'array',
+                            'description' => 'USid and GSid ids for the related behat settings',
+                            'source' => array('data' => 'settings'),
+                            'optional' => FALSE,
+                        ),
                     ),
                 ),
                 'create_run' => array(
@@ -182,9 +189,16 @@ function behat_editor_services_resources() {
                         ),
                         array(
                             'name' => 'scenario',
-                            'type' => 'string',
+                            'type' => 'array',
                             'description' => 'Informs Run that what steps to take eg view or create then view.',
                             'source' => array('data' => 'scenario'),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'settings',
+                            'type' => 'array',
+                            'description' => 'USid and GSid ids for the related behat settings',
+                            'source' => array('data' => 'settings'),
                             'optional' => FALSE,
                         ),
                     ),
