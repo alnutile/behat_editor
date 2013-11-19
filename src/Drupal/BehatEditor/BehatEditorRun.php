@@ -128,11 +128,10 @@ class BehatEditorRun {
 
         $command['config'] = "--config=\"$behat_yml\"";
         //above should be pulled out of here
-        $context1 = 'behat_run';
-        drupal_alter('behat_editor_command', $command, $context1);
+//        $context1 = 'behat_run';
+//        drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
         exec($command, $output, $return_var);
-        watchdog('test_batch_command', print_r($command, 1));
         $this->file_array = $output;
         //@todo this is not a good enough response to figure out if pass or fail!
         $rid = self::saveResults($output, $return_var, $saved_settings);
@@ -177,7 +176,6 @@ class BehatEditorRun {
 
         $command = implode(' ', $command);
         exec($command, $output, $return_var);
-        watchdog('test_command_drush', print_r($command, 1));
 
         $this->file_array = $output;
         $rid = self::saveResults($output, $return_var, $settings);
