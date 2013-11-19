@@ -136,7 +136,7 @@ class BehatSettingsFormHelper {
         $default_sid = '';
         $options = array();
         if(empty($user_settings['results'])) {
-            drupal_set_message('You do not have a default URL setup please update your !settings', array('!settings' => l('settings', 'admin/behat/settings/user')));
+            drupal_set_message(t('You do not have a default URL setup please update your !settings', array('!settings' => l('settings', 'admin/behat/settings/user'))), 'error');
         } else {
             foreach($user_settings['results'] as $key => $value) {
                 if($value['default_url'] == 1) {
