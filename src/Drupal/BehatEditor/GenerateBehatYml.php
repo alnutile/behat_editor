@@ -47,6 +47,12 @@ class GenerateBehatYml {
         }
     }
 
+    public function deleteBehatYmlFile(){
+        $subFoldersArray = self::subFolders();
+        $subFolders = implode('/', $subFoldersArray);
+        file_unmanaged_delete_recursive(file_build_uri("/".self::BEHAT_YML_PATH."/$subFolders/{$this->behat_filename}"));
+    }
+
     private function subFolders() {
         $subFolderArray = array('default');
         if ($this->settings) {
