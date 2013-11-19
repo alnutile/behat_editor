@@ -3,6 +3,9 @@
 /**
  * @file
  * wf.services.inc
+ *
+ * @todo clean out this file since the
+ *   module/behat_services takes care of this
  */
 
 /**

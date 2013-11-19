@@ -20,9 +20,9 @@ class BehatEditorBatchRunGui {
 
     }
 
-    function batchSubmit($method, $args, $type) {
+    function batchSubmit($method, $args, $type, $settings) {
         $batch = BehatEditorBatchType::type($method);
-        $batch->setUp($method, $args, $type);
+        $batch->setUp($method, $args, $type, $settings);
         return $batch;
     }
 
