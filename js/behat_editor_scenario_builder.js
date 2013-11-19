@@ -179,7 +179,6 @@
                 var sortable = sortableQuestion(destination_class);
 
                 if(draggable_step_string && draggable_step_string.indexOf('Feature:') == -1){
-                    console.log(draggable_step_string.indexOf('Background:'));
                     if( draggable_step_string.indexOf('Background:') == 0 && $('li.background_group').length) {
                         setBackground(destination_class, val);
                     } else {

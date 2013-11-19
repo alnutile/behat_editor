@@ -356,6 +356,77 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
+    /** IS CHECKED  */
+    $form['questions']['is_checked']['checked'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Then the'),
+        '#name' => 'checked',
+        '#description' => t('Checks, that checkbox with specified in|name|label|value is checked'),
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'is_checked_group'),
+            'placeholder' =>  t('use in|name|label|value'),
+            'data-type' => array('textfield'),
+        ),
+        '#suffix' => '<hr>'
+    );
+
+    $form['questions']['is_checked']['should_be_checked'] = array(
+        '#title' => 'checkbox should be checked',
+        '#type' => 'item',
+        '#prefix' => '<div data-type="qualifier" class="is_checked_group">',
+        '#suffix' => '</div>',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'is_checked_group'),
+        ),
+    );
+
+    $form['questions']['is_checked']['checked_button'] = array(
+        '#type' => 'button',
+        '#name' => 'checked_button',
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('is_checked_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+
+    /** IS NOT CHECKED  */
+    $form['questions']['not_checked']['checked'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Then the'),
+        '#name' => 'checked',
+        '#description' => t('Checks, that checkbox with specified in|name|label|value is NOT checked'),
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'not_checked'),
+            'placeholder' =>  t('use in|name|label|value'),
+            'data-type' => array('textfield'),
+        ),
+        '#suffix' => '<hr>'
+    );
+
+    $form['questions']['not_checked']['should_not_be_checked'] = array(
+        '#title' => 'checkbox should not be checked',
+        '#type' => 'item',
+        '#prefix' => '<div data-type="qualifier" class="not_checked">',
+        '#suffix' => '</div>',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'not_checked'),
+        ),
+    );
+
+    $form['questions']['not_checked']['not_checked_button'] = array(
+        '#type' => 'button',
+        '#name' => 'not_checked_button',
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('not_checked'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
 
     /** SELECT LIST */
     $form['questions']['and_i_select']['header']['#markup'] = t('<h2>Select List</h2>');
