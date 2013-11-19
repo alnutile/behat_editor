@@ -200,7 +200,8 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#name' => 'feature',
         '#title' => t('Feature:'),
-        '#description' => t('Name the Feature. This will name the Test'),
+        '#description' => t('Name the Feature. This will name the Test<br>
+        <a href="http://docs.behat.org/guides/1.gherkin.html#features" target="_blank">Read More</a>'),
         '#attributes' => array(
             'class' => array('col-mg-12', 'feature_group'),
             'data-type' => array('textfield'),
@@ -220,17 +221,20 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
+    /** Scenario */
     $form['questions']['test_name']['scenario'] = array(
         '#type' => 'textfield',
         '#name' => 'scenario',
         '#title' => t('Scenario:'),
-        '#description' => t('What do you want to call this Scenario?'),
+        '#description' => t('What do you want to call this Scenario?<br>
+        <a href="http://docs.behat.org/guides/1.gherkin.html#scenario" target="_blank">Read More</a>'),
         '#attributes' => array(
             'class' => array('col-mg-12', 'scenario_group'),
             'data-type' => array('textfield'),
             'placeholder' =>  t('A simple descriptive name of the scenario'),
         ),
     );
+
 
     $form['questions']['test_name']['scenario_button'] = array(
         '#type' => 'button',
@@ -239,6 +243,33 @@ function _behat_editor_questions_form() {
         '#attributes' => array(
             'data-step-group' => array('scenario_group'),
             'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+
+    /** Background */
+    $form['questions']['test_background']['background'] = array(
+        '#type' => 'textfield',
+        '#name' => 'background',
+        '#title' => t('Background:'),
+        '#description' => t('Backgrounds run at the start so need to be at the top.
+            They are great for a repeat task like logging in prior to each Scenerio in this one Feature.
+            <a href="http://docs.behat.org/guides/1.gherkin.html#backgrounds" target="_blank">Read More</a>'),
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'background_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('A simple descriptive name of the background'),
+        ),
+    );
+
+    $form['questions']['test_background']['background_button'] = array(
+        '#type' => 'button',
+        '#value' => t('Name it'),
+        '#name' => 'background_button',
+        '#attributes' => array(
+            'data-step-group' => array('background_group'),
+            'data-method' => array('replace'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'
@@ -383,7 +414,13 @@ function _behat_editor_questions_form() {
      * more dynamic method of
      * rendering forms and later js
      */
-    $form['questions']['and_i_fill_in']['header']['#markup'] = t('<h2>Text Fields, Links and Buttons</h2>');
+    $form['questions']['and_i_fill_in']['header']['#markup'] = t('
+    <div class="alert alert-info">
+        You are now entering into Steps. <br>
+        <a href="http://docs.behat.org/guides/1.gherkin.html#steps" target="_blank">Read More</a>
+    </div>
+    <br>
+    <h2>Text Fields, Links and Buttons</h2>');
 
     $form['questions']['and_i_fill_in']['form_field_name'] = array(
         '#type' => 'textfield',

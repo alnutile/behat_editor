@@ -11,6 +11,8 @@ function behat_editor_bulk_form_modules($form, &$form_state) {
     composer_manager_register_autoloader();
 
     $build = array();
+    $path = drupal_get_path('module', 'behat_editor');
+    $build['#attached']['js']['behat_editor_sids'] = $path . '/js/behat_editor_sids.js';
 
     $build['overview'] = array(
         '#prefix' => '<div>',
