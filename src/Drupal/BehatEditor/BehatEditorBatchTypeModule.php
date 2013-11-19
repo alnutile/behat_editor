@@ -34,7 +34,7 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType {
             $this->batch = $batch;
     }
 
-    protected function parseOperations($args) {
+    protected function parseOperations($args, $settings) {
         $operations = array();
         foreach($args as $key) {
             if(strpos($key, '|')) {
@@ -45,7 +45,7 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType {
                 $module = $key;
                 $subfolder = FALSE;
             }
-            $operations[] = array('bulk_editor_batch_run_module', array($module, $subfolder, $this->rid));
+            $operations[] = array('bulk_editor_batch_run_module', array($module, $subfolder, $this->rid, $settings));
         }
         return $operations;
     }

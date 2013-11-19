@@ -17,12 +17,9 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
     composer_manager_register_autoloader();
     $build = array();
 
-    $build['overview'] = array(
-        '#prefix' => '<div>',
-        '#markup' => t("Choose which tags to run the tests for."),
-        '#suffix' => '</div>',
-    );
-    composer_manager_register_autoloader();
+    $path = drupal_get_path('module', 'behat_editor');
+    $build['#attached']['js']['behat_editor_sids'] = $path . '/js/behat_editor_sids.js';
+
 
     $build['overview'] = array(
         '#prefix' => '<div>',
@@ -47,6 +44,8 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
         '#empty' => t('No Tags'),
     );
 
+    BehatEditor\BehatSettingsFormHelper::behatSettingsFields($build);
+
     $options = array(
         'gui' => t('Run in Webbrowser'),
 //        'stop' => t('Stop'),
@@ -59,6 +58,7 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
         '#title_display' => 'invisible',
         '#options' => $options,
     );
+
 
     $build['operations']['submit'] = array(
         '#type' => 'submit',
@@ -87,21 +87,25 @@ function bulk_editor_run_tag_based_validate($form, &$form_state) {
  */
 function bulk_editor_run_tag_based_submit($form, &$form_state) {
 
+    $settings = array(
+        'base_url_usid' => $form_state['values']['users'],
+        'base_url_gsid' => $form_state['values']['group']
+    );
     $operation = $form_state['values']['operation'];
     $tags = array_filter($form_state['values']['dashboard']);
 
     if($operation == 'gui') {
         $start = new BehatEditor\BehatEditorBatchRunGui();
-        $batch = $start->batchSubmit('tags', $tags, 'non_background');
+        $batch = $start->batchSubmit('tags', $tags, 'non_background', $settings);
         batch_set($batch->getBatch());
     }
 }
 
-function bulk_editor_batch_run_tag($tag, $rid){
+function bulk_editor_batch_run_tag($tag, $rid, $settings){
     composer_manager_register_autoloader();
 
     $run = new BehatEditor\BehatEditorBatchTypeTag();
-    $run->batchRun(array('tag' => array($tag), 'rid' => $rid));
+    $run->batchRun(array('tag' => array($tag), 'rid' => $rid, 'settings' => $settings));
     $run->batchItemDone(array('item' => $tag));
     $context['message'] = $run->message;
 }

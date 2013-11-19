@@ -11,7 +11,8 @@ namespace Drupal\BehatEditor;
  * Class Results
  * Methods to save results
  *
- *
+ * @todo maybe make an abstract Results class
+ *   to deal with the slight differences in Results and ResultsBatch
  */
 
 class Results {
@@ -27,6 +28,7 @@ class Results {
             'created' => '',
             'status' => '',
             'uid' => $user->uid,
+            'settings' => array(),
         );
     }
 
