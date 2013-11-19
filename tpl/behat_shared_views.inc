@@ -367,7 +367,6 @@ function _behat_editor_questions_form() {
             'placeholder' =>  t('use in|name|label|value'),
             'data-type' => array('textfield'),
         ),
-        '#suffix' => '<hr>'
     );
 
     $form['questions']['is_checked']['should_be_checked'] = array(
