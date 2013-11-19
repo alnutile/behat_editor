@@ -29,7 +29,7 @@
         attach: function (context) {
             var token = Drupal.behat_editor.get_token();
             $('a.run').click(function(e){
-                $('#edit-container1 a.collapsed').click();
+                //$('#edit-container1 a.collapsed').click();
                 e.preventDefault();
                 var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
                 var url = $(this).attr('href');

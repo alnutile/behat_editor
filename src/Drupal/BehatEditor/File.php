@@ -287,7 +287,7 @@ class File {
         $scenario = array_values($this->scenario);                                       //reset keys since some unset work
         foreach($scenario as $value) {
             if($results = self::_string_type(trim($value), $scenario, $count, $direction)) {
-                if(array_key_exists('scenario', $results) || array_key_exists('feature', $results)) {
+                if(array_key_exists('scenario', $results) || array_key_exists('feature', $results) || array_key_exists('background', $results)) {
                     $key = key($results);
                     foreach($results[$key] as $row) {
                         $scenario_array[] = $row;
@@ -340,7 +340,7 @@ class File {
      * @return array
      */
     private function _string_types() {
-        $options = array('behat_editor_string_feature', 'behat_editor_string_scenario', 'behat_editor_string_steps');
+        $options = array('behat_editor_string_feature', 'behat_editor_string_scenario', 'behat_editor_string_background', 'behat_editor_string_steps');
         return $options;
     }
 
@@ -464,6 +464,53 @@ class File {
                         'data-scenario-tag-box' => "scenario-values-$uid"
                     );
                     $results['scenario'] = $scenario_tag_input + $scenario_tag_it + $scenario_line;
+                    return $results;
+            }
+
+        }
+    }
+
+
+    /**
+     * Search for the Background Text
+     * http://docs.behat.org/guides/1.gherkin.html#backgrounds
+     *
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return array
+     */
+    private function behat_editor_string_background($string, $scenario, $count, $direction) {
+        $results = array();
+        $first_word = self::_pop_first_word($string);
+        $options = array('Background:');
+        drupal_alter('behat_editor_string_feature', $options);
+        if(in_array($first_word, $options)) {
+            switch($direction) {
+                case 'file':
+                    $scenario_line[1] = array(
+                        'string' => $string,
+                        'spaces' => 2,
+                        'new_line' => 0,
+                        'new_line_above' =>  0,
+                    );
+                    $results['background'] = $scenario_line;
+                    return $results;
+                case 'html_view':
+                    $scenario_line[1] = array(
+                        'data' => $string,
+                        'class' => array("spaces-two")
+                    );
+                    //$results['background'] = $tags + $scenario_line;
+                    $results['background'] = $scenario_line;
+                    return $results;
+                case 'html_edit':
+                    $scenario_line[0] = array(
+                        'data' => self::_question_wrapper($string),
+                        'class' => array('name'),
+                    );
+                    $results['background'] = $scenario_line;
                     return $results;
             }
 

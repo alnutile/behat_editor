@@ -42,6 +42,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     $form['#attached']['js']['behat_editor_close'] = $path . '/js/jquery.behat_editor.close_button.js';
     $form['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
     $form['#attached']['js']['behat_editor_results'] = $path . '/js/behat_editor_results.js';
+    $form['#attached']['js']['behat_editor_sids'] = $path . '/js/behat_editor_sids.js';
 
     $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_run.js';
     $form['#attached']['js']['behat_editor_add'] = $path . '/js/behat_editor_edit.js';

@@ -17,8 +17,9 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
     composer_manager_register_autoloader();
     $build = array();
 
+    $path = drupal_get_path('module', 'behat_editor');
+    $build['#attached']['js']['behat_editor_sids'] = $path . '/js/behat_editor_sids.js';
 
-    composer_manager_register_autoloader();
 
     $build['overview'] = array(
         '#prefix' => '<div>',

@@ -35,6 +35,7 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     $form['#attached']['js']['behat_editor_run'] = $path . '/js/behat_editor_run.js';
     $form['#attached']['js']['behat_editor_view'] = $path . '/js/behat_editor_view.js';
     $form['#attached']['js']['behat_editor_clone'] = $path . '/js/behat_editor_clone.js';
+    $form['#attached']['js']['behat_editor_sids'] = $path . '/js/behat_editor_sids.js';
 
     $form['#attached']['css']['behat_app_css'] = $path . '/css/behat_editor_app.css';
     $form['#attached']['css']['behat_view_css'] = $path . '/css/behat_editor_view.css';

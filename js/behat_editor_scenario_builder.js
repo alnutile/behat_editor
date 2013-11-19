@@ -46,7 +46,7 @@
             var createOutputv2 = function(leaf_class, sortable, draggable_step_string) {
                 var data_field = '';
                 var destination_wrapper = '';
-                var spaces = (leaf_class != 'scenario_group') ? ' spaces-four ' : '';
+                var spaces = (leaf_class != 'scenario_group' && leaf_class != 'background_group') ? ' spaces-four ' : '';
                 if(leaf_class == 'scenario_group') {
                     var id = new Date().getTime();
                     destination_wrapper += Drupal.theme('tagItWrapper', id);
@@ -85,6 +85,15 @@
                 }
             };
 
+            /**
+             * @todo merge this with above
+             *
+             * @param destination_class
+             * @param data_value
+             */
+            var setBackground = function(destination_class, data_value) {
+                $('li.background_group').html('<i class="glyphicon glyphicon-move"> </i>Background: ' + data_value + '<i class="remove glyphicon glyphicon-remove-circle"></i>');
+            };
 
             /* offer an example */
 
@@ -131,20 +140,10 @@
                 var draggable_step_string = '';
                 var destination_wrapper = '';
 
-                //Fill in needed args for
-                //createOutput(
-                // leaf_class,
-                // sortable,
-                // label,
-                // data_value,
-                // middle_words,
-                // data_value2,
-                // label_text,
-                // ending_words);
-
-
                 //1. Get group from button
                 var group = $(this).data('step-group');
+                var val = '';
+
                 //  a. setup the target
                 destination_class = group;
                 leaf_class = group;
@@ -157,14 +156,13 @@
                     if($(this).data('type') == 'qualifier') {
                         draggable_step_string += $('div label', this).text();
                     } else {
-                        var val = '';
                         //1. Get the Label
                         label_text = $("label[for='"+$(this).attr('id')+"']");
                         //  quick : colon check
                         if(label_text.length)
                         {
                             label += label_text.text();
-                            (label_text == 'Scenario' || label_text == 'Feature') ? label += ':' : false;
+                            (label_text == 'Background' || label_text == 'Scenario' || label_text == 'Feature') ? label += ':' : false;
                             draggable_step_string += label;
                         }
                         if($(this).data('type') == 'select') {
@@ -181,8 +179,13 @@
                 var sortable = sortableQuestion(destination_class);
 
                 if(draggable_step_string && draggable_step_string.indexOf('Feature:') == -1){
-                 destination_wrapper = createOutputv2(leaf_class, sortable, draggable_step_string);
-                 $('ul.scenario', context).append(destination_wrapper).applyTagIts('@scenario_tag', 'scenario_v2');
+                    console.log(draggable_step_string.indexOf('Background:'));
+                    if( draggable_step_string.indexOf('Background:') == 0 && $('li.background_group').length) {
+                        setBackground(destination_class, val);
+                    } else {
+                        destination_wrapper = createOutputv2(leaf_class, sortable, draggable_step_string);
+                        $('ul.scenario', context).append(destination_wrapper).applyTagIts('@scenario_tag', 'scenario_v2');
+                    }
                 }
 
                 checkIfCanRun();
