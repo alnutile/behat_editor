@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\BehatEditor;
+
 
 //Default folder to store tests for modules
 define('BEHAT_EDITOR_FOLDER', 'behat_features');
@@ -50,6 +52,10 @@ function behat_editor_permission() {
     $items['behat delete test'] = array(
         'title' => t('Can delete a test'),
         'description' => t('Can delete a test')
+    );
+    $items['behat admin settings'] = array(
+        'title' => t('Can Admin Settings'),
+        'description' => t('Can Admin Settings')
     );
    return $items;
 }
@@ -135,6 +141,78 @@ function behat_editor_menu() {
         'access arguments' => array('behat run a test'),
         'type' => MENU_DEFAULT_LOCAL_TASK ,
         'weight' => -5,
+    );
+
+    $items['admin/behat/settings'] =  array(
+        'title' => 'Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
+        'weight' => 10,
+        'page callback' => 'behat_settings_base_url_user',
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_user.inc',
+    );
+
+
+    $items['admin/behat/settings/base_url/user'] =  array(
+        'title' => 'Base URL Settings by User',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_DEFAULT_LOCAL_TASK ,
+        'weight' => -5,
+    );
+
+    $items['admin/behat/settings/base_url/groups'] =  array(
+        'title' => 'Behat URL Settings by Group',
+        'access arguments' => array('behat run a test'),
+        'type' => MENU_LOCAL_TASK,
+        'weight' => 10,
+        'page callback' => 'behat_settings_base_url_group',
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_group.inc',
+    );
+
+    $items['admin/behat/settings/base_url/user/add'] =  array(
+        'title' => 'Add User Level Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_CALLBACK,
+        'weight' => 10,
+        'page callback' => 'behat_editor_base_url_settings_user_add',
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_user.inc',
+    );
+
+
+    $items['admin/behat/settings/base_url/user/edit/%'] =  array(
+        'title' => 'Add User Level Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_CALLBACK,
+        'weight' => 10,
+        'page callback' => 'behat_editor_base_url_settings_user_edit',
+        'page arguments' => array(6),
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_user.inc',
+    );
+
+    $items['admin/behat/settings/base_url/group/add'] =  array(
+        'title' => 'Add Group Level Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_CALLBACK,
+        'weight' => 10,
+        'page callback' => 'behat_editor_base_url_settings_group_add',
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_group.inc',
+    );
+
+
+    $items['admin/behat/settings/base_url/group/edit/%'] =  array(
+        'title' => 'Add Group Level Behat Settings',
+        'access arguments' => array('behat admin settings'),
+        'type' => MENU_CALLBACK,
+        'weight' => 10,
+        'page callback' => 'behat_editor_base_url_settings_group_edit',
+        'page arguments' => array(6),
+        'file path' => "$path/includes/",
+        'file' => 'behat_settings_base_url_group.inc',
     );
 
     $items['admin/behat/report'] = array(
@@ -622,11 +700,11 @@ function behat_editor_results_container(&$form) {
 
     $form['results_area']['container2']['past_results'] = array(
         '#prefix' => "<div class=\"panel-heading\">
-                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseTwo\">
+                            <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#results-container\">
                                 <h4 class=\"panel-title\">Past Results</h4>
                             </a>
                         </div>",
-        '#markup' => '<div id="collapseTwo" class="panel-collapse collapse">
+        '#markup' => '<div id="results-container" class="panel-collapse collapse">
                         <div class="panel-body">
                                 <table cellpadding="0" cellspacing="0" border="0" class="display" id="past-results-table"></table>
                         </div>'
@@ -664,6 +742,8 @@ function behat_editor_current_test_container(&$form){
         '#markup' => theme('behat_editor_results_area', $args = array('params' => array())),
     );
 }
+
+
 
 function behat_editor_save_modal(&$form, $filename) {
     $title =  "Confirm Save";

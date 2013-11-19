@@ -1,18 +1,19 @@
 (function ($) {
-    $(document).bind("ajaxSend", function(){
-        Drupal.behat_editor.buttons('disable');
-        $('.running-tests').fadeIn();
-    }).bind("ajaxComplete", function(){
-        Drupal.behat_editor.buttons('enable');
-        $('.running-tests').fadeOut();
-    });
+
+//    $(document).bind("ajaxSend", function(){
+//        Drupal.behat_editor.buttons('disable');
+//        $('.running-tests').fadeIn();
+//    }).bind("ajaxComplete", function(){
+//        Drupal.behat_editor.buttons('enable');
+//        $('.running-tests').fadeOut();
+//    });
 
     Drupal.behat_editor = {};
 
     Drupal.behat_editor.split_filename = function(filename) {
         var filename_array = filename.split('.');
         return filename_array[0];
-    }
+    };
 
     Drupal.behat_editor.get_token = function() {
         var token = 'null';
@@ -137,6 +138,17 @@
         }
 
         return scenario_array;
+    }
+
+    Drupal.behaviors.behat_editor_action_buttons = {
+
+        attach: function (context) {
+            $('form .actions a').on('click', function(){
+                if(!$('div#edit-container1 a.accordion-toggle').hasClass('collapsed')){
+                    $('a.accordion-toggle').click();
+                }
+            });
+        }
     }
 
 })(jQuery);

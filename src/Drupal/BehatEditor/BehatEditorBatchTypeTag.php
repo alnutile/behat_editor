@@ -32,10 +32,10 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         $this->batch = $batch;
     }
 
-    protected function parseOperations($args) {
+    protected function parseOperations($args, $settings) {
         $operations = array();
         foreach($args as $key => $value) {
-            $operations[] = array('bulk_editor_batch_run_tag', array($value, $this->rid));
+            $operations[] = array('bulk_editor_batch_run_tag', array($value, $this->rid, $settings));
         }
         return $operations;
     }
@@ -43,6 +43,7 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
 
     function batchRun(array $params) {
         $this->tag = $params['tag'];
+        $this->settings = $params['settings'];
         //Later may be more than one tag
         $tag_trimmed = substr($this->tag[0], 1);
         $this->rid = $params['rid'];
@@ -61,9 +62,8 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         $this->file_object['relative_path'] = $this->temp_uri;
 
         $tests = new BehatEditor\BehatEditorRun($this->file_object);
-        $results = $tests->exec(1);
+        $results = $tests->exec(1, $this->settings);
         $this->test_results = $results;
-        //$this->batchItemDone(array('item' => $this->tag[0]));
     }
 
     protected function wrapUp(&$fields) {

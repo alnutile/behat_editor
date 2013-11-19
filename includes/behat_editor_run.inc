@@ -16,18 +16,19 @@ use Drupal\BehatEditor\File,
  * @param $filename
  * @return array
  */
-function behat_editor_run_api($action, $module, $filename) {
-    watchdog('test_run_as', print_r($action, 1));
+function behat_editor_run_api($action, $module, $filename, $settings) {
     composer_manager_register_autoloader();
+    watchdog('test_run_only', print_r($settings, 1));
     $filename = "$filename.feature";
     //@todo include these in autoloader
+    //  or remove them if they are no longer needed
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
 
     $file = new File(array(), $module, $filename, FALSE);
     $file_object = $file->get_file_info();
     $res = new BehatEditorRun($file_object);
-    $run_test_response = $res->exec();
+    $run_test_response = $res->exec(FALSE, $settings);
     $response = $run_test_response['response'];
     //Check the Response from Running the Tests
     if($run_test_response['rid']) {
@@ -50,20 +51,17 @@ function behat_editor_run_api($action, $module, $filename) {
  * @param $query
  * @return array
  */
-function behat_editor_create_and_run_api($action, $module, $filename, $query) {
+function behat_editor_create_and_run_api($action, $module, $filename, $scenario, $settings = array()) {
     composer_manager_register_autoloader();
     $filename = "$filename.feature";
-    //@todo include these in autoloader
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
-    module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     //Make sure it is a good request
-    $file = new File(array('scenario' => $query), $module, $filename, 'file');
+    $file = new File(array('scenario' => $scenario), $module, $filename, 'file');
     $response = $file->save_html_to_file();
     //Make sure the file was made
     if($response['file'] != FALSE){
         $file_object = $file->get_file_info();
         $res = new BehatEditorRun($file_object);
-        $run_test_response = $res->exec();
+        $run_test_response = $res->exec(FALSE, $settings);
         $response = $run_test_response['response'];
 
         if($run_test_response['rid']) {

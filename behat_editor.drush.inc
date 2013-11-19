@@ -29,6 +29,7 @@ function behat_editor_drush_command() {
             'javascript' => '1 if you want to run javascript based tests 0 if not. Javascript means you are running this locally.',
             'tag' => 'Add tag to only run test on. Eg @anonymous',
             'profile' => 'The behat.yml file has profiles. Default etc. You can call one here or blank = default',
+            'user settings sid' => 'The user settings sid you would like to run.',
         ),
     );
 
@@ -47,9 +48,41 @@ function behat_editor_drush_command() {
         ),
     );
 
+    $items['behat-user-settings'] = array(
+        'description' => 'Show a users settings for a users paths',
+        'allow-additional-options' => TRUE,
+        'aliases' => array('bus'),
+        'examples' => array(
+            'drush bus 1' => 'This will get the settings for the user with id 1'
+        ),
+        'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+        'arguments' => array(
+            'uid' => 'The users uid',
+        ),
+    );
+
     return $items;
 }
 
+
+function drush_behat_editor_behat_user_settings() {
+    $uid = func_get_arg(0);
+    print "You can use the SID column to pass as a settings\n";
+    composer_manager_register_autoloader();
+    $perms = new \Drupal\BehatEditor\BehatSettingsBaseUrl();
+    $results = $perms->getSettingsByUID($uid);
+    $header = array(
+        'sid',
+        'uid',
+        'gid',
+        'base_url',
+        'default',
+        'active',
+        'nice_name'
+    );
+    array_unshift($results['results'], $header);
+    drush_print_table($results['results'], $header = TRUE, $widths = array(), $handle = NULL);
+}
 
 function drush_behat_editor_behat_run() {
     $module = func_get_arg(0);
@@ -72,6 +105,12 @@ function drush_behat_editor_behat_run() {
         $profile = 'default';
     }
 
+    if(func_num_args() > 5) {
+        $usid = func_get_arg(5);
+    } else {
+        $usid = 0;
+    }
+
     composer_manager_register_autoloader();
     //@todo get composer to load this
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
@@ -82,7 +121,7 @@ function drush_behat_editor_behat_run() {
 
     $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
-    $output = $run->execDrush($javascript, $tag, $profile);
+    $output = $run->execDrush($javascript, $tag, $profile, array('base_url_usid' => $usid, 'base_url_gsid' => 0));
     $results = implode("\n\r", $output['output_array']);
     return drush_print($results);
 }
