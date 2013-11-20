@@ -18,6 +18,7 @@ namespace Drupal\BehatEditor;
 class Results {
     public $fields = array();
     public $results_cleaned;
+    public $duration;
 
     public function __construct() {
         global $user;
@@ -77,6 +78,14 @@ class Results {
         $f = '<div class="switchers">';
         $results_html = trim(substr($results_imploded, $s, strpos($results_imploded, $f) - $s)) . "</div>";
         $this->results_cleaned = $results_html;
+    }
+
+    public function getDuration() {
+        $s = strpos($this->results_cleaned, '<p class="time">') + strlen('<p class="time">');
+        $f = 's</p>';
+        $duration = trim(substr($this->results_cleaned, $s, strpos($this->results_cleaned, $f) - $s));
+        $this->duration = (!empty($duration)) ? $duration : '0';
+        return $this->duration;
     }
 
     static function generateHTMLOutput($results_array) {

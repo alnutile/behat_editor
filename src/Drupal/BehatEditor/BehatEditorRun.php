@@ -125,8 +125,9 @@ class BehatEditorRun {
         $behat_yml = $behat_yml_path->writeBehatYmlFile();
         $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
         $saved_settings['sid'] = $settings;
-
         $command['config'] = "--config=\"$behat_yml\"";
+        $context1 = 'behat_run';
+        drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
         exec($command, $output, $return_var);
         $this->file_array = $output;
@@ -168,7 +169,7 @@ class BehatEditorRun {
         $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
         $saved_settings['sid'] = $settings;
         $command['config'] = "--config=\"$behat_yml\"";
-        $context1 = 'behat_run';
+        $context1 = 'behat_run_drush';
         drupal_alter('behat_editor_command', $command, $context1);
         $command['format'] = '--format=pretty';
 
@@ -268,7 +269,8 @@ class BehatEditorRun {
         $saveResults->fields['filename'] = $this->filename;
         $saveResults->fields['module'] = $this->module;
         $saveResults->fields['results'] = serialize($saveResults->results_cleaned);
-        $saveResults->fields['duration'] = (is_array($output)) ? array_pop($output): '0m0s';
+
+        $saveResults->fields['duration'] = $saveResults->getDuration();
         $saveResults->fields['created'] = REQUEST_TIME;
         $saveResults->fields['status'] = $return_var;
         $saveResults->fields['settings'] = serialize($settings);

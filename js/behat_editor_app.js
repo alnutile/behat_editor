@@ -12,7 +12,7 @@
     }).bind("ajaxComplete", function(){
         Drupal.behat_editor.buttons('enable');
             if(Drupal.behat_editor.ifNoty) {
-                $.noty.clearQueue();
+                //$.noty.clearQueue();
             } else {
                 $('.running-tests').fadeOut();
             }
@@ -22,7 +22,9 @@
 
     Drupal.behat_editor.ifNoty = function() {
         if(Drupal.settings.simple_noty && Drupal.settings.simple_noty.active == 1) {
-            return TRUE;
+            return true;
+        } else {
+            return false;
         }
     }
 
