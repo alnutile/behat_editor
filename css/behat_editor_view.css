@@ -5,6 +5,8 @@
     line-height: 24px; }
     .page-admin-behat-view ul li div.help-block {
       font-size: 10px; }
+  .page-admin-behat-view ul li.tag {
+    display: block; }
 .page-admin-behat-view label, .page-admin-behat-view .qualifier {
   font-size: 14px; }
 .page-admin-behat-view li.spaces-two {
