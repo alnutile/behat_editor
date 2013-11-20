@@ -37,7 +37,7 @@ class BehatSettingsBaseUrl {
         $query->fields('b');
         $query->condition('b.uid', "$uid", '=');
         $query->condition('b.gid', 0, '=');
-        $query->orderBy('b.nice_name', 'DESC');
+        $query->orderBy('b.nice_name', 'ASC');
         $result = $query->execute();
         $rows = array();
         if ($result) {
@@ -53,7 +53,7 @@ class BehatSettingsBaseUrl {
         $query->fields('b');
         $query->condition('b.gid', $gids, 'IN');
         $query->condition('b.gid', 0, '!=');
-        $query->orderBy('b.nice_name', 'DESC');
+        $query->orderBy('b.nice_name', 'ASC');
         $result = $query->execute();
         $rows = array();
         if ($result) {
