@@ -174,26 +174,30 @@ class BehatEditorRun {
             $tag_include = '';
         }
 
-        //if user passes 0 for profile
-        if($profile === 0) {
-            $profile = 'default';
-        }
+        $this->tags = "$tag_include $tags_exclude";
+        $this->settings = $settings;
 
-        $tags = "$tag_include $tags_exclude";
-
-        $command = self::behatCommandArray($tags);
+        $command = self::behatCommandArray();
 
         //@todo move this into a shared method for exec and execDrush
         $behat_yml_path = new GenerateBehatYml($this->settings);
         $this->behat_yml = $behat_yml_path->writeBehatYmlFile();
+
 
         $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
         $saved_settings['sid'] = $this->settings;
         $command['config'] = "--config=\"$this->behat_yml\"";
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
+        //$command['format'] = '--format=pretty';
+
+        if($profile !== 0) {
+            $command['profile'] = "--profile=$profile";
+        }
+
         $command = implode(' ', $command);
-        $command['format'] = '--format=pretty';
+
+        watchdog('test_command', print_r($command, 1));
 
         exec($command, $output, $return_var);
 
@@ -293,32 +297,4 @@ class BehatEditorRun {
         );
     }
 
-    /**
-     * Save the results to the DB
-     *
-     * @param $output
-     *   Test results from exec
-     * @param $return_var
-     *   The output from exec for 0/1 pass fail of the tests
-     * @param $settings
-     *   This can include path, user and group settings etc.
-     *
-     * @todo break this out into it's own class.
-     */
-    protected function saveResults($output, $return_var = 0, $settings = array()) {
-        $saveResults = new Results();
-        $saveResults->cleanHtml($output);
-        $this->clean_results = $saveResults->results_cleaned;
-        $saveResults->fields['filename'] = $this->filename;
-        $saveResults->fields['module'] = $this->module;
-        $saveResults->fields['results'] = serialize($saveResults->results_cleaned);
-
-        $saveResults->fields['duration'] = $saveResults->getDuration();
-        $saveResults->fields['created'] = REQUEST_TIME;
-        $saveResults->fields['status'] = $return_var;
-        $saveResults->fields['settings'] = serialize($settings);
-
-        drupal_alter('behat_editor_save_results', $saveResults);
-        return $saveResults->insert();
-    }
 }
