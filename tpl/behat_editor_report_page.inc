@@ -37,7 +37,7 @@ function behat_editor_report() {
                     $title = "<h4>Filename: {$value['filename']}</h4>";
                 }
                 $output = $title;
-                $output .= BehatEditor\Results::generateHTMLOutput($value['results']);
+                $output .= $value['results'];
                 $build[$key] = array(
                     '#markup' => $output,
                 );

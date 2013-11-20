@@ -27,7 +27,6 @@ class BehatSettingsBaseUrl {
 
     }
 
-
     static function getFields() {
         return self::fields();
     }
