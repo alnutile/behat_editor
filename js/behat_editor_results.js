@@ -33,6 +33,8 @@
                 table[key] = [status, value["duration"], date.format('Y-m-d H:i:s'), view]
             });
 
+
+
             $('#past-results-table').dataTable(
                 {
                     "aaData": table,

@@ -17,6 +17,7 @@ namespace Drupal\BehatEditor;
 
 class Results {
     public $fields = array();
+    public $results_cleaned;
 
     public function __construct() {
         global $user;
@@ -68,6 +69,14 @@ class Results {
             }
         }
         return array('results' => $rows, 'error' => 0);
+    }
+
+    public function cleanHtml($results){
+        $results_imploded = implode("", $results);
+        $s = strpos($results_imploded, '<body>') + strlen('<body>');
+        $f = '<div class="switchers">';
+        $results_html = trim(substr($results_imploded, $s, strpos($results_imploded, $f) - $s)) . "</div>";
+        $this->results_cleaned = $results_html;
     }
 
     static function generateHTMLOutput($results_array) {

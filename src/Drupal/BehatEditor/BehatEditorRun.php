@@ -175,7 +175,8 @@ class BehatEditorRun {
         $command = implode(' ', $command);
         exec($command, $output, $return_var);
         $behat_yml_path->deleteBehatYmlFile();
-        $this->file_array = $output;
+
+        $this->file_array = strip_tags($output);
         $rid = self::saveResults($output, $return_var, $settings);
         return array('response' => $return_var, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
     }
@@ -242,7 +243,7 @@ class BehatEditorRun {
             'config' => "--config=\"$this->yml_path\"",
             'path' => '--no-paths',
             'tags' => "$tags",
-            'format' => '',
+            'format' => '--format=html',
             'profile' => "--profile=default",
             'misc' => '',
             'file_path' => "$this->absolute_file_path"
@@ -263,9 +264,10 @@ class BehatEditorRun {
      */
     protected function saveResults($output, $return_var = 0, $settings = array()) {
         $saveResults = new Results();
+        $saveResults->cleanHtml($output);
         $saveResults->fields['filename'] = $this->filename;
         $saveResults->fields['module'] = $this->module;
-        $saveResults->fields['results'] = serialize($output);
+        $saveResults->fields['results'] = serialize($saveResults->results_cleaned);
         $saveResults->fields['duration'] = (is_array($output)) ? array_pop($output): '0m0s';
         $saveResults->fields['created'] = REQUEST_TIME;
         $saveResults->fields['status'] = $return_var;
