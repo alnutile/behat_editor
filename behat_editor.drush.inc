@@ -122,7 +122,7 @@ function drush_behat_editor_behat_run() {
     $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
     $output = $run->execDrush($javascript, $tag, $profile, array('base_url_usid' => $usid, 'base_url_gsid' => 0));
-    $results = implode("\n\r", $output['output_array']);
+    $results = str_replace(array("    ", "---- Feature", "::: Scenario", "::: Background"), array("\n", "\n---- Feature", "\n::: Scenario", "\n::: Background"), drush_html_to_text($output['output_array']));
     return drush_print($results);
 }
 

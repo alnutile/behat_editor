@@ -17,6 +17,8 @@ namespace Drupal\BehatEditor;
 
 class Results {
     public $fields = array();
+    public $results_cleaned;
+    public $duration;
 
     public function __construct() {
         global $user;
@@ -70,12 +72,44 @@ class Results {
         return array('results' => $rows, 'error' => 0);
     }
 
+    public function cleanHtml($results){
+        $results_imploded = implode("", $results);
+        $s = strpos($results_imploded, '<body>') + strlen('<body>');
+        $f = '<div class="switchers">';
+        $results_html = trim(substr($results_imploded, $s, strpos($results_imploded, $f) - $s)) . "</div>";
+        $this->results_cleaned = $results_html;
+    }
+
+    public function getDuration() {
+        $s = strpos($this->results_cleaned, '<p class="time">') + strlen('<p class="time">');
+        $f = 's</p>';
+        $duration = trim(substr($this->results_cleaned, $s, strpos($this->results_cleaned, $f) - $s));
+        $this->duration = (!empty($duration)) ? $duration : '0';
+        return $this->duration;
+    }
+
     static function generateHTMLOutput($results_array) {
         $results_message = array_slice($results_array, -3);
         $results_message_top = array_slice($results_array, 0, -3);
         $output_item_results = theme('item_list', $var = array('title' => 'Summary', 'items' => $results_message));
         $output_item_list = theme('item_list', $var = array('title' => 'All Results', 'items' => $results_message_top));
         return $output_item_results . $output_item_list;
+    }
+
+    public function prepareResultsAndInsert($output, $return_var = 0, $settings = array(), $filename, $module){
+        //Clean Output
+        self::cleanHtml($output);
+
+        $this->fields['filename'] = $filename;
+        $this->fields['module'] = $module;
+        $this->fields['results'] = serialize($this->results_cleaned);
+        $this->fields['duration'] = $this->getDuration();
+        $this->fields['created'] = REQUEST_TIME;
+        $this->fields['status'] = $return_var;
+        $this->fields['settings'] = serialize($settings);
+
+        drupal_alter('behat_editor_save_results', $saveResults);
+        return array('rid' => self::insert(), 'clean_results' => $this->results_cleaned, 'duration' => $this->getDuration());
     }
 
 

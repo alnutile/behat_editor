@@ -2,13 +2,31 @@
 
     $(document).bind("ajaxSend", function(){
         Drupal.behat_editor.buttons('disable');
-        $('.running-tests').fadeIn();
+        if(Drupal.behat_editor.ifNoty) {
+            var message = $('.running-tests').text();
+            var type = 'information';
+            var n = noty({text: message, type: type, dismissQueue: true, timeout: 5000});
+        } else {
+            $('.running-tests').fadeIn();
+        }
     }).bind("ajaxComplete", function(){
         Drupal.behat_editor.buttons('enable');
-        $('.running-tests').fadeOut();
+            if(Drupal.behat_editor.ifNoty) {
+                //$.noty.clearQueue();
+            } else {
+                $('.running-tests').fadeOut();
+            }
     });
 
     Drupal.behat_editor = {};
+
+    Drupal.behat_editor.ifNoty = function() {
+        if(Drupal.settings.simple_noty && Drupal.settings.simple_noty.active == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     Drupal.behat_editor.split_filename = function(filename) {
         var filename_array = filename.split('.');
@@ -88,25 +106,38 @@
 
         if(data.error == 1) {
             var message = data.message;
-            var messages = "<div class='alert alert-error'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
-            messages += message;
-            messages += "</div>";
-            $('#messages-behat').append(messages);
-        } else {
-            if(data.file) {
-                var message = data.file.message;
-                var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
+            if(Drupal.behat_editor.ifNoty){
+                var n = noty({text: message, type: 'success', dismissQueue: false});
+            } else {
+                var messages = "<div class='alert alert-error'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                 messages += message;
                 messages += "</div>";
                 $('#messages-behat').append(messages);
             }
+        } else {
+            if(data.file) {
+                var message = data.file.message;
+                if(Drupal.behat_editor.ifNoty){
+                    var n = noty({text: message, type: 'success', dismissQueue: false});
+                } else {
+                    var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                    messages += message;
+                    messages += "</div>";
+                    $('#messages-behat').append(messages);
+                }
+            }
 
             if(data.test) {
+                console.log(data);
                 var message = data.test.message;
-                var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
-                messages += message;
-                messages += "</div>";
-                $('#messages-behat').append(messages);
+                if(Drupal.behat_editor.ifNoty){
+                    var n = noty({text: message, type: 'success', dismissQueue: false});
+                } else {
+                    var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                    messages += message;
+                    messages += "</div>";
+                    $('#messages-behat').append(messages);
+                }
                 Drupal.behat_editor.setResultsBox(data.test.test_output);
             }
         }
@@ -118,12 +149,19 @@
     }
 
     Drupal.behat_editor.renderMessageCustom = function(message, error_type, context) {
-        var messages = "<div class='alert alert-" + error_type + "'><a href='#' class='close' data-dismiss='alert'>&times;</a>";  //@todo pull out error = FALSE/TRUE
-        messages += message;                                            //@todo pull out error type eg error, info, success etc
-        messages += "</div>";
-        $('#messages-behat', context).append(messages);
+        if(Drupal.behat_editor.ifNoty){
+            var n = noty({text: message, type: error_type, dismissQueue: false});
+        } else {
+            var messages = "<div class='alert alert-" + error_type + "'><a href='#' class='close' data-dismiss='alert'>&times;</a>";  //@todo pull out error = FALSE/TRUE
+            messages += message;                                            //@todo pull out error type eg error, info, success etc
+            messages += "</div>";
+            $('#messages-behat', context).append(messages);
+        }
     };
 
+    Drupal.behat_editor.renderNotyCustom = function(message, type, dismiss_queue) {
+        var n = noty({text: message, type: type, dismissQueue: dismiss_queue});
+    };
 
     Drupal.behat_editor.make_scenario_array = function(scenario) {
         var items = scenario.length;
