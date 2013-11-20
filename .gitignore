@@ -1,3 +1,4 @@
+.sass-cache
 css/.sass-cache
 modules/behat_editor_saucelabs/behat/features/bootstrap/*
 modules/behat_editor_saucelabs/behat/behat.yml
