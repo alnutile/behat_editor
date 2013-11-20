@@ -1,12 +1,12 @@
 (function ($) {
 
-//    $(document).bind("ajaxSend", function(){
-//        Drupal.behat_editor.buttons('disable');
-//        $('.running-tests').fadeIn();
-//    }).bind("ajaxComplete", function(){
-//        Drupal.behat_editor.buttons('enable');
-//        $('.running-tests').fadeOut();
-//    });
+    $(document).bind("ajaxSend", function(){
+        Drupal.behat_editor.buttons('disable');
+        $('.running-tests').fadeIn();
+    }).bind("ajaxComplete", function(){
+        Drupal.behat_editor.buttons('enable');
+        $('.running-tests').fadeOut();
+    });
 
     Drupal.behat_editor = {};
 

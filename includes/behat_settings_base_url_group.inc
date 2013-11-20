@@ -105,7 +105,11 @@ function behat_editor_base_url_settings_group_edit_form($form, &$form_state){
     if(isset($form_state['build_info']['args'][0]['sid'])) {
         $sid = $form_state['build_info']['args'][0]['sid'];
         $settings = BehatEditor\BehatSettingsBaseUrl::getSettingsBySID($sid);
-        list($sid, $uid, $gid, $base_url, $default_url, $active, $nice_name) = array_values($settings['results']);
+        foreach($settings['results'] as $key => $value) {
+            $$key = $value;
+        }
+        //List did not work due to db order
+        //list($sid, $uid, $gid, $base_url, $default_url, $active, $nice_name) = array_values($settings['results']);
         $button = "Update";
     }
 
