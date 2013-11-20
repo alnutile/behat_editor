@@ -128,7 +128,6 @@
             }
 
             if(data.test) {
-                console.log(data);
                 var message = data.test.message;
                 if(Drupal.behat_editor.ifNoty){
                     var n = noty({text: message, type: 'success', dismissQueue: false});

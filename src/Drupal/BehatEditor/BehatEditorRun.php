@@ -197,7 +197,6 @@ class BehatEditorRun {
 
         $command = implode(' ', $command);
 
-        watchdog('test_command', print_r($command, 1));
 
         exec($command, $output, $return_var);
 
