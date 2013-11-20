@@ -20,7 +20,8 @@
             var rows = results['data'];
             var status,
                 view,
-                test_results;
+                test_results,
+                print_link;
             $.each(rows, function(key, value){
                 var date = new Date(value["created"]*1000);
                 if(value['status'] == 0 ) {
@@ -28,9 +29,10 @@
                 } else {
                     status = '<i class="glyphicon glyphicon-thumbs-down"></i>';
                 }
+                print_link = '<a href="/admin/behat/report/' + value['rid'] + '" target="_blank"><i class="glyphicon glyphicon-print"></a>';
                 test_results = value['results'];
                 view = "<a href='#' class='results' id='"+value['rid']+"' data-results='"+test_results+"'><i class='glyphicon glyphicon-eye-open'></i></a>";
-                table[key] = [status, value["duration"], date.format('Y-m-d H:i:s'), view]
+                table[key] = [status, value["duration"], date.format('Y-m-d H:i:s'), view, print_link]
             });
 
 
@@ -42,7 +44,8 @@
                         {"sTitle": "Results"},
                         {"sTitle": "Duration"},
                         {"sTitle": "Date"},
-                        {"sTitle": "View"}
+                        {"sTitle": "View"},
+                        {"sTitle": "Print"}
 
                     ],
                     "aaSorting": [[ 2, "desc" ]]
@@ -60,8 +63,9 @@
                 status = '<i class="glyphicon glyphicon-thumbs-down"></i>';
             }
             test_results = data['results'];
+            print_link = '<a href="/admin/behat/report/' + value['rid'] +'" target="_blank"><i class="glyphicon glyphicon-print"></a>';
             view = "<a href='#' class='results' id='"+data['rid']+"' data-results='"+test_results+"'><i class='glyphicon glyphicon-eye-open'></i></a>";
-            table = [status, data["duration"], date.format('Y-m-d H:i:s'), view]
+            table = [status, data["duration"], date.format('Y-m-d H:i:s'), view, print_link]
             $('#past-results-table').dataTable().fnAddData(table);
         }
     };
