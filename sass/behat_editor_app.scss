@@ -76,3 +76,12 @@ ul.scenario {
 div.test ul {
     padding-left: 0px;
 }
+
+div.test-result {
+    ul {
+        list-style-type: none;
+    }
+    ul.tags {
+        list-style-type: none;
+    }
+}
