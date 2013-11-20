@@ -1,6 +1,10 @@
 .running-tests, .saving-tests {
   display: none; }
 
+.noty_type_information a {
+  color: white;
+  text-decoration: underline; }
+
 a.btn {
   margin: 0px 5px 0px 5px; }
 
@@ -53,3 +57,8 @@ ul.scenario {
 
 div.test ul {
   padding-left: 0px; }
+
+div.test-result ul {
+  list-style-type: none; }
+div.test-result ul.tags {
+  list-style-type: none; }
