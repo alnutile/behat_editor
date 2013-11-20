@@ -1,5 +1,9 @@
 <?php
-    $messages =  array('Working on things...', 'Give me a moment....', 'Doing as you command...');
+    $messages =  array(
+        'Working on things...',
+        'This will take a moment....',
+        'Will be done shortly...',
+    );
     $message = array_rand($messages, 1);
 ?>
 <div id="collapseOne" class="panel-collapse collapse col-md-12">
