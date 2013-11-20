@@ -96,5 +96,21 @@ class Results {
         return $output_item_results . $output_item_list;
     }
 
+    public function prepareResultsAndInsert($output, $return_var = 0, $settings = array(), $filename, $module){
+        //Clean Output
+        self::cleanHtml($output);
+
+        $this->fields['filename'] = $filename;
+        $this->fields['module'] = $module;
+        $this->fields['results'] = serialize($this->results_cleaned);
+        $this->fields['duration'] = $this->getDuration();
+        $this->fields['created'] = REQUEST_TIME;
+        $this->fields['status'] = $return_var;
+        $this->fields['settings'] = serialize($settings);
+
+        drupal_alter('behat_editor_save_results', $saveResults);
+        return array('rid' => self::insert(), 'clean_results' => $this->results_cleaned, 'duration' => $this->getDuration());
+    }
+
 
 }

@@ -33,6 +33,11 @@ class BehatEditorRun {
     public $filename_no_ext = '';
     public $file_array;
     public $file_object = array();
+    public $clean_results;
+    public $settings;
+    public $tags;
+    public $behat_yml;
+    public $rid;
 
     /**
      * File object from FileObject class
@@ -119,23 +124,34 @@ class BehatEditorRun {
         } else {
             $tags = "--tags '~@javascript'";
         }
+        $this->tags = $tags;
+        $this->settings = $settings;
 
-        $command = self::behatCommandArray($tags);
-        $behat_yml_path = new GenerateBehatYml($settings);
-        $behat_yml = $behat_yml_path->writeBehatYmlFile();
+        $command = self::behatCommandArray();
+
+        //@todo move this into a shared method for exec and execDrush
+        $behat_yml_path = new GenerateBehatYml($this->settings);
+        $this->behat_yml = $behat_yml_path->writeBehatYmlFile();
+
         $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
-        $saved_settings['sid'] = $settings;
-        $command['config'] = "--config=\"$behat_yml\"";
+        $saved_settings['sid'] = $this->settings;
+        $command['config'] = "--config=\"$this->behat_yml\"";
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
+
         exec($command, $output, $return_var);
-        $this->file_array = $output;
+
         $behat_yml_path->deleteBehatYmlFile();
-        //@todo this is not a good enough response to figure out if pass or fail!
-        $rid = self::saveResults($output, $return_var, $saved_settings);
-        return array('response' => $return_var, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
+
+        $results = new Results();
+        $output = $results->prepareResultsAndInsert($output, $return_var, $settings, $this->filename, $this->module);
+        $this->clean_results = $output['clean_results'];
+        $this->rid = $output['rid'];
+
+        return array('response' => $return_var, 'output_file' => $this->clean_results, 'output_array' =>  $this->clean_results, 'rid' => $this->rid);
     }
+
 
     /**
      * Used to exec the behat command by drush
@@ -162,25 +178,51 @@ class BehatEditorRun {
         if($profile === 0) {
             $profile = 'default';
         }
+
         $tags = "$tag_include $tags_exclude";
+
         $command = self::behatCommandArray($tags);
-        $behat_yml_path = new GenerateBehatYml($settings);
-        $behat_yml = $behat_yml_path->writeBehatYmlFile();
+
+        //@todo move this into a shared method for exec and execDrush
+        $behat_yml_path = new GenerateBehatYml($this->settings);
+        $this->behat_yml = $behat_yml_path->writeBehatYmlFile();
+
         $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
-        $saved_settings['sid'] = $settings;
-        $command['config'] = "--config=\"$behat_yml\"";
-        $context1 = 'behat_run_drush';
+        $saved_settings['sid'] = $this->settings;
+        $command['config'] = "--config=\"$this->behat_yml\"";
+        $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
+        $command = implode(' ', $command);
         $command['format'] = '--format=pretty';
 
-        $command = implode(' ', $command);
         exec($command, $output, $return_var);
+
         $behat_yml_path->deleteBehatYmlFile();
 
-        $this->file_array = strip_tags($output);
-        $rid = self::saveResults($output, $return_var, $settings);
-        return array('response' => $return_var, 'output_file' => $this->output_file, 'output_array' => $output, 'rid' => $rid);
+        $results = new Results();
+        $output = $results->prepareResultsAndInsert($output, $return_var, $settings, $this->filename, $this->module);
+        $this->clean_results = $output['clean_results'];
+        $this->rid = $output['rid'];
+
+        return array('response' => $return_var, 'output_file' => $this->clean_results, 'output_array' =>  $this->clean_results, 'rid' => $this->rid);
     }
+
+    private function buildCommandAndYml(array $params) {
+        $command = self::behatCommandArray($params['tags']);
+        $behat_yml_path = new GenerateBehatYml($params['settings']);
+        $behat_yml = $behat_yml_path->writeBehatYmlFile();
+        $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
+        $saved_settings['sid'] = $params['settings'];
+        $command['config'] = "--config=\"$behat_yml\"";
+        $context1 = 'behat_run';
+        drupal_alter('behat_editor_command', $command, $context1);
+        $command = implode(' ', $command);
+        exec($command, $output, $return_var);
+        $this->file_array = $output;
+        $behat_yml_path->deleteBehatYmlFile();
+
+    }
+
 
     /**
      * Return the output on a Pass test
@@ -209,11 +251,11 @@ class BehatEditorRun {
      * @todo move results and reporting into a separate class
      */
     public function generateHTMLOutput() {
-        $results_message = array_slice($this->file_array, -3);
-        $results_message_top = array_slice($this->file_array, 0, -3);
-        $output_item_results = theme('item_list', $var = array('title' => 'Summary', 'items' => $results_message));
-        $output_item_list = theme('item_list', $var = array('title' => 'All Results', 'items' => $results_message_top));
-        return $output_item_results . $output_item_list;
+        //$results_message = array_slice(explode("\n", $this->clean_results), -3);
+        //$results_message_top = array_slice(explode("\n", $this->clean_results), 0, -3);
+        //$output_item_results = theme('item_list', $var = array('title' => 'Summary', 'items' => $results_message));
+        $output_item_list = theme('item_list', $var = array('title' => 'Results', 'items' => explode("\n", $this->clean_results)));
+        return $output_item_list;
     }
 
     /**
@@ -237,13 +279,13 @@ class BehatEditorRun {
     }
 
     //@todo remove tag arg in behatCommandArray
-    public function behatCommandArray($tags) {
+    public function behatCommandArray() {
         return array(
             'pre_command' => "cd $this->behat_path &&",
             'run' => "./bin/behat",
             'config' => "--config=\"$this->yml_path\"",
             'path' => '--no-paths',
-            'tags' => "$tags",
+            'tags' => "$this->tags",
             'format' => '--format=html',
             'profile' => "--profile=default",
             'misc' => '',
@@ -266,6 +308,7 @@ class BehatEditorRun {
     protected function saveResults($output, $return_var = 0, $settings = array()) {
         $saveResults = new Results();
         $saveResults->cleanHtml($output);
+        $this->clean_results = $saveResults->results_cleaned;
         $saveResults->fields['filename'] = $this->filename;
         $saveResults->fields['module'] = $this->module;
         $saveResults->fields['results'] = serialize($saveResults->results_cleaned);
