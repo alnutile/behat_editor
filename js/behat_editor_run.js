@@ -36,6 +36,8 @@
                 var filename = Drupal.behat_editor.split_filename($('input[name=filename]').val());
                 var base_url_usid = $('select#edit-users option:selected').val();
                 var base_url_gsid = $('select#edit-group option:selected').val();
+                var os_version = $('select#edit-os option:selected').val();
+                var browser_version = $('select#edit-browser option:selected').val();
                 //See if I need to pass scenario
                 if(url.split('/')[4] == 'run') {
                     var parameters = {
@@ -45,7 +47,12 @@
                     var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
                     var parameters = {
                         "scenario": scenario_array,
-                        "settings": { "base_url_usid": base_url_usid, "base_url_gsid": base_url_gsid }
+                        "settings": {
+                            "base_url_usid": base_url_usid,
+                            "base_url_gsid": base_url_gsid,
+                            "os_version": os_version,
+                            "browser_version": browser_version
+                        }
                     };
                 }
                 Drupal.behat_editor.run_actions('POST', token, parameters, url + filename, true, true, context);

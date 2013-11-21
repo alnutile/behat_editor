@@ -52,7 +52,9 @@ If you enable this module via drush composer_manager will kick in and download t
 
 #### 4. Behat.yml file
 
-copy behat/behat.yml.sample to behat/behat.yml
+By default the system uses behat.yml.example to grab the default settings. You can make your own behat.yml and the system will pull from that instead to setup the default browser, FeatureContext.php path etc.
+
+copy behat/behat.yml.example to behat/behat.yml
 
 ```bash
 cp behat/behat.yml.sample behat/behat.yml

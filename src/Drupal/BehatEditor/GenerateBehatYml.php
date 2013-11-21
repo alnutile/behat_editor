@@ -20,7 +20,7 @@ class GenerateBehatYml {
         $settings_build = new Settings();
         $this->behat_yml = $settings_build->setBehatYmlSettings($behat_yml, $settings);
         $context1 = 'generate_yml';
-        drupal_alter('behat_editor_yml_array', $this->behat_yml, $context1);
+        drupal_alter('behat_editor_yml_array', $this->behat_yml, $context1, $settings);
     }
 
     public function writeBehatYmlFile() {
