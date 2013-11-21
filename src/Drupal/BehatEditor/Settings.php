@@ -44,4 +44,11 @@ class Settings {
         $full_path = drupal_realpath($path);
         $this->behat_yml_defaults['default']['paths']['bootstrap'] = $full_path;
     }
+
+    private function setOsAndBrowser() {
+        $os = $this->settings['os_version'];
+        $browser_array = explode('|', $this->settings['browser_version']);
+        list($browser, $version) = $browser_array;
+        $this->behat_yml_defaults['default']['extensions']['Behat\MinkExtension\Extension']['browser_name'] = $browser;
+    }
 } 
