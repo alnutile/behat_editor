@@ -96,6 +96,10 @@ class BehatSettingsFormHelper {
             '#empty_option' => t('--none--')
         );
 
+
+        $helpers = new BehatSettingsFormHelper();
+        $helpers->osBrowser($form);
+
     }
 
     public function _behat_editor_group_gid_and_title_options_list($gids) {
@@ -178,6 +182,36 @@ class BehatSettingsFormHelper {
             '#options' => $options,
             '#title' => t('Your Groups base url settings'),
             '#empty_option' => t('--none--')
+        );
+
+        $helpers = new BehatSettingsFormHelper();
+        $helpers->osBrowser($form);
+    }
+
+
+    private function osBrowser(&$form) {
+        //@todo
+        // Setup default for local user to enter
+        // might only need a browser actually
+        // or grab from the behat.yml.default / behat.yml files?
+        $form['results_area']['settings']['os_browser'] = array(
+            '#type' => 'container',
+            '#prefix' => t('<hr><h4>Choose an OS and a Browser to run the test on</h4><br>')
+        );
+
+        $form['results_area']['settings']['os_browser']['os'] = array(
+            '#type' => 'select',
+            '#options' => array('Windows 2012' => 'Windows 2012'),
+            '#default_value' => 'Windows 2012',
+            '#description' => t('What OS and Browser should be used for this test')
+        );
+
+        $form['results_area']['settings']['os_browser']['browser'] = array(
+            '#type' => 'select',
+            '#options' => array('chrome|31' => 'Google Chrome - 31'),
+            '#empty_value' => '--choose OS first--',
+            '#default_value' => 'chrome|31',
+            '#description' => t('What Browser do you want to use')
         );
     }
 }
