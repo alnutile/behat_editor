@@ -7,7 +7,8 @@
     Drupal.behat_editor.results_modal = function(context) {
         $('a.results', context).on('click', function(e){
             e.preventDefault();
-            var body = $(this).data('results');
+            var rid = $(this).attr('id');
+            var body = $('body').data('behat_results')[rid];
             body = body.replace(/,/g, "<br />");
             $('#modalResults div.test').html(body);
             $('#modalResults').modal();
@@ -20,7 +21,10 @@
             var rows = results['data'];
             var status,
                 view,
-                test_results;
+                test_results,
+                print_link;
+            var behat_results = new Array();
+
             $.each(rows, function(key, value){
                 var date = new Date(value["created"]*1000);
                 if(value['status'] == 0 ) {
@@ -28,12 +32,15 @@
                 } else {
                     status = '<i class="glyphicon glyphicon-thumbs-down"></i>';
                 }
+                print_link = '<a href="/admin/behat/report/' + value['rid'] + '" target="_blank"><i class="glyphicon glyphicon-print"></a>';
                 test_results = value['results'];
-                view = "<a href='#' class='results' id='"+value['rid']+"' data-results='"+test_results+"'><i class='glyphicon glyphicon-eye-open'></i></a>";
-                table[key] = [status, value["duration"], date.format('Y-m-d H:i:s'), view]
+                view = "<a href='#' class='results' id='"+value['rid']+"'><i class='glyphicon glyphicon-eye-open'></i></a>";
+                table[key] = [status, value["duration"], date.format('Y-m-d H:i:s'), view, print_link]
+                //Setup the data for later reference
+                behat_results[value['rid']] = test_results;
             });
 
-
+            $('body').data('behat_results', behat_results);
 
             $('#past-results-table').dataTable(
                 {
@@ -42,7 +49,8 @@
                         {"sTitle": "Results"},
                         {"sTitle": "Duration"},
                         {"sTitle": "Date"},
-                        {"sTitle": "View"}
+                        {"sTitle": "View"},
+                        {"sTitle": "Print"}
 
                     ],
                     "aaSorting": [[ 2, "desc" ]]
@@ -59,10 +67,13 @@
             } else {
                 status = '<i class="glyphicon glyphicon-thumbs-down"></i>';
             }
+            var rid = data['rid'];
             test_results = data['results'];
-            view = "<a href='#' class='results' id='"+data['rid']+"' data-results='"+test_results+"'><i class='glyphicon glyphicon-eye-open'></i></a>";
-            table = [status, data["duration"], date.format('Y-m-d H:i:s'), view]
+            print_link = '<a href="/admin/behat/report/' + data['rid'] +'" target="_blank"><i class="glyphicon glyphicon-print"></a>';
+            view = "<a href='#' class='results' id='"+data['rid']+"'><i class='glyphicon glyphicon-eye-open'></i></a>";
+            table = [status, data["duration"], date.format('Y-m-d H:i:s'), view, print_link]
             $('#past-results-table').dataTable().fnAddData(table);
+            $('body').data('behat_results')[rid] = test_results;
         }
     };
 

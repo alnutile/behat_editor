@@ -24,7 +24,6 @@ function behat_editor_ctools_plugin_api() {
     }
 }
 
-
 /**
  * Implements hook_permission().
  */
