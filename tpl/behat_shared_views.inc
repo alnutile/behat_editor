@@ -490,7 +490,7 @@ function _behat_editor_questions_form() {
         <a href="http://docs.behat.org/guides/1.gherkin.html#steps" target="_blank">Read More</a>
     </div>
     <br>
-    <h2>Text Fields, Links and Buttons</h2>');
+    <h2>Text Fields, Links and Buttons, Value Checking</h2>');
 
     $form['questions']['and_i_fill_in']['form_field_name'] = array(
         '#type' => 'textfield',
@@ -609,6 +609,56 @@ function _behat_editor_questions_form() {
         '#attributes' => array(
             'data-method' => array('append'),
             'data-step-group' => array('then_i_should_see_group'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+
+    /** Check for a value in a field*/
+
+    //     Then the "answer" field should contain "8.9"
+    $form['questions']['should_see_value']['form_field_css'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Then the'),
+        '#name' => 'form_field_css',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'should_see_value_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('the name|id|label of the field'),
+        ),
+    );
+
+    $form['questions']['should_see_value']['form_field_should_should_not_contain'] = array(
+        '#type' => 'select',
+        '#name' => 'form_field_should_should_not_contain',
+        '#prefix' => '<div class="qualifier">',
+        '#suffix' => '</div>',
+        '#description' => t('Should the value be there or not?'),
+        '#options' => array('field should contain' => t('field should contain'), 'field should not contain' => t('field should not contain')),
+        '#validated' => TRUE,
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'should_see_value_group'),
+            'data-type' => array('select'),
+        ),
+    );
+
+    $form['questions']['should_see_value']['form_field_value'] = array(
+        '#type' => 'textfield',
+        '#name' => 'form_field_value',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'should_see_value_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('The value that should be in the field'),
+        ),
+    );
+
+    $form['questions']['should_see_value']['form_field_button'] = array(
+        '#type' => 'button',
+        '#name' => 'form_field_button',
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('should_see_value_group'),
+            'data-method' => array('append'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'

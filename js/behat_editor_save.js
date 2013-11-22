@@ -11,7 +11,7 @@
                         "scenario": scenario_array
                     };
                     var data = Drupal.behat_editor.action('PUT', token, parameters, url);
-                    Drupal.behat_editor.renderMessage(data);
+                    Drupal.behat_editor.renderMessage(data, true);
                 });
             }
         };
