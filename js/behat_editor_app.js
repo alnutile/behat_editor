@@ -5,7 +5,7 @@
         if(Drupal.behat_editor.ifNoty) {
             var message = $('.running-tests').text();
             var type = 'information';
-            var n = noty({text: message, type: type, dismissQueue: false, timeout: 5000, maxVisible: 1});
+            Drupal.behat_editor.renderNotyCustom(message, type, true, 2000, 3);
         } else {
             $('.running-tests').fadeIn();
         }
@@ -107,7 +107,9 @@
         if(data.error == 1) {
             var message = data.message;
             if(Drupal.behat_editor.ifNoty){
-                var n = noty({text: message, type: 'success', dismissQueue: false});
+//                $.noty.closeAll();
+//                $.noty.clearQueue();
+                Drupal.behat_editor.renderNotyCustom(message, 'error', true, 5000, 3);
             } else {
                 var messages = "<div class='alert alert-error'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                 messages += message;
@@ -118,7 +120,9 @@
             if(data.file) {
                 var message = data.file.message;
                 if(Drupal.behat_editor.ifNoty){
-                    var n = noty({text: message, type: 'success', dismissQueue: false});
+//                    $.noty.closeAll();
+//                    $.noty.clearQueue();
+                    Drupal.behat_editor.renderNotyCustom(message, 'success', true, 5000, 3);
                 } else {
                     var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                     messages += message;
@@ -130,7 +134,9 @@
             if(data.test) {
                 var message = data.test.message;
                 if(Drupal.behat_editor.ifNoty){
-                    var n = noty({text: message, type: 'success', dismissQueue: false});
+//                    $.noty.closeAll();
+//                    $.noty.clearQueue();
+                    Drupal.behat_editor.renderNotyCustom(message, 'success', true, 5000, 3);
                 } else {
                     var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                     messages += message;
@@ -149,7 +155,8 @@
 
     Drupal.behat_editor.renderMessageCustom = function(message, error_type, context) {
         if(Drupal.behat_editor.ifNoty){
-            var n = noty({text: message, type: error_type, dismissQueue: false});
+            //$.noty.closeAll();
+            Drupal.behat_editor.renderNotyCustom(message, error_type, true, 5000, 3);
         } else {
             var messages = "<div class='alert alert-" + error_type + "'><a href='#' class='close' data-dismiss='alert'>&times;</a>";  //@todo pull out error = FALSE/TRUE
             messages += message;                                            //@todo pull out error type eg error, info, success etc
@@ -158,20 +165,31 @@
         }
     };
 
-    Drupal.behat_editor.renderNotyCustom = function(message, type, dismiss_queue) {
+    Drupal.behat_editor.renderNotyCustom = function(message, type, dismiss_queue, timeout, max) {
+        var type = type;
         var n = noty({
             text: message,
             type: type,
-            dismissQueue: false,
-            maxVisible: 3,
-            timeout: 2000,
-            buttons: [
-                {
-                    addClass: 'btn btn-danger', text: 'close', onClick: function($noty) {
-                        $noty.close();
-                    }
+            dismissQueue: dismiss_queue,
+            maxVisible: max,
+            timeout: timeout,
+            onShow: function(type) {
+                if(type == 'information') {
+//                    $.noty.closeAll();
+//                    $.noty.clearQueue();
                 }
-            ]
+                if(type == 'success') {
+//                   $.noty.closeAll();
+//                   $.noty.clearQueue();
+                }
+            }
+//            buttons: [
+//                {
+//                    addClass: 'btn btn-danger', text: 'close', onClick: function($noty) {
+//                        $noty.close();
+//                    }
+//                }
+//            ]
         });
     };
 
