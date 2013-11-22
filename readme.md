@@ -110,6 +110,8 @@ This is kept out of git so that if there are updates to the module your custom w
 
 ## What now
 
+Also checkout https://github.com/alnutile/behat_editor_saucelabs
+
  * admin/behat/index to see all files
  * Click the Add to make a test.
  * Click on a file to View, Edit
