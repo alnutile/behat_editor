@@ -107,8 +107,8 @@
         if(data.error == 1) {
             var message = data.message;
             if(Drupal.behat_editor.ifNoty){
-//                $.noty.closeAll();
-//                $.noty.clearQueue();
+                $.noty.closeAll();
+                $.noty.clearQueue();
                 Drupal.behat_editor.renderNotyCustom(message, 'error', true, 5000, 3);
             } else {
                 var messages = "<div class='alert alert-error'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
@@ -120,8 +120,8 @@
             if(data.file) {
                 var message = data.file.message;
                 if(Drupal.behat_editor.ifNoty){
-//                    $.noty.closeAll();
-//                    $.noty.clearQueue();
+                    $.noty.closeAll();
+                    $.noty.clearQueue();
                     Drupal.behat_editor.renderNotyCustom(message, 'success', true, 5000, 3);
                 } else {
                     var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
@@ -134,8 +134,8 @@
             if(data.test) {
                 var message = data.test.message;
                 if(Drupal.behat_editor.ifNoty){
-//                    $.noty.closeAll();
-//                    $.noty.clearQueue();
+                    $.noty.closeAll();
+                    $.noty.clearQueue();
                     Drupal.behat_editor.renderNotyCustom(message, 'success', true, 5000, 3);
                 } else {
                     var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
