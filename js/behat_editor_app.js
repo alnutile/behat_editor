@@ -5,7 +5,7 @@
         if(Drupal.behat_editor.ifNoty) {
             var message = $('.running-tests').text();
             var type = 'information';
-            var n = noty({text: message, type: type, dismissQueue: true, timeout: 5000});
+            var n = noty({text: message, type: type, dismissQueue: false, timeout: 5000, maxVisible: 1});
         } else {
             $('.running-tests').fadeIn();
         }
@@ -159,7 +159,20 @@
     };
 
     Drupal.behat_editor.renderNotyCustom = function(message, type, dismiss_queue) {
-        var n = noty({text: message, type: type, dismissQueue: dismiss_queue});
+        var n = noty({
+            text: message,
+            type: type,
+            dismissQueue: false,
+            maxVisible: 3,
+            timeout: 2000,
+            buttons: [
+                {
+                    addClass: 'btn btn-danger', text: 'close', onClick: function($noty) {
+                        $noty.close();
+                    }
+                }
+            ]
+        });
     };
 
     Drupal.behat_editor.make_scenario_array = function(scenario) {
