@@ -102,14 +102,22 @@
         $('.test-result').html(text);
     }
 
-    Drupal.behat_editor.renderMessage = function(data) {
+    Drupal.behat_editor.renderNonNotyMessage = function(message, type) {
+        var messages = "<div class='alert alert-"+type+"'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
+        messages += message;
+        messages += "</div>";
+        $('#messages-behat').empty();
+        $('#messages-behat').append(messages);
+    }
+
+    Drupal.behat_editor.renderMessage = function(data, non_noty) {
 
         if(data.error == 1) {
             var message = data.message;
-            if(Drupal.behat_editor.ifNoty){
+            if(Drupal.behat_editor.ifNoty && non_noty === undefined){
                 $.noty.closeAll();
                 $.noty.clearQueue();
-                Drupal.behat_editor.renderNotyCustom(message, 'error', true, 5000, 3);
+                Drupal.behat_editor.renderNotyCustom(message, 'error', true, 10000, 3);
             } else {
                 var messages = "<div class='alert alert-error'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                 messages += message;
@@ -119,10 +127,10 @@
         } else {
             if(data.file) {
                 var message = data.file.message;
-                if(Drupal.behat_editor.ifNoty){
+                if(Drupal.behat_editor.ifNoty && non_noty === undefined){
                     $.noty.closeAll();
                     $.noty.clearQueue();
-                    Drupal.behat_editor.renderNotyCustom(message, 'success', true, 5000, 3);
+                    Drupal.behat_editor.renderNotyCustom(message, 'success', true, 10000, 3);
                 } else {
                     var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                     messages += message;
@@ -133,10 +141,10 @@
 
             if(data.test) {
                 var message = data.test.message;
-                if(Drupal.behat_editor.ifNoty){
+                if(Drupal.behat_editor.ifNoty && non_noty === undefined){
                     $.noty.closeAll();
                     $.noty.clearQueue();
-                    Drupal.behat_editor.renderNotyCustom(message, 'success', true, 5000, 3);
+                    Drupal.behat_editor.renderNotyCustom(message, 'success', true, 10000, 3);
                 } else {
                     var messages = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
                     messages += message;
