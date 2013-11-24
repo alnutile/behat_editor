@@ -124,8 +124,7 @@
             $('ul.sortable').sortable();
 
 
-            $('button.steps, input.steps', context).click(function(e){
-                event.preventDefault(e);
+            $('button.steps, input.steps', context).click(function(){
                 var label = '';
                 var label_text = '';
                 var destination_class;
