@@ -179,6 +179,7 @@ class BehatEditorRun {
 
         $command = self::behatCommandArray();
 
+        watchdog('test_settings', print_r($settings, 1));
         //@todo move this into a shared method for exec and execDrush
         $behat_yml_path = new GenerateBehatYml($this->settings);
         $this->behat_yml = $behat_yml_path->writeBehatYmlFile();
@@ -190,17 +191,18 @@ class BehatEditorRun {
         $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
         //$command['format'] = '--format=pretty';
-
-        if($profile !== 0) {
+        if($profile != 0) {
             $command['profile'] = "--profile=$profile";
+        } else {
+            $command['profile'] = "--profile=default";
         }
 
         $command = implode(' ', $command);
-
+        watchdog('test_command', print_r($command, 1));
 
         exec($command, $output, $return_var);
 
-        $behat_yml_path->deleteBehatYmlFile();
+        //$behat_yml_path->deleteBehatYmlFile();
 
         $results = new Results();
         $output = $results->prepareResultsAndInsert($output, $return_var, $settings, $this->filename, $this->module);

@@ -181,16 +181,16 @@
             dismissQueue: dismiss_queue,
             maxVisible: max,
             timeout: timeout,
-            onShow: function(type) {
-                if(type == 'information') {
-//                    $.noty.closeAll();
-//                    $.noty.clearQueue();
-                }
-                if(type == 'success') {
-//                   $.noty.closeAll();
-//                   $.noty.clearQueue();
-                }
-            }
+//            onShow: function(type) {
+//                if(type == 'information') {
+////                    $.noty.closeAll();
+////                    $.noty.clearQueue();
+//                }
+//                if(type == 'success') {
+////                   $.noty.closeAll();
+////                   $.noty.clearQueue();
+//                }
+//            }
 //            buttons: [
 //                {
 //                    addClass: 'btn btn-danger', text: 'close', onClick: function($noty) {
