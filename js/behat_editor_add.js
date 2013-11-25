@@ -5,13 +5,15 @@
             var token = Drupal.behat_editor.get_token();
 
             $('a.add').click(function(e){
+                e.preventDefault();
+                console.log("Add is clicked");
                 var filename = $('input[name=filename]').val();
                 $('#beModal .filename').text(filename);
                 $('#beModal').modal();
                 e.preventDefault();
             });
 
-            $('button.confirm-add').click(function(e){
+            $('button.confirm-add').click(function(){
                 $('#beModal').modal('hide');
                 var add = $('a.add');
                 var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
