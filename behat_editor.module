@@ -586,7 +586,7 @@ function clone_test_array($filename, $module) {
  * @return string
  */
 function behat_editor_modal($title, $body, $buttons, $id = 'beModal'){
-if(count($buttons)) {
+if(is_array($buttons) && count($buttons) > 0) {
     $button = array();
     foreach($buttons as $key) {
         $classes = (count($key['class'])) ? implode(' ', $key['class']) : '';
