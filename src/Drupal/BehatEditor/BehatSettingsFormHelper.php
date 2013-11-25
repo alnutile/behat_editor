@@ -203,6 +203,7 @@ class BehatSettingsFormHelper {
             '#type' => 'select',
             '#options' => array('Windows 2012' => 'Windows 2012'),
             '#default_value' => 'Windows 2012',
+            '#validated' => TRUE,
             '#description' => t('What OS and Browser should be used for this test')
         );
 
@@ -211,6 +212,7 @@ class BehatSettingsFormHelper {
             '#options' => array('chrome|31' => 'Google Chrome - 31'),
             '#empty_value' => '--choose OS first--',
             '#default_value' => 'chrome|31',
+            '#validated' => TRUE,
             '#description' => t('What Browser do you want to use')
         );
     }
