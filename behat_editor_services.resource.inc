@@ -241,7 +241,6 @@ function behat_editor_services_resources() {
 }
 
 function _behat_editor_coming_soon($module, $filename, $query) {
-    watchdog('test_query', print_r($query, 1));
     return "Coming soon";
 }
 

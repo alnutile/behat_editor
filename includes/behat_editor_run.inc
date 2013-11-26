@@ -18,7 +18,6 @@ use Drupal\BehatEditor\File,
  */
 function behat_editor_run_api($action, $module, $filename, $settings) {
     composer_manager_register_autoloader();
-    watchdog('test_run_only', print_r($settings, 1));
     $filename = "$filename.feature";
     //@todo include these in autoloader
     //  or remove them if they are no longer needed
