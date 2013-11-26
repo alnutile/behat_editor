@@ -152,6 +152,7 @@
                       * @todo need to figure out if middle or end or
                       * Make it so it does not matter and just append
                      */
+
                     if($(this).data('type') == 'qualifier') {
                         draggable_step_string += $('div label', this).text();
                     } else {
@@ -164,16 +165,23 @@
                             (label_text == 'Background' || label_text == 'Scenario' || label_text == 'Feature') ? label += ':' : false;
                             draggable_step_string += label;
                         }
+
                         if($(this).data('type') == 'select') {
                             val = $(':selected', this).val();
                             draggable_step_string += val + ' ';
                         } else {
                             val = $(this).val();
-                            draggable_step_string += '"'+val+'" ';
+                            if($(this).data('strip-quotes')) {
+                                draggable_step_string += val+' ';
+                            } else {
+                                draggable_step_string += '"'+val+'" ';
+                            }
                             setFeature(destination_class, val);
                         }
                     }
+
                 });
+
 
                 var sortable = sortableQuestion(destination_class);
 
