@@ -43,7 +43,6 @@ class BehatEditorRunModuleFolderBasedTests {
                 $this->path = $this->path . '/' . $this->subfolder;
             }
             $this->absolute_path = drupal_realpath($this->path);
-            watchdog('test_this_subfolder', print_r($this->absolute_path, 1));
 
         } else {
             $this->path = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
