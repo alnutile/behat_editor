@@ -664,6 +664,37 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
+    /**
+     * Lower level steps like checking downloads
+     */
+    $form['questions']['lower_level_repsonse_code']['header']['#markup'] = t('<h2>Testing Lower Level Items</h2>
+    <small class="text-center">note the descriptions of each item. They may require special tags</small><br>
+    ');
+    $form['questions']['lower_level_repsonse_code']['code'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Then the response status code should be'),
+        '#name' => 'code',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'lower_level_repsonse_code_group'),
+            'placeholder' =>  t('200|400|401'),
+            'data-type' => array('textfield'),
+            'data-strip-quotes' => array('true'),
+        ),
+    );
+
+    $form['questions']['lower_level_repsonse_code']['code_button'] = array(
+        '#type' => 'button',
+        '#name' => 'code_button',
+        '#description' => t('Good for checking if a download link is working. You will have to tag it\'s scenario @mink:goutte'),
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('lower_level_repsonse_code_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+
     return $form;
 }
 
