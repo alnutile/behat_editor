@@ -3,7 +3,6 @@ default:
     class:  'FeatureContext'
   extensions:
     Behat\MinkExtension\Extension:
-      show_cmd: 'firefox %s'
       base_url:  http://example.com
       browser_name: safari
       javascript_session:  'selenium2'
