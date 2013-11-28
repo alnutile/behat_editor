@@ -1,5 +1,5 @@
 # Behat Editor and Gherkin Generator
-........
+
 ### About
 
 This module will allow a user to make Gherkin formatted test files for behat.
@@ -39,6 +39,9 @@ drush bl
 ```
 
 and it will download the libraries for you.
+
+##### NOTE: you need this one module as well. Will move it into the composer.json soon
+https://github.com/alnutile/simple_noty
 
 
 #### 3. Behat Editor Module
