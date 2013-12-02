@@ -11,7 +11,6 @@
             $('a.result', context).on('click', function(e){
                 e.preventDefault();
                 var rid = $(this).data('rid');
-                console.log(rid);
                 var body = Drupal.settings.behat_editor.results[rid].results;
                 $('#modalResults div.test').html(body);
                 $('#modalResults').modal();

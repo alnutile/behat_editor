@@ -5,7 +5,7 @@
     Drupal.behat_editor.results_modal = {};
 
     Drupal.behat_editor.results_modal = function(context) {
-        $('a.result', context).on('click', function(e){
+        $('a.results', context).on('click', function(e){
             e.preventDefault();
             var rid = $(this).attr('id');
             var body = $('body').data('behat_results')[rid];
