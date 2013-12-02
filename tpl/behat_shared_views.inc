@@ -593,11 +593,11 @@ function _behat_editor_questions_form() {
     );
 
     $form['questions']['then_i_should_see']['see_not_see_some_text'] = array(
-        '#type' => 'textfield',
+        '#type' => 'textarea',
         '#name' => 'see_not_see_some_text',
         '#attributes' => array(
             'class' => array('col-mg-12', 'then_i_should_see_group'),
-            'data-type' => array('textfield'),
+            'data-type' => array('textarea'),
             'placeholder' =>  t('some text on that page'),
         ),
     );
