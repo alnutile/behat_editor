@@ -62,3 +62,9 @@ div.test-result ul {
   list-style-type: none; }
 div.test-result ul.tags {
   list-style-type: none; }
+
+table.dataTable tr.fail, table.dataTable tr.fail td {
+  background-color: #DB7575 !important;
+  color: white; }
+  table.dataTable tr.fail a, table.dataTable tr.fail td a {
+    color: white; }

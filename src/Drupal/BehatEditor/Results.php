@@ -56,6 +56,24 @@ class Results {
         return array('results' => $rows, 'error' => 0);
     }
 
+    static public function getLatestResultForFile($module, $filename) {
+        $query = db_select('behat_editor_results', 'b');
+        $query->fields('b');
+        $query->condition('b.filename', $filename, 'LIKE');
+        $query->condition('b.module', $module, 'LIKE');
+        $query->range(0, 1);
+        $query->orderBy('b.created', 'DESC');
+        $result = $query->execute();
+        $rows = array();
+        if ($result) {
+            foreach ($result as $record) {
+                $record->results = unserialize($record->results);
+                $rows[] = (array) $record;
+            }
+        }
+        return array('results' => $rows, 'error' => 0);
+    }
+
     static public function getResultsForRids(array $rids) {
         $query = db_select('behat_editor_results', 'b');
         $query->fields('b');

@@ -85,3 +85,15 @@ div.test-result {
         list-style-type: none;
     }
 }
+
+
+table.dataTable {
+  tr.fail, tr.fail td {
+    background-color: #DB7575 !important;
+    color: white;
+
+    a {
+        color: white;
+    }
+  }
+}
