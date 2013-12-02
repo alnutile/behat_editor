@@ -5,7 +5,7 @@
     Drupal.behat_editor.results_modal = {};
 
     Drupal.behat_editor.results_modal = function(context) {
-        $('a.results', context).on('click', function(e){
+        $('a.result', context).on('click', function(e){
             e.preventDefault();
             var rid = $(this).attr('id');
             var body = $('body').data('behat_results')[rid];
@@ -13,7 +13,7 @@
             $('#modalResults div.test').html(body);
             $('#modalResults').modal();
         });
-    }
+    };
 
     Drupal.behat_editor.output_results = function(results, type) {
         if(type == 'all') {
