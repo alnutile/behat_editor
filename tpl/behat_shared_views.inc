@@ -9,28 +9,34 @@ use Drupal\BehatEditor;
  */
 function _behat_editor_produce_table_array($files_array) {
     $rows = array();
+    $all_results = array();
     foreach($files_array as $key => $value) {
         foreach($value as $row) {
             $file_name = $row['filename'];
             $file_name_no_ext = $row['filename_no_ext'];
             $module_name = $key;
+            $latest = _behat_editor_get_latest_result($file_name, $module_name);
+            $all_results[$latest['rid']] = $latest['original'];
             $tags = implode(', ', $row['tags_array']);
             $rows[] = array(
                 'data' =>
-                array
-                (
-                    _show_file_link($file_name, $module_name),
-                    _show_module_name($file_name, $module_name),
-                    $tags,
-                    _show_link($file_name, $module_name, $link_text = 'view'),
-                    _show_link($file_name, $module_name, $link_text = 'edit'),
-                    _show_delete_link($file_name_no_ext, $module_name, $link_text = 'delete'),
-                )
-            );
+                    array
+                        (
+                            $latest['icon'],
+                            _show_file_link($file_name, $module_name),
+                            _show_module_name($file_name, $module_name),
+                            $tags,
+                            _show_link($file_name, $module_name, $link_text = 'view'),
+                            _show_link($file_name, $module_name, $link_text = 'edit'),
+                            _show_delete_link($file_name_no_ext, $module_name, $link_text = 'delete'),
+                        ),
+                'class' => array($latest['pass_fail']))
+            ;
         }
     };
 
     $header = array(
+        'Status',
         'Name',
         'Module',
         'Tags',
@@ -45,8 +51,33 @@ function _behat_editor_produce_table_array($files_array) {
         'attributes' => array('class' => array('table-hover'), 'id' => 'admin-features')
     ));
 
+    drupal_add_js(array('behat_editor' => array('results' => $all_results)), 'setting');
     return $behat_table;
 }
+
+function _behat_editor_get_latest_result($file_name, $module_name){
+    $output = '';
+    $pass_fail = 'na';
+    $rid = 0;
+    $result = '';
+    $results = BehatEditor\Results::getLatestResultForFile($module_name, $file_name);
+    if(isset($results['results'][0])) {
+        $result = $results['results'][0];
+        $rid = $results['results'][0]['rid'];
+        if($result['status'] == 0) {
+            $pass_fail = "pass";
+            $status = '<i class="glyphicon glyphicon-thumbs-up"></i>';
+        } else {
+            $pass_fail = 'fail';
+            $status = '<i class="glyphicon glyphicon-thumbs-down"></i>';
+        }
+        $output .= '<a class="result" data-rid="'.$result['rid'].'" href="/admin/behat/report/' . $result['rid'] .'" target="_blank"><span class="hidden">' . $pass_fail . '</span>' . $status . '</a>';
+    } else {
+        $output = 'n/a';
+    }
+    return array('pass_fail' => $pass_fail, 'icon' => $output, 'original' => $result, 'rid' => $rid);
+}
+
 
 /**
  * Build out the html edit table
