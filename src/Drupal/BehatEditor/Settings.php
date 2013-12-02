@@ -26,9 +26,11 @@ class Settings {
          * @todo
          *   It could know less about these classes and just send settings
          */
+
         self::setFeaturesPath();
         self::setBaseUrl();
         return $this->behat_yml_defaults;
+
     }
 
     private function setBaseUrl() {

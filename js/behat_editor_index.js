@@ -2,10 +2,20 @@
     var filename;
     var url;
     var row;
+
     Drupal.behaviors.behat_editor_index = {
 
         attach: function (context) {
             var token = Drupal.behat_editor.get_token();
+
+            $('a.result', context).on('click', function(e){
+                e.preventDefault();
+                var rid = $(this).data('rid');
+                var body = Drupal.settings.behat_editor.results[rid].results;
+                $('#modalResults div.test').html(body);
+                $('#modalResults').modal();
+            });
+
             $('a.index-delete-test').click(function(e){
                 filename = $(this).data('filename');
                 url = $(this).attr('href');
@@ -30,7 +40,8 @@
 
             $('table#admin-features').dataTable(
                 {
-                    "iDisplayLength": 100
+                    "iDisplayLength": 200,
+                    "aaSorting": [[ 1, "asc" ]]
                 }
             );
         }

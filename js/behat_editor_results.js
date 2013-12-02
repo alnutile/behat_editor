@@ -13,7 +13,7 @@
             $('#modalResults div.test').html(body);
             $('#modalResults').modal();
         });
-    }
+    };
 
     Drupal.behat_editor.output_results = function(results, type) {
         if(type == 'all') {
