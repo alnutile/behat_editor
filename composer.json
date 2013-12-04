@@ -3,10 +3,12 @@
     "description": "yml file and FeatureContext.php needed for other modules to extend it",
     "license": "GPL2.0+",
     "type": "library",
-    "authors": {
+    "authors": [
+        {
       "name": "Alfred Nutile",
       "email": "alfrednutile@gmail.com"
-    },
+        }
+    ],
     "require": {
         "behat/behat": "2.4.*@stable",
         "behat/mink": "dev-FindWindowNames as 1.5.x-dev",
@@ -15,7 +17,8 @@
         "behat/mink-selenium2-driver": "dev-FindWindowNamesInSelenium2",
         "behat/mink-extension": "*",
         "behat/mink-sahi-driver": "*",
-        "twitter/bootstrap": "dev-master"
+        "twitter/bootstrap": "dev-master",
+        "drupal/drupal-extension": "*"
     },
     "minimum-stability": "dev",
     "config": {
@@ -29,6 +32,10 @@
         {
             "type": "git",
             "url": "https://github.com/pthurmond/MinkSelenium2Driver.git"
+        },
+        {
+            "type": "git",
+            "url": "http://git.drupal.org/project/drupalextension.git"
         }
     ],
     "autoload": {
