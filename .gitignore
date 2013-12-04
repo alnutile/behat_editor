@@ -4,7 +4,6 @@ modules/behat_editor_saucelabs/behat/features/bootstrap/*
 modules/behat_editor_saucelabs/behat/behat.yml
 modules/behat_editor_saucelabs/behat/sauce.yml
 behat/*.yml
-#behat/features/bootstrap/FeatureContext.php
 behat_features/1*.feature
 behat_features/private_*
 behat_features/results/*.html
