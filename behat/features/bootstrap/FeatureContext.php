@@ -1,19 +1,12 @@
 <?php
 
-namespace Drupal\BehatEditor;
-
 use Behat\Behat\Context\ClosuredContextInterface,
     Behat\Behat\Context\TranslatedContextInterface,
     Behat\Behat\Context\BehatContext,
     Behat\Behat\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode,
     Behat\Gherkin\Node\TableNode;
-use Behat\MinkExtension\Context\MinkContext;
-use Behat\Behat\Event\ScenarioEvent;
-use Behat\Mink\Driver\Selenium2Driver;
-use Behat\Mink\Session;
-use Symfony\Component\Yaml\Yaml;
-use Guzzle\Http;
+
 //
 // Require 3rd-party libraries here:
 //
@@ -24,8 +17,29 @@ use Guzzle\Http;
 /**
  * Features context.
  */
-class FeatureContext extends MinkContext {
+// class FeatureContext extends BehatContext 
+class FeatureContext extends Drupal\DrupalExtension\Context\DrupalContext
+{
+    /**
+     * Initializes context.
+     * Every scenario gets its own context object.
+     *
+     * @param array $parameters context parameters (set them up through behat.yml)
+     */
+    public function __construct(array $parameters)
+    {
+        // Initialize your context here
+    }
 
-
-
+//
+// Place your definition and hook methods here:
+//
+//    /**
+//     * @Given /^I have done something with "([^"]*)"$/
+//     */
+//    public function iHaveDoneSomethingWith($argument)
+//    {
+//        doSomethingWith($argument);
+//    }
+//
 }
