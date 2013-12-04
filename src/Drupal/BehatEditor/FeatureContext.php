@@ -1,1 +1,0 @@
-../../../behat/features/bootstrap/FeatureContext.php
