@@ -8,4 +8,8 @@ default:
       javascript_session:  'selenium2'
       goutte:              ~
       selenium2:
-
+    Drupal\DrupalExtension\Extension:
+      blackbox: ~
+      subcontexts:
+              paths:
+                - "/absolute/path/you/want/to/recursively/look/for/subcontext/files"
