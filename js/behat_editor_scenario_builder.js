@@ -7,6 +7,13 @@
             wrapper += "<li class='ignore'><i class='glyphicon glyphicon-move pull-left'></i><ul id='scenario-input-"+id+"'></ul></li>";
         return wrapper;
     };
+    Drupal.behat_editor_scenario_builder = {};
+    Drupal.behat_editor_scenario_builder.string_replace = function(string) {
+        var string = string || '';
+        string = string.replace(/"/g,"'");
+        return string;
+    }
+
     Drupal.behaviors.behat_editor_scenario_builder = {};
     Drupal.behaviors.behat_editor_scenario_builder = {
         attach: function (context) {
@@ -171,6 +178,7 @@
                             draggable_step_string += val + ' ';
                         } else {
                             val = $(this).val();
+                            val = Drupal.behat_editor_scenario_builder.string_replace(val);
                             if($(this).data('strip-quotes')) {
                                 draggable_step_string += val+' ';
                             } else {
