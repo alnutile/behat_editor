@@ -334,8 +334,17 @@ function _behat_editor_questions_form() {
 
     /** CHECKBOX or Radio */
 
-    $form['questions']['when_i_check']['header']['#markup'] = t('<h2>Checkboxes and Radio Buttons</h2>');
-    $form['questions']['when_i_check']['checkbox'] = array(
+    $form['questions']['form_fields_and_elements'] = array(
+        '#type' => 'container',
+        '#prefix' => '<div class="panel panel-info">
+                          <div class="panel-heading"><i class="glyphicon-share glyphicon"></i>Form fields & elements</div>
+                          <div class="panel-body">',
+        '#suffix' => '</div>
+                </div>'
+    );
+
+
+    $form['questions']['form_fields_and_elements']['when_i_check']['checkbox'] = array(
         '#type' => 'textfield',
         '#title' => t('And I check'),
         '#name' => 'checkbox',
@@ -347,7 +356,7 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
-    $form['questions']['when_i_check']['checkbox_button'] = array(
+    $form['questions']['form_fields_and_elements']['when_i_check']['checkbox_button'] = array(
         '#type' => 'button',
         '#name' => 'checkbox_button',
         '#description' => t('Used on Checkbox and Radio buttons'),
