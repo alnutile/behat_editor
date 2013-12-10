@@ -2,20 +2,21 @@
 use Drupal\BehatEditor;
 
 function behat_settings_base_url_group() {
-
-    $output = drupal_get_form('behat_editor_base_url_settings_group');
+    global $user;
+    $user_groups = new BehatEditor\BehatPermissions($user->uid);
+    $output = $build['intro']['#markup'] = t("Group URLs");
+    if(!$user_groups->getGroupIDs()) {
+        drupal_set_message("You are not in any group. If you where in a group you could set a URL below", 'warning');
+    } else {
+        $output = drupal_get_form('behat_editor_base_url_settings_group');
+    }
     return $output;
 }
 
 function behat_editor_base_url_settings_group($form, &$form_state) {
     composer_manager_register_autoloader();
     global $user;
-
     $user_groups = new BehatEditor\BehatPermissions($user->uid);
-
-    if(!$user_groups->getGroupIDs()) {
-        drupal_set_message("You have no group level tests");
-    }
 
     $build['intro'] = array(
         '#markup' => t('Manage your Group tests. See other tab for your non group replated tests')

@@ -71,7 +71,7 @@ function behat_editor_enable(){
 
 
 /**
- * Version 2 of the CTools schema.
+ *
  */
 function behat_editor_schema() {
 

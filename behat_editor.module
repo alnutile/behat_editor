@@ -143,7 +143,7 @@ function behat_editor_menu() {
     );
 
     $items['admin/behat/settings'] =  array(
-        'title' => 'Behat Settings',
+        'title' => 'Behat URL Settings',
         'access arguments' => array('behat admin settings'),
         'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
         'weight' => 10,
@@ -151,7 +151,6 @@ function behat_editor_menu() {
         'file path' => "$path/includes/",
         'file' => 'behat_settings_base_url_user.inc',
     );
-
 
     $items['admin/behat/settings/base_url/user'] =  array(
         'title' => 'Base URL Settings by User',
@@ -162,7 +161,7 @@ function behat_editor_menu() {
 
     $items['admin/behat/settings/base_url/groups'] =  array(
         'title' => 'Behat URL Settings by Group',
-        'access arguments' => array('behat run test'),
+        'access arguments' => array('behat admin settings'),
         'type' => MENU_LOCAL_TASK,
         'weight' => 10,
         'page callback' => 'behat_settings_base_url_group',
@@ -179,7 +178,6 @@ function behat_editor_menu() {
         'file path' => "$path/includes/",
         'file' => 'behat_settings_base_url_user.inc',
     );
-
 
     $items['admin/behat/settings/base_url/user/edit/%'] =  array(
         'title' => 'Add User Level Behat Settings',
@@ -470,12 +468,27 @@ function _show_module_name($file_name, $module_name) {
  * @return string
  */
 function _show_link($file_name, $module_name, $link_text = 'view') {
-    if(strpos($file_name, 'private_') === FALSE ) {
-        $results = l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
-    } else {
-        $results = 'not allowed';
+    if(strpos($file_name, 'private_') !== FALSE) {
+        return 'n/a';
     }
-    return $results;
+    switch($link_text) {
+        case 'view':
+            $results = l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+            return $results;
+        case 'edit':
+            if($module_name == 'behat_tests') {
+                return l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+            } else {
+                return 'n/a';
+            }
+        case 'delete':
+            if($module_name == 'behat_tests' && user_access("behat delete test")) {
+                return l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+            } else {
+                return 'n/a';
+            }
+
+    }
 }
 
 /**
@@ -553,13 +566,18 @@ function delete_test_array($filename, $module) {
 }
 
 function edit_test_array($filename, $module) {
-    return array(
-        '#type' => 'link',
-        '#name' => 'edit_test',
-        '#title' => t('Edit Test'),
-        '#href' => "admin/behat/edit/$module/$filename",
-        '#attributes' => array('class' => array('btn', 'btn-info', 'edit')),
-    );
+    if($module == 'behat_tests' && user_access("behat delete test") ) {
+        return array(
+            '#type' => 'link',
+            '#name' => 'edit_test',
+            '#title' => t('Edit Test'),
+            '#href' => "admin/behat/edit/$module/$filename",
+            '#attributes' => array('class' => array('btn', 'btn-info', 'edit')),
+        );
+    } else {
+        return array();
+    }
+
 }
 
 function clone_test_array($filename, $module) {
