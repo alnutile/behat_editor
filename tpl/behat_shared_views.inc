@@ -28,7 +28,7 @@ function _behat_editor_produce_table_array($files_array) {
                             $tags,
                             _show_link($file_name, $module_name, $link_text = 'view'),
                             _show_link($file_name, $module_name, $link_text = 'edit'),
-                            _show_delete_link($file_name_no_ext, $module_name, $link_text = 'delete'),
+                            _show_link($file_name_no_ext, $module_name, $link_text = 'delete'),
                         ),
                 'class' => array($latest['pass_fail']))
             ;
@@ -334,6 +334,8 @@ function _behat_editor_questions_form() {
 
     /** CHECKBOX or Radio */
 
+    /** Group: Form Fields and Elements **/
+
     $form['questions']['form_fields_and_elements'] = array(
         '#type' => 'container',
         '#prefix' => '<div class="panel panel-info">
@@ -342,7 +344,6 @@ function _behat_editor_questions_form() {
         '#suffix' => '</div>
                 </div>'
     );
-
 
     $form['questions']['form_fields_and_elements']['when_i_check']['checkbox'] = array(
         '#type' => 'textfield',

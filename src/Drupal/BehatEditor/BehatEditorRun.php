@@ -199,7 +199,6 @@ class BehatEditorRun {
         $command = implode(' ', $command);
 
         exec($command, $output, $return_var);
-        watchdog('test_command', print_r($command, 1));
 
         //$behat_yml_path->deleteBehatYmlFile();
 

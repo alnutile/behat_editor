@@ -48,16 +48,19 @@ class BehatSettingsBaseUrl {
     }
 
     static public function getSettingsByGID(array $gids) {
-        $query = db_select('behat_editor_base_url_settings', 'b');
-        $query->fields('b');
-        $query->condition('b.gid', $gids, 'IN');
-        $query->condition('b.gid', 0, '!=');
-        $query->orderBy('b.nice_name', 'ASC');
-        $result = $query->execute();
         $rows = array();
-        if ($result) {
-            foreach ($result as $record) {
-                $rows[] = (array) $record;
+        if(!empty($gids)){
+            $query = db_select('behat_editor_base_url_settings', 'b');
+            $query->fields('b');
+            $query->condition('b.gid', $gids, 'IN');
+            $query->condition('b.gid', 0, '!=');
+            $query->orderBy('b.nice_name', 'ASC');
+            $result = $query->execute();
+            $rows = array();
+            if ($result) {
+                foreach ($result as $record) {
+                    $rows[] = (array) $record;
+                }
             }
         }
         return array('results' => $rows, 'error' => 0);
