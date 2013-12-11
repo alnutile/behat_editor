@@ -86,10 +86,13 @@ function bulk_editor_run_tag_based_validate($form, &$form_state) {
  * Submit callback for the dashboard form.
  */
 function bulk_editor_run_tag_based_submit($form, &$form_state) {
-
+    $os = $form_state['values']['os'];
+    $browser = $form_state['values']['browser'];
     $settings = array(
         'base_url_usid' => $form_state['values']['users'],
-        'base_url_gsid' => $form_state['values']['group']
+        'base_url_gsid' => $form_state['values']['group'],
+        'os_version' => $os,
+        'browser_version' => $browser,
     );
     $operation = $form_state['values']['operation'];
     $tags = array_filter($form_state['values']['dashboard']);
