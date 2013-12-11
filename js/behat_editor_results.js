@@ -9,6 +9,9 @@
             e.preventDefault();
             var rid = $(this).attr('id');
             var body = $('body').data('behat_results')[rid];
+            if (body instanceof Array) {
+                body = body.join("<br />");
+            }
             body = body.replace(/,/g, "<br />");
             $('#modalResults div.test').html(body);
             $('#modalResults').modal();
