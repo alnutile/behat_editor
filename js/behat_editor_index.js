@@ -12,6 +12,9 @@
                 e.preventDefault();
                 var rid = $(this).data('rid');
                 var body = Drupal.settings.behat_editor.results[rid].results;
+                if (body instanceof Array) {
+                    body = body.join("<br />");
+                }
                 $('#modalResults div.test').html(body);
                 $('#modalResults').modal();
             });
