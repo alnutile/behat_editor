@@ -62,7 +62,7 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         $this->file_object['relative_path'] = $this->temp_uri;
 
         $tests = new BehatEditor\BehatEditorRun($this->file_object);
-        $results = $tests->exec(1, $this->settings);
+        $results = $tests->exec(1, $this->settings, 'behat_run_batch');
         $this->test_results = $results;
     }
 
