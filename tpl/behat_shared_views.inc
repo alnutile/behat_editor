@@ -226,6 +226,12 @@ function _behat_editor_questions_form() {
         '#collapsible' => FALSE,
         '#collapsed' => FALSE,
     );
+    
+    $form['questions']['feature_name'] = array(
+        '#type' => 'fieldset',
+        '#title'=> 'Feature Name',
+        '#weight'=> -10,
+    );
 
     $form['questions']['feature_name']['feature'] = array(
         '#type' => 'textfield',
@@ -251,34 +257,11 @@ function _behat_editor_questions_form() {
         ),
         '#suffix' => '<hr>'
     );
-
-    /** Scenario */
-    $form['questions']['test_name']['scenario'] = array(
-        '#type' => 'textfield',
-        '#name' => 'scenario',
-        '#title' => t('Scenario:'),
-        '#description' => t('What do you want to call this Scenario?<br>
-        <a href="http://docs.behat.org/guides/1.gherkin.html#scenario" target="_blank">Read More</a>'),
-        '#attributes' => array(
-            'class' => array('col-mg-12', 'scenario_group'),
-            'data-type' => array('textfield'),
-            'placeholder' =>  t('A simple descriptive name of the scenario'),
-        ),
+    $form['questions']['test_background'] = array(
+        '#type' => 'fieldset',
+        '#title'=> 'Test Background',
+        '#weight'=> -8,
     );
-
-
-    $form['questions']['test_name']['scenario_button'] = array(
-        '#type' => 'button',
-        '#value' => t('Name it'),
-        '#name' => 'scenario_button',
-        '#attributes' => array(
-            'data-step-group' => array('scenario_group'),
-            'data-method' => array('append'),
-            'class' => array('steps')
-        ),
-        '#suffix' => '<hr>'
-    );
-
     /** Background */
     $form['questions']['test_background']['background'] = array(
         '#type' => 'textfield',
@@ -305,9 +288,40 @@ function _behat_editor_questions_form() {
         ),
         '#suffix' => '<hr>'
     );
+    /**Starting point Group */
+    $form['questions']['starting_point'] = array(
+        '#type' => 'fieldset',
+        '#title'=> 'Starting Point',
+        '#weight'=> -8,
+    );
+        /** Scenario */
+    $form['questions']['starting_point']['scenario'] = array(
+        '#type' => 'textfield',
+        '#name' => 'scenario',
+        '#title' => t('Scenario:'),
+        '#description' => t('What do you want to call this Scenario?<br>
+        <a href="http://docs.behat.org/guides/1.gherkin.html#scenario" target="_blank">Read More</a>'),
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'scenario_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('A simple descriptive name of the scenario'),
+        ),
+    );
 
 
-    $form['questions']['when_i_go_to']['url'] = array(
+    $form['questions']['starting_point']['scenario_button'] = array(
+        '#type' => 'button',
+        '#value' => t('Name it'),
+        '#name' => 'scenario_button',
+        '#attributes' => array(
+            'data-step-group' => array('scenario_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+    
+    $form['questions']['starting_point']['when_i_go_to']['url'] = array(
         '#type' => 'textfield',
         '#title' => t('Given I am on'),
         '#description' => t('When I go to a URL. Full URL is best'),
@@ -320,7 +334,7 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
-    $form['questions']['when_i_go_to']['url_button'] = array(
+    $form['questions']['starting_point']['when_i_go_to']['url_button'] = array(
         '#type' => 'button',
         '#name' => 'go_to',
         '#value' => t('Add'),
@@ -331,66 +345,43 @@ function _behat_editor_questions_form() {
         ),
         '#suffix' => '<hr>'
     );
-
+    
     /** CHECKBOX or Radio */
-
-    /** Group: Form Fields and Elements **/
-
-    $form['questions']['form_fields_and_elements'] = array(
-        '#type' => 'container',
-        '#prefix' => '<div class="panel panel-info">
-                          <div class="panel-heading"><i class="glyphicon-share glyphicon"></i>Form fields & elements</div>
-                          <div class="panel-body">',
-        '#suffix' => '</div>
-                </div>'
+    $form['questions']['checkboxes_and_radios'] = array(
+          '#type' => 'fieldset',
+          '#title'=> 'Checkboxes, Radios',
     );
 
-    $form['questions']['form_fields_and_elements']['when_i_check']['checkbox'] = array(
+    $form['questions']['checkboxes_and_radios']['when_i_check_uncheck']['form_field_check_uncheck'] = array(
+            '#type' => 'select',
+            '#title' => t('And I'),
+            '#name' => 'form_field_check_uncheck',
+            '#prefix' => '<div class="qualifier">',
+            '#suffix' => '</div>',
+            '#description' => t('Either if the checkbox should be checked or not?'),
+            '#options' => array('check' => t('check'), 'uncheck' => t('uncheck')),
+            '#validated' => TRUE,
+            '#attributes' => array(
+                'class' => array('col-mg-12', 'when_i_check_uncheck_value_group'),
+                'data-type' => array('select'),
+            ),
+        );
+    $form['questions']['checkboxes_and_radios']['when_i_check_uncheck']['form_field_css'] = array(
         '#type' => 'textfield',
-        '#title' => t('And I check'),
-        '#name' => 'checkbox',
+        '#name' => 'form_field_css',
         '#attributes' => array(
-            'class' => array('col-mg-12', 'when_i_check_group'),
-            'placeholder' =>  t('id|name|label|value of element'),
+            'class' => array('col-mg-12', 'when_i_check_uncheck_value_group'),
             'data-type' => array('textfield'),
+            'placeholder' =>  t('the name|id|label of the checkbox'),
         ),
-        '#suffix' => '<hr>'
     );
 
-    $form['questions']['form_fields_and_elements']['when_i_check']['checkbox_button'] = array(
+    $form['questions']['checkboxes_and_radios']['when_i_check_uncheck']['form_field_button'] = array(
         '#type' => 'button',
-        '#name' => 'checkbox_button',
-        '#description' => t('Used on Checkbox and Radio buttons'),
+        '#name' => 'form_field_button',
         '#value' => t('Add'),
         '#attributes' => array(
-            'data-step-group' => array('when_i_check_group'),
-            'data-method' => array('append'),
-            'class' => array('steps')
-        ),
-        '#suffix' => '<hr>'
-    );
-
-    /** UN-CHECK CHECKBOX */
-    $form['questions']['when_i_uncheck']['uncheckbox'] = array(
-        '#type' => 'textfield',
-        '#title' => t('And I uncheck'),
-        '#name' => 'uncheckbox',
-        '#attributes' => array(
-            'class' => array('col-mg-12', 'when_i_uncheck_group'),
-            'placeholder' =>  t('value of element'),
-            'data-type' => array('textfield'),
-        ),
-        '#suffix' => '<hr>'
-    );
-
-
-    $form['questions']['when_i_uncheck']['uncheckbox_button'] = array(
-        '#type' => 'button',
-        '#name' => 'uncheckbox_button',
-        '#description' => t('Used on Checkbox to Uncheck'),
-        '#value' => t('Add'),
-        '#attributes' => array(
-            'data-step-group' => array('when_i_uncheck_group'),
+            'data-step-group' => array('when_i_check_uncheck_value_group'),
             'data-method' => array('append'),
             'class' => array('steps')
         ),
@@ -398,55 +389,44 @@ function _behat_editor_questions_form() {
     );
 
     /** IS CHECKED  */
-    $form['questions']['is_checked']['checked'] = array(
+    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['form_field_css'] = array(
         '#type' => 'textfield',
         '#title' => t('Then the'),
-        '#name' => 'checked',
-        '#description' => t('Checks, that checkbox with specified in|name|label|value is checked'),
+        '#name' => 'form_field_css',
         '#attributes' => array(
-            'class' => array('col-mg-12', 'is_checked_group'),
-            'placeholder' =>  t('use in|name|label|value'),
+            'class' => array('col-mg-12', 'is_checked_not_checked_value_group'),
             'data-type' => array('textfield'),
+            'placeholder' =>  t('the name|id|label of the checkbox'),
         ),
     );
+    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['form_field_is_checked_unchecked'] = array(
+        '#type' => 'select',
 
-    $form['questions']['is_checked']['should_be_checked'] = array(
-        '#title' => 'checkbox should be checked',
-        '#type' => 'item',
-        '#prefix' => '<div data-type="qualifier" class="is_checked_group">',
+        '#name' => 'form_field_is_checked_unchecked',
+        '#prefix' => '<div class="qualifier">',
         '#suffix' => '</div>',
+        '#description' => t('Either if the checkbox should be checked or not?'),
+        '#options' => array('checkbox should be checked' => t('checkbox should be checked'), 'checkbox should not be checked' => t('checkbox should not be checked')),
+        '#validated' => TRUE,
         '#attributes' => array(
-            'class' => array('col-mg-12', 'is_checked_group'),
+            'class' => array('col-mg-12', 'is_checked_not_checked_value_group'),
+            'data-type' => array('select'),
         ),
     );
 
-    $form['questions']['is_checked']['checked_button'] = array(
+    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['form_field_button'] = array(
         '#type' => 'button',
-        '#name' => 'checked_button',
+        '#name' => 'form_field_button',
         '#value' => t('Add'),
         '#attributes' => array(
-            'data-step-group' => array('is_checked_group'),
+            'data-step-group' => array('is_checked_not_checked_value_group'),
             'data-method' => array('append'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'
     );
 
-    /** IS NOT CHECKED  */
-    $form['questions']['not_checked']['checked'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Then the'),
-        '#name' => 'checked',
-        '#description' => t('Checks, that checkbox with specified in|name|label|value is NOT checked'),
-        '#attributes' => array(
-            'class' => array('col-mg-12', 'not_checked'),
-            'placeholder' =>  t('use in|name|label|value'),
-            'data-type' => array('textfield'),
-        ),
-        '#suffix' => '<hr>'
-    );
-
-    $form['questions']['not_checked']['should_not_be_checked'] = array(
+    $form['questions']['checkboxes_and_radios']['not_checked']['should_not_be_checked'] = array(
         '#title' => 'checkbox should not be checked',
         '#type' => 'item',
         '#prefix' => '<div data-type="qualifier" class="not_checked">',
@@ -456,7 +436,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['not_checked']['not_checked_button'] = array(
+    $form['questions']['checkboxes_and_radios']['not_checked']['not_checked_button'] = array(
         '#type' => 'button',
         '#name' => 'not_checked_button',
         '#value' => t('Add'),
@@ -469,9 +449,13 @@ function _behat_editor_questions_form() {
     );
 
     /** SELECT LIST */
-    $form['questions']['and_i_select']['header']['#markup'] = t('<h2>Select List</h2>');
+    $form['questions']['selects'] = array(
+          '#type' => 'fieldset',
+          '#title'=> 'Select Lists',
+        );
+    
 
-    $form['questions']['and_i_select']['select_option'] = array(
+    $form['questions']['selects']['and_i_select']['select_option'] = array(
         '#type' => 'textfield',
         '#title' => t('And I select'),
         '#name' => 'form_field_and_i_select',
@@ -482,7 +466,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['and_i_select']['from'] = array(
+    $form['questions']['selects']['and_i_select']['from'] = array(
         '#title' => 'from',
         '#type' => 'item',
         '#prefix' => '<div data-type="qualifier" class="and_i_select_group">',
@@ -492,7 +476,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['and_i_select']['select_name'] = array(
+    $form['questions']['selects']['and_i_select']['select_name'] = array(
         '#type' => 'textfield',
         '#name' => 'select_name',
         '#description' => t('This can be used on Select'),
@@ -503,7 +487,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['and_i_select']['field_select_button'] = array(
+    $form['questions']['selects']['and_i_select']['field_select_button'] = array(
         '#type' => 'button',
         '#name' => 'field_select_button',
         '#value' => t('Add'),
@@ -517,23 +501,20 @@ function _behat_editor_questions_form() {
     );
 
 
-    /** Fill in Field */
+    /** Group: Form Fields and Elements **/
 
+    $form['questions']['form_fields_and_elements'] = array(
+        '#type' => 'fieldset',
+        '#title'=> 'Form Fields',
+    );
 
     /**
      * Using this group to test
      * more dynamic method of
      * rendering forms and later js
      */
-    $form['questions']['and_i_fill_in']['header']['#markup'] = t('
-    <div class="alert alert-info">
-        You are now entering into Steps. <br>
-        <a href="http://docs.behat.org/guides/1.gherkin.html#steps" target="_blank">Read More</a>
-    </div>
-    <br>
-    <h2>Text Fields, Links and Buttons, Value Checking</h2>');
 
-    $form['questions']['and_i_fill_in']['form_field_name'] = array(
+    $form['questions']['form_fields_and_elements']['and_i_fill_in']['form_field_name'] = array(
         '#type' => 'textfield',
         '#title' => t('And I fill in'),
         '#name' => 'form_field_and_fill_in',
@@ -550,7 +531,7 @@ function _behat_editor_questions_form() {
      * rendered.
      * @todo test in non bootstrap render
      */
-    $form['questions']['and_i_fill_in']['with'] = array(
+    $form['questions']['form_fields_and_elements']['and_i_fill_in']['with'] = array(
         '#title' => 'with',
         '#type' => 'item',
         '#prefix' => '<div data-type="qualifier" class="and_i_fill_in_group">',
@@ -560,7 +541,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['and_i_fill_in']['field_text'] = array(
+    $form['questions']['form_fields_and_elements']['and_i_fill_in']['field_text'] = array(
         '#type' => 'textfield',
         '#name' => 'field_with_text',
         '#attributes' => array(
@@ -570,7 +551,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['and_i_fill_in']['field_text_button'] = array(
+    $form['questions']['form_fields_and_elements']['and_i_fill_in']['field_text_button'] = array(
         '#type' => 'button',
         '#name' => 'field_text_add',
         '#value' => t('Add'),
@@ -583,7 +564,7 @@ function _behat_editor_questions_form() {
     );
 
 
-    $form['questions']['and_i_click_on_a']['click_on_type'] = array(
+    $form['questions']['form_fields_and_elements']['and_i_click_on_a']['click_on_type'] = array(
         '#type' => 'select',
         '#title' => t('And I'),
         '#name' => 'click_on_type',
@@ -596,7 +577,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['and_i_click_on_a']['field_text'] = array(
+    $form['questions']['form_fields_and_elements']['and_i_click_on_a']['field_text'] = array(
         '#type' => 'textfield',
         '#name' => 'click_on_text',
         '#attributes' => array(
@@ -606,7 +587,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['and_i_click_on_a']['click_on_a'] = array(
+    $form['questions']['form_fields_and_elements']['and_i_click_on_a']['click_on_a'] = array(
         '#type' => 'button',
         '#name' => 'click_on_a',
         '#value' => t('Add'),
@@ -618,7 +599,7 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
-    $form['questions']['then_i_should_see']['click_on_type'] = array(
+    $form['questions']['form_fields_and_elements']['then_i_should_see']['click_on_type'] = array(
         '#type' => 'select',
         '#name' => 'should_see',
         '#prefix' => '<div class="qualifier">',
@@ -633,7 +614,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['then_i_should_see']['see_not_see_some_text'] = array(
+    $form['questions']['form_fields_and_elements']['then_i_should_see']['see_not_see_some_text'] = array(
         '#type' => 'textarea',
         '#name' => 'see_not_see_some_text',
         '#attributes' => array(
@@ -643,7 +624,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['then_i_should_see']['see_not_see'] = array(
+    $form['questions']['form_fields_and_elements']['then_i_should_see']['see_not_see'] = array(
         '#type' => 'button',
         '#name' => 'see_not_see',
         '#value' => t('Add'),
@@ -658,7 +639,7 @@ function _behat_editor_questions_form() {
     /** Check for a value in a field*/
 
     //     Then the "answer" field should contain "8.9"
-    $form['questions']['should_see_value']['form_field_css'] = array(
+    $form['questions']['form_fields_and_elements']['should_see_value']['form_field_css'] = array(
         '#type' => 'textfield',
         '#title' => t('Then the'),
         '#name' => 'form_field_css',
@@ -669,7 +650,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['should_see_value']['form_field_should_should_not_contain'] = array(
+    $form['questions']['form_fields_and_elements']['should_see_value']['form_field_should_should_not_contain'] = array(
         '#type' => 'select',
         '#name' => 'form_field_should_should_not_contain',
         '#prefix' => '<div class="qualifier">',
@@ -683,7 +664,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['should_see_value']['form_field_value'] = array(
+    $form['questions']['form_fields_and_elements']['should_see_value']['form_field_value'] = array(
         '#type' => 'textfield',
         '#name' => 'form_field_value',
         '#attributes' => array(
@@ -693,7 +674,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['should_see_value']['form_field_button'] = array(
+    $form['questions']['form_fields_and_elements']['should_see_value']['form_field_button'] = array(
         '#type' => 'button',
         '#name' => 'form_field_button',
         '#value' => t('Add'),
@@ -708,10 +689,12 @@ function _behat_editor_questions_form() {
     /**
      * Lower level steps like checking downloads
      */
-    $form['questions']['lower_level_repsonse_code']['header']['#markup'] = t('<h2>Testing Lower Level Items</h2>
-    <small class="text-center">note the descriptions of each item. They may require special tags</small><br>
-    ');
-    $form['questions']['lower_level_repsonse_code']['code'] = array(
+    $form['questions']['lower_level'] = array(
+        '#type' => 'fieldset',
+        '#title'=> 'Wait and Low Level Elements',
+    );
+    
+    $form['questions']['lower_level']['lower_level_repsonse_code']['code'] = array(
         '#type' => 'textfield',
         '#title' => t('Then the response status code should be'),
         '#name' => 'code',
@@ -723,7 +706,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['lower_level_repsonse_code']['code_button'] = array(
+    $form['questions']['lower_level']['lower_level_repsonse_code']['code_button'] = array(
         '#type' => 'button',
         '#name' => 'code_button',
         '#description' => t('Good for checking if a download link is working. You will have to tag it\'s scenario @mink:goutte'),
