@@ -45,12 +45,7 @@ function behat_editor_run_api($action, $settings) {
  */
 function behat_editor_create_and_run_api($action, $scenario, $settings = array()) {
     composer_manager_register_autoloader();
-//    $file_object = _setFileObject($settings, 'run');
-
-//    $filename = "$filename.feature";
-//    //Make sure it is a good request
-//    $file = new File(array('scenario' => $scenario), $module, $filename, 'file');
-//
+    //@todo tighten this up so it can be shared with above
     $file = new Drupal\BehatEditor\FileBuilder();
     $path = explode('/', $settings['path']);
     unset($path[0]); //comes in w/ empty item
@@ -62,12 +57,9 @@ function behat_editor_create_and_run_api($action, $scenario, $settings = array()
         'parse_type' => 'file',
     );
     $file_object = $file->buildObject($params);
-
     $response = $file->save_html_to_file($scenario);
-    watchdog('test_response_save_html', print_r($response, 1));
     //Make sure the file was made
     if($response['file'] != FALSE){
-        $file_object = $file->get_file_info();
         $res = new BehatEditorRun($file_object);
         $run_test_response = $res->exec(FALSE, $settings);
         $response = $run_test_response['response'];
