@@ -426,27 +426,6 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
-    $form['questions']['checkboxes_and_radios']['not_checked']['should_not_be_checked'] = array(
-        '#title' => 'checkbox should not be checked',
-        '#type' => 'item',
-        '#prefix' => '<div data-type="qualifier" class="not_checked">',
-        '#suffix' => '</div>',
-        '#attributes' => array(
-            'class' => array('col-mg-12', 'not_checked'),
-        ),
-    );
-
-    $form['questions']['checkboxes_and_radios']['not_checked']['should_not_be_checked_button'] = array(
-        '#type' => 'button',
-        '#name' => 'form_should_not_be_checked_button',
-        '#value' => t('Add'),
-        '#attributes' => array(
-            'data-step-group' => array('not_checked'),
-            'data-method' => array('append'),
-            'class' => array('steps')
-        ),
-        '#suffix' => '<hr>'
-    );
 
     /** SELECT LIST */
     $form['questions']['selects'] = array(
