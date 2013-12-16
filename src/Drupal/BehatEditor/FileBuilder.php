@@ -49,7 +49,6 @@ class FileBuilder extends File {
         $path = drupal_get_path('module', $this->module);
         if(!empty($path)) {
             $file_object = $this->buildFileObjectFromModule($params, $path);
-            watchdog('test_params_50', print_r($file_object, 1));
             return $file_object;
         } elseif($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
             $path = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
@@ -78,11 +77,14 @@ class FileBuilder extends File {
      * @return fileObject
      */
     protected function buildFileObjectFromHook(array $data){
+        watchdog('test_run_on_hook', print_r($data, 1));
+
         $this->root_folder = $data['subpath'];
         $this->full_path =  $data['absolute_path'];
         $this->full_path_with_file =  $data['absolute_path_with_file'];
         $this->test_folder_and_file = $data['relative_path'];
         $this->relative_path = $data['relative_path'];
+
         $this->get_file_info();
         $file_object = $this->setFileObject();
         return $file_object;
@@ -148,7 +150,7 @@ class FileBuilder extends File {
         $this->scenario = $scenario;
         $this->scenario_array = parent::_parse_questions();
         $this->file_text =  parent::_create_file();
-        $output = self::_figure_out_where_to_save_file();
+        $output = $this->_figure_out_where_to_save_file();
         return $output;
     }
 

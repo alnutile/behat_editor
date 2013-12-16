@@ -230,17 +230,31 @@ class File {
      * @return array
      */
     protected function _figure_out_where_to_save_file(){
-        if (user_access('behat add test') && $this->module != variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER)) {
+        //self::_save_file_to_module_folder(); //not allowed for now
+        $path = drupal_get_path('module', $this->module);
+        if (user_access('behat add test') && empty($path)) {
             /* Derived from features.admin.inc module */
-            $output = self::_save_file_to_module_folder();
+            $output = $this->_save_file_to_absolute_path();
             return $output;
         } else {
-            $output = self::_save_file_to_temp_folder();
-            return $output;
+            //@todo no permission to save/add test
         }
     }
 
-
+    protected function _save_file_to_absolute_path(){
+        $output = array();
+        $response = file_unmanaged_save_data($this->file_text, $this->full_path_with_file, $replace = FILE_EXISTS_REPLACE);
+        watchdog('test_response_of_save', print_r($response, 1));
+        if($response == FALSE) {
+            $message = t('The file could not be saved !file .....', array('!file' => $this->full_path_with_file . '/' . $this->filename));
+            //throw new \RuntimeException($message);
+        } else {
+            $file_url = l('click here', $this->relative_path, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
+            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $this->filename)), 'file' => $file_url, 'error' => '0');
+        }
+        return $output;
+    }
     /**
      * Save to module folder
      *
@@ -251,14 +265,12 @@ class File {
         $response = file_put_contents("{$full_path}/{$this->filename}", $this->file_text);
         $output = array();
         if($response == FALSE) {
-            watchdog('behat_editor', "File could not be made...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
             $output = array('message' => "Error file could not be saved", 'file' => $response, 'error' => '1');
         } else {
             $gherkin_linkable_path = self::_linkable_path($this->module, $this->filename);
             $url = url($gherkin_linkable_path, $options = array('absolute' => TRUE));
             $file_url = l('click here', $url, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
             $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-            watchdog('behat_editor', "%date File made %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
             $output =  array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
         }
         return $output;
