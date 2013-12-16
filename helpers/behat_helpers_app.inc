@@ -75,6 +75,8 @@ function _behat_editor_build_array_of_available_files($modules) {
           $files_found[$machine_name] =  _behat_editor_scan_directories($machine_name, $path);
         }
     }
+    drupal_alter('behat_editor_files_found', $files_found);
+    dpm($files_found);
     return $files_found;
 }
 

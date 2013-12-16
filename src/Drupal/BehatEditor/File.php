@@ -56,15 +56,23 @@ class File {
 
 
     /**
+     * @todo turn this into a class that instantiates other classes
+     *   so here would be module based file build
+     *   or behat_tests based file build
+     *   or other
      *
+     *  Then break out the unique work for each of those into separate classes that extend this one
+     *  and alter it as needed.
      */
 
-    protected function build_paths(){
+    public function build_paths(){
         /**
          *     public $relative_path = '';
          *     public $full_path_with_file = '';
          *     public $full_path = '';
          */
+        watchdog("test_module", print_r(BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER, 1));
+
         if ($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
             $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
             if($this->subpath) {
@@ -75,13 +83,29 @@ class File {
             $this->full_path = drupal_realpath($files_folder);
             $this->full_path_with_file = $this->full_path . '/' . $this->filename;
         } else {
-            $sub_folder = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
-            if($this->subpath) {
-                $sub_folder = $sub_folder . '/' . $this->subpath;
+            $path = drupal_get_path('module', $this->module);
+            if(!empty($path)) {
+                $sub_folder = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
+                if($this->subpath) {
+                    $sub_folder = $sub_folder . '/' . $this->subpath;
+                }
+                $this->relative_path = $sub_folder . '/' . $this->filename;
+                $this->full_path = DRUPAL_ROOT . '/' . $sub_folder;
+                $this->full_path_with_file = $this->full_path . '/' . $this->filename;
+            } else {
+                //Last chance to alter the possible file info based on the path
+                $data = $this;
+                drupal_alter('behat_editor_build_path', $data);
+                //@todo this is all getting to complext need to break things out more
+                if(!is_object($data)) { $data;
+                    $this->full_path_with_file = $data['absolute_path_with_file'];
+                    $this->module = $data['module'];
+                    $this->full_path = $data['absolute_path'];
+                    $this->filename = $data['filename'];
+                    $this->relative_path = $data['relative_path'];
+                    $this->subpath = $data['subpath'];
+                }
             }
-            $this->relative_path = $sub_folder . '/' . $this->filename;
-            $this->full_path = DRUPAL_ROOT . '/' . $sub_folder;
-            $this->full_path_with_file = $this->full_path . '/' . $this->filename;
         }
 
     }
@@ -117,9 +141,11 @@ class File {
      * @return array
      */
     public function get_file_info() {
+        watchdog('test_file_path_in_file_class', print_r($this, 1));
         if(file_exists($this->full_path_with_file) == FALSE) {
+
             $message = t('The file does not exist !file', array('!file' => $this->full_path_with_file));
-            throw new \RuntimeException($message);
+            //throw new \RuntimeException($message);
         } else {
             $file_text = self::read_file($this->full_path_with_file);
             $file_data = array(
@@ -145,7 +171,7 @@ class File {
      * @param $module_name
      * @return array
      */
-    private function _tags_array($file, $module_name) {
+    protected function _tags_array($file, $module_name) {
         $file_to_array = self::_turn_file_to_array($file);
         $tags = array();
         foreach($file_to_array as $key => $value) {
@@ -204,7 +230,7 @@ class File {
      *
      * @return array
      */
-    private function _figure_out_where_to_save_file(){
+    protected function _figure_out_where_to_save_file(){
         if (user_access('behat add test') && $this->module != variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER)) {
             /* Derived from features.admin.inc module */
             $output = self::_save_file_to_module_folder();
@@ -221,7 +247,7 @@ class File {
      *
      * @return array
      */
-    private function _save_file_to_module_folder() {
+    protected function _save_file_to_module_folder() {
         $full_path = self::_save_path();
         $response = file_put_contents("{$full_path}/{$this->filename}", $this->feature);
         if($response == FALSE) {
@@ -243,7 +269,7 @@ class File {
      *
      * @return string
      */
-    private function _linkable_path() {
+    protected function _linkable_path() {
         $module_path = drupal_get_path('module', $this->module);
         return $module_path . '/' . variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER) . '/' . $this->filename;
     }
@@ -253,12 +279,12 @@ class File {
      *
      * @return string
      */
-    private function _save_path() {
+    protected function _save_path() {
         $module_path = drupal_get_path('module', $this->module);
         return  DRUPAL_ROOT . '/' . $module_path . '/' . variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER);
     }
 
-    private function _save_file_to_temp_folder() {
+    protected function _save_file_to_temp_folder() {
         $folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
         $path = file_build_uri("/{$folder}/");
         $response = file_unmanaged_save_data($this->feature, $path . '/' . $this->filename, $replace = FILE_EXISTS_REPLACE);
@@ -280,7 +306,7 @@ class File {
      *
      * @return array
      */
-    private function _parse_questions(){
+    protected function _parse_questions(){
         $scenario_array = array();
         $count = 0;                                                                      // used to get tags
         $direction = $this->parse_type;
@@ -307,7 +333,7 @@ class File {
      * @param $file
      * @return array
      */
-    private function _turn_file_to_array($file) {
+    protected function _turn_file_to_array($file) {
         $array = explode("\n", $file);
         foreach($array as $key => $value) {
             if(strlen($value) <= 1) {
@@ -324,7 +350,7 @@ class File {
      * @param $direction
      * @return mixed
      */
-    private function _string_type($string, $scenario, $count, $direction){
+    protected function _string_type($string, $scenario, $count, $direction){
         $compare = self::_string_types();
         foreach($compare as $key) {
             if ($results = self::$key($string, $scenario, $count, $direction)) {
@@ -339,7 +365,7 @@ class File {
      *
      * @return array
      */
-    private function _string_types() {
+    protected function _string_types() {
         $options = array('behat_editor_string_feature', 'behat_editor_string_scenario', 'behat_editor_string_background', 'behat_editor_string_steps');
         return $options;
     }
@@ -353,7 +379,7 @@ class File {
      * @param $direction
      * @return array
      */
-    private function behat_editor_string_feature($string, $scenario, $count, $direction) {
+    protected function behat_editor_string_feature($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
         $options = array('Feature:');
@@ -418,7 +444,7 @@ class File {
      * @param $direction
      * @return array
      */
-    private function behat_editor_string_scenario($string, $scenario, $count, $direction) {
+    protected function behat_editor_string_scenario($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
         $options = array('Scenario:');
@@ -481,7 +507,7 @@ class File {
      * @param $direction
      * @return array
      */
-    private function behat_editor_string_background($string, $scenario, $count, $direction) {
+    protected function behat_editor_string_background($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
         $options = array('Background:');
@@ -523,7 +549,7 @@ class File {
      * @param $scenario_array
      * @return array
      */
-    private function _parse_tags($scenario_array) {
+    protected function _parse_tags($scenario_array) {
         $tags = array();
         foreach($scenario_array as $key => $value) {
             if(strpos('@', $value)) {
@@ -544,7 +570,7 @@ class File {
      * @param $direction
      * @return array|mixed
      */
-    private function _string_tags($scenario, $count, $spaces = 0, $direction) {
+    protected function _string_tags($scenario, $count, $spaces = 0, $direction) {
 
         if(array_key_exists($count, $scenario)) {
             $string = $scenario[$count];
@@ -583,7 +609,7 @@ class File {
      * @param $direction
      * @return array
      */
-    private function behat_editor_string_steps($string, $parent, $count, $direction) {
+    protected function behat_editor_string_steps($string, $parent, $count, $direction) {
         $first_word = self::_pop_first_word($string);
         $options = array('Given', 'When', 'Then', 'And', 'But');
         drupal_alter('behat_editor_string_steps', $options);
@@ -616,7 +642,7 @@ class File {
      * @param $string
      * @return mixed
      */
-    private function _pop_first_word($string){
+    protected function _pop_first_word($string){
         $first_word = explode(' ', $string);
         return array_shift($first_word);
     }
@@ -627,7 +653,7 @@ class File {
      * @param $string
      * @return string
      */
-    private function _question_wrapper($string) {
+    protected function _question_wrapper($string) {
         return '<i class="glyphicon glyphicon-move pull-left"></i>' . $string . '<i class="remove glyphicon glyphicon-remove-circle"></i>';
     }
 
@@ -636,7 +662,7 @@ class File {
      *
      * @return string
      */
-    private function _create_file(){
+    protected function _create_file(){
         $file = '';
         foreach($this->scenario_array as $key) {
             $new_line = self::_new_line($key['new_line']);
@@ -653,7 +679,7 @@ class File {
      * @param $new_line
      * @return string
      */
-    private function _new_line($new_line) {
+    protected function _new_line($new_line) {
         if($new_line == 1) {
             return "\r\n";
         } else {
@@ -668,7 +694,7 @@ class File {
      * @param $spaces
      * @return string
      */
-    private function _spaces($spaces) {
+    protected function _spaces($spaces) {
         $spaces_return = '';
         for($i = 0; $i <= $spaces; $i++) {
             $spaces_return = $spaces_return . " ";

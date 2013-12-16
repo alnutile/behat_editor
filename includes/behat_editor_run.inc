@@ -1,5 +1,5 @@
 <?php
-use Drupal\BehatEditor\File,
+use Drupal\BehatEditor,
     Drupal\BehatEditor\BehatEditorRun;
 
 /**
@@ -16,20 +16,24 @@ use Drupal\BehatEditor\File,
  * @param $filename
  * @return array
  */
-function behat_editor_run_api($action, $module, $filename, $settings) {
+function behat_editor_run_api($action, $settings) {
     composer_manager_register_autoloader();
-    $filename = "$filename.feature";
-    //@todo include these in autoloader
-    //  or remove them if they are no longer needed
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
-    module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
+    $file = new Drupal\BehatEditor\FileBuilder();
+    $path = explode('/', $settings['path']);
+    unset($path[0]); //comes in w/ empty item
+    $params = array(
+        'service_path' => $path,
+        'module' => $settings['module'],
+        'filename' => $settings['filename'],
+        'action' => 'run'
+    );
+    watchdog('test_params_coming_in', print_r($params, 1));
 
-    $file = new File(array(), $module, $filename, FALSE);
-    $file_object = $file->get_file_info();
+    $file_object = $file->buildObject($params);
+    watchdog('test_fileobject_built', print_r($file_object, 1));
     $res = new BehatEditorRun($file_object);
     $run_test_response = $res->exec(FALSE, $settings);
-    $response = $run_test_response['response'];
-    //Check the Response from Running the Tests
+
     if($run_test_response['rid']) {
         $results = $res->generateReturnPassOutput();
         return $results;

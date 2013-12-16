@@ -16,7 +16,7 @@ use Drupal\BehatEditor\File,
  *
  */
 
-function behat_editor_view_form($form, $form_state, $module, $filename) {
+function behat_editor_view_form($form, $form_state) {
     behat_editor_add_bootstrap();
     composer_manager_register_autoloader();
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
@@ -24,8 +24,16 @@ function behat_editor_view_form($form, $form_state, $module, $filename) {
     libraries_load('behat_editor_data_table');
     libraries_load('behat_editor_date_format');
 
-    $file = new File($_REQUEST, $module, $filename, FALSE);
-    $file_info = $file->get_file_info();
+    $file = new BehatEditor\FileBuilder();
+    $filename = array_pop(arg());
+    $module = arg(3);
+    $params = array(
+        'service_path' => arg(),
+        'module' => $module,
+        'filename' => $filename,
+        'action' => 'view'
+    );
+    $file_info = $file->buildObject($params);
 
     $path = drupal_get_path('module', 'behat_editor');
     $form['#theme'] = array('theme_behat_editor_view');

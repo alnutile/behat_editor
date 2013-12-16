@@ -29,7 +29,7 @@ class Files {
         return $this->files;
     }
 
-    private function _buildModuleFilesArray() {
+    protected function _buildModuleFilesArray() {
         if(empty($this->modules)) {
             $modules = self::_checkForModules();
             $this->modules = array_merge($modules, self::_hasTestFolderArray());
@@ -126,6 +126,7 @@ class Files {
                 $files_found[$machine_name] =  self::_behatEditorScanDirectories($machine_name, $path);
             }
         }
+        drupal_alter('behat_editor_files_found', $files_found);
         return $files_found;
     }
 

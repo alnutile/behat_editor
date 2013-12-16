@@ -136,20 +136,6 @@ function behat_editor_services_resources() {
                             'optional' => FALSE,
                         ),
                         array(
-                            'name' => 'module',
-                            'type' => 'string',
-                            'description' => 'The name of the module',
-                            'source' => array('path' => 2),
-                            'optional' => FALSE,
-                        ),
-                        array(
-                            'name' => 'filename',
-                            'type' => 'string',
-                            'description' => 'The name of the file',
-                            'source' => array('path' => 3),
-                            'optional' => FALSE,
-                        ),
-                        array(
                             'name' => 'settings',
                             'type' => 'array',
                             'description' => 'USid and GSid ids for the related behat settings',

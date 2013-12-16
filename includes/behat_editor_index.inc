@@ -6,12 +6,7 @@
 use Drupal\BehatEditor;
 
 /**
- * Build the output for the Index page of files.
- * You can see the related js file as well in the js folder
- *
- * @todo turn this into a form so it will be easier to hook and do
- * other bulk operations
- * @return mixed
+ * @todo wow this is out of date. Should be pulling from the Files class
  */
 
 function behat_editor_index_api() {

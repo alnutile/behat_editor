@@ -520,7 +520,7 @@ function run_test_array($filename, $module, $action = 'run') {
         '#type' => 'link',
         '#title' => t('Run Test'),
         '#name' => 'run_test',
-        '#href' => "behat_editor_v1/behat_editor_actions/feature/$action/$module/",
+        '#href' => "behat_editor_v1/behat_editor_actions/feature/$action",
         '#attributes' => array('class' => array('btn', 'btn-success', 'run')),
     );
 }

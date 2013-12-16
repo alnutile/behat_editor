@@ -24,45 +24,125 @@ class FileBuilder extends File {
     public $full_path = '';
     public $relative_path_with_no_file_name = '';
     public $relative_path_with_file = '';
-    public $files_text = '';
+    public $file_text = '';
     public $tags_array = array();
+    public $root_folder = '';
+    public $test_folder_and_file = '';
+
+    const BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER = 'behat_features';
 
     public function __construct($params = array()) {}
 
+    /**
+     * @param $params
+     *   module name = string
+     *   service_path = array()
+     *   filename = string
+     * @return fileObject
+     */
     public function buildObject($params){
         $this->module = $params['module'];
         $this->filename = $params['filename'];
         $path = drupal_get_path('module', $this->module);
+        watchdog('test_line_47', print_r($params, 1));
         if(!empty($path)) {
-            //trim off the module name from the path
-            $path_trimmed = explode('/', $path);
-            $path_trimmed = array_slice($path_trimmed, 0, -1);
-            $path_trimmed = implode('/', $path_trimmed);
-
-            //@todo move the fine $this items down
-            $this->get_file_info();
-            $this->full_path =  DRUPAL_ROOT . '/' . $path_trimmed;
-            $this->full_path_with_file = DRUPAL_ROOT . '/' . $path_trimmed . $params['relative_path_with_file_name'];
-
-            $file_object = parent::fileObjecBuilder();
-            $file_object['absolute_path_with_file'] = $this->full_path_with_file;
-            $file_object['absolute_path'] = $this->full_path . $params['relative_path_with_no_file_name'];;
-            $file_object['relative_path'] = '/' . $path_trimmed . $params['relative_path_with_file_name'];
-            $file_object['filename'] = $this->filename;
-            $file_object['subpath'] = FALSE;
-            $file_object['scenario'] = $this->files_text;
-            $file_object['filename_no_ext'] = substr($this->filename, 0, -8);
-            $file_object['tags_array'] = $this->tags_array;
-            $file_object['module'] = $this->module;
+            $file_object = $this->buildFileObjectFromModule($params, $path);
+            watchdog('test_params_50', print_r($file_object, 1));
             return $file_object;
         } elseif($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
-            //build out path based on behat_tests
+            $path = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
+            $file_object = $this->buildFileObjectFromBehatTests($params, $path);
+            watchdog('test_params_54', print_r($file_object, 1));
+            return $file_object;
         } else {
             //offer alter
-            drupal_alter('behat_editor_build_path', $data);
+            drupal_alter('behat_editor_build_path', $data, $params);
+            watchdog('test_line_61', print_r($params, 1));
+            if(is_array($data) || is_array($params)) {
+                watchdog('test_line_62_data', print_r($data, 1));
+                watchdog('test_line_63_params', print_r($params, 1));
+                if(empty($data)) {
+                    $data = $params;
+                }
+                $file_object = $this->buildFileObjectFromHook($data);
+                watchdog('test_params_64', print_r($file_object, 1));
+                return $file_object;
+            }
         }
+    }
 
+    /**
+     * @param array $params
+     *   get the service path / arg
+     *   filename
+     *   module name
+     * @param $path
+     *   path of the module
+     * @return fileObject
+     */
+    protected function buildFileObjectFromHook(array $data){
+        $this->root_folder = $data['subpath'];
+        $this->full_path =  $data['absolute_path'];
+        $this->full_path_with_file =  $data['absolute_path_with_file'];
+        $this->test_folder_and_file = $data['relative_path'];
+        $this->relative_path = $data['relative_path'];
+        $this->get_file_info();
+        $file_object = $this->setFileObject();
+        return $file_object;
+    }
 
+    /**
+     * @param array $params
+     *   get the service path / arg
+     *   filename
+     *   module name
+     * @param $path
+     *   path of the module
+     * @return fileObject
+     */
+    protected function buildFileObjectFromModule(array $params, $path){
+        $service_path_full = $params['service_path'];
+        $test_folder_and_test_file_name = array_slice($service_path_full, 4);
+        $test_folder = array_slice($test_folder_and_test_file_name, 0, -1);
+        $this->root_folder = $path;
+        $this->full_path =  DRUPAL_ROOT . '/' . $this->root_folder . '/' . implode('/', $test_folder);
+        $this->full_path_with_file =  $this->full_path . '/' . $this->filename;
+        //Final Steps to read file and tags
+        $this->test_folder_and_file = implode('/', $test_folder_and_test_file_name);
+        $this->get_file_info();
+        $file_object = $this->setFileObject();
+        return $file_object;
+    }
+
+    public function buildFileObjectFromBehatTests(array $params, $path) {
+        $service_path_full = $params['service_path'];
+        $test_folder_and_test_file_name = array_slice($service_path_full, 4);
+        $this->test_folder_and_file = implode('/', $test_folder_and_test_file_name);
+        $test_folder = array_slice($test_folder_and_test_file_name, 0, -1);
+        $this->root_folder = file_build_uri("/$path/");
+        $this->full_path =  drupal_realpath($this->root_folder);
+        $this->full_path_with_file =  $this->full_path . '/' . $this->filename;
+        $this->relative_path =  file_create_url($this->root_folder . '/' . $this->test_folder_and_file);
+        $this->get_file_info();
+        $file_object = $this->setFileObject();
+        return $file_object;
+    }
+
+    /**
+     * Replaces fileObjectBuilder
+     */
+    protected function setFileObject() {
+        $file_object = array();
+        $file_object['absolute_path_with_file'] = $this->full_path_with_file;
+        $file_object['absolute_path'] = $this->full_path;
+        $file_object['relative_path'] = $this->relative_path;
+        $file_object['filename'] = $this->filename;
+        $file_object['subpath'] = FALSE;
+        $file_object['scenario'] = $this->file_text;
+        $file_object['filename_no_ext'] = substr($this->filename, 0, -8);
+        $file_object['tags_array'] = $this->tags_array;
+        $file_object['module'] = $this->module;
+        return $file_object;
     }
 
     public function build_paths(){}
@@ -73,7 +153,7 @@ class FileBuilder extends File {
 
     public function get_file_info() {
         $this->file_text = parent::read_file($this->full_path_with_file);
-        $this->tags_array = parent::_tags_array($this->files_text, $this->module);
+        $this->tags_array = parent::_tags_array($this->file_text, $this->module);
     }
 
     public function delete_file() {}
