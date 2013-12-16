@@ -71,7 +71,6 @@ class File {
          *     public $full_path_with_file = '';
          *     public $full_path = '';
          */
-        watchdog("test_module", print_r(BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER, 1));
 
         if ($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
             $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
@@ -119,7 +118,7 @@ class File {
         //@todo throw expection if this is a fail
         $this->scenario_array = self::_parse_questions();
         $this->feature =  self::_create_file();
-        $output = self::_figure_out_where_to_save_file();
+        $output = self::test_create_file_scenario_array();
         return $output;
     }
 
@@ -250,6 +249,7 @@ class File {
     protected function _save_file_to_module_folder() {
         $full_path = self::_save_path();
         $response = file_put_contents("{$full_path}/{$this->filename}", $this->feature);
+        $output = array();
         if($response == FALSE) {
             watchdog('behat_editor', "File could not be made...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
             $output = array('message' => "Error file could not be saved", 'file' => $response, 'error' => '1');
@@ -308,9 +308,9 @@ class File {
      */
     protected function _parse_questions(){
         $scenario_array = array();
-        $count = 0;                                                                      // used to get tags
+        $count = 0;
         $direction = $this->parse_type;
-        $scenario = array_values($this->scenario);                                       //reset keys since some unset work
+        $scenario = array_values($this->scenario);
         foreach($scenario as $value) {
             if($results = self::_string_type(trim($value), $scenario, $count, $direction)) {
                 if(array_key_exists('scenario', $results) || array_key_exists('feature', $results) || array_key_exists('background', $results)) {
@@ -324,6 +324,7 @@ class File {
             }
             $count++;
         }
+
         return $scenario_array;
     }
 
@@ -664,6 +665,7 @@ class File {
      */
     protected function _create_file(){
         $file = '';
+        watchdog('test_create_file_scenario_array', print_r($this->scenario_array, 1));
         foreach($this->scenario_array as $key) {
             $new_line = self::_new_line($key['new_line']);
             $new_line_above = self::_new_line($key['new_line_above']);

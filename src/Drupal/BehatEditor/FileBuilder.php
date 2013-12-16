@@ -43,6 +43,9 @@ class FileBuilder extends File {
     public function buildObject($params){
         $this->module = $params['module'];
         $this->filename = $params['filename'];
+        if(isset($params['parse_type'])) {
+            $this->parse_type = $params['parse_type'];
+        }
         $path = drupal_get_path('module', $this->module);
         if(!empty($path)) {
             $file_object = $this->buildFileObjectFromModule($params, $path);
@@ -141,18 +144,47 @@ class FileBuilder extends File {
 
     public function build_paths(){}
 
-    public function save_html_to_file() {}
+    public function save_html_to_file($scenario = array()) {
+        $this->scenario = $scenario;
+        watchdog('test_edited_scenario', print_r($scenario, 1));
+        $this->scenario_array = $this->_parse_questions();
+        $this->file_text = $this->_create_file();
+
+        //Set the Text
+        $output = $this->_figure_out_where_to_save_file();
+        return $output;
+    }
 
     public function output_file_text_to_html_array($file_text) {}
 
     public function get_file_info() {
-        $this->file_text = parent::read_file($this->full_path_with_file);
-        $this->tags_array = parent::_tags_array($this->file_text, $this->module);
+        $this->file_text = $this->read_file($this->full_path_with_file);
+        $this->tags_array = $this->_tags_array($this->file_text, $this->module);
     }
 
     public function delete_file() {}
 
-    protected function _figure_out_where_to_save_file(){}
+    protected function _figure_out_where_to_save_file(){
+        $output = $this->saveFileBackToGithubFolder();
+        return $output;
+    }
+
+    protected function saveFileBackToGithubFolder() {
+        $output = array();
+        watchdog('test_file_text', print_r($this->file_text, 1));
+        $response = file_unmanaged_save_data($this->file_text, $this->full_path_with_file, $replace = FILE_EXISTS_REPLACE);
+        if($response == FALSE) {
+            $message = t('The file could not be saved !file', array('!file' => $this->full_path_with_file . '/' . $this->filename));
+            throw new \RuntimeException($message);
+        } else {
+            watchdog('test_what_do_we_have', print_r($this, 1));
+            $file_url = l('click here', $this->relative_path, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
+            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+            watchdog('github_behat_editor', "%date File made %name", $variables = array('%date' => $date, '%name' => $response), $severity = WATCHDOG_NOTICE, $link = $file_url);
+            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $this->filename)), 'file' => $file_url, 'error' => '0');
+        }
+        return $output;
+    }
 
     protected function _save_file_to_module_folder() {}
 
@@ -161,8 +193,6 @@ class FileBuilder extends File {
     protected function _save_path() {}
 
     protected function _save_file_to_temp_folder() { }
-
-    protected function _parse_questions() {}
 
     protected function _turn_file_to_array($file) {}
 
@@ -185,8 +215,6 @@ class FileBuilder extends File {
     protected function _pop_first_word($string){}
 
     protected function _question_wrapper($string) {}
-
-    protected function _create_file(){}
 
     protected function _new_line($new_line) {}
 

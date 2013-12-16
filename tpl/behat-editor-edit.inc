@@ -31,10 +31,19 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     libraries_load('behat_editor_data_table');
     libraries_load('behat_editor_date_format');
     composer_manager_register_autoloader();
-    $file = new Drupal\BehatEditor\File(array(), $module, $filename, FALSE);
-    $file_info = $file->get_file_info();
-    //Product the HTML from the File in a format it will have all the markup needed to
-    //  build / edit a test
+
+
+    $file = new BehatEditor\FileBuilder();
+    $filename = array_pop(arg());
+    $module = arg(3);
+    $params = array(
+        'service_path' => arg(),
+        'module' => $module,
+        'filename' => $filename,
+        'action' => 'edit'
+    );
+    $file_info = $file->buildObject($params);
+
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
 
     $path = drupal_get_path('module', 'behat_editor');

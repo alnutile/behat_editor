@@ -160,20 +160,6 @@ function behat_editor_services_resources() {
                             'optional' => FALSE,
                         ),
                         array(
-                            'name' => 'module',
-                            'type' => 'string',
-                            'description' => 'The name of the module',
-                            'source' => array('path' => 2),
-                            'optional' => FALSE,
-                        ),
-                        array(
-                            'name' => 'filename',
-                            'type' => 'string',
-                            'description' => 'The name of the file',
-                            'source' => array('path' => 3),
-                            'optional' => FALSE,
-                        ),
-                        array(
                             'name' => 'scenario',
                             'type' => 'array',
                             'description' => 'Informs Run that what steps to take eg view or create then view.',
