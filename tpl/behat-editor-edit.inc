@@ -43,6 +43,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
         'action' => 'edit'
     );
     $file_info = $file->buildObject($params);
+    watchdog('test_params_on_edit', print_r($file_info, 1));
 
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
 

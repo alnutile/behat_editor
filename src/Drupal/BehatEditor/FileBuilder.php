@@ -146,12 +146,9 @@ class FileBuilder extends File {
 
     public function save_html_to_file($scenario = array()) {
         $this->scenario = $scenario;
-        watchdog('test_edited_scenario', print_r($scenario, 1));
-        $this->scenario_array = $this->_parse_questions();
-        $this->file_text = $this->_create_file();
-
-        //Set the Text
-        $output = $this->_figure_out_where_to_save_file();
+        $this->scenario_array = parent::_parse_questions();
+        $this->file_text =  parent::_create_file();
+        $output = self::_figure_out_where_to_save_file();
         return $output;
     }
 
@@ -163,28 +160,6 @@ class FileBuilder extends File {
     }
 
     public function delete_file() {}
-
-    protected function _figure_out_where_to_save_file(){
-        $output = $this->saveFileBackToGithubFolder();
-        return $output;
-    }
-
-    protected function saveFileBackToGithubFolder() {
-        $output = array();
-        watchdog('test_file_text', print_r($this->file_text, 1));
-        $response = file_unmanaged_save_data($this->file_text, $this->full_path_with_file, $replace = FILE_EXISTS_REPLACE);
-        if($response == FALSE) {
-            $message = t('The file could not be saved !file', array('!file' => $this->full_path_with_file . '/' . $this->filename));
-            throw new \RuntimeException($message);
-        } else {
-            watchdog('test_what_do_we_have', print_r($this, 1));
-            $file_url = l('click here', $this->relative_path, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
-            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-            watchdog('github_behat_editor', "%date File made %name", $variables = array('%date' => $date, '%name' => $response), $severity = WATCHDOG_NOTICE, $link = $file_url);
-            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $this->filename)), 'file' => $file_url, 'error' => '0');
-        }
-        return $output;
-    }
 
     protected function _save_file_to_module_folder() {}
 

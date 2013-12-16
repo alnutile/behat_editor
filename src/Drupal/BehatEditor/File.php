@@ -117,7 +117,7 @@ class File {
     public function save_html_to_file() {
         //@todo throw expection if this is a fail
         $this->scenario_array = self::_parse_questions();
-        $this->feature =  self::_create_file();
+        $this->file_text =  self::_create_file();
         $output = self::test_create_file_scenario_array();
         return $output;
     }
@@ -248,7 +248,7 @@ class File {
      */
     protected function _save_file_to_module_folder() {
         $full_path = self::_save_path();
-        $response = file_put_contents("{$full_path}/{$this->filename}", $this->feature);
+        $response = file_put_contents("{$full_path}/{$this->filename}", $this->file_text);
         $output = array();
         if($response == FALSE) {
             watchdog('behat_editor', "File could not be made...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
@@ -287,7 +287,7 @@ class File {
     protected function _save_file_to_temp_folder() {
         $folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
         $path = file_build_uri("/{$folder}/");
-        $response = file_unmanaged_save_data($this->feature, $path . '/' . $this->filename, $replace = FILE_EXISTS_REPLACE);
+        $response = file_unmanaged_save_data($this->file_text, $path . '/' . $this->filename, $replace = FILE_EXISTS_REPLACE);
         if($response == FALSE) {
             $message = t('The file could not be saved !file', array('!file' => $path . '/' . $this->filename));
             throw new \RuntimeException($message);
