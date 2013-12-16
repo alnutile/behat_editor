@@ -44,7 +44,6 @@ class FileBuilder extends File {
         $this->module = $params['module'];
         $this->filename = $params['filename'];
         $path = drupal_get_path('module', $this->module);
-        watchdog('test_line_47', print_r($params, 1));
         if(!empty($path)) {
             $file_object = $this->buildFileObjectFromModule($params, $path);
             watchdog('test_params_50', print_r($file_object, 1));
@@ -52,20 +51,15 @@ class FileBuilder extends File {
         } elseif($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
             $path = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
             $file_object = $this->buildFileObjectFromBehatTests($params, $path);
-            watchdog('test_params_54', print_r($file_object, 1));
             return $file_object;
         } else {
             //offer alter
             drupal_alter('behat_editor_build_path', $data, $params);
-            watchdog('test_line_61', print_r($params, 1));
             if(is_array($data) || is_array($params)) {
-                watchdog('test_line_62_data', print_r($data, 1));
-                watchdog('test_line_63_params', print_r($params, 1));
                 if(empty($data)) {
                     $data = $params;
                 }
                 $file_object = $this->buildFileObjectFromHook($data);
-                watchdog('test_params_64', print_r($file_object, 1));
                 return $file_object;
             }
         }
