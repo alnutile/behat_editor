@@ -77,7 +77,6 @@ class FileBuilder extends File {
      * @return fileObject
      */
     protected function buildFileObjectFromHook(array $data){
-        watchdog('test_run_on_hook', print_r($data, 1));
 
         $this->root_folder = $data['subpath'];
         $this->full_path =  $data['absolute_path'];

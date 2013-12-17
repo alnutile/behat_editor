@@ -56,7 +56,6 @@ function behat_editor_create_and_run_api($action, $scenario, $settings = array()
         'action' => $action,
         'parse_type' => 'file',
     );
-    watchdog('test_params_on_run', print_r($params, 1));
     $file_object = $file->buildObject($params);
     $response = $file->save_html_to_file($scenario);
     //Make sure the file was made

@@ -140,7 +140,6 @@ class File {
      * @return array
      */
     public function get_file_info() {
-        watchdog('test_file_path_in_file_class', print_r($this, 1));
         if(file_exists($this->full_path_with_file) == FALSE) {
 
             $message = t('The file does not exist !file', array('!file' => $this->full_path_with_file));
@@ -244,7 +243,6 @@ class File {
     protected function _save_file_to_absolute_path(){
         $output = array();
         $response = file_unmanaged_save_data($this->file_text, $this->full_path_with_file, $replace = FILE_EXISTS_REPLACE);
-        watchdog('test_response_of_save', print_r($response, 1));
         if($response == FALSE) {
             $message = t('The file could not be saved !file .....', array('!file' => $this->full_path_with_file . '/' . $this->filename));
             //throw new \RuntimeException($message);
@@ -677,7 +675,6 @@ class File {
      */
     protected function _create_file(){
         $file = '';
-        watchdog('test_create_file_scenario_array', print_r($this->scenario_array, 1));
         foreach($this->scenario_array as $key) {
             $new_line = self::_new_line($key['new_line']);
             $new_line_above = self::_new_line($key['new_line_above']);
