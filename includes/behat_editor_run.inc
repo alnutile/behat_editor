@@ -18,7 +18,7 @@ use Drupal\BehatEditor,
  */
 function behat_editor_run_api($action, $settings) {
     composer_manager_register_autoloader();
-
+    //@todo make a better interface for this class
     $file_object = _setFileObject($settings, 'run');
     $res = new BehatEditorRun($file_object);
     $run_test_response = $res->exec(FALSE, $settings);
@@ -45,6 +45,8 @@ function behat_editor_run_api($action, $settings) {
  */
 function behat_editor_create_and_run_api($action, $scenario, $settings = array()) {
     composer_manager_register_autoloader();
+
+    //@todo make a better interface for this class
     //@todo tighten this up so it can be shared with above
     $file = new Drupal\BehatEditor\FileBuilder();
     $path = explode('/', $settings['path']);

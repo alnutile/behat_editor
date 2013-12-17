@@ -24,6 +24,7 @@ function behat_editor_view_form($form, $form_state) {
     libraries_load('behat_editor_data_table');
     libraries_load('behat_editor_date_format');
 
+    //@todo make this a controller to talk to a model based on the FileBuilder
     $file = new BehatEditor\FileBuilder();
     $filename = array_pop(arg());
     $module = arg(3);
