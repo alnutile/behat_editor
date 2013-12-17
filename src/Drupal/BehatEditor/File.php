@@ -242,14 +242,15 @@ class File {
 
     protected function _save_file_to_absolute_path(){
         $output = array();
+        watchdog('test_save_this', print_r($this, 1));
         $response = file_unmanaged_save_data($this->file_text, $this->full_path_with_file, $replace = FILE_EXISTS_REPLACE);
         if($response == FALSE) {
-            $message = t('The file could not be saved !file .....', array('!file' => $this->full_path_with_file . '/' . $this->filename));
+            $message = t('The file could not be saved !file', array('!file' => $this->full_path_with_file . '/' . $this->filename));
             //throw new \RuntimeException($message);
         } else {
             $file_url = l('click here', $this->relative_path, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
             $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $this->filename)), 'file' => $file_url, 'error' => '0');
+            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $file_url, 'error' => '0');
         }
         return $output;
     }
