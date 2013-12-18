@@ -21,18 +21,18 @@
      And I press "scenario_button"
      And I fill in "edit-url" with "http://saucelabs.com/test/guinea-pig"
      And I press "Add"
-     And I fill in "see_not_see_some_text" with "Selenium"
-     And I press "see_not_see"
-     And I fill in "edit-checkbox" with "unchecked_checkbox"
-     And I press "edit-checkbox-button"
+     And I fill in "then_i_should_see_text" with "Selenium"
+     And I press "then_i_should_see_button"
+     And I fill in "edit-when-i-check-uncheck-css" with "unchecked_checkbox"
+     And I press "edit-when-i-check-uncheck-button"
      Then I should see "And I check \"unchecked_checkbox\""
      And I follow "Run Test"
      And I wait for "5" seconds
      And I should see "Test successful!"
      And I fill in sectionOneTag
      And I fill in featuresTag
-     And I fill in "see_not_see_some_text" with "Bob"
-     And I press "see_not_see"
+     And I fill in "then_i_should_see_text" with "Bob"
+     And I press "then_i_should_see_button"
      And I follow "Run Test"
      And I wait for "4" seconds
      And I should see "Test successful!"
@@ -52,6 +52,9 @@
  
    Scenario: Admin Index page Edit and Delete
      Given I am on "/admin/behat/index"
+     And I wait for "1" seconds
+     And I press "Next"
+     And I wait for "1" seconds
      Then I follow "tests_of_tests.feature"
      And I wait for "1" seconds
      And I follow "Edit Test"
@@ -74,7 +77,7 @@
 
    @batch
    Scenario: And I visit the batch area Tags
-     Given I am on "admin/behat/bulk"
+     Given I am on "/admin/behat/bulk"
      And I check "edit-dashboard-local"
      And I press "Execute"
      And I wait for "2" seconds

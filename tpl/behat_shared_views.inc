@@ -697,6 +697,79 @@ function _behat_editor_questions_form() {
         ),
         '#suffix' => '<hr>'
     );
+    
+    $form['questions']['lower_level']['then_i_destroy_my_cookies']['then_i_destroy_my_cookies_item'] = array(
+        '#title' => 'Then I destroy my cookies',
+        '#type' => 'item',
+        '#prefix' => '<div data-type="qualifier" class="then_i_destroy_my_cookies_group">',
+        '#suffix' => '</div>',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'then_i_destroy_my_cookies_group'),
+        ),
+    );
+    
+    $form['questions']['lower_level']['then_i_destroy_my_cookies']['then_i_destroy_my_cookies_button'] = array(
+        '#type' => 'button',
+        '#name' => 'then_i_destroy_my_cookies_button',
+        '#description' => t('deletes all cookies'),
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('then_i_destroy_my_cookies_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+    
+    $form['questions']['lower_level']['then_url_should_redirect_to']['then_url_should_redirect_to_text'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Then url should redirect to'),
+        '#name' => 'then_url_should_redirect_to_text',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'then_url_should_redirect_to_group'),
+            'placeholder' =>  t('200|400|401'),
+            'data-type' => array('textfield'),
+            'data-strip-quotes' => array('true'),
+        ),
+    );
+    
+    $form['questions']['lower_level']['then_url_should_redirect_to']['then_url_should_redirect_to_button'] = array(
+        '#type' => 'button',
+        '#name' => 'then_url_should_redirect_to_button',
+        '#description' => t('checks if the url gets redirected to url'),
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('then_url_should_redirect_to_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+    
+    $form['questions']['lower_level']['given_i_wait_for_arg_seconds']['given_i_wait_for_arg_seconds_text'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Given I wait for'),
+        '#name' => 'given_i_wait_for_arg_seconds_text',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'given_i_wait_for_arg_seconds_group'),
+            'placeholder' =>  t('200|400|401'),
+            'data-type' => array('textfield'),
+            'data-strip-quotes' => array('true'),
+        ),
+    );
+    
+    $form['questions']['lower_level']['given_i_wait_for_arg_seconds']['given_i_wait_for_arg_seconds_button'] = array(
+        '#type' => 'button',
+        '#name' => 'given_i_wait_for_arg_seconds_button',
+        '#description' => t('Waits for n seconds'),
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('given_i_wait_for_arg_seconds_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
 
     return $form;
 }
