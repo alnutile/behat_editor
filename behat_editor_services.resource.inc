@@ -115,6 +115,13 @@ function behat_editor_services_resources() {
                             'source' => array('path' => '1'),
                             'optional' => FALSE,
                         ),
+                        array(
+                            'name' => 'settings',
+                            'type' => 'array',
+                            'description' => 'USid and GSid ids for the related behat settings',
+                            'source' => array('data' => 'settings'),
+                            'optional' => TRUE,
+                        ),
                     ),
                 ),
                 'index' => array(

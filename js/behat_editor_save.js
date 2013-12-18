@@ -17,7 +17,7 @@
                             {
                                 "module": module,
                                 "filename": filename,
-                                "path": window.location.pathname,
+                                "path": window.location.pathname
                             }
                     };
                     var data = Drupal.behat_editor.action('PUT', token, parameters, url);

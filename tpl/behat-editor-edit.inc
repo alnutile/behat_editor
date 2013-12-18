@@ -32,7 +32,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     libraries_load('behat_editor_date_format');
     composer_manager_register_autoloader();
 
-
+    $_SESSION['delete_path'] = arg();
     $file = new BehatEditor\FileBuilder();
     $filename = array_pop(arg());
     $module = arg(3);

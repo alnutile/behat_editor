@@ -138,7 +138,6 @@ class BehatEditorRun {
         $command['config'] = "--config=\"$this->behat_yml\"";
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
-
         exec($command, $output, $return_var);
         $behat_yml_path->deleteBehatYmlFile();
 

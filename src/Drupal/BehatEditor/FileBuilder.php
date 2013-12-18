@@ -160,8 +160,6 @@ class FileBuilder extends File {
         $this->tags_array = $this->_tags_array($this->file_text, $this->module);
     }
 
-    public function delete_file() {}
-
     protected function _save_file_to_module_folder() {}
 
     protected function _linkable_path() { }

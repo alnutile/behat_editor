@@ -11,9 +11,19 @@
             $('button.confirm-delete').click(function(e){
                 $('#beModal').modal('hide');
                 var url = $('a.delete').attr('href');
-                var parameters = {};
+                var url_args = window.location.pathname;
+                var url_args_array = url_args.split('/');
+                var module = url_args_array[4];
+                var filename = url_args_array[url_args_array.length - 1];
+                var parameters = {
+                    "settings":
+                    {
+                        "module": module,
+                        "filename": filename,
+                        "path": window.location.pathname
+                    }
+                };
                 var data = Drupal.behat_editor.action('DELETE', token, parameters, url);
-                var filename = Drupal.behat_editor.split_filename($('input[name=filename]').val());
                 if(data.error == 0) {
                     window.location.replace("/admin/behat/index");
                 }

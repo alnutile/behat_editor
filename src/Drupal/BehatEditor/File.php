@@ -205,20 +205,21 @@ class File {
      * @return string
      */
     public function delete_file() {
-            $file = self::get_file_info();
-            $response = file_unmanaged_delete($file['absolute_path_with_file']);
-            if($response == FALSE) {
-                watchdog('behat_editor', "File could not be deleted...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
-                $output = array('message' => "Error file could not be deleted", 'file' => $response, 'error' => '1');
-            } else {
-                $gherkin_linkable_path = '';
-                $url = '';
-                $file_url = '';
-                $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-                watchdog('behat_editor', "%date File deleted %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
-                $output =  array('message' => t('@date: <br> File deleted !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
-            }
-            return $output;
+        $file = self::get_file_info();
+        watchdog('test_this_at_delete', print_r($this, 1));
+        $response = file_unmanaged_delete($this->full_path_with_file);
+        if($response == FALSE) {
+            watchdog('behat_editor', "File could not be deleted...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+            $output = array('message' => "Error file could not be deleted", 'file' => $response, 'error' => '1');
+        } else {
+            $gherkin_linkable_path = '';
+            $url = '';
+            $file_url = '';
+            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+            watchdog('behat_editor', "%date File deleted %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
+            $output =  array('message' => t('@date: <br> File deleted !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
+        }
+        return $output;
     }
 
 
@@ -242,7 +243,6 @@ class File {
 
     protected function _save_file_to_absolute_path(){
         $output = array();
-        watchdog('test_save_this', print_r($this, 1));
         $response = file_unmanaged_save_data($this->file_text, $this->full_path_with_file, $replace = FILE_EXISTS_REPLACE);
         if($response == FALSE) {
             $message = t('The file could not be saved !file', array('!file' => $this->full_path_with_file . '/' . $this->filename));
