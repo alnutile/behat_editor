@@ -115,6 +115,15 @@ function behat_editor_menu() {
         'type' => MENU_CALLBACK,
     );
 
+    $items['admin/behat/delete_test'] =  array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('behat_editor_delete_test'),
+        'access arguments' => array('behat delete test'),
+        'file' => 'behat_editor_delete_test_form.inc',
+        'file path' => "$path/includes/",
+        'type' => MENU_CALLBACK,
+    );
+
     $items['admin/behat/bulk'] =  array(
         'page callback' => 'behat_editor_bulk_tags',
         'title' => 'Batch Tests',

@@ -41,17 +41,27 @@ class FileModel {
     public function save(){
         $output = array();
         $this->service_path_full = $this->params['service_path'];
-        $this->file_object = $this->getFile();
-        watchdog('test_save', print_r($this->file_object, 1));
-//        $this->scenario = $this->file_object['scenario'];
-//        //@todo use params type to decide on html or array process of file
-//        $this->scenario_array = $this->_parse_questions();
-//        $this->file_text =  $this->_process_text();
-//        watchdog('test_file_text', print_r($this->file_text, 1));
-//        $output = $this->_save_file_to_absolute_path();
+        $this->getFile();
+        $this->scenario = $this->params['scenario'];
+        $this->parse_type = $this->params['parse_type'];
+        //@todo use params type to decide on html or array process of file
+        $this->scenario_array = $this->_parse_questions();
+        $this->file_text =  $this->_process_text();
+        $output = $this->_save_file_to_absolute_path();
         return $output;
     }
 
+    public function deleteFile(){
+        $path = drupal_get_path('module', $this->params['module']);
+        if(!empty($path)) {
+            drupal_set_message(t('File could not be deleted it is part of a module'), 'error');
+            drupal_goto('admin/behat/index');
+        }
+        $this->service_path_full = $this->params['service_path'];
+        $this->getFile();
+        $response = file_unmanaged_delete($this->full_path_with_file);
+        return $response;
+    }
     /**
      * What folder to start in
      * module or public://
@@ -67,8 +77,8 @@ class FileModel {
         }
         $path = drupal_get_path('module', $this->module);
         if(!empty($path)) {
-            $file_object = $this->buildFileObjectFromModule($path);
-            return $file_object;
+            $this->buildFileObjectFromModule($path);
+            return $this->file_data;
         } else {
             $this->buildFileObjectFromPublic();
             return $this->file_data;
@@ -149,7 +159,7 @@ class FileModel {
         $direction = $this->parse_type;
         $scenario = array_values($this->scenario);
         foreach($scenario as $value) {
-            if($results = $this->string_type(trim($value), $scenario, $count, $direction)) {
+            if($results = $this->_string_type(trim($value), $scenario, $count, $direction)) {
                 if(array_key_exists('scenario', $results) || array_key_exists('feature', $results) || array_key_exists('background', $results)) {
                     $key = key($results);
                     foreach($results[$key] as $row) {
@@ -165,6 +175,33 @@ class FileModel {
         return $scenario_array;
     }
 
+    /**
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return mixed
+     */
+    protected function _string_type($string, $scenario, $count, $direction){
+        $compare = $this->_string_types();
+        foreach($compare as $key) {
+            if ($results = self::$key($string, $scenario, $count, $direction)) {
+                return $results;
+            }
+        }
+    }
+
+
+    /**
+     * Different functions used to parse the file
+     * Later we can add scenario_outline, background etc.
+     *
+     * @return array
+     */
+    protected function _string_types() {
+        $options = array('behat_editor_string_feature', 'behat_editor_string_scenario', 'behat_editor_string_background', 'behat_editor_string_steps');
+        return $options;
+    }
 
     /**
      * @param array $params
@@ -175,19 +212,16 @@ class FileModel {
      *   path of the module
      * @return fileObject
      */
-    protected function buildFileObjectFromModule(array $params){
-        $path = drupal_get_path('module', $this->module);
-        $service_path_full = $params['service_path'];
+    protected function buildFileObjectFromModule($path){
+        $service_path_full = $this->params['service_path'];
         $test_folder_and_test_file_name =  self::getNeededPath($service_path_full);
-        $test_folder = array_slice($test_folder_and_test_file_name, 0, -1);
+        $test_folder = array_slice($test_folder_and_test_file_name, 1, -1);
         $this->root_folder = $path;
         $this->full_path =  DRUPAL_ROOT . '/' . $this->root_folder . '/' . implode('/', $test_folder);
         $this->full_path_with_file =  $this->full_path . '/' . $this->filename;
         //Final Steps to read file and tags
         $this->test_folder_and_file = implode('/', $test_folder_and_test_file_name);
         $this->get_file_info();
-        $file_object = $this->setFileObject();
-        return $file_object;
     }
 
 
@@ -226,7 +260,7 @@ class FileModel {
             $message = t('The file does not exist !file', array('!file' => $this->full_path_with_file));
             //throw new \RuntimeException($message);
             drupal_set_message($message, 'error');
-            //drupal_goto('admin/index');
+            drupal_goto('admin/behat/index');
         } else {
             $file_text = self::read_file();
             $file_data = array(
@@ -347,7 +381,7 @@ class FileModel {
         if(!file_exists($this->full_path_with_file)) {
             $message = t('The file does not exist !file', array('!file' => $this->filename));
             drupal_set_message($message, 'error');
-            //drupal_goto('admin/behat/index');
+            drupal_goto('admin/behat/index');
         }
     }
 
@@ -363,6 +397,293 @@ class FileModel {
         $file_object['tags_array'] = '';
         $file_object['module'] = '';
         return $file_object;
+    }
+
+    /**
+     * Search for the Feature text
+     *
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return array
+     */
+    protected function behat_editor_string_feature($string, $scenario, $count, $direction) {
+        $results = array();
+        $first_word = self::_pop_first_word($string);
+        $options = array('Feature:');
+        if(in_array($first_word, $options)) {
+            switch($direction) {
+                case 'file':
+                    $tags = array();
+                    $tags[0] = self::_string_tags($scenario, $count - 1, 0, $direction);
+                    $feature_line[1] = array(
+                        'string' => $string,
+                        'spaces' => 0,
+                        'new_line' => 0,
+                        'new_line_above' =>  0,
+                    );
+                    $results['feature'] = $tags + $feature_line;
+                    return $results;
+                case 'html_view':
+                    $tags = array();
+                    $tags[0] = self::_string_tags($scenario, $count - 1, 0, $direction);
+                    $feature_line[1] = array(
+                        'data' => $string,
+                        'class' => array('feature', "spaces-none")
+                    );
+                    $results['feature'] = $tags + $feature_line;
+                    return $results;
+                case 'html_edit':
+                    $tags = array();
+                    $tags = self::_string_tags($scenario, $count - 1, 0, $direction);
+                    //@todo remove number key should be automatic
+                    $features_tags[0] = array(
+                        'data' => "<strong>Feature Tags:</strong>",
+                        'class' => array('ignore'),
+                    );
+
+                    $features_tag_input[1] = array(
+                        'data' => array('features_tag_value' => array('#id' => 'features-tagit-values', '#type' => 'hidden', '#name' => 'features_tag_value', '#value'=>$tags)),
+                        'class' => array('tag hidden'),
+                        'id' => 'features-tags'
+                    );
+
+                    $features_tag_it[2] = array(
+                        'data' => '<ul id="features-tagit-input"></ul><div class="help-block">Start each tag with @. Just separate by comma for more than one tags. Tags can not have spaces.</div>',
+                        'class' => array('ignore'),
+                    );
+
+                    $feature_line[3] = array(
+                        'data' => $string,
+                        'class' => array('feature')
+                    );
+                    $results['feature'] = $features_tags + $features_tag_input + $features_tag_it + $feature_line;
+                    return $results;
+            }
+        }
+    }
+
+    /**
+     * Search for the Scenario Text
+     *
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return array
+     */
+    protected function behat_editor_string_scenario($string, $scenario, $count, $direction) {
+        $results = array();
+        $first_word = self::_pop_first_word($string);
+        $options = array('Scenario:');
+        drupal_alter('behat_editor_string_feature', $options);
+        if(in_array($first_word, $options)) {
+            switch($direction) {
+                case 'file':
+                    $tags = array();
+                    $tags[0] = self::_string_tags($scenario, $count - 1, 2, $direction);
+                    $scenario_line[1] = array(
+                        'string' => $string,
+                        'spaces' => 2,
+                        'new_line' => 0,
+                        'new_line_above' =>  0,
+                    );
+                    $results['scenario'] = $tags + $scenario_line;
+                    return $results;
+                case 'html_view':
+                    $tags = array();
+                    $tags[0] = self::_string_tags($scenario, $count - 1, 2, $direction);
+                    $scenario_line[1] = array(
+                        'data' => $string,
+                        'class' => array("spaces-two")
+                    );
+                    $results['scenario'] = $tags + $scenario_line;
+                    return $results;
+                case 'html_edit':
+                    $tags = array();
+                    $tags = self::_string_tags($scenario, $count - 1, 2, $direction);
+                    $uid = rand(100000000, 900000000);
+                    $scenario_tag_input[0] = array(
+                        'data' => array("scenario-tags-$uid" => array('#class' => 'section-tag', '#id' => "scenario-values-$uid", '#type' => 'hidden', '#value' => $tags)),
+                        //'data' => array('features_tag_value' => array('#id' => "scenario-values-$uid", '#type' => 'hidden', '#name' => 'features_tag_value', '#value'=>$tags)),
+                        'class' => array('tag')
+                    );
+                    $scenario_tag_it[2] = array(
+                        'data' => '<i class="glyphicon glyphicon-move pull-left"></i><ul id="scenario-input-' . $uid . '" class="tagit" data-scenario-id="'.$uid.'"></ul>',
+                        'class' => array('ignore'),
+                    );
+                    $scenario_line[3] = array(
+                        'data' => self::_question_wrapper($string),
+                        'class' => array('name'),
+                        'data-scenario-tag-box' => "scenario-values-$uid"
+                    );
+                    $results['scenario'] = $scenario_tag_input + $scenario_tag_it + $scenario_line;
+                    return $results;
+            }
+
+        }
+    }
+
+
+    /**
+     * Search for the Background Text
+     * http://docs.behat.org/guides/1.gherkin.html#backgrounds
+     *
+     * @param $string
+     * @param $scenario
+     * @param $count
+     * @param $direction
+     * @return array
+     */
+    protected function behat_editor_string_background($string, $scenario, $count, $direction) {
+        $results = array();
+        $first_word = self::_pop_first_word($string);
+        $options = array('Background:');
+        drupal_alter('behat_editor_string_feature', $options);
+        if(in_array($first_word, $options)) {
+            switch($direction) {
+                case 'file':
+                    $scenario_line[1] = array(
+                        'string' => $string,
+                        'spaces' => 2,
+                        'new_line' => 0,
+                        'new_line_above' =>  0,
+                    );
+                    $results['background'] = $scenario_line;
+                    return $results;
+                case 'html_view':
+                    $scenario_line[1] = array(
+                        'data' => $string,
+                        'class' => array("spaces-two")
+                    );
+                    //$results['background'] = $tags + $scenario_line;
+                    $results['background'] = $scenario_line;
+                    return $results;
+                case 'html_edit':
+                    $scenario_line[0] = array(
+                        'data' => self::_question_wrapper($string),
+                        'class' => array('name'),
+                    );
+                    $results['background'] = $scenario_line;
+                    return $results;
+            }
+
+        }
+    }
+
+    /**
+     * Search for Tags in Scenario
+     *
+     * @param $scenario_array
+     * @return array
+     */
+    protected function _parse_tags($scenario_array) {
+        $tags = array();
+        foreach($scenario_array as $key => $value) {
+            if(strpos('@', $value)) {
+                $string = str_replace(',', '', $value);
+                $tags[] = explode(' ', $string);
+            }
+        }
+        return $tags;
+    }
+
+    /**
+     * Search for tags when
+     * searching for Features and Scenario lines
+     *
+     * @param $scenario
+     * @param $count
+     * @param int $spaces
+     * @param $direction
+     * @return array|mixed
+     */
+    protected function _string_tags($scenario, $count, $spaces = 0, $direction) {
+
+        if(array_key_exists($count, $scenario)) {
+            $string = $scenario[$count];
+            $options = array('@');
+            foreach($options as $key => $value) {
+                if(strpos($string, $value) !== false) {
+                    switch($direction) {
+                        case 'file':
+                            $string = str_replace(',', ' ', $string);
+                            return array(
+                                'string' => $string,
+                                'spaces' => $spaces,
+                                'new_line' => 0,
+                                'new_line_above' => ($count > 1) ? 1 : 0,
+                            );
+                        case 'html_view':
+                            $results = array(
+                                'data' => $string,
+                                'class' => array('tag', "spaces-$spaces")
+                            );
+                            return $results;
+                        case 'html_edit':
+                            return str_replace(' ', ', ', $string);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Parse Steps
+     *
+     * @param $string
+     * @param $parent
+     * @param $count
+     * @param $direction
+     * @return array
+     */
+    protected function behat_editor_string_steps($string, $parent, $count, $direction) {
+        $first_word = self::_pop_first_word($string);
+        $options = array('Given', 'When', 'Then', 'And', 'But');
+        drupal_alter('behat_editor_string_steps', $options);
+        if(in_array($first_word, $options)) {
+            switch($direction) {
+                case 'file':
+                    return array(
+                        'string' => $string,
+                        'spaces' => 4,
+                        'new_line' => 0,
+                        'new_line_above' => 0
+                    );
+                case 'html_view':
+                    return  array(
+                        'data' => $string,
+                        'class' => array('steps', "spaces-four")
+                    );
+                case 'html_edit':
+                    return  array(
+                        'data' => self::_question_wrapper($string),
+                        'class' => array('steps', "spaces-four")
+                    );
+            }
+        }
+    }
+
+    /**
+     * Get the first word from a line
+     *
+     * @param $string
+     * @return mixed
+     */
+    protected function _pop_first_word($string){
+        $first_word = explode(' ', $string);
+        return array_shift($first_word);
+    }
+
+    /**
+     * Wrap the editable questions in the close string
+     *
+     * @param $string
+     * @return string
+     */
+    protected function _question_wrapper($string) {
+        return '<i class="glyphicon glyphicon-move pull-left"></i>' . $string . '<i class="remove glyphicon glyphicon-remove-circle"></i>';
     }
 
 

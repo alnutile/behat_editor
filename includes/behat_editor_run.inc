@@ -19,7 +19,16 @@ use Drupal\BehatEditor,
 function behat_editor_run_api($action, $settings) {
     composer_manager_register_autoloader();
     //@todo make a better interface for this class
-    $file_object = _setFileObject($settings, 'run');
+    $file = new Drupal\BehatEditor\FileController();
+    $params = array(
+        'service_path' => $settings['path'],
+        'module' => $settings['module'],
+        'filename' => $settings['filename'],
+        'action' => $action
+    );
+
+    $file_object = $file->show($params);
+
     $res = new BehatEditorRun($file_object);
     $run_test_response = $res->exec(FALSE, $settings);
 
@@ -49,20 +58,19 @@ function behat_editor_create_and_run_api($action, $scenario, $settings = array()
     //@todo make a better interface for this class
     //@todo tighten this up so it can be shared with above
     $file = new Drupal\BehatEditor\FileController();
-    $path = explode('/', $settings['path']);
-    unset($path[0]); //comes in w/ empty item
     $params = array(
-        'service_path' => $path,
+        'service_path' => $settings['path'],
         'module' => $settings['module'],
         'filename' => $settings['filename'],
-        'action' => $action,
+        'action' => 'update',
+        'scenario' => $scenario,
         'parse_type' => 'file',
     );
-    $file_object = $file->buildObject($params);
-    $response = $file->save_html_to_file($scenario);
+    $response = $file->save($params);
     //Make sure the file was made
     if($response['file'] != FALSE){
-        $res = new BehatEditorRun($file_object);
+        //@todo return full object on save
+        $res = new BehatEditorRun($file->show($params));
         $run_test_response = $res->exec(FALSE, $settings);
         $response = $run_test_response['response'];
 
@@ -78,22 +86,6 @@ function behat_editor_create_and_run_api($action, $scenario, $settings = array()
     }
 }
 
-function _setFileObject($settings, $action){
-    composer_manager_register_autoloader();
-
-    $file = new Drupal\BehatEditor\FileController();
-    $path = explode('/', $settings['path']);
-    unset($path[0]); //comes in w/ empty item
-    $params = array(
-        'service_path' => $path,
-        'module' => $settings['module'],
-        'filename' => $settings['filename'],
-        'action' => $action
-    );
-
-    $file_object = $file->buildObject($params);
-    return $file_object;
-}
 
 
 

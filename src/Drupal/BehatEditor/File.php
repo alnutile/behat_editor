@@ -207,7 +207,6 @@ class File {
      */
     public function delete_file() {
         $file = self::get_file_info();
-        watchdog('test_this_at_delete', print_r($this, 1));
         $response = file_unmanaged_delete($this->full_path_with_file);
         if($response == FALSE) {
             watchdog('behat_editor', "File could not be deleted...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);

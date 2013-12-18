@@ -32,7 +32,6 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     libraries_load('behat_editor_date_format');
     composer_manager_register_autoloader();
 
-    $_SESSION['delete_path'] = arg();
     $file = new BehatEditor\FileController();
     $filename = array_pop(arg());
     $module = arg(3);
@@ -43,6 +42,9 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
         'filename' => $filename,
         'action' => 'edit'
     );
+    //need to pass this for delete to work
+    $_SESSION['delete_path'] = $service_path;
+
     $file_info = $file->show($params);
 
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));

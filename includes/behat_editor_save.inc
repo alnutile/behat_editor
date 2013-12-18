@@ -12,11 +12,6 @@ use Drupal\BehatEditor\File;
 
 function behat_editor_update_api($module, $filename, $scenario, $settings = array()) {
     composer_manager_register_autoloader();
-    watchdog('test_module', print_r($module, 1));
-    watchdog('test_filename', print_r($filename, 1));
-    watchdog('test_scenario', print_r($scenario, 1));
-    watchdog('test_settings', print_r($settings, 1));
-
     $file = new Drupal\BehatEditor\FileController();
     $action = 'update';
     $params = array(
@@ -25,11 +20,12 @@ function behat_editor_update_api($module, $filename, $scenario, $settings = arra
         'filename' => $settings['filename'],
         'action' => $action,
         'parse_type' => 'file',
+        'scenario' => $scenario
     );
     $response = $file->save($params);
 
     if($response['file'] != FALSE){
-        $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $file_object);
+        $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $response['message']);
         return $results;
     } else {
         return array('file' => array('message' => $response), 'error' => 1);

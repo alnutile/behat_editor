@@ -111,7 +111,6 @@
     }
 
     Drupal.behat_editor.renderMessage = function(data, non_noty) {
-
         if(data.error == 1) {
             var message = data.message;
             if(Drupal.behat_editor.ifNoty && non_noty === undefined){

@@ -25,9 +25,6 @@ function behat_editor_delete_api($action, $module, $filename, $settings = array(
     $file = new Drupal\BehatEditor\FileController();
     //  since i could not pass params
     $path = $_SESSION['delete_path'];
-    watchdog('test_path_after_before_slice', print_r($path, 1));
-    $path = array_slice($path, 3);
-    watchdog('test_path_after_slice', print_r($path, 1));
 
     $path_pop = $path;
     $filename = array_pop($path_pop);
@@ -40,10 +37,8 @@ function behat_editor_delete_api($action, $module, $filename, $settings = array(
         'parse_type' => 'file',
     );
 
-    $file_object = $file->buildObject($params);
-    watchdog('test_fo', print_r($file_object, 1));
+    $response = $file->delete($params);
 
-    $response = $file->delete_file();
     if($response != FALSE){
         $results = array('file' => $filename, 'test' => '', 'error' => 0, 'message' => 'File Deleted');
         drupal_set_message("File deleted");

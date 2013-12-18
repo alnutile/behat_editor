@@ -51,33 +51,22 @@ class FileController extends File {
         return $file->getFile();
     }
 
-    /**
-     * @param $string
-     * @param $scenario
-     * @param $count
-     * @param $direction
-     * @return mixed
-     */
-    protected function _string_type($string, $scenario, $count, $direction){
-        $compare = $this->_string_types();
-        foreach($compare as $key) {
-            if ($results = self::$key($string, $scenario, $count, $direction)) {
-                return $results;
-            }
+    public function delete($params = array()) {
+        $this->module = $params['module'];
+        $this->filename = $params['filename'];
+        $file = new FileModel($params);
+        $output = array();
+        $response = $file->deleteFile();
+        if($response == FALSE) {
+            watchdog('behat_editor', "File could not be deleted...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+            $output = array('message' => "Error file could not be deleted", 'file' => $response, 'error' => '1');
+        } else {
+            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+            watchdog('behat_editor', "%date File deleted %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $this->filename);
+            $output =  array('message' => t('@date: <br> File deleted !name to download ', array('@date' => $date, '!name' => $this->filename)), 'file' => $this->filename, 'error' => '0');
         }
+        return $output;
     }
-
-    /**
-     * Different functions used to parse the file
-     * Later we can add scenario_outline, background etc.
-     *
-     * @return array
-     */
-    protected function _string_types() {
-        $options = array('behat_editor_string_feature', 'behat_editor_string_scenario', 'behat_editor_string_background', 'behat_editor_string_steps');
-        return $options;
-    }
-
 
     protected function _save_file_to_absolute_path(){
         $this->full_path_with_file = $this->file_object['absolute_path_with_file'];
