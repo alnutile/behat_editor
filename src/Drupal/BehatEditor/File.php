@@ -141,9 +141,10 @@ class File {
      */
     public function get_file_info() {
         if(file_exists($this->full_path_with_file) == FALSE) {
-
             $message = t('The file does not exist !file', array('!file' => $this->full_path_with_file));
             //throw new \RuntimeException($message);
+            drupal_set_message($message, 'error');
+            drupal_goto('admin/index');
         } else {
             $file_text = self::read_file($this->full_path_with_file);
             $file_data = array(

@@ -120,10 +120,19 @@ class FileBuilder extends File {
         $this->root_folder = file_build_uri("/$path/");
         $this->full_path =  drupal_realpath($this->root_folder);
         $this->full_path_with_file =  $this->full_path . '/' . $this->filename;
+        $this->fileExistsCheck();
         $this->relative_path =  file_create_url($this->root_folder . '/' . $this->test_folder_and_file);
         $this->get_file_info();
         $file_object = $this->setFileObject();
         return $file_object;
+    }
+
+    protected function fileExistsCheck(){
+        if(!file_exists($this->full_path_with_file)) {
+            $message = t('The file does not exist !file', array('!file' => $this->full_path_with_file));
+            drupal_set_message($message, 'error');
+            drupal_goto('admin/behat/index');
+        }
     }
 
     /**
