@@ -9,6 +9,7 @@
                     var url = $(this).attr('href');
                     var url_args = window.location.pathname;
                     var url_args_array = url_args.split('/');
+                    var service_path = url_args_array.slice(4, url_args_array.length);
                     var module = url_args_array[4];
                     var filename = url_args_array[url_args_array.length - 1];
                     var parameters = {
@@ -17,7 +18,7 @@
                             {
                                 "module": module,
                                 "filename": filename,
-                                "path": window.location.pathname
+                                "path": service_path
                             }
                     };
                     var data = Drupal.behat_editor.action('PUT', token, parameters, url);

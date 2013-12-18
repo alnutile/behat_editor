@@ -21,8 +21,8 @@ function behat_editor_delete_api($action, $module, $filename, $settings = array(
     if(!isset($_SESSION['delete_path'])) {
         throw new \RuntimeException(t('Delete path not se in sessions'));
     }
-    //@todo make a controller class to help here and talk to the FileBuilder/Model
-    $file = new Drupal\BehatEditor\FileBuilder();
+    //@todo make a controller class to help here and talk to the FileController/Model
+    $file = new Drupal\BehatEditor\FileController();
     //  since i could not pass params
     $path = $_SESSION['delete_path'];
     watchdog('test_path_after_before_slice', print_r($path, 1));

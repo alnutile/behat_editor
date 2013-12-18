@@ -381,7 +381,7 @@ function behat_editor_form_alter(&$form, $form_state, $form_id) {
             drupal_set_message(t('You do not have a behat loaded yet. Did you run !composer_install via the Composer Manager?',
                 array('!composer_install' => l('composer install', 'admin/system/composer-manager'))), 'error');
         }
-        drupal_set_message(t('!icon Any @javascript tag will not be run. Only on SauceLabs can that tag be used.', array('!icon' => '<i class="glyphicon glyphicon-comment glyphicon-white"></i>')), 'info');
+        drupal_set_message(t('!icon Any @javascript tag will not be run unless you are using a vendor like Saucelabs or a local selenium server', array('!icon' => '<i class="glyphicon glyphicon-comment glyphicon-white"></i>')), 'info');
     }
 }
 

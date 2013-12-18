@@ -33,16 +33,17 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     composer_manager_register_autoloader();
 
     $_SESSION['delete_path'] = arg();
-    $file = new BehatEditor\FileBuilder();
+    $file = new BehatEditor\FileController();
     $filename = array_pop(arg());
     $module = arg(3);
+    $service_path = array_slice(arg(), 3, count(arg()));
     $params = array(
-        'service_path' => arg(),
+        'service_path' => $service_path,
         'module' => $module,
         'filename' => $filename,
         'action' => 'edit'
     );
-    $file_info = $file->buildObject($params);
+    $file_info = $file->show($params);
 
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
 

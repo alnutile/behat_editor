@@ -48,7 +48,7 @@ function behat_editor_create_and_run_api($action, $scenario, $settings = array()
 
     //@todo make a better interface for this class
     //@todo tighten this up so it can be shared with above
-    $file = new Drupal\BehatEditor\FileBuilder();
+    $file = new Drupal\BehatEditor\FileController();
     $path = explode('/', $settings['path']);
     unset($path[0]); //comes in w/ empty item
     $params = array(
@@ -81,7 +81,7 @@ function behat_editor_create_and_run_api($action, $scenario, $settings = array()
 function _setFileObject($settings, $action){
     composer_manager_register_autoloader();
 
-    $file = new Drupal\BehatEditor\FileBuilder();
+    $file = new Drupal\BehatEditor\FileController();
     $path = explode('/', $settings['path']);
     unset($path[0]); //comes in w/ empty item
     $params = array(

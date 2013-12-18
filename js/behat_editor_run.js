@@ -35,6 +35,7 @@
                 var url = $(this).attr('href');
                 var url_args = window.location.pathname;
                 var url_args_array = url_args.split('/');
+                var service_path = url_args_array.slice(4, url_args_array.length);
                 var module = url_args_array[4];
                 var filename = url_args_array[url_args_array.length - 1];
                 var base_url_usid = $('select#edit-users option:selected').val();
@@ -49,7 +50,7 @@
                             "base_url_gsid": base_url_gsid,
                             "os_version": os_version,
                             "browser_version": browser_version,
-                            "path": window.location.pathname,
+                            "path": service_path,
                             "filename": filename,
                             "module": module
                         }
@@ -63,7 +64,7 @@
                             "base_url_gsid": base_url_gsid,
                             "os_version": os_version,
                             "browser_version": browser_version,
-                            "path": window.location.pathname,
+                            "path": service_path,
                             "filename": filename,
                             "module": module
                         }

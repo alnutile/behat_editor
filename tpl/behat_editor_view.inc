@@ -24,12 +24,13 @@ function behat_editor_view_form($form, $form_state) {
     libraries_load('behat_editor_data_table');
     libraries_load('behat_editor_date_format');
 
-    //@todo make this a controller to talk to a model based on the FileBuilder
-    $file = new BehatEditor\FileBuilder();
+    //@todo make this a controller to talk to a model based on the FileController
+    $file = new BehatEditor\FileController();
     $filename = array_pop(arg());
     $module = arg(3);
+    $service_path = array_slice(arg(), 3, count(arg()));
     $params = array(
-        'service_path' => arg(),
+        'service_path' => $service_path,
         'module' => $module,
         'filename' => $filename,
         'action' => 'view'

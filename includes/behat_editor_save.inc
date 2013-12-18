@@ -2,25 +2,31 @@
 use Drupal\BehatEditor\File;
 
 /**
+ * @todo
+ * clean up the service
+ * it no longer works relative to the filename since it is a longer and dynamic url
+ *
  * @file functions needed to save the file
  * You can see the related js file as well in the js folder
  */
 
 function behat_editor_update_api($module, $filename, $scenario, $settings = array()) {
     composer_manager_register_autoloader();
-    $file = new Drupal\BehatEditor\FileBuilder();
-    $path = explode('/', $settings['path']);
+    watchdog('test_module', print_r($module, 1));
+    watchdog('test_filename', print_r($filename, 1));
+    watchdog('test_scenario', print_r($scenario, 1));
+    watchdog('test_settings', print_r($settings, 1));
+
+    $file = new Drupal\BehatEditor\FileController();
     $action = 'update';
-    unset($path[0]); //comes in w/ empty item
     $params = array(
-        'service_path' => $path,
+        'service_path' => $settings['path'],
         'module' => $settings['module'],
         'filename' => $settings['filename'],
         'action' => $action,
         'parse_type' => 'file',
     );
-    $file_object = $file->buildObject($params);
-    $response = $file->save_html_to_file($scenario);
+    $response = $file->save($params);
 
     if($response['file'] != FALSE){
         $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $file_object);

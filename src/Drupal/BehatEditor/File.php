@@ -118,7 +118,7 @@ class File {
         //@todo throw expection if this is a fail
         $this->scenario_array = self::_parse_questions();
         $this->file_text =  self::_create_file();
-        $output = self::test_create_file_scenario_array();
+        //$output = $this->test_create_file_scenario_array();
         return $output;
     }
 
@@ -144,7 +144,7 @@ class File {
             $message = t('The file does not exist !file', array('!file' => $this->full_path_with_file));
             //throw new \RuntimeException($message);
             drupal_set_message($message, 'error');
-            drupal_goto('admin/index');
+            //drupal_goto('admin/index');
         } else {
             $file_text = self::read_file($this->full_path_with_file);
             $file_data = array(
@@ -242,19 +242,6 @@ class File {
         }
     }
 
-    protected function _save_file_to_absolute_path(){
-        $output = array();
-        $response = file_unmanaged_save_data($this->file_text, $this->full_path_with_file, $replace = FILE_EXISTS_REPLACE);
-        if($response == FALSE) {
-            $message = t('The file could not be saved !file', array('!file' => $this->full_path_with_file . '/' . $this->filename));
-            //throw new \RuntimeException($message);
-        } else {
-            $file_url = l('click here', $this->relative_path, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
-            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $file_url, 'error' => '0');
-        }
-        return $output;
-    }
     /**
      * Save to module folder
      *
@@ -684,35 +671,6 @@ class File {
             $file = $file . "{$new_line_above}" . "{$spaces}" . $key['string'] . "{$new_line}\r\n";
         }
         return $file;
-    }
-
-    /**
-     * New line parse
-     *
-     * @param $new_line
-     * @return string
-     */
-    protected function _new_line($new_line) {
-        if($new_line == 1) {
-            return "\r\n";
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * Spaces needed to output the HTML or file to look
-     * right.
-     *
-     * @param $spaces
-     * @return string
-     */
-    protected function _spaces($spaces) {
-        $spaces_return = '';
-        for($i = 0; $i <= $spaces; $i++) {
-            $spaces_return = $spaces_return . " ";
-        }
-        return $spaces_return;
     }
 
     public static function fileObjecBuilder() {
