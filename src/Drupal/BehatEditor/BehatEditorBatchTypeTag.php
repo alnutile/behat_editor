@@ -67,7 +67,7 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
     }
 
     protected function wrapUp(&$fields) {
-        file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
+        //file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
         parent::wrapUp($fields);
     }
 
