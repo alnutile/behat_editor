@@ -5,13 +5,11 @@ namespace Drupal\BehatEditor;
 use Drupal\BehatEditor;
 
 /**
- * Class Files
- * @package Drupal\BehatEditor
- *
- * Find all tests and modules with tests
- * and build out the info needed by other modules
- *
+ *   @todo
+ *   This is slowly being replaced by FileModel and FileController classes
+ *   to make fore a less heavy file.
  */
+
 class Files {
     public $files = '';
     public $subpath = '';
@@ -51,7 +49,6 @@ class Files {
         } else {
              $module_array = self::getModuleFolders();
         }
-
         return $module_array;
 
     }

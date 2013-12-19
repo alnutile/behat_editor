@@ -58,8 +58,10 @@ function behat_editor_index() {
     //@todo convert to using the json index output
     //  see ticket #85 on github
 
-    $modules = new BehatEditor\Files();
-    $files_array = $modules->getFilesArray();
+    $modules = new BehatEditor\FileController();
+    //Was getFilesArray for Files
+    $files_array = $modules->index();
+    //Allow users to hook the list of files.
     drupal_alter('behat_editor_index', $files_array);
 
     $build['intro'] = array(

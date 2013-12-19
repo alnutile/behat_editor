@@ -30,12 +30,33 @@ class FileModel {
     protected $file_helpers;
     protected $service_path_full;
     protected $params;
+    protected $module_path;
+    protected $action_path;
     protected $file_object;
     protected $service_path;
     public $file_data;
 
     public function __construct($params = array()) {
         $this->params = $params;
+    }
+
+    public function createFile(){
+        $this->module = $this->params['module'];
+        $this->filename = $this->params['filename'];
+        $this->scenario = $this->params['scenario'];
+        $this->parse_type = $this->params['parse_type'];
+        $this->action = $this->params['action'];
+        $this->service_path_full = $this->params['service_path'];
+        $output = $this->save_html_to_file();
+        watchdog('test_output_createfile', print_r($output, 1));
+        return $output;
+    }
+
+    protected function save_html_to_file() {
+        $this->scenario_array = $this->_parse_questions();
+        $this->feature =  $this->_process_text();
+        $output = $this->_save_file_to_absolute_path();
+        return $output;
     }
 
     public function save(){
@@ -85,6 +106,135 @@ class FileModel {
         }
     }
 
+    public function getAllFiles(){
+        //@todo add cache back to this
+        //Modules first
+        $files_array = $this->_buildModuleFilesArray();
+        //public://behat_tests next
+        $files_array_others = $this->_buildArrayOfAvailableFilesInPublicFolders();
+        return array_merge($files_array_others, $files_array);
+    }
+
+    protected function _buildModuleFilesArray() {
+        if(empty($this->modules)) {
+            $this->modules = $this->_checkForModules();
+        }
+        $files_array = $this->_buildArrayOfAvailableFilesInModulessFolders();
+        return $files_array;
+    }
+
+    protected static function _hasTestFolderArray() {
+        return array(
+            'behat_tests' => array(
+                'exists' => 1,
+                'writable' => 1,
+                'nice_name' => 'Behat Tmp Folder'
+            )
+        );
+    }
+
+    protected function _checkForModules() {
+        //@todo turn cache back on
+//        if( $this->cache !== FALSE ) {
+//            if($cached = cache_get('behat_editor_modules', 'cache')) {
+//                return $cached->data;
+//            } else {
+//                $module_array = $this->getModuleFolders();
+//                if($this->cache != FALSE) {
+//                    cache_set('behat_editor_modules', $module_array, 'cache', CACHE_TEMPORARY);
+//                }
+//            }
+//        } else {
+//            $module_array = $this->getModuleFolders();
+//        }
+
+        $module_array = $this->getModuleFolders();
+        return $module_array;
+
+    }
+
+    protected static function getModuleFolders() {
+        $module_array = array();
+        $modules = module_list();
+        foreach ($modules as $module) {
+            $path = drupal_get_path('module', $module);
+            if ($status = self::_hasFolder($module, $path)) {
+                $module_array[$module] = $status;
+            }
+        }
+        return $module_array;
+    }
+
+    private static function _hasFolder($module, $path, $subpath = FALSE) {
+        $status = array();
+        $full_path = $path . '/' . BEHAT_EDITOR_FOLDER;
+        if($subpath) {
+            $full_path = $full_path . '/' . $subpath;
+        }
+        if(drupal_realpath($full_path)) {
+            $status['exists'] = TRUE;
+            $status['writable'] = (is_writeable($full_path)) ? TRUE : FALSE;
+            $nice_name = system_rebuild_module_data();
+            $status['nice_name'] = $nice_name[$module]->info['name'];
+
+            return $status;
+        }
+    }
+
+    protected function _buildArrayOfAvailableFilesInPublicFolders() {
+        $files_found = array();
+        $machine_name = 'behat_tests';
+        $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
+        $service_path = "behat_tests";
+
+        $files_folder =  file_build_uri("/{$sub_folder}/");
+        $path = drupal_realpath($files_folder);
+        $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => TRUE), $depth = 0);
+        foreach($files as $file_key => $file_value) {
+            $array_key =$file_value->uri;
+            $filename = $file_value->filename;
+            $full_service_path_string = '/' . $service_path . '/' . $filename;
+            $full_service_path_array = explode('/', $full_service_path_string);
+            $params = array(
+                'filename' => $filename,
+                'module' => $machine_name,
+                'parse_type' => 'file',
+                'service_path' => $full_service_path_array /* @todo this can be a subfolder issue */
+            );
+            $this->params = $params;
+            $file_data[$array_key] = $this->getFile();
+        }
+        $files_found[$machine_name] = $file_data;
+        drupal_alter('behat_editor_files_found', $files_found);
+        return $files_found;
+    }
+
+    protected function _buildArrayOfAvailableFilesInModulessFolders() {
+        $files_found = array();
+        foreach($this->modules as $machine_name => $nice_name) {
+            //@todo allow subfolders
+            $module_path =  drupal_get_path('module', $machine_name);
+            $path = DRUPAL_ROOT . '/' . $module_path . '/' . BEHAT_EDITOR_FOLDER;
+            $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => TRUE), $depth = 0);
+            foreach($files as $file_key => $file_value) {
+                $array_key =$file_value->uri;
+                $filename = $file_value->filename;
+                $full_service_path_string = '/' . $module_path . '/' . BEHAT_EDITOR_FOLDER . '/' . $filename;
+                $full_service_path_array = array_slice(explode('/', $full_service_path_string), 5);
+                $params = array(
+                    'filename' => $filename,
+                    'module' => $machine_name,
+                    'parse_type' => 'file',
+                    'service_path' => $full_service_path_array /* @todo this can be a subfolder issue */
+                );
+                $this->params = $params;
+                $file_data[$array_key] = $this->getFile();
+            }
+            $files_found[$machine_name] = $file_data;
+        }
+        drupal_alter('behat_editor_files_found', $file_data);
+        return $files_found;
+    }
 
     protected function _save_file_to_absolute_path(){
         $output = array();
@@ -213,14 +363,16 @@ class FileModel {
      * @return fileObject
      */
     protected function buildFileObjectFromModule($path){
-        $service_path_full = $this->params['service_path'];
-        $test_folder_and_test_file_name =  self::getNeededPath($service_path_full);
-        $test_folder = array_slice($test_folder_and_test_file_name, 1, -1);
-        $this->root_folder = $path;
-        $this->full_path =  DRUPAL_ROOT . '/' . $this->root_folder . '/' . implode('/', $test_folder);
-        $this->full_path_with_file =  $this->full_path . '/' . $this->filename;
+        $service_path_array = $this->params['service_path'];
+        $service_path_array_minus_module_name = implode('/', array_slice($service_path_array, 1));
+        $service_path_full_string = implode('/', $service_path_array);
+        $this->action_path = $service_path_full_string;
+        $test_folder_no_filename = array_slice($service_path_array, 1, -1);
+        $this->module_path = $path;
+        $this->full_path =  DRUPAL_ROOT . '/' . $this->module_path . '/' . implode('/', $test_folder_no_filename);
+        $this->full_path_with_file =  DRUPAL_ROOT . '/' . $this->module_path . '/' . $service_path_array_minus_module_name;
         //Final Steps to read file and tags
-        $this->test_folder_and_file = implode('/', $test_folder_and_test_file_name);
+        $this->test_folder_and_file = implode('/', $service_path_array);
         $this->get_file_info();
     }
 
@@ -242,6 +394,7 @@ class FileModel {
     protected function buildPaths() {
         $test_folder_and_test_file_name = $this->params['service_path'];
         $this->test_folder_and_file = implode('/', $test_folder_and_test_file_name);
+        $this->action_path = $this->test_folder_and_file;
         $service_path_full_no_file_name = array_slice($test_folder_and_test_file_name, 0, -1);
         $service_path_full_no_file_name_string = implode('/', $service_path_full_no_file_name);
         $this->root_folder = file_build_uri("/$service_path_full_no_file_name_string/");
@@ -260,7 +413,7 @@ class FileModel {
             $message = t('The file does not exist !file', array('!file' => $this->full_path_with_file));
             //throw new \RuntimeException($message);
             drupal_set_message($message, 'error');
-            drupal_goto('admin/behat/index');
+            //drupal_goto('admin/behat/index');
         } else {
             $file_text = self::read_file();
             $file_data = array(
@@ -272,7 +425,8 @@ class FileModel {
                 'filename_no_ext' => substr($this->filename, 0, -8),
                 'relative_path' => $this->relative_path,
                 'subpath' => $this->subpath,
-                'tags_array' => self::_tags_array($file_text, $this->module)
+                'tags_array' => self::_tags_array($file_text, $this->module),
+                'action_path' => $this->action_path
             );
             $this->file_data = array_merge( $this->fileObjecBuilder(), $file_data);
         }
@@ -350,11 +504,6 @@ class FileModel {
         return $file_object;
     }
 
-    protected static function getNeededPath($service_path_full) {
-        //return array_slice($service_path_full, 3);
-        return $service_path_full;
-    }
-
     /**
      * @param array $params
      *   get the service path / arg
@@ -381,7 +530,7 @@ class FileModel {
         if(!file_exists($this->full_path_with_file)) {
             $message = t('The file does not exist !file', array('!file' => $this->filename));
             drupal_set_message($message, 'error');
-            drupal_goto('admin/behat/index');
+            //drupal_goto('admin/behat/index');
         }
     }
 

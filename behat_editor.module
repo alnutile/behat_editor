@@ -441,9 +441,9 @@ function behat_editor_help($path, $arg) {
  * @param $module_name
  * @return string
  */
-function _show_file_link($file_name, $module_name) {
+function _show_file_link($file_name, $module_name, $link) {
     if(strpos($file_name, 'private_') === FALSE ) {
-        $results = l($file_name, 'admin/behat/view/' . $module_name . '/' . $file_name);
+        $results = l($file_name, 'admin/behat/view' . $link);
     } else {
         $results = $file_name;
     }
@@ -476,23 +476,24 @@ function _show_module_name($file_name, $module_name) {
  * @param $module_name
  * @return string
  */
-function _show_link($file_name, $module_name, $link_text = 'view') {
+function _show_link($file_name, $module_name, $link_text = 'view', $link) {
+    $path = drupal_get_path('module', $module_name);
     if(strpos($file_name, 'private_') !== FALSE) {
         return 'n/a';
     }
     switch($link_text) {
         case 'view':
-            $results = l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+            $results = l($link_text, 'admin/behat/view' . $link);
             return $results;
         case 'edit':
-            if($module_name == 'behat_tests') {
-                return l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+            if(empty($path)) {
+                return l($link_text, 'admin/behat/edit' . $link);
             } else {
                 return 'n/a';
             }
         case 'delete':
-            if($module_name == 'behat_tests' && user_access("behat delete test")) {
-                return l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+            if(empty($path) && user_access("behat delete test")) {
+                return l($link_text, $link);
             } else {
                 return 'n/a';
             }

@@ -1,5 +1,5 @@
 <?php
-use Drupal\BehatEditor\File;
+use Drupal\BehatEditor;
 
 /**
  * @todo
@@ -23,7 +23,7 @@ function behat_editor_update_api($module, $filename, $scenario, $settings = arra
         'scenario' => $scenario
     );
     $response = $file->save($params);
-    watchdog('test_save_data', print_r($response['data'], 1));
+    watchdog('test_save', print_r($response, 1));
     if($response['file'] != FALSE){
         $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $response['message']);
         return $results;

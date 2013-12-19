@@ -7,21 +7,9 @@
 namespace Drupal\BehatEditor;
 
 /**
- * Class File
- * Methods needed to run a process the test file.
- *
- * @params request
- *   The request input
- * @params module
- *   The machine name of the module
- * @params filename
- *   The filename to process
- * @params parse_type
- *   Defines the format to create eg html-view, html-edit, file, FALSE
- *
- * @package Drupal\BehatEditor
- *
- * @todo use the File class to create the file object during __construct
+ * @todo
+ *   This is slowly being replaced by FileModel and FileController classes
+ *   to make fore a less heavy file.
  */
 class File {
     public $module = '';
@@ -56,22 +44,15 @@ class File {
 
 
     /**
-     * @todo turn this into a class that instantiates other classes
-     *   so here would be module based file build
-     *   or behat_tests based file build
-     *   or other
      *
-     *  Then break out the unique work for each of those into separate classes that extend this one
-     *  and alter it as needed.
      */
 
-    public function build_paths(){
+    protected function build_paths(){
         /**
          *     public $relative_path = '';
          *     public $full_path_with_file = '';
          *     public $full_path = '';
          */
-
         if ($this->module == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
             $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
             if($this->subpath) {
@@ -82,29 +63,13 @@ class File {
             $this->full_path = drupal_realpath($files_folder);
             $this->full_path_with_file = $this->full_path . '/' . $this->filename;
         } else {
-            $path = drupal_get_path('module', $this->module);
-            if(!empty($path)) {
-                $sub_folder = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
-                if($this->subpath) {
-                    $sub_folder = $sub_folder . '/' . $this->subpath;
-                }
-                $this->relative_path = $sub_folder . '/' . $this->filename;
-                $this->full_path = DRUPAL_ROOT . '/' . $sub_folder;
-                $this->full_path_with_file = $this->full_path . '/' . $this->filename;
-            } else {
-                //Last chance to alter the possible file info based on the path
-                $data = $this;
-                drupal_alter('behat_editor_build_path', $data);
-                //@todo this is all getting to complext need to break things out more
-                if(!is_object($data)) { $data;
-                    $this->full_path_with_file = $data['absolute_path_with_file'];
-                    $this->module = $data['module'];
-                    $this->full_path = $data['absolute_path'];
-                    $this->filename = $data['filename'];
-                    $this->relative_path = $data['relative_path'];
-                    $this->subpath = $data['subpath'];
-                }
+            $sub_folder = drupal_get_path('module', $this->module) . '/' . BEHAT_EDITOR_FOLDER;
+            if($this->subpath) {
+                $sub_folder = $sub_folder . '/' . $this->subpath;
             }
+            $this->relative_path = $sub_folder . '/' . $this->filename;
+            $this->full_path = DRUPAL_ROOT . '/' . $sub_folder;
+            $this->full_path_with_file = $this->full_path . '/' . $this->filename;
         }
 
     }
@@ -117,8 +82,8 @@ class File {
     public function save_html_to_file() {
         //@todo throw expection if this is a fail
         $this->scenario_array = self::_parse_questions();
-        $this->file_text =  self::_create_file();
-        //$output = $this->test_create_file_scenario_array();
+        $this->feature =  self::_create_file();
+        $output = self::_figure_out_where_to_save_file();
         return $output;
     }
 
@@ -142,9 +107,7 @@ class File {
     public function get_file_info() {
         if(file_exists($this->full_path_with_file) == FALSE) {
             $message = t('The file does not exist !file', array('!file' => $this->full_path_with_file));
-            //throw new \RuntimeException($message);
-            drupal_set_message($message, 'error');
-            //drupal_goto('admin/index');
+            throw new \RuntimeException($message);
         } else {
             $file_text = self::read_file($this->full_path_with_file);
             $file_data = array(
@@ -170,7 +133,7 @@ class File {
      * @param $module_name
      * @return array
      */
-    protected function _tags_array($file, $module_name) {
+    private function _tags_array($file, $module_name) {
         $file_to_array = self::_turn_file_to_array($file);
         $tags = array();
         foreach($file_to_array as $key => $value) {
@@ -206,20 +169,20 @@ class File {
      * @return string
      */
     public function delete_file() {
-        $file = self::get_file_info();
-        $response = file_unmanaged_delete($this->full_path_with_file);
-        if($response == FALSE) {
-            watchdog('behat_editor', "File could not be deleted...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
-            $output = array('message' => "Error file could not be deleted", 'file' => $response, 'error' => '1');
-        } else {
-            $gherkin_linkable_path = '';
-            $url = '';
-            $file_url = '';
-            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-            watchdog('behat_editor', "%date File deleted %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
-            $output =  array('message' => t('@date: <br> File deleted !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
-        }
-        return $output;
+            $file = self::get_file_info();
+            $response = file_unmanaged_delete($file['absolute_path_with_file']);
+            if($response == FALSE) {
+                watchdog('behat_editor', "File could not be deleted...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
+                $output = array('message' => "Error file could not be deleted", 'file' => $response, 'error' => '1');
+            } else {
+                $gherkin_linkable_path = '';
+                $url = '';
+                $file_url = '';
+                $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+                watchdog('behat_editor', "%date File deleted %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
+                $output =  array('message' => t('@date: <br> File deleted !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
+            }
+            return $output;
     }
 
 
@@ -229,34 +192,35 @@ class File {
      *
      * @return array
      */
-    protected function _figure_out_where_to_save_file(){
-        //self::_save_file_to_module_folder(); //not allowed for now
-        $path = drupal_get_path('module', $this->module);
-        if (user_access('behat add test') && empty($path)) {
+    private function _figure_out_where_to_save_file(){
+        if (user_access('behat add test') && $this->module != variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER)) {
             /* Derived from features.admin.inc module */
-            $output = $this->_save_file_to_absolute_path();
+            $output = self::_save_file_to_module_folder();
             return $output;
         } else {
-            //@todo no permission to save/add test
+            $output = self::_save_file_to_temp_folder();
+            return $output;
         }
     }
+
 
     /**
      * Save to module folder
      *
      * @return array
      */
-    protected function _save_file_to_module_folder() {
+    private function _save_file_to_module_folder() {
         $full_path = self::_save_path();
-        $response = file_put_contents("{$full_path}/{$this->filename}", $this->file_text);
-        $output = array();
+        $response = file_put_contents("{$full_path}/{$this->filename}", $this->feature);
         if($response == FALSE) {
+            watchdog('behat_editor', "File could not be made...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
             $output = array('message' => "Error file could not be saved", 'file' => $response, 'error' => '1');
         } else {
             $gherkin_linkable_path = self::_linkable_path($this->module, $this->filename);
             $url = url($gherkin_linkable_path, $options = array('absolute' => TRUE));
             $file_url = l('click here', $url, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
             $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+            watchdog('behat_editor', "%date File made %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $file_url);
             $output =  array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $gherkin_linkable_path, 'error' => '0');
         }
         return $output;
@@ -267,7 +231,7 @@ class File {
      *
      * @return string
      */
-    protected function _linkable_path() {
+    private function _linkable_path() {
         $module_path = drupal_get_path('module', $this->module);
         return $module_path . '/' . variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER) . '/' . $this->filename;
     }
@@ -277,15 +241,15 @@ class File {
      *
      * @return string
      */
-    protected function _save_path() {
+    private function _save_path() {
         $module_path = drupal_get_path('module', $this->module);
         return  DRUPAL_ROOT . '/' . $module_path . '/' . variable_get('behat_editor_folder', BEHAT_EDITOR_FOLDER);
     }
 
-    protected function _save_file_to_temp_folder() {
+    private function _save_file_to_temp_folder() {
         $folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
         $path = file_build_uri("/{$folder}/");
-        $response = file_unmanaged_save_data($this->file_text, $path . '/' . $this->filename, $replace = FILE_EXISTS_REPLACE);
+        $response = file_unmanaged_save_data($this->feature, $path . '/' . $this->filename, $replace = FILE_EXISTS_REPLACE);
         if($response == FALSE) {
             $message = t('The file could not be saved !file', array('!file' => $path . '/' . $this->filename));
             throw new \RuntimeException($message);
@@ -304,11 +268,11 @@ class File {
      *
      * @return array
      */
-    protected function _parse_questions(){
+    private function _parse_questions(){
         $scenario_array = array();
-        $count = 0;
+        $count = 0;                                                                      // used to get tags
         $direction = $this->parse_type;
-        $scenario = array_values($this->scenario);
+        $scenario = array_values($this->scenario);                                       //reset keys since some unset work
         foreach($scenario as $value) {
             if($results = self::_string_type(trim($value), $scenario, $count, $direction)) {
                 if(array_key_exists('scenario', $results) || array_key_exists('feature', $results) || array_key_exists('background', $results)) {
@@ -322,7 +286,6 @@ class File {
             }
             $count++;
         }
-
         return $scenario_array;
     }
 
@@ -332,7 +295,7 @@ class File {
      * @param $file
      * @return array
      */
-    protected function _turn_file_to_array($file) {
+    private function _turn_file_to_array($file) {
         $array = explode("\n", $file);
         foreach($array as $key => $value) {
             if(strlen($value) <= 1) {
@@ -349,7 +312,7 @@ class File {
      * @param $direction
      * @return mixed
      */
-    protected function _string_type($string, $scenario, $count, $direction){
+    private function _string_type($string, $scenario, $count, $direction){
         $compare = self::_string_types();
         foreach($compare as $key) {
             if ($results = self::$key($string, $scenario, $count, $direction)) {
@@ -364,7 +327,7 @@ class File {
      *
      * @return array
      */
-    protected function _string_types() {
+    private function _string_types() {
         $options = array('behat_editor_string_feature', 'behat_editor_string_scenario', 'behat_editor_string_background', 'behat_editor_string_steps');
         return $options;
     }
@@ -378,7 +341,7 @@ class File {
      * @param $direction
      * @return array
      */
-    protected function behat_editor_string_feature($string, $scenario, $count, $direction) {
+    private function behat_editor_string_feature($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
         $options = array('Feature:');
@@ -443,7 +406,7 @@ class File {
      * @param $direction
      * @return array
      */
-    protected function behat_editor_string_scenario($string, $scenario, $count, $direction) {
+    private function behat_editor_string_scenario($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
         $options = array('Scenario:');
@@ -506,7 +469,7 @@ class File {
      * @param $direction
      * @return array
      */
-    protected function behat_editor_string_background($string, $scenario, $count, $direction) {
+    private function behat_editor_string_background($string, $scenario, $count, $direction) {
         $results = array();
         $first_word = self::_pop_first_word($string);
         $options = array('Background:');
@@ -548,7 +511,7 @@ class File {
      * @param $scenario_array
      * @return array
      */
-    protected function _parse_tags($scenario_array) {
+    private function _parse_tags($scenario_array) {
         $tags = array();
         foreach($scenario_array as $key => $value) {
             if(strpos('@', $value)) {
@@ -569,7 +532,7 @@ class File {
      * @param $direction
      * @return array|mixed
      */
-    protected function _string_tags($scenario, $count, $spaces = 0, $direction) {
+    private function _string_tags($scenario, $count, $spaces = 0, $direction) {
 
         if(array_key_exists($count, $scenario)) {
             $string = $scenario[$count];
@@ -608,7 +571,7 @@ class File {
      * @param $direction
      * @return array
      */
-    protected function behat_editor_string_steps($string, $parent, $count, $direction) {
+    private function behat_editor_string_steps($string, $parent, $count, $direction) {
         $first_word = self::_pop_first_word($string);
         $options = array('Given', 'When', 'Then', 'And', 'But');
         drupal_alter('behat_editor_string_steps', $options);
@@ -641,7 +604,7 @@ class File {
      * @param $string
      * @return mixed
      */
-    protected function _pop_first_word($string){
+    private function _pop_first_word($string){
         $first_word = explode(' ', $string);
         return array_shift($first_word);
     }
@@ -652,7 +615,7 @@ class File {
      * @param $string
      * @return string
      */
-    protected function _question_wrapper($string) {
+    private function _question_wrapper($string) {
         return '<i class="glyphicon glyphicon-move pull-left"></i>' . $string . '<i class="remove glyphicon glyphicon-remove-circle"></i>';
     }
 
@@ -661,7 +624,7 @@ class File {
      *
      * @return string
      */
-    protected function _create_file(){
+    private function _create_file(){
         $file = '';
         foreach($this->scenario_array as $key) {
             $new_line = self::_new_line($key['new_line']);
@@ -670,6 +633,35 @@ class File {
             $file = $file . "{$new_line_above}" . "{$spaces}" . $key['string'] . "{$new_line}\r\n";
         }
         return $file;
+    }
+
+    /**
+     * New line parse
+     *
+     * @param $new_line
+     * @return string
+     */
+    private function _new_line($new_line) {
+        if($new_line == 1) {
+            return "\r\n";
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * Spaces needed to output the HTML or file to look
+     * right.
+     *
+     * @param $spaces
+     * @return string
+     */
+    private function _spaces($spaces) {
+        $spaces_return = '';
+        for($i = 0; $i <= $spaces; $i++) {
+            $spaces_return = $spaces_return . " ";
+        }
+        return $spaces_return;
     }
 
     public static function fileObjecBuilder() {

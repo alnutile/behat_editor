@@ -14,22 +14,24 @@ use Drupal\BehatEditor;
  *
  */
 class FileController {
-    public $module;
-    public $filename;
-    public $parse_type;
-    public $scenario_array = array();
-    public $scenario;
-    public $feature;
-    public $subpath;
-    public $relative_path;
-    public $full_path_with_file;
-    public $full_path;
-    public $relative_path_with_no_file_name;
-    public $relative_path_with_file;
-    public $file_text;
-    public $tags_array = array();
-    public $root_folder;
-    public $test_folder_and_file;
+    protected  $module;
+    protected $filename;
+    protected $parse_type;
+    protected $scenario_array = array();
+    protected $scenario;
+    protected $feature;
+    protected $action;
+    protected $subpath;
+    protected $service_path;
+    protected $relative_path;
+    protected $full_path_with_file;
+    protected $full_path;
+    protected $relative_path_with_no_file_name;
+    protected $relative_path_with_file;
+    protected $file_text;
+    protected $tags_array = array();
+    protected $root_folder;
+    protected $test_folder_and_file;
     public $file_object;
 
     const BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER = 'behat_features';
@@ -45,11 +47,24 @@ class FileController {
 
     public function build_paths(){}
 
+    public function create($params = array()) {
+        $file = new FileModel($params);
+        $output = $file->createFile();
+        return $output;
+    }
+
     public function save($params = array()) {
         $this->module = $params['module'];
         $this->filename = $params['filename'];
         $file = new FileModel($params);
         return $file->save();
+    }
+
+    public function index() {
+        $params = array();
+        $files = new FileModel($params);
+        $files_array = $files->getAllFiles();
+        return $files_array;
     }
 
     public function show($params = array()) {

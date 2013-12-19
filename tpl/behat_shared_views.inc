@@ -15,6 +15,7 @@ function _behat_editor_produce_table_array($files_array) {
             $file_name = $row['filename'];
             $file_name_no_ext = $row['filename_no_ext'];
             $module_name = $key;
+            $link = $row['action_path'];
             $latest = _behat_editor_get_latest_result($file_name, $module_name);
             $all_results[$latest['rid']] = $latest['original'];
             $tags = implode(', ', $row['tags_array']);
@@ -23,12 +24,12 @@ function _behat_editor_produce_table_array($files_array) {
                     array
                         (
                             $latest['icon'],
-                            _show_file_link($file_name, $module_name),
-                            _show_module_name($file_name, $module_name),
+                            _show_file_link($file_name, $module_name, $link),
+                            _show_module_name($file_name, $module_name, $link),
                             $tags,
-                            _show_link($file_name, $module_name, $link_text = 'view'),
-                            _show_link($file_name, $module_name, $link_text = 'edit'),
-                            _show_link($file_name_no_ext, $module_name, $link_text = 'delete'),
+                            _show_link($file_name, $module_name, $link_text = 'view', $link),
+                            _show_link($file_name, $module_name, $link_text = 'edit', $link),
+                            _show_link($file_name_no_ext, $module_name, $link_text = 'delete', $link),
                         ),
                 'class' => array($latest['pass_fail']))
             ;
@@ -38,7 +39,7 @@ function _behat_editor_produce_table_array($files_array) {
     $header = array(
         'Status',
         'Name',
-        'Module',
+        'Module/Folder',
         'Tags',
         'View',
         'Edit',
