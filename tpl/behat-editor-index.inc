@@ -60,6 +60,7 @@ function behat_editor_index() {
 
     $modules = new BehatEditor\Files();
     $files_array = $modules->getFilesArray();
+    drupal_alter('behat_editor_index', $files_array);
 
     $build['intro'] = array(
         '#prefix' => "<div class='alert alert-warning'><i class='glyphicon glyphicon-question-sign'></i>",

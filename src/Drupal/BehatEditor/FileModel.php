@@ -32,7 +32,7 @@ class FileModel {
     protected $params;
     protected $file_object;
     protected $service_path;
-    protected $file_data;
+    public $file_data;
 
     public function __construct($params = array()) {
         $this->params = $params;
@@ -95,7 +95,7 @@ class FileModel {
         } else {
             $file_url = l('click here', $this->relative_path, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
             $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $file_url, 'error' => '0');
+            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $file_url, 'data' => $this->file_data, 'error' => '0');
         }
         return $output;
     }
@@ -247,7 +247,7 @@ class FileModel {
         $this->root_folder = file_build_uri("/$service_path_full_no_file_name_string/");
         $this->full_path =  drupal_realpath($this->root_folder);
         $this->full_path_with_file =  $this->full_path . '/' . $this->filename;
-        $this->relative_path =  file_create_url($this->root_folder . '/' . $this->test_folder_and_file);
+        $this->relative_path =  file_create_url($this->root_folder . '/' . $this->filename);
     }
 
     /**

@@ -13,7 +13,7 @@ use Drupal\BehatEditor;
  * Methods needed to run a process the test file.
  *
  */
-class FileController extends File {
+class FileController {
     public $module;
     public $filename;
     public $parse_type;
@@ -34,6 +34,13 @@ class FileController extends File {
 
     const BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER = 'behat_features';
 
+    /**
+     * @param array $params
+     *  filename
+     *  path starting at module or root folder ege behat_tests
+     *  module eg root folder
+     *
+     */
     public function __construct($params = array()) {}
 
     public function build_paths(){}
@@ -84,38 +91,4 @@ class FileController extends File {
         }
         return $output;
     }
-
-    public function output_file_text_to_html_array($file_text) {}
-
-    protected function _save_file_to_module_folder() {}
-
-    protected function _linkable_path() { }
-
-    protected function _save_path() {}
-
-    protected function _save_file_to_temp_folder() { }
-
-    protected function _turn_file_to_array($file) {}
-
-    protected function behat_editor_string_feature($string, $scenario, $count, $direction) {}
-
-    protected function behat_editor_string_scenario($string, $scenario, $count, $direction) {}
-
-    protected function behat_editor_string_background($string, $scenario, $count, $direction) {}
-
-    protected function _parse_tags($scenario_array) {}
-
-    protected function _string_tags($scenario, $count, $spaces = 0, $direction) {}
-
-    protected function behat_editor_string_steps($string, $parent, $count, $direction) {}
-
-    protected function _pop_first_word($string){}
-
-    protected function _question_wrapper($string) {}
-
-    protected function _new_line($new_line) {}
-
-    protected function _spaces($spaces) {}
-
-    public static function fileObjecBuilder() {}
 }
