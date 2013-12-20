@@ -20,7 +20,7 @@
                 var filename = $('input[name=filename]').val();
                 var module = $(add).data('module');
                 var url = $(add).attr('href');
-                var service_path = ['"' + module +'"', '"' + filename +'"'];
+                var service_path = [module, filename];
                 //Drupal.behat_editor.split_filename(filename),
                 var parameters = {
                     "scenario": scenario_array,

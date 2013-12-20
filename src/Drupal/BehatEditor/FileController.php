@@ -49,7 +49,15 @@ class FileController {
 
     public function create($params = array()) {
         $file = new FileModel($params);
-        $output = $file->createFile();
+        $file_output = $file->createFile();
+        if(is_array($file_output)) {
+            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+            $output = array('message' => t('@date: <br> File !name was created !link to download it ', array('@date' => $date, '!name' => $file_output['filename'], '!link' => l('click here', $file_output['relative_path']))), 'file' => $file_output['relative_path'], 'data' => $file_output, 'error' => '0');
+
+        } else {
+            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+            $output = array('message' => t('@date: <br> File could not be created please check the logs ', array('@date' => $date)), 'file' => null, 'data' => array(), 'error' => '1');
+        }
         return $output;
     }
 

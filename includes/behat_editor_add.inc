@@ -9,7 +9,6 @@ use Drupal\BehatEditor;
 function behat_editor_create_api($query) {
     composer_manager_register_autoloader();
 
-    $file = new Drupal\BehatEditor\FileController();
     $action = 'add';
     $params = array(
         'service_path' => $query['path'],
@@ -19,16 +18,13 @@ function behat_editor_create_api($query) {
         'parse_type' => 'file',
         'scenario' => $query['scenario']
     );
-    watchdog('test_save_params', print_r($query, 1));
-
-
+    $file = new Drupal\BehatEditor\FileController();
     $response = $file->create($params);
-
 
     if($response['file'] != FALSE){
         if($response['file'] != FALSE){
             $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $response['message']);
-            drupal_set_message("Your file {$filename} has been saved. You are now in edit mode");
+            drupal_set_message("Your file {$query['filename']} has been saved. You are now in edit mode");
             return $results;
         } else {
             return array('file' => array('message' => $response), 'error' => 1);

@@ -47,16 +47,14 @@ class FileModel {
         $this->parse_type = $this->params['parse_type'];
         $this->action = $this->params['action'];
         $this->service_path_full = $this->params['service_path'];
-        $output = $this->save_html_to_file();
-        watchdog('test_output_createfile', print_r($output, 1));
-        return $output;
-    }
-
-    protected function save_html_to_file() {
+        $this->full_path_with_file = $this->set_absolute_path() . '/' . $this->filename;
+        $this->relative_path = file_create_url($this->root_folder . '/' . $this->filename);
         $this->scenario_array = $this->_parse_questions();
-        $this->feature =  $this->_process_text();
-        $output = $this->_save_file_to_absolute_path();
-        return $output;
+        $this->file_text =  $this->_process_text();
+        $this->_save_file_to_absolute_path();
+        //Want to return a full file object
+        $this->get_file_info();
+        return $this->file_data;
     }
 
     public function save(){
@@ -70,6 +68,13 @@ class FileModel {
         $this->file_text =  $this->_process_text();
         $output = $this->_save_file_to_absolute_path();
         return $output;
+    }
+
+    protected function set_absolute_path() {
+        $trim_file_name_from_path = array_slice($this->service_path_full, 0, -1);
+        $path = implode('/', $trim_file_name_from_path);
+        $this->root_folder = file_build_uri($path);
+        return drupal_realpath($this->root_folder);
     }
 
     public function deleteFile(){
@@ -91,8 +96,10 @@ class FileModel {
      * @return array|fileObject
      */
     public function getFile() {
+
         $this->module = $this->params['module'];
         $this->filename = $this->params['filename'];
+
         if(isset($this->params['parse_type'])) {
             $this->parse_type = $this->params['parse_type'];
         }
@@ -220,7 +227,9 @@ class FileModel {
                 $array_key =$file_value->uri;
                 $filename = $file_value->filename;
                 $full_service_path_string = '/' . $module_path . '/' . BEHAT_EDITOR_FOLDER . '/' . $filename;
-                $full_service_path_array = array_slice(explode('/', $full_service_path_string), 5);
+                $exploded_path = explode('/', $full_service_path_string);
+                $full_service_path_array = array_slice($exploded_path, 5);
+
                 $params = array(
                     'filename' => $filename,
                     'module' => $machine_name,
@@ -263,6 +272,7 @@ class FileModel {
             $spaces = $this->_spaces($key['spaces']);
             $file = $file . "{$new_line_above}" . "{$spaces}" . $key['string'] . "{$new_line}\r\n";
         }
+
         return $file;
     }
 
