@@ -56,6 +56,16 @@
                         }
                     };
                 } else {
+                    //One final check for add action
+                    var action = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
+                    if(action == 'add' ) {
+                        action = 'create';
+                        module = $('a.add').data('module');
+                        filename = $('input[name=filename]').val();
+                        service_path = [module, filename];
+                    } else {
+                        action = 'save';
+                    }
                     var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
                     var parameters = {
                         "scenario": scenario_array,
@@ -66,7 +76,8 @@
                             "browser_version": browser_version,
                             "path": service_path,
                             "filename": filename,
-                            "module": module
+                            "module": module,
+                            "action": action
                         }
                     };
                 }

@@ -58,15 +58,22 @@ function behat_editor_create_and_run_api($action, $scenario, $settings = array()
     //@todo make a better interface for this class
     //@todo tighten this up so it can be shared with above
     $file = new Drupal\BehatEditor\FileController();
+    $action = 'save';
+    if(isset($settings['action'])) {
+        $action = $settings['action'];
+    }
+
     $params = array(
         'service_path' => $settings['path'],
         'module' => $settings['module'],
         'filename' => $settings['filename'],
-        'action' => 'update',
+        'action' =>  $action,
         'scenario' => $scenario,
         'parse_type' => 'file',
     );
-    $response = $file->save($params);
+
+    $response = $file->$action($params);
+
     //Make sure the file was made
     if($response['file'] != FALSE){
         //@todo return full object on save
