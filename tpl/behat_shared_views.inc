@@ -351,7 +351,7 @@ function _behat_editor_questions_form() {
           '#type' => 'fieldset',
           '#title'=> 'Checkboxes, Radios',
     );
-
+    
     $form['questions']['checkboxes_and_radios']['when_i_check_uncheck']['when_i_check_uncheck_select'] = array(
             '#type' => 'select',
             '#title' => t('And I'),
@@ -363,6 +363,24 @@ function _behat_editor_questions_form() {
             '#validated' => TRUE,
             '#attributes' => array(
                 'class' => array('col-mg-12', 'when_i_check_uncheck_value_group'),
+                'data-type' => array('select'),
+            ),
+        );
+    $form['questions']['checkboxes_and_radios']['when_i_check_uncheck']['when_i_check_uncheck_type'] = array(
+            '#type' => 'select',
+            //'#title' => t('And I'),
+            '#name' => 'when_i_check_uncheck_type',
+            '#prefix' => '<div class="qualifier">',
+            '#suffix' => '</div>',
+            '#description' => t('Choose the type eg a css path like div > p:nth-child(1) or name|label|id'),
+            '#options' => array(
+                            'the element' => t('the element (css path)'),
+                            ' ' => t('name|label|id'),
+                            'the xpath' => t('the xpath'),
+                          ),
+            '#validated' => TRUE,
+            '#attributes' => array(
+                'class' => array('col-mg-12', 'when_i_check_uncheck_group'),
                 'data-type' => array('select'),
             ),
         );
@@ -389,16 +407,33 @@ function _behat_editor_questions_form() {
     );
 
     /** IS CHECKED  */
-    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['is_checked_not_checked_css'] = array(
-        '#type' => 'textfield',
+    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['is_checked_not_checked_type'] = array(
+        '#type' => 'select',
         '#title' => t('Then the'),
-        '#name' => 'form_is_checked_not_checked_css',
+        '#name' => 'is_checked_not_checked_type',
+        '#description' => t('Choose the type eg a css path like div > p:nth-child(1) or name|label|id'),
+        '#options' => array(
+                        'the element' => t('the element (css path)'),
+                        ' ' => t('name|label|id'),
+                        'the xpath' => t('the xpath'),
+                      ),
+        '#validated' => TRUE,
         '#attributes' => array(
-            'class' => array('col-mg-12', 'is_checked_not_checked_value_group'),
+            'class' => array('col-mg-12', 'is_checked_not_checked_group'),
+            'data-type' => array('select'),
+        ),
+    );
+    
+    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['is_checked_not_checked_name'] = array(
+        '#type' => 'textfield',
+        '#name' => 'is_checked_not_checked_name',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'is_checked_not_checked_group'),
             'data-type' => array('textfield'),
             'placeholder' =>  t('the name|id|label of the checkbox'),
         ),
     );
+    
     $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['is_checked_not_checked_select'] = array(
         '#type' => 'select',
 
@@ -445,24 +480,30 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['selects']['and_i_select']['and_i_select_from'] = array(
-        '#title' => 'from',
-        '#type' => 'item',
-        '#prefix' => '<div data-type="qualifier" class="and_i_select_group">',
-        '#suffix' => '</div>',
+    $form['questions']['selects']['and_i_select']['and_i_select_type'] = array(
+        '#type' => 'select',
+        '#title'=> t('from'),
+        '#name' => 'and_i_select_type',
+        '#description' => t('Choose the type eg a css path like div > p:nth-child(1) or name|label|id'),
+        '#options' => array(
+                        'the element' => t('the element (css path)'),
+                        ' ' => t('name|label|id'),
+                        'the xpath' => t('the xpath'),
+                      ),
+        '#validated' => TRUE,
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_select_group'),
+            'data-type' => array('select'),
         ),
     );
-
+    
     $form['questions']['selects']['and_i_select']['and_i_select_name'] = array(
         '#type' => 'textfield',
         '#name' => 'and_i_select_name',
-        '#description' => t('This can be used on Select'),
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_select_group'),
             'data-type' => array('textfield'),
-            'placeholder' =>  t('Label, Name or ID of the Select List'),
+            //'placeholder' =>  t('the name|id|label of the checkbox'),
         ),
     );
 
@@ -543,12 +584,28 @@ function _behat_editor_questions_form() {
     );
 
 
-    $form['questions']['form_fields_and_elements']['and_i_click_on_a']['and_i_click_on_a_type'] = array(
+    $form['questions']['form_fields_and_elements']['and_i_click_on_a']['and_i_click_on_a_select'] = array(
         '#type' => 'select',
         '#title' => t('And I'),
-        '#name' => 'and_i_click_on_a_type',
+        '#name' => 'and_i_click_on_a_select',
         '#description' => t('And I click or press on a link or button <b>called</b>'),
-        '#options' => array('follow' => t('link'), 'press' => t('button')),
+        '#options' => array('click' => t('click'), 'press' => t('press'), 'follow' => t('follow (link)')),
+        '#validated' => TRUE,
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'and_i_click_on_a_group'),
+            'data-type' => array('select'),
+        ),
+    );
+    
+    $form['questions']['form_fields_and_elements']['and_i_click_on_a']['and_i_click_on_a_type'] = array(
+        '#type' => 'select',
+        '#name' => 'and_i_click_on_a_type',
+        '#description' => t('Choose the type eg a css path like div > p:nth-child(1) or name|label|id'),
+        '#options' => array(
+                        'the element' => t('the element (css path)'),
+                        ' ' => t('name|label|id'),
+                        'the xpath' => t('the xpath'),
+                      ),
         '#validated' => TRUE,
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_click_on_a_group'),
@@ -585,7 +642,7 @@ function _behat_editor_questions_form() {
         '#suffix' => '</div>',
         '#title' => t('Then I'),
         '#description' => t('Then I should see or not see the following text'),
-        '#options' => array('should see' => t('see'), 'should not see' => t('not see')),
+        '#options' => array('should see' => t('see'), 'should not see' => t('not see'),'should see this class exists' => t('should see this class exists')),
         '#validated' => TRUE,
         '#attributes' => array(
             'class' => array('col-mg-12', 'then_i_should_see_group'),
@@ -618,24 +675,40 @@ function _behat_editor_questions_form() {
     /** Check for a value in a field*/
 
     //     Then the "answer" field should contain "8.9"
-    $form['questions']['form_fields_and_elements']['should_see_value']['should_see_value_css'] = array(
+    $form['questions']['form_fields_and_elements']['should_see_value']['should_see_value_type'] = array(
+        '#type' => 'select',
+        '#title' => t('Then'),
+        '#name' => 'should_see_value_type',
+        '#description' => t('Choose the type eg a css path like div > p:nth-child(1) or name|label|id'),
+        '#options' => array(
+                        'the element' => t('the element (css path)'),
+                        'the' => t('name|label|id'),
+                        'the xpath' => t('the xpath'),
+                      ),
+        '#validated' => TRUE,
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'should_see_value_group'),
+            'data-type' => array('select'),
+        ),
+    );
+    
+    $form['questions']['form_fields_and_elements']['should_see_value']['should_see_value_name'] = array(
         '#type' => 'textfield',
-        '#title' => t('Then the'),
-        '#name' => 'form_field_css',
+        '#name' => 'should_see_value_name',
         '#attributes' => array(
             'class' => array('col-mg-12', 'should_see_value_group'),
             'data-type' => array('textfield'),
-            'placeholder' =>  t('the name|id|label of the field'),
+            'placeholder' =>  t('the pattern of the field'),
         ),
     );
-
+    
     $form['questions']['form_fields_and_elements']['should_see_value']['should_see_value_select'] = array(
         '#type' => 'select',
         '#name' => 'should_see_value_select',
         '#prefix' => '<div class="qualifier">',
         '#suffix' => '</div>',
         '#description' => t('Should the value be there or not?'),
-        '#options' => array('field should contain' => t('field should contain'), 'field should not contain' => t('field should not contain')),
+        '#options' => array('field should contain' => t('field should contain'), 'field should not contain' => t('field should not contain'), 'should have style'=> t('should have style')),
         '#validated' => TRUE,
         '#attributes' => array(
             'class' => array('col-mg-12', 'should_see_value_group'),
@@ -752,7 +825,7 @@ function _behat_editor_questions_form() {
         '#name' => 'given_i_wait_for_arg_seconds_text',
         '#attributes' => array(
             'class' => array('col-mg-12', 'given_i_wait_for_arg_seconds_group'),
-            'placeholder' =>  t('200|400|401'),
+            'placeholder' =>  t('number of seconds'),
             'data-type' => array('textfield'),
             'data-strip-quotes' => array('true'),
         ),
