@@ -21,8 +21,10 @@ function behat_editor_create_api($query) {
     $file = new Drupal\BehatEditor\FileController();
     $response = $file->create($params);
 
+
     if($response['file'] != FALSE){
         if($response['file'] != FALSE){
+            drupal_alter('behat_editor_after_create', $response['data']);
             $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $response['message']);
             drupal_set_message("Your file {$query['filename']} has been saved. You are now in edit mode");
             return $results;

@@ -46,8 +46,10 @@ class FileModel {
         $this->scenario = $this->params['scenario'];
         $this->parse_type = $this->params['parse_type'];
         $this->action = $this->params['action'];
+        $this->action_path = $this->params['action'];
         $this->service_path_full = $this->params['service_path'];
         $this->full_path_with_file = $this->set_absolute_path() . '/' . $this->filename;
+        $this->full_path = $this->set_absolute_path();
         $this->relative_path = file_create_url($this->root_folder . '/' . $this->filename);
         $this->scenario_array = $this->_parse_questions();
         $this->file_text =  $this->_process_text();
@@ -86,8 +88,20 @@ class FileModel {
         $this->service_path_full = $this->params['service_path'];
         $this->getFile();
         $response = file_unmanaged_delete($this->full_path_with_file);
-        return $response;
+
+        if($response == FALSE) {
+            $message = t('The file could not be saved !file', array('!file' => $this->full_path_with_file . '/' . $this->filename));
+            $output = array('message' => $message, 'file' => null, 'data' => null, 'error' => '1');
+            //throw new \RuntimeException($message);
+        } else {
+            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
+            $output = array('message' => t('@date: <br> File deleted !name ', array('@date' => $date, '!name' => $this->filename)), 'file' => null, 'data' => $this->file_data, 'error' => '0');
+        }
+
+        return $output;
     }
+
+
     /**
      * What folder to start in
      * module or public://
@@ -190,6 +204,7 @@ class FileModel {
 
     protected function _buildArrayOfAvailableFilesInPublicFolders() {
         $files_found = array();
+        $file_data = array();
         $machine_name = 'behat_tests';
         $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
         $service_path = "behat_tests";
@@ -198,15 +213,16 @@ class FileModel {
         $path = drupal_realpath($files_folder);
         $files = file_scan_directory($path, '/.*\.feature/', $options = array('recurse' => TRUE), $depth = 0);
         foreach($files as $file_key => $file_value) {
+
             $array_key =$file_value->uri;
             $filename = $file_value->filename;
-            $full_service_path_string = '/' . $service_path . '/' . $filename;
-            $full_service_path_array = explode('/', $full_service_path_string);
+            $file_uri_array = explode('/', $file_value->uri);
+            $service_path = array_slice($file_uri_array, array_search('behat_tests', $file_uri_array));
             $params = array(
                 'filename' => $filename,
                 'module' => $machine_name,
                 'parse_type' => 'file',
-                'service_path' => $full_service_path_array /* @todo this can be a subfolder issue */
+                'service_path' => $service_path
             );
             $this->params = $params;
             $file_data[$array_key] = $this->getFile();
@@ -376,7 +392,7 @@ class FileModel {
         $service_path_array = $this->params['service_path'];
         $service_path_array_minus_module_name = implode('/', array_slice($service_path_array, 1));
         $service_path_full_string = implode('/', $service_path_array);
-        $this->action_path = $service_path_full_string;
+        $this->action_path = '/'. $service_path_full_string;
         $test_folder_no_filename = array_slice($service_path_array, 1, -1);
         $this->module_path = $path;
         $this->full_path =  DRUPAL_ROOT . '/' . $this->module_path . '/' . implode('/', $test_folder_no_filename);
@@ -404,7 +420,7 @@ class FileModel {
     protected function buildPaths() {
         $test_folder_and_test_file_name = $this->params['service_path'];
         $this->test_folder_and_file = implode('/', $test_folder_and_test_file_name);
-        $this->action_path = $this->test_folder_and_file;
+        $this->action_path = '/' . $this->test_folder_and_file;
         $service_path_full_no_file_name = array_slice($test_folder_and_test_file_name, 0, -1);
         $service_path_full_no_file_name_string = implode('/', $service_path_full_no_file_name);
         $this->root_folder = file_build_uri("/$service_path_full_no_file_name_string/");
@@ -432,6 +448,7 @@ class FileModel {
                 'absolute_path' => $this->full_path,
                 'absolute_path_with_file' => $this->full_path_with_file,
                 'scenario' => $file_text,
+                'service_path' => $this->service_path_full,
                 'filename_no_ext' => substr($this->filename, 0, -8),
                 'relative_path' => $this->relative_path,
                 'subpath' => $this->subpath,
@@ -507,6 +524,7 @@ class FileModel {
         $file_object['relative_path'] = $this->relative_path;
         $file_object['filename'] = $this->filename;
         $file_object['subpath'] = FALSE;
+        $file_object['service_path'] = $this->service_path_full;
         $file_object['scenario'] = $this->file_text;
         $file_object['filename_no_ext'] = substr($this->filename, 0, -8);
         $file_object['tags_array'] = $this->tags_array;

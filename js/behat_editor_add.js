@@ -35,8 +35,6 @@
                 Drupal.behat_editor.renderMessage(data);
             });
         }
-
-
     };
 
 })(jQuery);

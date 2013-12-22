@@ -87,15 +87,7 @@ class FileController {
         $file = new FileModel($params);
         $output = array();
         $response = $file->deleteFile();
-        if($response == FALSE) {
-            watchdog('behat_editor', "File could not be deleted...", $variables = array(), $severity = WATCHDOG_ERROR, $link = NULL);
-            $output = array('message' => "Error file could not be deleted", 'file' => $response, 'error' => '1');
-        } else {
-            $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-            watchdog('behat_editor', "%date File deleted %name", $variables = array('%date' => $date, '%name' => $this->filename), $severity = WATCHDOG_NOTICE, $link = $this->filename);
-            $output =  array('message' => t('@date: <br> File deleted !name to download ', array('@date' => $date, '!name' => $this->filename)), 'file' => $this->filename, 'error' => '0');
-        }
-        return $output;
+        return $response;
     }
 
     protected function _save_file_to_absolute_path(){

@@ -29,7 +29,6 @@ function _behat_editor_produce_table_array($files_array) {
                             $tags,
                             _show_link($file_name, $module_name, $link_text = 'view', $link),
                             _show_link($file_name, $module_name, $link_text = 'edit', $link),
-                            _show_link($file_name_no_ext, $module_name, $link_text = 'delete', $link),
                         ),
                 'class' => array($latest['pass_fail']))
             ;
@@ -43,7 +42,6 @@ function _behat_editor_produce_table_array($files_array) {
         'Tags',
         'View',
         'Edit',
-        'Delete',
     );
 
     $behat_table = theme('table', array(

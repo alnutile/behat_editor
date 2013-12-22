@@ -23,9 +23,13 @@ function behat_editor_update_api($module, $filename, $scenario, $settings = arra
         'scenario' => $scenario
     );
     $response = $file->save($params);
-    watchdog('test_save', print_r($response, 1));
+
     if($response['file'] != FALSE){
-        $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $response['message']);
+        $response['data']['messages'] = array();
+        $messages_added = null;
+        drupal_alter('behat_editor_after_save', $response['data']);
+        $messages = $response['message'];
+        $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $messages);
         return $results;
     } else {
         return array('file' => array('message' => $response), 'error' => 1);

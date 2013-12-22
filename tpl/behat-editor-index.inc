@@ -61,6 +61,7 @@ function behat_editor_index() {
     $modules = new BehatEditor\FileController();
     //Was getFilesArray for Files
     $files_array = $modules->index();
+
     //Allow users to hook the list of files.
     drupal_alter('behat_editor_index', $files_array);
 

@@ -36,6 +36,7 @@ function behat_editor_view_form($form, $form_state) {
         'action' => 'view'
     );
     $file_info = $file->show($params);
+    drupal_alter('behat_editor_view', $file_info);
 
     $path = drupal_get_path('module', 'behat_editor');
     $form['#theme'] = array('theme_behat_editor_view');

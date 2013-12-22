@@ -40,6 +40,8 @@ function behat_editor_delete_api($action, $module, $filename, $settings = array(
     $response = $file->delete($params);
 
     if($response != FALSE){
+        $response['data']['messages'] = array();
+        drupal_alter('behat_editor_after_delete', $response['data']);
         $results = array('file' => $filename, 'test' => '', 'error' => 0, 'message' => 'File Deleted');
         drupal_set_message("File deleted");
         return $results;
