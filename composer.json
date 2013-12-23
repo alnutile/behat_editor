@@ -35,6 +35,10 @@
         },
         {
             "type": "git",
+            "url": "https://github.com/alnutile/MinkExtension.git"
+        },
+        {
+            "type": "git",
             "url": "http://git.drupal.org/project/drupalextension.git"
         }
     ],
