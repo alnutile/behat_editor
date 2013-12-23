@@ -61,6 +61,18 @@ function behat_editor_drush_command() {
         ),
     );
 
+    $items['behat-test-setup'] = array(
+        'description' => 'Setup Tests',
+        'allow-additional-options' => TRUE,
+        'aliases' => array('bts'),
+        'examples' => array(
+            'drush bts' => 'This will run the setup steps'
+        ),
+        'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+        'arguments' => array(),
+    );
+
+
     return $items;
 }
 
@@ -156,4 +168,53 @@ function drush_behat_editor_behat_run_folder() {
 
 
     return "All Tests ran for module $module";
+}
+
+
+//@todo add profile switch as well
+function drush_behat_editor_behat_test_setup() {
+    composer_manager_register_autoloader();
+    $public = file_build_uri('/behat_tests/');
+    $public = drupal_realpath($public);
+    $full_path = $public . '/tests_of_tests.feature';
+    unlink($full_path);
+//
+//    $public = file_build_uri('/behat_github/');
+//    $public = drupal_realpath($public);
+//    $full_path = $public . '/users/1/bbbbb_test/tests/wikipedia.feature';
+//    _behat_editor_setup_new_test_file($full_path);
+//
+//    $public = file_build_uri('/behat_tests/');
+//    $public = drupal_realpath($public);
+//    $full_path = $public . '/wikipedia.feature';
+//    _behat_editor_setup_new_test_file($full_path);
+//
+//    //Setup a test repo for non group tests
+//    $public = file_build_uri('/behat_github/');
+//    $public = drupal_realpath($public);
+//    $full_path = $public . '/groups/10000/cccc_test';
+//
+//    if(!file_exists($full_path)) {
+//        mkdir("$full_path", 0777, $recursive = TRUE);
+//        //update perms
+//        exec("chgrp -R www-data $full_path");
+//    }
+}
+
+
+function _behat_editor_setup_new_test_file($full_path) {
+
+    $data = <<<HEREDOC
+     @example
+ Feature: Example Test for WikiPedia
+
+   Scenario: WikiPedia
+     Given I am on "http://en.wikipedia.org/wiki/Main_Page"
+     Then I should see "WikiPedia"
+     Then I should see "Muffins"
+
+HEREDOC;
+    $file = fopen($full_path, 'w');
+    fwrite($file, $data);
+    fclose($file);
 }

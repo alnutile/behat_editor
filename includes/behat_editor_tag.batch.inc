@@ -47,7 +47,7 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
     BehatEditor\BehatSettingsFormHelper::behatSettingsFields($build);
 
     $options = array(
-        'gui' => t('Run in Webbrowser'),
+        'gui' => t('Run in Web browser'),
 //        'stop' => t('Stop'),
 //        'background' => t('Run in background'),
     );

@@ -40,7 +40,6 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         return $operations;
     }
 
-
     function batchRun(array $params) {
         $this->tag = $params['tag'];
         $this->settings = $params['settings'];
@@ -67,7 +66,7 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
     }
 
     protected function wrapUp(&$fields) {
-        file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
+        //file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
         parent::wrapUp($fields);
     }
 
