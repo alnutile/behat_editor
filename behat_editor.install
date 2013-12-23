@@ -53,7 +53,7 @@ function behat_editor_requirements($phase) {
     return $requirements;
 }
 
-function behat_editor_enable(){
+function behat_editor_install(){
     $tables = behat_editor_schema();
     foreach($tables as $key => $value) {
         if(!db_table_exists($key)) {

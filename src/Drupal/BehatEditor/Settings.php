@@ -21,6 +21,7 @@ class Settings {
 
     public function setBehatYmlSettings($behat_yml_defaults, $settings) {
         $this->behat_yml_defaults = $behat_yml_defaults;
+        watchdog('test_settings_comming_in', print_r($settings, 1));
         $this->settings = $settings;
         /**
          * @todo
@@ -37,6 +38,7 @@ class Settings {
         if($this->settings) {
             $base_url_get = new BehatSettingsBaseUrl();
             $this->base_url = $base_url_get->getBaseUrlFromSidArray($this->settings);
+            watchdog('test_base_url', print_r($this->base_url, 1));
             $this->behat_yml_defaults['default']['extensions']['Behat\MinkExtension\Extension']['base_url'] = $this->base_url;
         }
     }
