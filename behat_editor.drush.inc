@@ -30,6 +30,7 @@ function behat_editor_drush_command() {
             'tag' => 'Add tag to only run test on. Eg @anonymous',
             'profile' => 'The behat.yml file has profiles. Default etc. You can call one here or blank = default',
             'user settings sid' => 'The user settings sid you would like to run.',
+            'group settings sid' => 'The groups settings sid you would like to run or 0',
         ),
     );
 
@@ -87,6 +88,7 @@ function drush_behat_editor_behat_user_settings() {
 function drush_behat_editor_behat_run() {
     $module = func_get_arg(0);
     $filename = func_get_arg(1);
+    $tag_include = '';
     if(func_num_args() > 2) {
         $javascript = func_get_arg(2);
     } else {
@@ -94,9 +96,9 @@ function drush_behat_editor_behat_run() {
     }
 
     if(func_num_args() > 3) {
-        $tag = func_get_arg(3);
+        $tag_include = func_get_arg(3);
     } else {
-        $tag = '';
+        $tag_include = '';
     }
 
     if(func_num_args() > 4) {
@@ -111,6 +113,12 @@ function drush_behat_editor_behat_run() {
         $usid = 0;
     }
 
+    if(func_num_args() > 6) {
+        $gsid = func_get_arg(6);
+    } else {
+        $gsid = 0;
+    }
+
     composer_manager_register_autoloader();
     //@todo get composer to load this
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
@@ -121,12 +129,16 @@ function drush_behat_editor_behat_run() {
 
     $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
-    $output = $run->execDrush($javascript, $tag, $profile, array('base_url_usid' => $usid, 'base_url_gsid' => 0));
+    $output = $run->exec($javascript, $settings = array('base_url_usid' => $usid, 'base_url_gsid' => $gsid), $context =  'behat_run', $tag_include, $profile);
     $results = str_replace(array("    ", "---- Feature", "::: Scenario", "::: Background"), array("\n", "\n---- Feature", "\n::: Scenario", "\n::: Background"), drush_html_to_text($output['output_array']));
     return drush_print($results);
 }
 
-//@todo add profile switch as well
+/**
+ * @todo
+ * the above drush_behat_editor_behat_run works this one is out of date
+ * @return string
+ */
 function drush_behat_editor_behat_run_folder() {
     print "Running Tests...\n";
     module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');

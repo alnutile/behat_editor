@@ -118,53 +118,11 @@ class BehatEditorRun {
      *   and more.
      * @return array
      */
-    public function exec($javascript = FALSE, $settings = array(), $context1 = 'behat_run') {
+    public function exec($javascript = FALSE, $settings = array(), $context1 = 'behat_run', $tag_include = FALSE, $profile = 'default') {
         if($javascript == TRUE) {
             $tags = '';
         } else {
             $tags = "--tags '~@javascript'";
-        }
-        $this->tags = $tags;
-        $this->settings = $settings;
-
-        $command = self::behatCommandArray();
-
-        //@todo move this into a shared method for exec and execDrush
-        $this->settings['context'] = $context1;
-        $behat_yml_path = new GenerateBehatYml($this->settings);
-        $this->behat_yml = $behat_yml_path->writeBehatYmlFile();
-
-        $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
-        $saved_settings['sid'] = $this->settings;
-        $command['config'] = "--config=\"$this->behat_yml\"";
-        drupal_alter('behat_editor_command', $command, $context1);
-        $command = implode(' ', $command);
-        exec($command, $output, $return_var);
-
-        $behat_yml_path->deleteBehatYmlFile();
-
-        $results = new Results();
-        $output = $results->prepareResultsAndInsert($output, $return_var, $settings, $this->filename, $this->module);
-        $this->clean_results = $output['clean_results'];
-        $this->rid = $output['rid'];
-
-        return array('response' => $return_var, 'output_file' => $this->clean_results, 'output_array' =>  $this->clean_results, 'rid' => $this->rid);
-    }
-
-
-    /**
-     * Used to exec the behat command by drush
-     *
-     * @param bool $javascript
-     *   Javascript true will open up a browser locally
-     *   if the user is running selenium
-     * @return array
-     */
-    public function execDrush($javascript = FALSE, $tag_include = FALSE, $profile = 'default', $settings = array(),  $context1 = 'behat_run') {
-        if($javascript == TRUE) {
-            $tags_exclude = '';
-        } else {
-            $tags_exclude = "--tags '~@javascript'";
         }
 
         if($tag_include) {
@@ -173,33 +131,27 @@ class BehatEditorRun {
             $tag_include = '';
         }
 
-        $this->tags = "$tag_include $tags_exclude";
-        $this->settings['context'] = $context1;
+        $command['profile'] = "--profile=$profile";
 
+        $this->tags = $tags;
+        $this->settings = $settings;
         $command = self::behatCommandArray();
 
         //@todo move this into a shared method for exec and execDrush
+        $this->settings['context'] = $context1;
         $behat_yml_path = new GenerateBehatYml($this->settings);
         $this->behat_yml = $behat_yml_path->writeBehatYmlFile();
-
 
         $saved_settings['behat_yml'] = $behat_yml_path->behat_yml;
         $saved_settings['sid'] = $this->settings;
         $command['config'] = "--config=\"$this->behat_yml\"";
-        $context1 = 'behat_run';
         drupal_alter('behat_editor_command', $command, $context1);
-        //$command['format'] = '--format=pretty';
-        if($profile != 0) {
-            $command['profile'] = "--profile=$profile";
-        } else {
-            $command['profile'] = "--profile=default";
-        }
-
         $command = implode(' ', $command);
-
+        watchdog('test_settings', print_r($settings, 1));
+        watchdog('test_command', print_r($command, 1));
         exec($command, $output, $return_var);
 
-        $behat_yml_path->deleteBehatYmlFile();
+        //$behat_yml_path->deleteBehatYmlFile();
 
         $results = new Results();
         $output = $results->prepareResultsAndInsert($output, $return_var, $settings, $this->filename, $this->module);
