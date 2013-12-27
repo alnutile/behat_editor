@@ -243,8 +243,7 @@ function behat_editor_file_validate_custom($file) {
     $error = FALSE;
     $message = '';
     $filename = explode('.', $file->filename);
-    //from field_create_field
-    if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $filename[0])) {
+    if (preg_match('/[^a-z_\-0-9]/i', $filename[0])) {
         $error = 1;
         $message = "Only lowercase letters, underscores and numbers are allowed in the name";
     };
@@ -252,7 +251,7 @@ function behat_editor_file_validate_custom($file) {
 }
 
 
-function behat_editor_file_uploader($form_state) {
+function behat_editor_file_uploader() {
 
     $form['file_container'] = array(
         '#type' => 'fieldset',
