@@ -346,13 +346,13 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
     
-    /** CHECKBOX or Radio */
+    /* CHECKBOX or Radio 
     $form['questions']['checkboxes_and_radios'] = array(
           '#type' => 'fieldset',
           '#title'=> 'Checkboxes, Radios',
     );
     
-    $form['questions']['checkboxes_and_radios']['when_i_check_uncheck']['when_i_check_uncheck_select'] = array(
+    /*$form['questions']['checkboxes_and_radios']['when_i_check_uncheck']['when_i_check_uncheck_select'] = array(
             '#type' => 'select',
             '#title' => t('And I'),
             '#name' => 'when_i_check_uncheck_select',
@@ -362,13 +362,13 @@ function _behat_editor_questions_form() {
             '#options' => array('check' => t('check'), 'uncheck' => t('uncheck')),
             '#validated' => TRUE,
             '#attributes' => array(
-                'class' => array('col-mg-12', 'when_i_check_uncheck_value_group'),
+                'class' => array('col-mg-12', 'when_i_check_uncheck_group'),
                 'data-type' => array('select'),
             ),
         );
     $form['questions']['checkboxes_and_radios']['when_i_check_uncheck']['when_i_check_uncheck_type'] = array(
             '#type' => 'select',
-            //'#title' => t('And I'),
+            '#title' => t('the'),
             '#name' => 'when_i_check_uncheck_type',
             '#prefix' => '<div class="qualifier">',
             '#suffix' => '</div>',
@@ -388,7 +388,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#name' => 'when_i_check_uncheck_css',
         '#attributes' => array(
-            'class' => array('col-mg-12', 'when_i_check_uncheck_value_group'),
+            'class' => array('col-mg-12', 'when_i_check_uncheck_group'),
             'data-type' => array('textfield'),
             'placeholder' =>  t('the name|id|label of the checkbox'),
         ),
@@ -399,17 +399,17 @@ function _behat_editor_questions_form() {
         '#name' => 'when_i_check_uncheck_button',
         '#value' => t('Add'),
         '#attributes' => array(
-            'data-step-group' => array('when_i_check_uncheck_value_group'),
+            'data-step-group' => array('when_i_check_uncheck_group'),
             'data-method' => array('append'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'
-    );
+    );*/
 
     /** IS CHECKED  */
-    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['is_checked_not_checked_type'] = array(
+    $form['questions']['form_fields_and_elements']['is_checked_not_checked']['is_checked_not_checked_type'] = array(
         '#type' => 'select',
-        '#title' => t('Then the'),
+        '#title' => t('Then'),
         '#name' => 'is_checked_not_checked_type',
         '#description' => t('Choose the type eg a css path like div > p:nth-child(1) or name|label|id'),
         '#options' => array(
@@ -424,7 +424,7 @@ function _behat_editor_questions_form() {
         ),
     );
     
-    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['is_checked_not_checked_name'] = array(
+    $form['questions']['form_fields_and_elements']['is_checked_not_checked']['is_checked_not_checked_name'] = array(
         '#type' => 'textfield',
         '#name' => 'is_checked_not_checked_name',
         '#attributes' => array(
@@ -434,27 +434,27 @@ function _behat_editor_questions_form() {
         ),
     );
     
-    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['is_checked_not_checked_select'] = array(
+    $form['questions']['form_fields_and_elements']['is_checked_not_checked']['is_checked_not_checked_select'] = array(
         '#type' => 'select',
 
         '#name' => 'is_checked_not_checked_select',
         '#prefix' => '<div class="qualifier">',
         '#suffix' => '</div>',
         '#description' => t('Either if the checkbox should be checked or not?'),
-        '#options' => array('checkbox should be checked' => t('checkbox should be checked'), 'checkbox should not be checked' => t('checkbox should not be checked')),
+        '#options' => array('should be checked' => t('should be checked'), 'should not be checked' => t('should not be checked')),
         '#validated' => TRUE,
         '#attributes' => array(
-            'class' => array('col-mg-12', 'is_checked_not_checked_value_group'),
+            'class' => array('col-mg-12', 'is_checked_not_checked_group'),
             'data-type' => array('select'),
         ),
     );
 
-    $form['questions']['checkboxes_and_radios']['is_checked_not_checked']['is_checked_not_checked_button'] = array(
+    $form['questions']['form_fields_and_elements']['is_checked_not_checked']['is_checked_not_checked_button'] = array(
         '#type' => 'button',
         '#name' => 'is_checked_not_checked_button',
         '#value' => t('Add'),
         '#attributes' => array(
-            'data-step-group' => array('is_checked_not_checked_value_group'),
+            'data-step-group' => array('is_checked_not_checked_group'),
             'data-method' => array('append'),
             'class' => array('steps')
         ),
@@ -469,10 +469,10 @@ function _behat_editor_questions_form() {
         );
     
 
-    $form['questions']['selects']['and_i_select']['and_i_select_select'] = array(
+    $form['questions']['selects']['and_i_select']['and_i_select_option'] = array(
         '#type' => 'textfield',
         '#title' => t('And I select'),
-        '#name' => 'and_i_select_select',
+        '#name' => 'and_i_select_option',
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_select_group'),
             'data-type' => array('textfield'),
@@ -480,7 +480,7 @@ function _behat_editor_questions_form() {
         ),
     );
 
-    $form['questions']['selects']['and_i_select']['and_i_select_type'] = array(
+    $form['questions']['selects']['and_i_select']['and_i_select_from'] = array(
         '#type' => 'select',
         '#title'=> t('from'),
         '#name' => 'and_i_select_type',
@@ -589,7 +589,7 @@ function _behat_editor_questions_form() {
         '#title' => t('And I'),
         '#name' => 'and_i_click_on_a_select',
         '#description' => t('And I click or press on a link or button <b>called</b>'),
-        '#options' => array('click' => t('click'), 'press' => t('press'), 'follow' => t('follow (link)')),
+        '#options' => array('follow' => t('follow (click)'), 'press' => t('press'), 'check' => t('check'), 'uncheck' => t('uncheck')),
         '#validated' => TRUE,
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_click_on_a_group'),
@@ -732,6 +732,61 @@ function _behat_editor_questions_form() {
         '#value' => t('Add'),
         '#attributes' => array(
             'data-step-group' => array('should_see_value_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<hr>'
+    );
+    
+    /** IS CHECKED  */
+    $form['questions']['form_fields_and_elements']['is_checked_not_checked']['is_checked_not_checked_type'] = array(
+        '#type' => 'select',
+        '#title' => t('Then'),
+        '#name' => 'is_checked_not_checked_type',
+        '#description' => t('Choose the type eg a css path like div > p:nth-child(1) or name|label|id'),
+        '#options' => array(
+                        'the element' => t('the element (css path)'),
+                        ' ' => t('name|label|id'),
+                        'the xpath' => t('the xpath'),
+                      ),
+        '#validated' => TRUE,
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'is_checked_not_checked_group'),
+            'data-type' => array('select'),
+        ),
+    );
+    
+    $form['questions']['form_fields_and_elements']['is_checked_not_checked']['is_checked_not_checked_name'] = array(
+        '#type' => 'textfield',
+        '#name' => 'is_checked_not_checked_name',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'is_checked_not_checked_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('the name|id|label of the checkbox'),
+        ),
+    );
+    
+    $form['questions']['form_fields_and_elements']['is_checked_not_checked']['is_checked_not_checked_select'] = array(
+        '#type' => 'select',
+
+        '#name' => 'is_checked_not_checked_select',
+        '#prefix' => '<div class="qualifier">',
+        '#suffix' => '</div>',
+        '#description' => t('Either if the checkbox should be checked or not?'),
+        '#options' => array('should be checked' => t('should be checked'), 'should not be checked' => t('should not be checked'), 'is visible'=>t('is visible')),
+        '#validated' => TRUE,
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'is_checked_not_checked_group'),
+            'data-type' => array('select'),
+        ),
+    );
+
+    $form['questions']['form_fields_and_elements']['is_checked_not_checked']['is_checked_not_checked_button'] = array(
+        '#type' => 'button',
+        '#name' => 'is_checked_not_checked_button',
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('is_checked_not_checked_group'),
             'data-method' => array('append'),
             'class' => array('steps')
         ),
