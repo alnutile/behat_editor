@@ -82,8 +82,11 @@ class FileModel {
     public function deleteFile(){
         $path = drupal_get_path('module', $this->params['module']);
         if(!empty($path)) {
-            drupal_set_message(t('File could not be deleted it is part of a module'), 'error');
-            drupal_goto('admin/behat/index');
+//            drupal_set_message(t('File could not be deleted it is part of a module'), 'error');
+//            drupal_goto('admin/behat/index');
+            $message = t('The file could not be saved !file because it is a module', array('!file' => $this->full_path_with_file . '/' . $this->filename));
+            $output = array('message' => $message, 'file' => null, 'data' => null, 'error' => '1');
+            return $output;
         }
         $this->service_path_full = $this->params['service_path'];
         $this->getFile();
@@ -270,7 +273,7 @@ class FileModel {
         } else {
             $file_url = l('click here', $this->relative_path, array('attributes' => array('target' => '_blank', 'id' => array('test-file'))));
             $date = format_date(time(), $type = 'medium', $format = '', $timezone = NULL, $langcode = NULL);
-            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $file_url, 'data' => $this->file_data, 'error' => '0');
+            $output = array('message' => t('@date: <br> File created !name to download ', array('@date' => $date, '!name' => $file_url)), 'file' => $file_url, 'data' => $this->getFile(), 'error' => '0');
         }
         return $output;
     }

@@ -42,7 +42,7 @@ class BehatEditorRun {
     /**
      * File object from FileObject class
      * for now using a function
-     * check it comes from the class later one
+     * check it comes from the class later on
      */
     public function __construct($file_object) {
 
