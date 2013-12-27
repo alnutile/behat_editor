@@ -133,7 +133,7 @@ class BehatEditorRun {
 
         $command['profile'] = "--profile=$profile";
 
-        $this->tags = "$javascript $tag_include";
+        $this->tags = "$tags $tag_include";
         $this->settings = $settings;
         $command = self::behatCommandArray();
 
