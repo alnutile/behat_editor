@@ -103,6 +103,8 @@ class Results {
         $f = 's</p>';
         $duration = trim(substr($this->results_cleaned, $s, strpos($this->results_cleaned, $f) - $s));
         $this->duration = (!empty($duration)) ? $duration : '0';
+        //One last check since the duration can sometimes be wrong if there is an error during the test
+        if (strlen($this->duration) >= 20) { $this->duration = '0'; }
         return $this->duration;
     }
 
