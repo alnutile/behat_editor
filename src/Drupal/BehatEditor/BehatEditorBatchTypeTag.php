@@ -66,12 +66,13 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
     }
 
     protected function wrapUp(&$fields) {
+        //@todo make sure to add this back to clean up after tests
         //file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
         parent::wrapUp($fields);
     }
 
     private function findFilesAndSetupDirectory() {
-        $file = new BehatEditor\Files();
+        $file = new BehatEditor\FileModel(array());
         $files = $file->getFilesByTag($this->tag);
         foreach($files as $key => $value) {
             $copy = file_unmanaged_copy($value['absolute_path_with_file'], $this->temp_uri, FILE_EXISTS_REPLACE);

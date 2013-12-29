@@ -119,7 +119,6 @@ abstract class BehatEditorBatchType {
         }
     }
 
-
     function batchDone($success, $results, $operations, $message) {
 
         return t("@message", array('@message' => $message));
