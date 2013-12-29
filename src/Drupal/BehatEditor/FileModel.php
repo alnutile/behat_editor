@@ -139,6 +139,24 @@ class FileModel {
         return array_merge($files_array_others, $files_array);
     }
 
+    public function getFilesByTag(array $tag) {
+        $files_found = array();
+        $files_pre = $this->getAllFiles();
+        foreach($files_pre as $key => $value) {
+            foreach($value as $key2 => $value2) {
+                //Some tags had ending string so had to
+                if(isset($value2['tags_array'])) {
+                    foreach($value2['tags_array'] as $tag_key => $tag_value) {
+                        if(in_array(trim($tag_value), $tag)) {
+                            $files_found[$key2] = $value2;
+                        }
+                    }
+                }
+            }
+        }
+        return $files_found;
+    }
+
     protected function _buildModuleFilesArray() {
         if(empty($this->modules)) {
             $this->modules = $this->_checkForModules();

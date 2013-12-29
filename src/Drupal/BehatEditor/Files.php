@@ -93,6 +93,8 @@ class Files {
 
     public static function getFilesByTag(array $tag) {
         $files_found = array();
+        //@todo why did I reinstantiate this?
+        //  come back and clean out
         $files = new Files();
         $files_pre = $files->getFilesArray();
         foreach($files_pre as $key => $value) {
