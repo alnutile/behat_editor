@@ -62,6 +62,19 @@ function behat_editor_drush_command() {
         ),
     );
 
+    $items['behat-group-settings'] = array(
+        'description' => 'Show a groups settings for a groups paths',
+        'allow-additional-options' => TRUE,
+        'aliases' => array('bug'),
+        'examples' => array(
+            'drush bug 3' => 'This will get the settings for the group with id 1'
+        ),
+        'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+        'arguments' => array(
+            'gid' => 'The groups gid',
+        ),
+    );
+
     $items['behat-test-setup'] = array(
         'description' => 'Setup Tests',
         'allow-additional-options' => TRUE,
@@ -77,13 +90,31 @@ function behat_editor_drush_command() {
     return $items;
 }
 
-
 function drush_behat_editor_behat_user_settings() {
     $uid = func_get_arg(0);
     print "You can use the SID column to pass as a settings\n";
     composer_manager_register_autoloader();
     $perms = new \Drupal\BehatEditor\BehatSettingsBaseUrl();
     $results = $perms->getSettingsByUID($uid);
+    $header = array(
+        'sid',
+        'uid',
+        'gid',
+        'base_url',
+        'default',
+        'active',
+        'nice_name'
+    );
+    array_unshift($results['results'], $header);
+    drush_print_table($results['results'], $header = TRUE, $widths = array(), $handle = NULL);
+}
+
+function drush_behat_editor_behat_group_settings() {
+    $gid = func_get_arg(0);
+    print "You can use the SID column to pass as a settings\n";
+    composer_manager_register_autoloader();
+    $perms = new \Drupal\BehatEditor\BehatSettingsBaseUrl();
+    $results = $perms->getSettingsByGID(array($gid));
     $header = array(
         'sid',
         'uid',
