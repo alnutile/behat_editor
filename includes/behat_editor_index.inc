@@ -6,23 +6,15 @@
 use Drupal\BehatEditor;
 
 /**
- * Build the output for the Index page of files.
- * You can see the related js file as well in the js folder
- *
- * @todo turn this into a form so it will be easier to hook and do
- * other bulk operations
- * @return mixed
+ * http://behateditor.localvm.com/behat_editor_v1/behat_editor_actions
  */
 
 function behat_editor_index_api() {
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
-    module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
 
-    //@todo convert to Files class
-    $modules = _behat_editor_check_for_modules();
-    $modules = array_merge($modules, _behat_editor_test_folder_array());
-    $files_array = _behat_editor_build_array_of_available_files($modules);
-
+    $modules = new BehatEditor\FileController();
+    //Was getFilesArray for Files
+    $files_array = $modules->index();
+    watchdog('test_index_js', print_r($files_array, 1));
     drupal_json_output($files_array);
     exit();
 }

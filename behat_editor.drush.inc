@@ -2,7 +2,7 @@
 
 use Drupal\BehatEditor\BehatEditorRun,
     Drupal\BehatEditor\File,
-    Drupal\BehatEditor\Files;
+    Drupal\BehatEditor;
 
 /**
  * @file
@@ -25,7 +25,7 @@ function behat_editor_drush_command() {
         'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
         'arguments' => array(
             'module' => 'The module name that the test file is in',
-            'filename' => 'The file name to test. Should be in present folder',
+            'path' => 'This is the path to the file. But if the file lives in default/files/behat_tests/features it would be behat_tests/filename.feature. But if it is a subfolder it would be behat_tests/tests/filename.feature showing the full path.',
             'javascript' => '1 if you want to run javascript based tests 0 if not. Javascript means you are running this locally.',
             'tag' => 'Add tag to only run test on. Eg @anonymous',
             'profile' => 'The behat.yml file has profiles. Default etc. You can call one here or blank = default',
@@ -62,9 +62,33 @@ function behat_editor_drush_command() {
         ),
     );
 
+    $items['behat-group-settings'] = array(
+        'description' => 'Show a groups settings for a groups paths',
+        'allow-additional-options' => TRUE,
+        'aliases' => array('bug'),
+        'examples' => array(
+            'drush bug 3' => 'This will get the settings for the group with id 1'
+        ),
+        'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+        'arguments' => array(
+            'gid' => 'The groups gid',
+        ),
+    );
+
+    $items['behat-test-setup'] = array(
+        'description' => 'Setup Tests',
+        'allow-additional-options' => TRUE,
+        'aliases' => array('bts'),
+        'examples' => array(
+            'drush bts' => 'This will run the setup steps'
+        ),
+        'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+        'arguments' => array(),
+    );
+
+
     return $items;
 }
-
 
 function drush_behat_editor_behat_user_settings() {
     $uid = func_get_arg(0);
@@ -85,9 +109,28 @@ function drush_behat_editor_behat_user_settings() {
     drush_print_table($results['results'], $header = TRUE, $widths = array(), $handle = NULL);
 }
 
+function drush_behat_editor_behat_group_settings() {
+    $gid = func_get_arg(0);
+    print "You can use the SID column to pass as a settings\n";
+    composer_manager_register_autoloader();
+    $perms = new \Drupal\BehatEditor\BehatSettingsBaseUrl();
+    $results = $perms->getSettingsByGID(array($gid));
+    $header = array(
+        'sid',
+        'uid',
+        'gid',
+        'base_url',
+        'default',
+        'active',
+        'nice_name'
+    );
+    array_unshift($results['results'], $header);
+    drush_print_table($results['results'], $header = TRUE, $widths = array(), $handle = NULL);
+}
+
 function drush_behat_editor_behat_run() {
     $module = func_get_arg(0);
-    $filename = func_get_arg(1);
+    $path = func_get_arg(1);
     $tag_include = '';
     if(func_num_args() > 2) {
         $javascript = func_get_arg(2);
@@ -120,13 +163,17 @@ function drush_behat_editor_behat_run() {
     }
 
     composer_manager_register_autoloader();
-    //@todo get composer to load this
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
-
-
-    $file = new File(array(), $module, $filename, FALSE);
-    $file_object = $file->get_file_info();
-
+    $file_path = explode("/", $path);
+    $file_path_temp = $file_path;
+    $filename = array_pop($file_path_temp);
+    $file = new BehatEditor\FileController();
+    $params = array(
+        'service_path' => $file_path,
+        'module' => $module,
+        'filename' => $filename,
+        'action' => 'view'
+    );
+    $file_object = $file->show($params);
     $run = new BehatEditorRun($file_object);
     print "Running Tests...\n";
     $output = $run->exec($javascript, $settings = array('base_url_usid' => $usid, 'base_url_gsid' => $gsid), $context =  'behat_run', $tag_include, $profile);
@@ -141,7 +188,6 @@ function drush_behat_editor_behat_run() {
  */
 function drush_behat_editor_behat_run_folder() {
     print "Running Tests...\n";
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     composer_manager_register_autoloader();
     //@todo validate args
     $module = func_get_arg(0);
@@ -151,21 +197,50 @@ function drush_behat_editor_behat_run_folder() {
         $javascript = 0;
     }
 
+    $path = func_get_arg(1);
 
-    $fileObject = File::fileObjecBuilder();
-    $path = drupal_get_path('module', $module);
-    $file_tests_folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
-    $path = drupal_realpath($path) . '/' . $file_tests_folder;
-    if(func_num_args() > 2) {
-        $path = $path . '/' . func_get_arg(2);
-    }
-    $fileObject->absolute_file_path = $path;
+    $file_path = explode("/", $path);
+    $filename = 'drush_folder_run';
+    $file = new BehatEditor\FileController();
+    $params = array(
+        'service_path' => $file_path,
+        'module' => $module,
+        'filename' => $filename,
+        'action' => 'view'
+    );
+    $fileObject = $file->show($params);
     $run = new BehatEditorRun($fileObject);
-    print "Running Tests in folder  {$fileObject['filename']}...\n";
+
+    print "Running Tests in folder {$path}\n";
     $output = $run->exec($javascript);
-    $results = implode("\n\r", $output['output_array']);
-    drush_print($results);
+    $results = str_replace(array("    ", "---- Feature", "::: Scenario", "::: Background"), array("\n", "\n---- Feature", "\n::: Scenario", "\n::: Background"), drush_html_to_text($output['output_array']));
+    return drush_print($results);
+}
 
 
-    return "All Tests ran for module $module";
+//@todo add profile switch as well
+function drush_behat_editor_behat_test_setup() {
+    composer_manager_register_autoloader();
+    $public = file_build_uri('/behat_tests/');
+    $public = drupal_realpath($public);
+    $full_path = $public . '/tests_of_tests.feature';
+    unlink($full_path);
+}
+
+
+function _behat_editor_setup_new_test_file($full_path) {
+
+    $data = <<<HEREDOC
+     @example
+ Feature: Example Test for WikiPedia
+
+   Scenario: WikiPedia
+     Given I am on "http://en.wikipedia.org/wiki/Main_Page"
+     Then I should see "WikiPedia"
+     Then I should see "Muffins"
+
+HEREDOC;
+    $file = fopen($full_path, 'w');
+    fwrite($file, $data);
+    fclose($file);
 }

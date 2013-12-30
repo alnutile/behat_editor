@@ -6,7 +6,6 @@
 
             $('a.add').click(function(e){
                 e.preventDefault();
-                console.log("Add is clicked");
                 var filename = $('input[name=filename]').val();
                 $('#beModal .filename').text(filename);
                 $('#beModal').modal();
@@ -21,10 +20,13 @@
                 var filename = $('input[name=filename]').val();
                 var module = $(add).data('module');
                 var url = $(add).attr('href');
+                var service_path = [module, filename];
+                //Drupal.behat_editor.split_filename(filename),
                 var parameters = {
                     "scenario": scenario_array,
-                    "filename": Drupal.behat_editor.split_filename(filename),
-                    "module": module
+                    "filename": filename,
+                    "module": module,
+                    "path": service_path
                 };
                 var data = Drupal.behat_editor.action('POST', token, parameters, url);
                 if(data.error == 0) {
@@ -33,8 +35,6 @@
                 Drupal.behat_editor.renderMessage(data);
             });
         }
-
-
     };
 
 })(jQuery);

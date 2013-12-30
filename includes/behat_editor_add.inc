@@ -1,6 +1,6 @@
 <?php
 
-use Drupal\BehatEditor\File;
+use Drupal\BehatEditor;
 /**
  * @file functions need to make the Add interface
  */
@@ -8,16 +8,29 @@ use Drupal\BehatEditor\File;
 
 function behat_editor_create_api($query) {
     composer_manager_register_autoloader();
-    $filename = $query['filename'] . ".feature";
-    $module = $query['module'];
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
-    $file = new File($query, $module, $filename, 'file');
-    $response = $file->save_html_to_file();
+
+    $action = 'add';
+    $params = array(
+        'service_path' => $query['path'],
+        'module' => $query['module'],
+        'filename' => $query['filename'],
+        'action' => $action,
+        'parse_type' => 'file',
+        'scenario' => $query['scenario']
+    );
+    $file = new Drupal\BehatEditor\FileController();
+    $response = $file->create($params);
+
+
     if($response['file'] != FALSE){
-        $file_object = $file->get_file_info();
-        $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $file_object);
-        drupal_set_message("Your file {$filename} has been saved. You are now in edit mode");
-        return $results;
+        if($response['file'] != FALSE){
+            drupal_alter('behat_editor_after_create', $response['data']);
+            $results = array('file' => $response, 'test' => '', 'error' => 0, 'message' => $response['message']);
+            drupal_set_message("Your file {$query['filename']} has been saved. You are now in edit mode");
+            return $results;
+        } else {
+            return array('file' => array('message' => $response), 'error' => 1);
+        }
     } else {
         return array('file' => array('message' => $response), 'error' => 1);
     }

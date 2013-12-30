@@ -40,7 +40,6 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         return $operations;
     }
 
-
     function batchRun(array $params) {
         $this->tag = $params['tag'];
         $this->settings = $params['settings'];
@@ -54,8 +53,8 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
             throw new \RuntimeException($message);
         }
         $this->findFilesAndSetupDirectory();
-
-        $this->file_object = BehatEditor\File::fileObjecBuilder();
+        $file_object = new BehatEditor\FileModel();
+        $this->file_object = $file_object->fileObjecBuilder();
         $this->file_object['module'] = 'behat_batch';
         $this->file_object['filename'] = "behat_batch|{$this->rid}";
         $this->file_object['absolute_path_with_file'] = drupal_realpath($this->temp_uri);
@@ -67,12 +66,13 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
     }
 
     protected function wrapUp(&$fields) {
-        file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
+        //@todo make sure to add this back to clean up after tests
+        //file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
         parent::wrapUp($fields);
     }
 
     private function findFilesAndSetupDirectory() {
-        $file = new BehatEditor\Files();
+        $file = new BehatEditor\FileModel(array());
         $files = $file->getFilesByTag($this->tag);
         foreach($files as $key => $value) {
             $copy = file_unmanaged_copy($value['absolute_path_with_file'], $this->temp_uri, FILE_EXISTS_REPLACE);

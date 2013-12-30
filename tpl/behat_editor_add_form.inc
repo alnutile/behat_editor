@@ -24,7 +24,6 @@ use Drupal\BehatEditor;
 function behat_editor_add_form($form, $form_state) {
     composer_manager_register_autoloader();
     behat_editor_add_bootstrap();
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     drupal_add_library('system', 'ui.sortable');
     drupal_add_library('system', 'ui.autocomplete');

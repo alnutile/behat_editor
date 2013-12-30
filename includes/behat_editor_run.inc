@@ -1,5 +1,5 @@
 <?php
-use Drupal\BehatEditor\File,
+use Drupal\BehatEditor,
     Drupal\BehatEditor\BehatEditorRun;
 
 /**
@@ -16,20 +16,23 @@ use Drupal\BehatEditor\File,
  * @param $filename
  * @return array
  */
-function behat_editor_run_api($action, $module, $filename, $settings) {
+function behat_editor_run_api($action, $settings) {
     composer_manager_register_autoloader();
-    $filename = "$filename.feature";
-    //@todo include these in autoloader
-    //  or remove them if they are no longer needed
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
-    module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
+    //@todo make a better interface for this class
+    $file = new Drupal\BehatEditor\FileController();
+    $params = array(
+        'service_path' => $settings['path'],
+        'module' => $settings['module'],
+        'filename' => $settings['filename'],
+        'action' => $action
+    );
 
-    $file = new File(array(), $module, $filename, FALSE);
-    $file_object = $file->get_file_info();
+    $file_object = $file->show($params);
+
+    if(isset($settings['context'])) { $context = $settings['context']; } else { $context = 'behat_run'; }
     $res = new BehatEditorRun($file_object);
-    $run_test_response = $res->exec(FALSE, $settings);
-    $response = $run_test_response['response'];
-    //Check the Response from Running the Tests
+    $run_test_response = $res->exec(FALSE, $settings, $context);
+
     if($run_test_response['rid']) {
         $results = $res->generateReturnPassOutput();
         return $results;
@@ -50,16 +53,32 @@ function behat_editor_run_api($action, $module, $filename, $settings) {
  * @param $query
  * @return array
  */
-function behat_editor_create_and_run_api($action, $module, $filename, $scenario, $settings = array()) {
+function behat_editor_create_and_run_api($action, $scenario, $settings = array()) {
     composer_manager_register_autoloader();
-    $filename = "$filename.feature";
-    //Make sure it is a good request
-    $file = new File(array('scenario' => $scenario), $module, $filename, 'file');
-    $response = $file->save_html_to_file();
+
+    //@todo make a better interface for this class
+    //@todo tighten this up so it can be shared with above
+    $file = new Drupal\BehatEditor\FileController();
+    $action = 'save';
+    if(isset($settings['action'])) {
+        $action = $settings['action'];
+    }
+
+    $params = array(
+        'service_path' => $settings['path'],
+        'module' => $settings['module'],
+        'filename' => $settings['filename'],
+        'action' =>  $action,
+        'scenario' => $scenario,
+        'parse_type' => 'file',
+    );
+
+    $response = $file->$action($params);
+
     //Make sure the file was made
     if($response['file'] != FALSE){
-        $file_object = $file->get_file_info();
-        $res = new BehatEditorRun($file_object);
+        //@todo return full object on save
+        $res = new BehatEditorRun($file->show($params));
         $run_test_response = $res->exec(FALSE, $settings);
         $response = $run_test_response['response'];
 
@@ -74,6 +93,7 @@ function behat_editor_create_and_run_api($action, $module, $filename, $scenario,
         return array('message' => $response['message'], 'file' => array('message' => $response), 'error' => 1);
     }
 }
+
 
 
 

@@ -15,6 +15,7 @@ function _behat_editor_produce_table_array($files_array) {
             $file_name = $row['filename'];
             $file_name_no_ext = $row['filename_no_ext'];
             $module_name = $key;
+            $link = $row['action_path'];
             $latest = _behat_editor_get_latest_result($file_name, $module_name);
             $all_results[$latest['rid']] = $latest['original'];
             $tags = implode(', ', $row['tags_array']);
@@ -23,12 +24,11 @@ function _behat_editor_produce_table_array($files_array) {
                     array
                         (
                             $latest['icon'],
-                            _show_file_link($file_name, $module_name),
-                            _show_module_name($file_name, $module_name),
+                            _show_file_link($file_name, $module_name, $link),
+                            _show_module_name($file_name, $module_name, $link),
                             $tags,
-                            _show_link($file_name, $module_name, $link_text = 'view'),
-                            _show_link($file_name, $module_name, $link_text = 'edit'),
-                            _show_link($file_name_no_ext, $module_name, $link_text = 'delete'),
+                            _show_link($file_name, $module_name, $link_text = 'view', $link),
+                            _show_link($file_name, $module_name, $link_text = 'edit', $link),
                         ),
                 'class' => array($latest['pass_fail']))
             ;
@@ -38,11 +38,10 @@ function _behat_editor_produce_table_array($files_array) {
     $header = array(
         'Status',
         'Name',
-        'Module',
+        'Module/Folder',
         'Tags',
         'View',
         'Edit',
-        'Delete',
     );
 
     $behat_table = theme('table', array(
@@ -105,9 +104,13 @@ function template_preprocess_behat_editor_file_to_html_edit(&$variables) {
     composer_manager_register_autoloader();
     $file_text = $variables['file_text'];
     //@todo should not have` to pass all this to instantiate File class
-    $request['scenario'] = $file_text;
-    $file = new Drupal\BehatEditor\File($request, FALSE, FALSE, 'html_edit');
-    $make_it_html = theme('behat_editor_item_list', $vars = array('items' => $file->output_file_text_to_html_array($file_text), 'attributes' => array('class' => 'scenario sortable ui-sortable', 'data-mode' => 'create-mode')));
+    $file = new Drupal\BehatEditor\FileModel();
+    $params = array(
+        'file_text' => $file_text,
+        'parse_type' => 'html_edit',
+    );
+    $file_to_html_array = $file->output_file_text_to_html_array($params);
+    $make_it_html = theme('behat_editor_item_list', $vars = array('items' => $file_to_html_array, 'attributes' => array('class' => 'scenario sortable ui-sortable', 'data-mode' => 'create-mode')));
     $variables['file_text'] = $make_it_html;
 }
 
@@ -207,8 +210,14 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
     composer_manager_register_autoloader();
     $file_text = $variables['file_text'];
     $request['scenario'] = $file_text;
-    $file = new Drupal\BehatEditor\File($request, FALSE, FALSE, 'html_view');
-    $make_it_html = theme('item_list', $vars = array('attributes' => array('class' => array('scenario'), 'data-mode' => 'view-mode'), 'items' => $file->output_file_text_to_html_array($file_text)));
+
+    $file = new Drupal\BehatEditor\FileModel();
+    $params = array(
+        'file_text' => $file_text,
+        'parse_type' => 'html_edit',
+    );
+    $file_to_html_array = $file->output_file_text_to_html_array($params);
+    $make_it_html = theme('item_list', $vars = array('attributes' => array('class' => array('scenario'), 'data-mode' => 'view-mode'), 'items' => $file_to_html_array));
     $variables['file_text'] = $make_it_html;
 }
 

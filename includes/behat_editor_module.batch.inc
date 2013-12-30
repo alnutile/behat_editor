@@ -24,7 +24,6 @@ function behat_editor_bulk_form_modules($form, &$form_state) {
         'machinename' => array('data' => t('Module Name')),
         'nicename' => array('data' => t('Nice Name')),
         'folder' => array('data' => t('Folder')),
-        'subfolder' => array('data' => t('SubFolder')),
         'last_run' => array('data' => t('Last Run')),
         'batch_status' => array('data' => t('Status')),
         'pass_fail' => array('data' => t('Pass / Fail')),
@@ -66,50 +65,42 @@ function behat_editor_bulk_form_modules($form, &$form_state) {
  * @return array
  */
 function buildRowsModules() {
-    $all = new BehatEditor\Files(array(), FALSE, $cache = FALSE);
     //So I can pull out the nice name
-    $modules = BehatEditor\Files::getModuleFolders();
-    $modules = array_merge($modules, BehatEditor\Files::_hasTestFolderArray());
+    $files = new BehatEditor\FileModel();
+    $modules = $files->getAllModuleFiles();
     $rows = array();
-    foreach($all->getFilesArray() as $key => $value) {
+    $modules_info = system_rebuild_module_data();
+    foreach($modules as $key => $value) {
+        //Only need one sample from the module
         $done = '';
-        foreach($value as $possible_row) {
-            $module = $key;
-            $last_run = 'n/a';
-            $status = 'n/a';
-            $pass_fail = 'n/a';
-            $folder = BEHAT_EDITOR_FOLDER;
-            $array_key = $key;
-            if($possible_row['subpath'] !== FALSE) {
-                $subfolder = $possible_row['subpath'];
-                $array_key = $array_key . '|' . $subfolder;
-            } else {
-                $subfolder = '';
-            }
-            if(!isset($rows[$array_key])) {
-                $args = array();
-                $view = 'n/a';
-                //@todo refactor this to go to the results table based on the array_key to get results.
-                $results = BehatEditor\ResultsBatch::getResultsForByModule($array_key);
-                if(!empty($results['results'])) {
-                    $results = $results['results'][0];
-                    $args = implode('/', $results['results']);
-                    $view = l('view', 'admin/behat/report/' . $args, array('attributes' => array('target' => '_blank')));
-                    $last_run = format_date($results['created'], 'medium');
-                    $status = BehatEditor\ResultsBatch::getBatchRunningStatus($results['batch_status']);
-                    $pass_fail = BehatEditor\ResultsBatch::getResultsPassFail($results['pass_fail']);
-                }
-                $row['machinename'] = $array_key;
-                $row['nicename'] = $modules[$possible_row['module']]['nice_name'];
-                $row['folder'] = $folder;
-                $row['subfolder'] = $subfolder;
-                $row['last_run'] = $last_run;
-                $row['batch_status'] = $status;
-                $row['pass_fail'] = $pass_fail;
-                $row['report'] = $view;
-                $rows["$array_key"] = $row;
-            }
+        $first_test = array_values($value);
+        $first_test = $first_test[0];
+        $module = $key;
+        $last_run = 'n/a';
+        $status = 'n/a';
+        $pass_fail = 'n/a';
+        $folder = (isset($first_test['subpath'])) ? $first_test['subpath'] : BEHAT_EDITOR_FOLDER;
+        $array_key = $key;
+        $args = array();
+        $view = 'n/a';
+        //@todo refactor this to go to the results table based on the array_key to get results.
+        $results = BehatEditor\ResultsBatch::getResultsForByModule($module);
+        if(!empty($results['results'])) {
+            $results = $results['results'][0];
+            $args = implode('/', $results['results']);
+            $view = l('view', 'admin/behat/report/' . $args, array('attributes' => array('target' => '_blank')));
+            $last_run = format_date($results['created'], 'medium');
+            $status = BehatEditor\ResultsBatch::getBatchRunningStatus($results['batch_status']);
+            $pass_fail = BehatEditor\ResultsBatch::getResultsPassFail($results['pass_fail']);
         }
+        $row['machinename'] = $array_key;
+        $row['nicename'] = $modules_info[$key]->info['name'];
+        $row['folder'] = $folder;
+        $row['last_run'] = $last_run;
+        $row['batch_status'] = $status;
+        $row['pass_fail'] = $pass_fail;
+        $row['report'] = $view;
+        $rows["$module"] = $row;
     }
     return $rows;
 }

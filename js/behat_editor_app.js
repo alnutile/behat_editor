@@ -137,6 +137,18 @@
                     messages += "</div>";
                     $('#messages-behat').append(messages);
                 }
+                //@todo refactor this optional messages array output
+                //  this was just a way to add messages as an array to the
+                //  alters on some pages
+                if(typeof data.file.data != 'undefined' && data.file.data.messages.length) {
+                   var messages_array = data.file.data.messages;
+                   for(var i = 0; i < messages_array.length; i++) {
+                       var messages_out = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
+                       messages_out += messages_array[i];
+                       messages_out += "</div>";
+                       $('#messages-behat').append(messages_out);
+                   }
+                }
             }
 
             if(data.test) {
