@@ -198,23 +198,27 @@ function drush_behat_editor_behat_run_folder() {
         $javascript = 0;
     }
 
+    $path = func_get_arg(1);
 
-    $fileObject = File::fileObjecBuilder();
-    $path = drupal_get_path('module', $module);
-    $file_tests_folder = variable_get('behat_editor_default_folder', BEHAT_EDITOR_DEFAULT_FOLDER);
-    $path = drupal_realpath($path) . '/' . $file_tests_folder;
-    if(func_num_args() > 2) {
-        $path = $path . '/' . func_get_arg(2);
-    }
-    $fileObject->absolute_file_path = $path;
+    $file = new BehatEditor\FileModel();
+    $fileObject = $file->fileObjecBuilder();
+
+    $file_path = explode("/", $path);
+    $filename = 'drush_folder_run';
+    $file = new BehatEditor\FileController();
+    $params = array(
+        'service_path' => $file_path,
+        'module' => $module,
+        'filename' => $filename,
+        'action' => 'view'
+    );
+    $fileObject = $file->show($params);
     $run = new BehatEditorRun($fileObject);
-    print "Running Tests in folder  {$fileObject['filename']}...\n";
+
+    print "Running Tests in folder {$path}\n";
     $output = $run->exec($javascript);
-    $results = implode("\n\r", $output['output_array']);
-    drush_print($results);
-
-
-    return "All Tests ran for module $module";
+    $results = str_replace(array("    ", "---- Feature", "::: Scenario", "::: Background"), array("\n", "\n---- Feature", "\n::: Scenario", "\n::: Background"), drush_html_to_text($output['output_array']));
+    return drush_print($results);
 }
 
 
@@ -225,27 +229,6 @@ function drush_behat_editor_behat_test_setup() {
     $public = drupal_realpath($public);
     $full_path = $public . '/tests_of_tests.feature';
     unlink($full_path);
-//
-//    $public = file_build_uri('/behat_github/');
-//    $public = drupal_realpath($public);
-//    $full_path = $public . '/users/1/bbbbb_test/tests/wikipedia.feature';
-//    _behat_editor_setup_new_test_file($full_path);
-//
-//    $public = file_build_uri('/behat_tests/');
-//    $public = drupal_realpath($public);
-//    $full_path = $public . '/wikipedia.feature';
-//    _behat_editor_setup_new_test_file($full_path);
-//
-//    //Setup a test repo for non group tests
-//    $public = file_build_uri('/behat_github/');
-//    $public = drupal_realpath($public);
-//    $full_path = $public . '/groups/10000/cccc_test';
-//
-//    if(!file_exists($full_path)) {
-//        mkdir("$full_path", 0777, $recursive = TRUE);
-//        //update perms
-//        exec("chgrp -R www-data $full_path");
-//    }
 }
 
 
