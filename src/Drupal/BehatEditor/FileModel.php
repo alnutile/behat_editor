@@ -896,5 +896,20 @@ class FileModel {
     }
 
 
+    /**
+     * Make HTML array from a file
+     *
+     * @param $file_text
+     * @return array
+     */
+    public function output_file_text_to_html_array($params) {
+        if(!isset($this->parse_type) && isset($params['parse_type'])) {
+            $this->parse_type = $params['parse_type'];
+        }
+        $this->scenario = self::_turn_file_to_array($params['file_text']);
+        $this->scenario_array = self::_parse_questions();
+        return $this->scenario_array;
+    }
+
 
 } 
