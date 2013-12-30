@@ -105,7 +105,6 @@ function template_preprocess_behat_editor_file_to_html_edit(&$variables) {
     $file_text = $variables['file_text'];
     //@todo should not have` to pass all this to instantiate File class
     $file = new Drupal\BehatEditor\FileModel();
-    //$file = new Drupal\BehatEditor\File($request, FALSE, FALSE, 'html_edit');
     $params = array(
         'file_text' => $file_text,
         'parse_type' => 'html_edit',
@@ -211,8 +210,14 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
     composer_manager_register_autoloader();
     $file_text = $variables['file_text'];
     $request['scenario'] = $file_text;
-    $file = new Drupal\BehatEditor\File($request, FALSE, FALSE, 'html_view');
-    $make_it_html = theme('item_list', $vars = array('attributes' => array('class' => array('scenario'), 'data-mode' => 'view-mode'), 'items' => $file->output_file_text_to_html_array($file_text)));
+
+    $file = new Drupal\BehatEditor\FileModel();
+    $params = array(
+        'file_text' => $file_text,
+        'parse_type' => 'html_edit',
+    );
+    $file_to_html_array = $file->output_file_text_to_html_array($params);
+    $make_it_html = theme('item_list', $vars = array('attributes' => array('class' => array('scenario'), 'data-mode' => 'view-mode'), 'items' => $file_to_html_array));
     $variables['file_text'] = $make_it_html;
 }
 
