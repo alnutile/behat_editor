@@ -1,6 +1,10 @@
 <?php
 
 namespace Drupal\BehatEditor;
+/**
+ * @todo clean out this file is not needed anymore
+ */
+
 
 class FilesByModuleName extends Files{
     public $files = array();
