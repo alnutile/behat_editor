@@ -53,8 +53,8 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
             throw new \RuntimeException($message);
         }
         $this->findFilesAndSetupDirectory();
-
-        $this->file_object = BehatEditor\File::fileObjecBuilder();
+        $file_object = new BehatEditor\FileModel();
+        $this->file_object = $file_object->fileObjecBuilder();
         $this->file_object['module'] = 'behat_batch';
         $this->file_object['filename'] = "behat_batch|{$this->rid}";
         $this->file_object['absolute_path_with_file'] = drupal_realpath($this->temp_uri);

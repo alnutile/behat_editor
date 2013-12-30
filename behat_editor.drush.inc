@@ -188,7 +188,6 @@ function drush_behat_editor_behat_run() {
  */
 function drush_behat_editor_behat_run_folder() {
     print "Running Tests...\n";
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     composer_manager_register_autoloader();
     //@todo validate args
     $module = func_get_arg(0);

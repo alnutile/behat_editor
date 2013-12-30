@@ -17,7 +17,6 @@ use Drupal\BehatEditor;
 
 function behat_editor_index() {
     composer_manager_register_autoloader();
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     libraries_load('behat_editor_data_table');
     $path = drupal_get_path('module', 'behat_editor');
@@ -26,7 +25,6 @@ function behat_editor_index() {
     drupal_add_css($path . '/css/behat_editor_app.css');
 
     behat_editor_add_bootstrap();
-
 
     $build['messages_top'] = array(
         '#markup' => "<div id='messages-behat'></div>",
@@ -61,9 +59,6 @@ function behat_editor_index() {
     $modules = new BehatEditor\FileController();
     //Was getFilesArray for Files
     $files_array = $modules->index();
-
-    //Allow users to hook the list of files.
-    drupal_alter('behat_editor_index', $files_array);
 
     $build['intro'] = array(
         '#prefix' => "<div class='alert alert-warning'><i class='glyphicon glyphicon-question-sign'></i>",
