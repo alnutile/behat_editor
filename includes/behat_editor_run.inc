@@ -29,8 +29,9 @@ function behat_editor_run_api($action, $settings) {
 
     $file_object = $file->show($params);
 
+    if(isset($settings['context'])) { $context = $settings['context']; } else { $context = 'behat_run'; }
     $res = new BehatEditorRun($file_object);
-    $run_test_response = $res->exec(FALSE, $settings);
+    $run_test_response = $res->exec(FALSE, $settings, $context);
 
     if($run_test_response['rid']) {
         $results = $res->generateReturnPassOutput();

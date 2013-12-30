@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Some unit tests are in the tests folder of this module
+ * The build process for composer-manager made this not feesable right now
+ */
+
 use Drupal\BehatEditor;
 
 class SimpletestUnitTestBehatEditorCase extends DrupalUnitTestCase {
@@ -13,7 +18,7 @@ class SimpletestUnitTestBehatEditorCase extends DrupalUnitTestCase {
     }
 
     public function testFileCreation() {
-        $results = new Drupal\BehatEditor\File();
+        $results = new Drupal\BehatEditor\FileModel();
         $file = array();
         $this->assertTrue($result, $file);
     }

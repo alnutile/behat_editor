@@ -140,6 +140,7 @@ class BehatEditorRun {
 
         //@todo move this into a shared method for exec and execDrush
         $this->settings['context'] = $context1;
+
         $behat_yml_path = new GenerateBehatYml($this->settings);
         $this->behat_yml = $behat_yml_path->writeBehatYmlFile();
 

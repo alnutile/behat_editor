@@ -1,6 +1,6 @@
 <?php
 
-use Drupal\BehatEditor\File;
+use Drupal\BehatEditor;
 /**
  * @file functions need to make the Add interface
  *

@@ -199,9 +199,6 @@ function drush_behat_editor_behat_run_folder() {
 
     $path = func_get_arg(1);
 
-    $file = new BehatEditor\FileModel();
-    $fileObject = $file->fileObjecBuilder();
-
     $file_path = explode("/", $path);
     $filename = 'drush_folder_run';
     $file = new BehatEditor\FileController();

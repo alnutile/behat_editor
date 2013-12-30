@@ -1,6 +1,5 @@
 <?php
-use Drupal\BehatEditor\File,
-    Drupal\BehatEditor;
+use Drupal\BehatEditor;
 /**
  * @file output the form on the View page
  */

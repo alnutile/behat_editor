@@ -36,6 +36,20 @@ function behat_editor_services_resources() {
                             'source' => array('path' => '1'),
                             'optional' => FALSE,
                         ),
+                        array(
+                            'name' => 'scenario',
+                            'type' => 'array',
+                            'description' => 'Informs Run that what steps to take eg view or create then view.',
+                            'source' => array('data' => 'scenario'),
+                            'optional' => FALSE,
+                        ),
+                        array(
+                            'name' => 'settings',
+                            'type' => 'array',
+                            'description' => 'USid and GSid ids for the related behat settings',
+                            'source' => array('data' => 'settings'),
+                            'optional' => FALSE,
+                        ),
                     ),
                 ),
                 'create' => array(
