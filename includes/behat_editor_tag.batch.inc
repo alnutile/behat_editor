@@ -153,8 +153,8 @@ function behat_editor_build_rows_tags() {
 }
 
 function behat_editor_tags_get() {
-    $file = new BehatEditor\Files();
-    $files = $file->getFilesArray();
+    $file = new BehatEditor\FileModel();
+    $files = $file->getAllFiles();
     $tags = array();
     foreach($files as $key => $value) {
         foreach($value as $key2 => $value2) {

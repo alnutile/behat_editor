@@ -56,7 +56,7 @@ class BehatEditorBatchTypeModule extends  BehatEditorBatchType {
         $this->subfolder = $params['subfolder'];
         $this->definePaths();
         $this->rid = $params['rid'];
-        $this->file_object = BehatEditor\File::fileObjecBuilder();
+        $this->file_object = BehatEditor\FileModel::fileObjecBuilder();
         $this->file_object['module'] = $this->module;
         $this->file_object['filename'] = "behat_batch|{$this->rid}";
         $this->file_object['absolute_path_with_file'] = $this->absolute_path;

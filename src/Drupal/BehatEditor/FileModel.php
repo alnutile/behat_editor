@@ -30,6 +30,7 @@ class FileModel {
     protected $file_helpers;
     protected $service_path_full;
     protected $params;
+    protected $modules;
     protected $module_path;
     protected $action_path;
     protected $file_object;
@@ -137,6 +138,15 @@ class FileModel {
         //public://behat_tests next
         $files_array_others = $this->_buildArrayOfAvailableFilesInPublicFolders();
         return array_merge($files_array_others, $files_array);
+    }
+
+
+    public function getAllModuleFiles(){
+        //@todo add cache back to this
+        //Modules first
+        $files_array = $this->_buildModuleFilesArray();
+        //public://behat_tests next
+        return $files_array;
     }
 
     public function getFilesByTag(array $tag) {
@@ -249,12 +259,13 @@ class FileModel {
             $file_data[$array_key] = $this->getFile();
         }
         $files_found[$machine_name] = $file_data;
-        drupal_alter('behat_editor_files_found', $files_found);
+        drupal_alter('behat_editor_files_found', $files_found, $context1 = 'public');
         return $files_found;
     }
 
     protected function _buildArrayOfAvailableFilesInModulessFolders() {
         $files_found = array();
+        $file_data = array();
         foreach($this->modules as $machine_name => $nice_name) {
             //@todo allow subfolders
             $module_path =  drupal_get_path('module', $machine_name);
@@ -278,7 +289,7 @@ class FileModel {
             }
             $files_found[$machine_name] = $file_data;
         }
-        drupal_alter('behat_editor_files_found', $file_data);
+        drupal_alter('behat_editor_files_found', $file_data, $context1 = 'module');
         return $files_found;
     }
 
