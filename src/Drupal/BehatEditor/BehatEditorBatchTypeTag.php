@@ -60,6 +60,7 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         $this->file_object['absolute_path_with_file'] = drupal_realpath($this->temp_uri);
         $this->file_object['relative_path'] = $this->temp_uri;
         $this->settings['filename'] = $this->file_object['filename'];
+        $this->settings['module'] = 'behat_batch';
         $tests = new BehatEditor\BehatEditorRun($this->file_object);
         $results = $tests->exec(1, $this->settings, 'behat_run_batch', "~@disabled");
         $this->test_results = $results;
