@@ -19,3 +19,23 @@
 function hook_behat_editor_files_found_alter($files_array, $context) {
 
 }
+
+/**
+ * Allow to alter arguments before they are passed to service callback.
+ *
+ * @param $files_array
+ *   output of the test
+ *   return_var eg pass fail
+ *   settings
+ *   filename
+ *   module
+ * @param $context
+ *   Context of the call eg "behat_run", "behat_batch", "behat_saucelabs" etc
+ * @param $options
+ *
+ * @see exec()
+ * @see BehatEditorRun.php
+ */
+function hook_behat_editor_results_alter($results_params, $contenxt) {
+
+}

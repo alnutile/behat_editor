@@ -155,7 +155,14 @@ class BehatEditorRun {
         $behat_yml_path->deleteBehatYmlFile();
 
         $results = new Results();
-
+        $results_params = array(
+            'output' => &$output,
+            'return_var' => $return_var,
+            'settings' => &$settings,
+            'filename' => $this->filename,
+            'module' => $this->module
+        );
+        drupal_alter('behat_editor_results', $results_params, $context1);
         $output = $results->prepareResultsAndInsert($output, $return_var, $settings, $this->filename, $this->module);
         $this->clean_results = $output['clean_results'];
         $this->rid = $output['rid'];
