@@ -1,0 +1,27 @@
+Running Tests...
+   * @javascript * @behat * @behat_full_test  
+---- Feature:  Add Page ---- 
+::: Background:  Log In :::
+Given  I am on " /user/logout "
+  Then  I am on " /user/login "
+  And  I fill in " Username " with " admin "
+  And  I fill in " Password " with " Welcome2013 "
+  And  I press " Log in "
+  And  I wait for " 3 " seconds
+   * @batch  
+::: Scenario:  And I visit the batch module area :::
+Given  I am on " /admin/behat/bulk/module "
+  And  I wait
+  And  I check " edit-dashboard-behat-editor-example-module "
+  And  I press " Execute "
+  And  I wait for " 10 " seconds
+  Then  I should see " All tests have been completed "
+   * @batch  
+::: Scenario:  And I visit the batch area Tags :::
+Given  I am on " /admin/behat/bulk "
+  And  I check " edit-dashboard-local-test "
+  And  I press " Execute "
+  Given  I wait for " 10 " seconds
+  Then  I should see " All tests have been completed "   The text "All tests have been completed" was not found anywhere in the text of the current page.
+
+2 scenarios ( 1 passed , 1 failed )  23 steps ( 22 passed , 1 failed )  0m48.054s   

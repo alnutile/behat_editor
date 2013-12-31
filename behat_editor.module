@@ -115,6 +115,15 @@ function behat_editor_menu() {
         'type' => MENU_CALLBACK,
     );
 
+    $items['admin/behat/delete_test'] =  array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('behat_editor_delete_test'),
+        'access arguments' => array('behat delete test'),
+        'file' => 'behat_editor_delete_test_form.inc',
+        'file path' => "$path/includes/",
+        'type' => MENU_CALLBACK,
+    );
+
     $items['admin/behat/bulk'] =  array(
         'page callback' => 'behat_editor_bulk_tags',
         'title' => 'Batch Tests',
@@ -380,7 +389,7 @@ function behat_editor_form_alter(&$form, $form_state, $form_id) {
             drupal_set_message(t('You do not have a behat loaded yet. Did you run !composer_install via the Composer Manager?',
                 array('!composer_install' => l('composer install', 'admin/system/composer-manager'))), 'error');
         }
-        drupal_set_message(t('!icon Any @javascript tag will not be run. Only on SauceLabs can that tag be used.', array('!icon' => '<i class="glyphicon glyphicon-comment glyphicon-white"></i>')), 'info');
+        drupal_set_message(t('!icon Any @javascript tag will not be run unless you are using a vendor like Saucelabs or a local selenium server', array('!icon' => '<i class="glyphicon glyphicon-comment glyphicon-white"></i>')), 'info');
     }
 }
 
@@ -431,9 +440,9 @@ function behat_editor_help($path, $arg) {
  * @param $module_name
  * @return string
  */
-function _show_file_link($file_name, $module_name) {
+function _show_file_link($file_name, $module_name, $link) {
     if(strpos($file_name, 'private_') === FALSE ) {
-        $results = l($file_name, 'admin/behat/view/' . $module_name . '/' . $file_name);
+        $results = l($file_name, 'admin/behat/view' . $link);
     } else {
         $results = $file_name;
     }
@@ -466,23 +475,24 @@ function _show_module_name($file_name, $module_name) {
  * @param $module_name
  * @return string
  */
-function _show_link($file_name, $module_name, $link_text = 'view') {
+function _show_link($file_name, $module_name, $link_text = 'view', $link) {
+    $path = drupal_get_path('module', $module_name);
     if(strpos($file_name, 'private_') !== FALSE) {
         return 'n/a';
     }
     switch($link_text) {
         case 'view':
-            $results = l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+            $results = l($link_text, 'admin/behat/view' . $link);
             return $results;
         case 'edit':
-            if($module_name == 'behat_tests') {
-                return l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+            if(empty($path)) {
+                return l($link_text, 'admin/behat/edit' . $link);
             } else {
                 return 'n/a';
             }
         case 'delete':
-            if($module_name == 'behat_tests' && user_access("behat delete test")) {
-                return l($link_text, 'admin/behat/'.$link_text.'/' . $module_name . '/' . $file_name);
+            if(empty($path) && user_access("behat delete test")) {
+                return l($link_text, $link);
             } else {
                 return 'n/a';
             }
@@ -519,7 +529,7 @@ function run_test_array($filename, $module, $action = 'run') {
         '#type' => 'link',
         '#title' => t('Run Test'),
         '#name' => 'run_test',
-        '#href' => "behat_editor_v1/behat_editor_actions/feature/$action/$module/",
+        '#href' => "behat_editor_v1/behat_editor_actions/feature/$action",
         '#attributes' => array('class' => array('btn', 'btn-success', 'run')),
     );
 }

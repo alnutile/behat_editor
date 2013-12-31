@@ -14,7 +14,8 @@ class BehatEditorRunModuleFolderBasedTests {
 
     public function __construct($module, $subfolder, $rid){
         composer_manager_register_autoloader();
-        $this->file_object = BehatEditor\File::fileObjecBuilder();
+        $file_object = new BehatEditor\FileModel();
+        $this->file_object = $file_object->fileObjecBuilder();
         $this->module = $module;
         $this->subfolder = $subfolder;
         $this->absolute_path;

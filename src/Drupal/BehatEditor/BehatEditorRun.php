@@ -42,7 +42,7 @@ class BehatEditorRun {
     /**
      * File object from FileObject class
      * for now using a function
-     * check it comes from the class later one
+     * check it comes from the class later on
      */
     public function __construct($file_object) {
 
@@ -120,9 +120,9 @@ class BehatEditorRun {
      */
     public function exec($javascript = FALSE, $settings = array(), $context1 = 'behat_run', $tag_include = FALSE, $profile = 'default') {
         if($javascript == TRUE) {
-            $tags = '';
+            $tags_exclude = '';
         } else {
-            $tags = "--tags '~@javascript'";
+            $tags_exclude = "--tags '~@javascript'";
         }
 
         if($tag_include) {
@@ -131,14 +131,16 @@ class BehatEditorRun {
             $tag_include = '';
         }
 
+        $this->tags = "$tag_include $tags_exclude";
+
         $command['profile'] = "--profile=$profile";
 
-        $this->tags = "$tags $tag_include";
         $this->settings = $settings;
         $command = self::behatCommandArray();
 
         //@todo move this into a shared method for exec and execDrush
         $this->settings['context'] = $context1;
+
         $behat_yml_path = new GenerateBehatYml($this->settings);
         $this->behat_yml = $behat_yml_path->writeBehatYmlFile();
 
@@ -147,13 +149,20 @@ class BehatEditorRun {
         $command['config'] = "--config=\"$this->behat_yml\"";
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
-        watchdog('test_settings', print_r($settings, 1));
-        watchdog('test_command', print_r($command, 1));
-        exec($command, $output, $return_var);
 
-        //$behat_yml_path->deleteBehatYmlFile();
+        exec($command, $output, $return_var);
+        watchdog('behat_command', print_r($command, 1), array(), WATCHDOG_NOTICE);
+        $behat_yml_path->deleteBehatYmlFile();
 
         $results = new Results();
+        $results_params = array(
+            'output' => &$output,
+            'return_var' => $return_var,
+            'settings' => &$settings,
+            'filename' => $this->filename,
+            'module' => $this->module
+        );
+        drupal_alter('behat_editor_results', $results_params, $context1);
         $output = $results->prepareResultsAndInsert($output, $return_var, $settings, $this->filename, $this->module);
         $this->clean_results = $output['clean_results'];
         $this->rid = $output['rid'];

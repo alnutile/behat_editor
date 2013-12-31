@@ -23,7 +23,6 @@ use Drupal\BehatEditor;
  */
 function behat_editor_edit_form($form, $form_state, $module, $filename) {
     behat_editor_add_bootstrap();
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     drupal_add_library('system', 'ui.sortable');
     drupal_add_library('system', 'ui.autocomplete');
@@ -31,10 +30,23 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     libraries_load('behat_editor_data_table');
     libraries_load('behat_editor_date_format');
     composer_manager_register_autoloader();
-    $file = new Drupal\BehatEditor\File(array(), $module, $filename, FALSE);
-    $file_info = $file->get_file_info();
-    //Product the HTML from the File in a format it will have all the markup needed to
-    //  build / edit a test
+
+    $file = new BehatEditor\FileController();
+    $filename = array_pop(arg());
+    $module = arg(3);
+    $service_path = array_slice(arg(), 3, count(arg()));
+    $params = array(
+        'service_path' => $service_path,
+        'module' => $module,
+        'filename' => $filename,
+        'action' => 'edit'
+    );
+    //need to pass this for delete to work
+    $_SESSION['delete_path'] = $service_path;
+
+    $file_info = $file->show($params);
+    drupal_alter('behat_editor_edit', $file_info);
+
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
 
     $path = drupal_get_path('module', 'behat_editor');

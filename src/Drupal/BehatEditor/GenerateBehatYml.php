@@ -20,6 +20,7 @@ class GenerateBehatYml {
         $settings_build = new Settings();
         $this->behat_yml = $settings_build->setBehatYmlSettings($behat_yml, $settings);
         $context1 = 'generate_yml';
+
         drupal_alter('behat_editor_yml_array', $this->behat_yml, $context1, $settings);
     }
 
@@ -38,7 +39,6 @@ class GenerateBehatYml {
 
         $this->behat_filename = REQUEST_TIME . '.yml';
         $response = file_unmanaged_save_data($yml_string, $path . '/' . $this->behat_filename, $replace = FILE_EXISTS_REPLACE);
-
         if($response == FALSE) {
             $message = t('The behat.yml file could not be saved could not be saved !file', array('!file' => $path . '/' . $this->behat_filename));
             throw new \RuntimeException($message);

@@ -33,7 +33,11 @@
                 e.preventDefault();
                 var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
                 var url = $(this).attr('href');
-                var filename = Drupal.behat_editor.split_filename($('input[name=filename]').val());
+                var url_args = window.location.pathname;
+                var url_args_array = url_args.split('/');
+                var service_path = url_args_array.slice(4, url_args_array.length);
+                var module = url_args_array[4];
+                var filename = url_args_array[url_args_array.length - 1];
                 var base_url_usid = $('select#edit-users option:selected').val();
                 var base_url_gsid = $('select#edit-group option:selected').val();
                 var os_version = $('select#edit-os option:selected').val();
@@ -41,9 +45,27 @@
                 //See if I need to pass scenario
                 if(url.split('/')[4] == 'run') {
                     var parameters = {
-                        "settings": { "base_url_usid": base_url_usid, "base_url_gsid": base_url_gsid }
+                        "settings": {
+                            "base_url_usid": base_url_usid,
+                            "base_url_gsid": base_url_gsid,
+                            "os_version": os_version,
+                            "browser_version": browser_version,
+                            "path": service_path,
+                            "filename": filename,
+                            "module": module
+                        }
                     };
                 } else {
+                    //One final check for add action
+                    var action = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
+                    if(action == 'add' ) {
+                        action = 'create';
+                        module = $('a.add').data('module');
+                        filename = $('input[name=filename]').val();
+                        service_path = [module, filename];
+                    } else {
+                        action = 'save';
+                    }
                     var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
                     var parameters = {
                         "scenario": scenario_array,
@@ -51,11 +73,15 @@
                             "base_url_usid": base_url_usid,
                             "base_url_gsid": base_url_gsid,
                             "os_version": os_version,
-                            "browser_version": browser_version
+                            "browser_version": browser_version,
+                            "path": service_path,
+                            "filename": filename,
+                            "module": module,
+                            "action": action
                         }
                     };
                 }
-                Drupal.behat_editor.run_actions('POST', token, parameters, url + filename, true, true, context);
+                Drupal.behat_editor.run_actions('POST', token, parameters, url, true, true, context);
             });
         }
     };

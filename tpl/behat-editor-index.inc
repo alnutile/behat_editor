@@ -17,7 +17,6 @@ use Drupal\BehatEditor;
 
 function behat_editor_index() {
     composer_manager_register_autoloader();
-    module_load_include('inc', 'behat_editor', 'helpers/behat_helpers_app');
     module_load_include('inc', 'behat_editor', 'tpl/behat_shared_views');
     libraries_load('behat_editor_data_table');
     $path = drupal_get_path('module', 'behat_editor');
@@ -26,7 +25,6 @@ function behat_editor_index() {
     drupal_add_css($path . '/css/behat_editor_app.css');
 
     behat_editor_add_bootstrap();
-
 
     $build['messages_top'] = array(
         '#markup' => "<div id='messages-behat'></div>",
@@ -58,8 +56,9 @@ function behat_editor_index() {
     //@todo convert to using the json index output
     //  see ticket #85 on github
 
-    $modules = new BehatEditor\Files();
-    $files_array = $modules->getFilesArray();
+    $modules = new BehatEditor\FileController();
+    //Was getFilesArray for Files
+    $files_array = $modules->index();
 
     $build['intro'] = array(
         '#prefix' => "<div class='alert alert-warning'><i class='glyphicon glyphicon-question-sign'></i>",
@@ -83,32 +82,4 @@ function behat_editor_index() {
     $build['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
     behat_editor_results_history_modal($build);
     return $build;
-}
-
-/**
- * Helper function to make the array of
- * available files in the folder
- *
- * @param $modules
- *  return value of _behat_editor_has_folder
- * @return array
- *  and array keyed by module names of files folders etc.
- *
- * @todo this gets repeated in several places need to bring it into a class
- *   to use as needed.
- */
-function _behat_editor_build_array_of_available_files_v2($modules) {
-    $files_found = array();
-    foreach($modules as $machine_name => $nice_name) {
-        if ($machine_name == BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER) {
-            $sub_folder = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
-            $files_folder =  file_build_uri("/{$sub_folder}/");
-            $path = drupal_realpath($files_folder);
-            $files_found[$machine_name] = _behat_editor_scan_directories($machine_name, $path);
-        } else {
-            $path = DRUPAL_ROOT . '/' . drupal_get_path('module', $machine_name) . '/' . BEHAT_EDITOR_FOLDER;
-            $files_found[$machine_name] =  _behat_editor_scan_directories($machine_name, $path);
-        }
-    }
-    return $files_found;
 }
