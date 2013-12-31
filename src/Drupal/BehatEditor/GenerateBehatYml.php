@@ -39,7 +39,6 @@ class GenerateBehatYml {
 
         $this->behat_filename = REQUEST_TIME . '.yml';
         $response = file_unmanaged_save_data($yml_string, $path . '/' . $this->behat_filename, $replace = FILE_EXISTS_REPLACE);
-
         if($response == FALSE) {
             $message = t('The behat.yml file could not be saved could not be saved !file', array('!file' => $path . '/' . $this->behat_filename));
             throw new \RuntimeException($message);
