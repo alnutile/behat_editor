@@ -1,0 +1,5 @@
+0.1.0 MVP
+-----------
+Rework system to deal way better with subfolders
+Change the API to not need filename and module in the url 
+Clean out File and Files class for others.
