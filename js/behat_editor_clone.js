@@ -7,6 +7,7 @@
             $('a.clone').click(function(e){
                 var filename = $('input[name=filename]').val();
                 $('#beModalClone .filename').text('clone_' + filename + '.feature');
+                $('#clone-name').val(filename + '.feature');
                 $('#beModalClone').modal();
                 e.preventDefault();
             });
