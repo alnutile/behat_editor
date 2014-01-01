@@ -22,14 +22,6 @@
                 var url = $(clone).attr('href');
                 var service_path = [module, filename];
 
-                //@todo have not test the new path lines below
-                //  will come back after the github clone work
-//                var path = $(this).attr('href');
-//                var path_with_file = path.substr(1) + '/' + filename;
-//                var service_path = path_with_file.split('/');
-//
-//                var module = $(clone).data('module');
-//                var url = $(clone).attr('href');
                 var parameters = {
                     "scenario": scenario_array,
                     "filename": filename,
