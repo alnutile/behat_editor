@@ -591,13 +591,14 @@ function edit_test_array($filename, $module) {
 
 function clone_test_array($filename, $module) {
     //Default for no to behat_tests
+    $filename_no_ext = REQUEST_TIME . '.feature';
     $module = BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER;
     return array(
         '#type' => 'link',
         '#name' => 'clone_test',
         '#title' => t('Clone Test'),
         '#href' => "behat_editor_v1/behat_editor_actions",
-        '#attributes' => array('class' => array('btn', 'btn-default', 'clone'), 'data-filename' => $filename, 'data-module' => $module),
+        '#attributes' => array('class' => array('btn', 'btn-default', 'clone'), 'data-filename' => $filename_no_ext, 'data-module' => $module),
     );
 }
 /**
