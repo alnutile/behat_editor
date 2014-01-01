@@ -6,7 +6,6 @@
 
             $('a.clone').click(function(e){
                 var filename = $(this).data('filename');
-                console.log(filename);
                 $('#beModalClone .filename').text(filename);
                 $('#clone-name').val(filename);
                 $('#beModalClone').modal();
