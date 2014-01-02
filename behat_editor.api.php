@@ -39,3 +39,16 @@ function hook_behat_editor_files_found_alter($files_array, $context) {
 function hook_behat_editor_results_alter($results_params, $contenxt) {
 
 }
+
+/**
+ * Hook to alter the command array that will later be parsed into the
+ * command string for behat
+ *
+ * @param $command
+ * @param $context1
+ *
+ * @see exec
+ * @see BehatEditorRun.php
+ */
+function behat_editor_saucelabs_behat_editor_command_alter(&$command, $context1){
+}
