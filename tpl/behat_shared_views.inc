@@ -214,7 +214,7 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
     $file = new Drupal\BehatEditor\FileModel();
     $params = array(
         'file_text' => $file_text,
-        'parse_type' => 'html_edit',
+        'parse_type' => 'html_view',
     );
     $file_to_html_array = $file->output_file_text_to_html_array($params);
     watchdog('test_html_array', print_r($file_to_html_array, 1));
