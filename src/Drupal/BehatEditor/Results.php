@@ -72,8 +72,8 @@ class Results {
                 $rows[] = (array) $record;
             }
         }
-        $params = array('filename' => $filename, 'module' => $module, 'file_object' => $file_object);
         if($allow_alter) {
+            $params = array('filename' => $filename, 'module' => $module, 'file_object' => $file_object);
             drupal_alter('behat_editor_results_per_file', $rows, $params);
         }
 
