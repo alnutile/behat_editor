@@ -16,7 +16,7 @@ function _behat_editor_produce_table_array($files_array) {
             $file_name_no_ext = $row['filename_no_ext'];
             $module_name = $key;
             $link = $row['action_path'];
-            $latest = _behat_editor_get_latest_result($file_name, $module_name);
+            $latest = _behat_editor_get_latest_result($file_name, $module_name, $row);
             $all_results[$latest['rid']] = $latest['original'];
             $tags = implode(', ', $row['tags_array']);
             $rows[] = array(
@@ -54,12 +54,12 @@ function _behat_editor_produce_table_array($files_array) {
     return $behat_table;
 }
 
-function _behat_editor_get_latest_result($file_name, $module_name){
+function _behat_editor_get_latest_result($file_name, $module_name, $file_object = array()){
     $output = '';
     $pass_fail = 'na';
     $rid = 0;
     $result = '';
-    $results = BehatEditor\Results::getLatestResultForFile($module_name, $file_name);
+    $results = BehatEditor\Results::getLatestResultForFile($module_name, $file_name, $file_object);
     if(isset($results['results'][0])) {
         $result = $results['results'][0];
         $rid = $results['results'][0]['rid'];
