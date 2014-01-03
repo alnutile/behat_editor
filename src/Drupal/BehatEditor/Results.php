@@ -49,6 +49,8 @@ class Results {
         $rows = array();
         if ($result) {
             foreach ($result as $record) {
+                //@todo new records my not need this so do a check
+
                 $record->results = unserialize($record->results);
                 $rows[] = (array) $record;
             }
@@ -71,6 +73,8 @@ class Results {
                 $rows[] = (array) $record;
             }
         }
+        $params = array('filename' => $filename, 'module' => $module);
+        drupal_alter('behat_editor_results_per_file', $rows, $params);
         return array('results' => $rows, 'error' => 0);
     }
 
