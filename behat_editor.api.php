@@ -39,3 +39,37 @@ function hook_behat_editor_files_found_alter($files_array, $context) {
 function hook_behat_editor_results_alter($results_params, $contenxt) {
 
 }
+
+/**
+ * Hook to alter the command array that will later be parsed into the
+ * command string for behat
+ *
+ * @param $command
+ * @param $context1
+ *
+ * @see exec
+ * @see BehatEditorRun.php
+ */
+function hook_behat_editor_command_alter(&$command, $context1){
+}
+
+
+
+/**
+ * Hook to alter the results of the Results table query
+ * since filename and module are key we may have to do a double
+ * check if the "module" being searched is a public subfolder
+ *
+ * @param $rows from the results
+ * @param $params
+ *   filename
+ *   module
+ *   file_object
+ *
+ * @see getLatestResultForFile
+ * @see Results.php
+ */
+function hook_behat_editor_results_per_file_alter(&$command, $context1){
+}
+
+

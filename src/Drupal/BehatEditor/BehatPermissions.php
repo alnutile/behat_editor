@@ -31,10 +31,8 @@ class BehatPermissions {
 
     private function groupIdFromNode() {
         $groups = array();
-        foreach($this->groups as $key => $value) {
-            foreach($value as $key2 => $gid) {
-                $groups[$gid] = $gid;
-            }
+        if(isset($this->groups['node'])) {
+            $groups = array_combine(array_values($this->groups['node']), array_values($this->groups['node']));
         }
         return $this->userGids = $groups;
     }

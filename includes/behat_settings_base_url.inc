@@ -6,9 +6,6 @@ function behat_settings_base_url() {
     global $user;
     $groups = new BehatEditor\BehatPermissions($user->uid);
 
-
-    dpm($groups->getGroupIDs());
-
     $build['intro'] = array(
         '#markup' => t('You are here')
     );

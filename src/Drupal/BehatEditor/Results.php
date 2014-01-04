@@ -49,6 +49,7 @@ class Results {
         $rows = array();
         if ($result) {
             foreach ($result as $record) {
+                //@todo new records my not need this so do a check
                 $record->results = unserialize($record->results);
                 $rows[] = (array) $record;
             }
@@ -56,7 +57,7 @@ class Results {
         return array('results' => $rows, 'error' => 0);
     }
 
-    static public function getLatestResultForFile($module, $filename) {
+    static public function getLatestResultForFile($module, $filename, $file_object = array(), $allow_alter = TRUE) {
         $query = db_select('behat_editor_results', 'b');
         $query->fields('b');
         $query->condition('b.filename', $filename, 'LIKE');
@@ -71,6 +72,11 @@ class Results {
                 $rows[] = (array) $record;
             }
         }
+        if($allow_alter) {
+            $params = array('filename' => $filename, 'module' => $module, 'file_object' => $file_object);
+            drupal_alter('behat_editor_results_per_file', $rows, $params);
+        }
+
         return array('results' => $rows, 'error' => 0);
     }
 

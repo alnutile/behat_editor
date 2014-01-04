@@ -68,7 +68,7 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
 
     protected function wrapUp(&$fields) {
         //@todo make sure to add this back to clean up after tests
-        //file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
+        file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
         parent::wrapUp($fields);
     }
 

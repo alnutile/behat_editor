@@ -10,7 +10,6 @@
  * @return mixed
  */
 function behat_editor_saucelabs_admin_form($form, &$form_state) {
-        dpm($_SESSION);
 
         $form['are_you_sure'] = array(
             '#markup' => t('Are you sure you want to delete this test and it\'s reports?'),
