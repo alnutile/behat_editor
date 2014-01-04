@@ -1,0 +1,236 @@
+diff --git a/hotfix.diff b/hotfix.diff
+deleted file mode 100644
+index 9a28dbb..0000000
+--- a/hotfix.diff
++++ /dev/null
+@@ -1,58 +0,0 @@
+-diff --git a/composer.json b/composer.json
+-index 353cc21..648e79f 100644
+---- a/composer.json
+-+++ b/composer.json
+-@@ -35,10 +35,6 @@
+-         },
+-         {
+-             "type": "git",
+--            "url": "https://github.com/alnutile/MinkExtension.git"
+--        },
+--        {
+--            "type": "git",
+-             "url": "http://git.drupal.org/project/drupalextension.git"
+-         }
+-     ],
+-diff --git a/src/Drupal/BehatEditor/BehatEditorBatchTypeTag.php b/src/Drupal/BehatEditor/BehatEditorBatchTypeTag.php
+-index 28bc6b4..6b9653c 100644
+---- a/src/Drupal/BehatEditor/BehatEditorBatchTypeTag.php
+-+++ b/src/Drupal/BehatEditor/BehatEditorBatchTypeTag.php
+-@@ -67,7 +67,7 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
+-     }
+- 
+-     protected function wrapUp(&$fields) {
+--        file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
+-+        //file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
+-         parent::wrapUp($fields);
+-     }
+- 
+-diff --git a/src/Drupal/BehatEditor/BehatEditorRun.php b/src/Drupal/BehatEditor/BehatEditorRun.php
+-index 2b1950a..4981a9a 100644
+---- a/src/Drupal/BehatEditor/BehatEditorRun.php
+-+++ b/src/Drupal/BehatEditor/BehatEditorRun.php
+-@@ -130,7 +130,6 @@ class BehatEditorRun {
+-         $command = self::behatCommandArray();
+- 
+-         //@todo move this into a shared method for exec and execDrush
+--        $this->settings['context'] = $context1;
+-         $behat_yml_path = new GenerateBehatYml($this->settings);
+-         $this->behat_yml = $behat_yml_path->writeBehatYmlFile();
+- 
+-@@ -160,7 +159,7 @@ class BehatEditorRun {
+-      *   if the user is running selenium
+-      * @return array
+-      */
+--    public function execDrush($javascript = FALSE, $tag_include = FALSE, $profile = 'default', $settings = array(),  $context1 = 'behat_run') {
+-+    public function execDrush($javascript = FALSE, $tag_include = FALSE, $profile = 'default', $settings = array()) {
+-         if($javascript == TRUE) {
+-             $tags_exclude = '';
+-         } else {
+-@@ -174,7 +173,7 @@ class BehatEditorRun {
+-         }
+- 
+-         $this->tags = "$tag_include $tags_exclude";
+--        $this->settings['context'] = $context1;
+-+        $this->settings = $settings;
+- 
+-         $command = self::behatCommandArray();
+- 
+diff --git a/includes/behat_editor_delete_test_form.inc b/includes/behat_editor_delete_test_form.inc
+index d29200a..fc4c389 100644
+--- a/includes/behat_editor_delete_test_form.inc
++++ b/includes/behat_editor_delete_test_form.inc
+@@ -10,7 +10,6 @@
+  * @return mixed
+  */
+ function behat_editor_saucelabs_admin_form($form, &$form_state) {
+-        dpm($_SESSION);
+ 
+         $form['are_you_sure'] = array(
+             '#markup' => t('Are you sure you want to delete this test and it\'s reports?'),
+diff --git a/includes/behat_settings_base_url.inc b/includes/behat_settings_base_url.inc
+index 04ded5a..f2a8548 100644
+--- a/includes/behat_settings_base_url.inc
++++ b/includes/behat_settings_base_url.inc
+@@ -6,9 +6,6 @@ function behat_settings_base_url() {
+     global $user;
+     $groups = new BehatEditor\BehatPermissions($user->uid);
+ 
+-
+-    dpm($groups->getGroupIDs());
+-
+     $build['intro'] = array(
+         '#markup' => t('You are here')
+     );
+diff --git a/src/Drupal/BehatEditor/BehatPermissions.php b/src/Drupal/BehatEditor/BehatPermissions.php
+index 5e4e3f8..0187491 100644
+--- a/src/Drupal/BehatEditor/BehatPermissions.php
++++ b/src/Drupal/BehatEditor/BehatPermissions.php
+@@ -31,10 +31,8 @@ class BehatPermissions {
+ 
+     private function groupIdFromNode() {
+         $groups = array();
+-        foreach($this->groups as $key => $value) {
+-            foreach($value as $key2 => $gid) {
+-                $groups[$gid] = $gid;
+-            }
++        if(isset($this->groups['node'])) {
++            $groups = array_combine(array_values($this->groups['node']), array_values($this->groups['node']));
+         }
+         return $this->userGids = $groups;
+     }
+diff --git a/src/Drupal/BehatEditor/BehatSettingsFormHelper.php b/src/Drupal/BehatEditor/BehatSettingsFormHelper.php
+index c33af93..af49dd4 100644
+--- a/src/Drupal/BehatEditor/BehatSettingsFormHelper.php
++++ b/src/Drupal/BehatEditor/BehatSettingsFormHelper.php
+@@ -103,10 +103,10 @@ class BehatSettingsFormHelper {
+     }
+ 
+     public function _behat_editor_group_gid_and_title_options_list($gids) {
+-        $nodes = og_membership_load_multiple($gids);
+-        $options = array();
+-        foreach($nodes as $gid => $value) {
+-            $options[$value->gid] = node_load($value->gid)->title;
++        //@todo assuming a node id always = gid?
++        $nodes_loaded = node_load_multiple($gids);
++        foreach($nodes_loaded as $key => $value) {
++            $options[$value->nid] = $value->title;
+         }
+         return $options;
+     }
+diff --git a/test_full.txt b/test_full.txt
+deleted file mode 100644
+index e9942b5..0000000
+--- a/test_full.txt
++++ /dev/null
+@@ -1,104 +0,0 @@
+-Running Tests...
+-   * @javascript * @behat * @behat_full_test  
+----- Feature:  Add Page ---- 
+-::: Background:  Log In :::
+-Given  I am on " /user/logout "
+-  Then  I am on " /user/login "
+-  And  I fill in " Username " with " admin "
+-  And  I fill in " Password " with " Welcome2013 "
+-  And  I press " Log in "
+-  And  I wait for " 3 " seconds
+-   * @test1  
+-::: Scenario:  User clicks Add and Saves tests :::
+-Given  I am on " /admin/behat/add "
+-  Then  I should see " This is a tool to help to generate "
+-  And  I fill in " filename " with " tests_of_tests.feature "
+-  And  I fill in " feature " with " My Feature Name "
+-  And  I press " feature_button "
+-  And  I wait
+-  And  I wait
+-  Then  I should see " Feature: My Feature Name "
+-  And  I fill in " edit-scenario " with " Hello Worlds "
+-  And  I press " scenario_button "
+-  And  I fill in " edit-url " with " http://saucelabs.com/test/guinea-pig "
+-  And  I press " Add "
+-  And  I fill in " see_not_see_some_text " with " Selenium "
+-  And  I press " see_not_see "
+-  And  I fill in " edit-checkbox " with " unchecked_checkbox "
+-  And  I press " edit-checkbox-button "
+-  Then  I should see " And I check \"unchecked_checkbox\" "
+-  And  I click run button
+-  And  I wait for " 5 " seconds
+-  And  I should see " File tests_of_tests.feature tested. "
+-   * @test2  
+-::: Scenario:  Test Tags and Background :::
+-Given  I am on " /admin/behat/add "
+-  And  I fill in " edit-background " with " this is background "
+-  And  I press " edit-background-button "
+-  And  I fill in " filename " with " tests_of_tests.feature "
+-  And  I fill in " feature " with " My Feature Name "
+-  And  I press " feature_button "
+-  Then  I should see " Feature: My Feature Name "
+-  And  I fill in " edit-scenario " with " Hello Worlds "
+-  And  I press " scenario_button "
+-  And  I fill in sectionOneTag
+-  And  I fill in featuresTag
+-  And  I fill in " see_not_see_some_text " with " Bob "
+-  And  I press " see_not_see "
+-  And  I click run button
+-  And  I wait for " 5 " seconds
+-  And  I should see " File tests_of_tests.feature tested. "
+-  Then  I follow " Save New Test "
+-  And  I wait for " 3 " seconds
+-  And  I press " Continue "
+-  And  I wait for " 5 " seconds
+-  Then  I should see " has been saved "
+-  And  I should see " tests_of_tests.feature "
+-  And  I click run button
+-  And  I wait for " 5 " seconds
+-  And  I follow " tests_of_tests.feature "
+-  Then  I should not see " This is a tool to help "
+-  And  I should see " @local "
+-  And  I should see " Hello Worlds "
+-  And  I should see " @readonly "
+-  And  I should see " Background: \"this is background\" "
+-   * @regression * @test2  
+-::: Scenario:  Test Tags seen in View mode :::
+-Given  I am on " /admin/behat/index "
+-  Given  I wait
+-  Given  I wait
+-  And  I fill in " Search " with " tests_of_tests.feature "
+-  Then  I follow " tests_of_tests.feature "
+-  And  I wait for " 6 " seconds
+-  Then  I should see " @local, @readonly "   The text "@local, @readonly" was not found anywhere in the text of the current page.
+-  * @test3 * @javascript  
+-::: Scenario:  Admin Index page Edit and Delete :::
+-Given  I am on " /admin/behat/index "
+-  Given  I wait
+-  And  I fill in " Search " with " tests_of_tests.feature "
+-  Then  I follow " tests_of_tests.feature "
+-  And  I wait for " 8 " seconds
+-  And  I follow " Edit Test "
+-  And  I wait for " 10 " seconds
+-  And  I follow " Delete Test "
+-  And  I wait for " 4 " seconds
+-  Then  I press " Confirm "
+-  And  I wait for " 5 " seconds
+-  Then  I should see " File deleted "   The text "File deleted" was not found anywhere in the text of the current page.
+-  * @batch  
+-::: Scenario:  And I visit the batch module area :::
+-Given  I am on " /admin/behat/bulk/module "
+-  And  I wait
+-  And  I check " edit-dashboard-behat-editor-example-module "
+-  And  I press " Execute "
+-  And  I wait for " 20 " seconds
+-  Then  I should see " All tests have been completed "
+-   * @batch  
+-::: Scenario:  And I visit the batch area Tags :::
+-Given  I am on " /admin/behat/bulk "
+-  And  I check " edit-dashboard-local-test "
+-  And  I press " Execute "
+-  Given  I wait for " 20 " seconds
+-  Then  I should see " All tests have been completed "   The text "All tests have been completed" was not found anywhere in the text of the current page.
+-
+-6 scenarios ( 3 passed , 3 failed )  116 steps ( 113 passed , 3 failed )  3m20.172s   

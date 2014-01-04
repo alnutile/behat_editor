@@ -103,10 +103,10 @@ class BehatSettingsFormHelper {
     }
 
     public function _behat_editor_group_gid_and_title_options_list($gids) {
-        $nodes = og_membership_load_multiple($gids);
-        $options = array();
-        foreach($nodes as $gid => $value) {
-            $options[$value->gid] = node_load($value->gid)->title;
+        //@todo assuming a node id always = gid?
+        $nodes_loaded = node_load_multiple($gids);
+        foreach($nodes_loaded as $key => $value) {
+            $options[$value->nid] = $value->title;
         }
         return $options;
     }
