@@ -414,7 +414,7 @@ function _behat_editor_questions_form() {
         '#description' => t('Checks, that checkbox with specified in|name|label|value is checked'),
         '#attributes' => array(
             'class' => array('col-mg-12', 'is_checked_group'),
-            'placeholder' =>  t('use in|name|label|value'),
+            'placeholder' =>  t('use id|name|label|value'),
             'data-type' => array('textfield'),
         ),
     );
@@ -442,17 +442,16 @@ function _behat_editor_questions_form() {
     );
 
     /** IS NOT CHECKED  */
-    $form['questions']['not_checked']['checked'] = array(
+    $form['questions']['not_checked']['not_checked'] = array(
         '#type' => 'textfield',
         '#title' => t('Then the'),
-        '#name' => 'checked',
+        '#name' => 'not_checked',
         '#description' => t('Checks, that checkbox with specified in|name|label|value is NOT checked'),
         '#attributes' => array(
             'class' => array('col-mg-12', 'not_checked'),
-            'placeholder' =>  t('use in|name|label|value'),
+            'placeholder' =>  t('use id|name|label|value'),
             'data-type' => array('textfield'),
         ),
-        '#suffix' => '<hr>'
     );
 
     $form['questions']['not_checked']['should_not_be_checked'] = array(
