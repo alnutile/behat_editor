@@ -663,6 +663,30 @@ function _behat_editor_questions_form() {
         '#suffix' => '<hr>'
     );
 
+    /** Che the url via regular expression */
+    $form['questions']['check_url']['url_to_check'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Then the url should the url should match'),
+        '#name' => 'url_to_check',
+        '#attributes' => array(
+            'class' => array('col-mg-12', 'check_url_group'),
+            'data-type' => array('textfield'),
+            'placeholder' =>  t('enter part of the URL or full url.'),
+        ),
+    );
+
+    $form['questions']['check_url']['check_url_button'] = array(
+        '#type' => 'button',
+        '#name' => 'form_field_button',
+        '#value' => t('Add'),
+        '#attributes' => array(
+            'data-step-group' => array('check_url_group'),
+            'data-method' => array('append'),
+            'class' => array('steps')
+        ),
+        '#suffix' => '<div class="help-block">use the full or relative URL</div><hr>'
+    );
+
     /** Check for a value in a field*/
 
     //     Then the "answer" field should contain "8.9"
