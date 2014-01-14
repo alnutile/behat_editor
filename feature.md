@@ -20,4 +20,5 @@ A feature can have tags (more on tags)[http://alnutile.github.io/behat_editor/ta
 
 
 More Reading
-(docs.behat.org)[http://docs.behat.org/guides/1.gherkin.html#features]
+
+[docs.behat.org](http://docs.behat.org/guides/1.gherkin.html#features)
