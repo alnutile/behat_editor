@@ -41,11 +41,12 @@ Finally you can always use Xpath but keep in mind to replace quotes with single 
 	//*[@id="edit-behat-editor-example-field-type"]
 	
 Would become
+
 	//*[@id='edit-behat-editor-example-field-type']
 
 
 
 Chrome has this built in. So if you right click and Inspect the element then go down to the Console and click there you can get it. 
 
-![Xpath](xpath.png)
+![Xpath](images/xpath.png)
 
