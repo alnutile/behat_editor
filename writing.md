@@ -8,9 +8,9 @@ When you Save a test it will redirect you to Edit mode.
 
 Later in admin/index you can again View or Edit the test.
 
-A test should not have a URL. Use the (url feature)[https://github.com/alnutile/behat_editor/blob/gh-pages/urls.md] to see how to manage that.
+A test should not have a URL. Use the [urls](urls.html) to see how to manage that.
 
-If you have a Repo you can always save to a repo. see the (repo feature)[https://github.com/alnutile/behat_editor/blob/gh-pages/repos.md] for more info on that.
+If you have a Repo you can always save to a repo. see the [repos](repos.html) for more info on that.
 
 ***
 
