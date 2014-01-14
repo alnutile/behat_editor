@@ -25,6 +25,7 @@ The source of these files are
  * [Repos/Github](repos.html)
  * [SauceLabs](saucelabs.html)
  * [URL Admin](urls.html)
+ * [Drush Integration] (drush.html)
  
 #### Steps
  * [Feature](feature.html)
