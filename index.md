@@ -36,4 +36,6 @@ The source of these files are
  * [Given URL](given.html) 
  * [Check box](checkbox.html)
  * [Press Click Element](press_click.html)
+ * [Select Lists](select.html)
+ * [Element Exists](exists.html)
  

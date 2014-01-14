@@ -26,24 +26,7 @@ This is mainly for buttons
 
 Choose the type of target
 
-#####Element (css path)
-
-For example div.test a.test_link would target that css path
-
-#####Name|Label|ID
-
-If you are lucky to be working with good HTML you can use just the name or label or ID of the link to follow or press. Keep in mind if you use the link text eg "Click Here" that it is not repeated on the page as a link.
-
-#####Xpath
-
-Finally you can always use Xpath but keep in mind to replace quotes with single quotes. So
-
-	//*[@id="edit-behat-editor-example-field-type"]
-	
-Would become
-
-	//*[@id='edit-behat-editor-example-field-type']
-
+See [Choose Target](target.html)
 
 
 Chrome has this built in. So if you right click and Inspect the element then go down to the Console and click there you can get it. 
