@@ -1,0 +1,47 @@
+<h2>Follow/Press/Click</h2>
+
+<p><img src="images/press_click.png" alt="Press-Click" title=""></p>
+
+<p>This collection of boxes helps to deal with different combinations of elements.</p>
+
+<h4>Step 1</h4>
+
+<h5>Follow</h5>
+
+<p>This is how you typically would "Follow" a link eg click and go to that page. This works well for a default.</p>
+
+<h5>Click</h5>
+
+<p>Sometimes Follow will not work due to Javascript or cause the element really is not a link but a list element that is being treated like a link for example.</p>
+
+<h5>Press</h5>
+
+<p>This is mainly for buttons</p>
+
+<hr>
+
+<h4>Step 2</h4>
+
+<p>Choose the type of target</p>
+
+<h5>Element (css path)</h5>
+
+<p>For example div.test a.test_link would target that css path</p>
+
+<h5>Name|Label|ID</h5>
+
+<p>If you are lucky to be working with good HTML you can use just the name or label or ID of the link to follow or press. Keep in mind if you use the link text eg "Click Here" that it is not repeated on the page as a link.</p>
+
+<h5>Xpath</h5>
+
+<p>Finally you can always use Xpath but keep in mind to replace quotes with single quotes. So</p>
+
+<pre><code>//*[@id="edit-behat-editor-example-field-type"]
+</code></pre>
+
+<p>Would become
+    //*[@id='edit-behat-editor-example-field-type']</p>
+
+<p>Chrome has this built in. So if you right click and Inspect the element then go down to the Console and click there you can get it. </p>
+
+<p><img src="xpath.png" alt="Xpath" title=""></p>

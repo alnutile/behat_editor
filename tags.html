@@ -1,1 +1,33 @@
+<h2>Tags</h2>
 
+<p>Tags are key to organizing tests. But tags also trigger built in features</p>
+
+<h4>Example tags that offer functionality</h4>
+
+<p>@javascript will trigger javascript on pages that have javascript. If this was not set and we where not using SauceLabs which defaults to JS then all the tests would fail.</p>
+
+<p>@mink:goutte can turn off javascript for a moment if you need to test a lower level test. Search for this in admin/index to find the example test.</p>
+
+<p>@private will hide the view and edit mode from the admin ui.</p>
+
+<p>@critical will put the test into a queue so that they will be run during a cron job (coming soon)</p>
+
+<h4>Organizing</h4>
+
+<p>Tags will help to unify tests. One way is by url. Since we are not putting a URL in the test we can unify the tests under a domain. eg</p>
+
+<p>@google.com</p>
+
+<p>Then all tests with that tag would be about that domain and can be run as a batch <a href="batch.html">See Batch</a></p>
+
+<p>You can have more than one tag and search by that combination.</p>
+
+<p>Tags can be key since filenames do not really play a part in running batcxh jobs. So using tags to organize your files will be the real goal.</p>
+
+<h3>Tag limitations</h3>
+
+<p>There is a module in the modules folder of behat<em>editor call behat</em>editor<em>limit</em>tags that limits tags. Otherwise you can add any tag you want.</p>
+
+<h2>Read More</h2>
+
+<p><a href="http://docs.behat.org/guides/1.gherkin.html#tags">docs.behat.org</a></p>

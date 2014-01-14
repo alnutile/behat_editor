@@ -8,29 +8,24 @@ This is a good place to do logins, logouts etc.
 
 There are some custom steps you can apply here and some drush integration
 
-```
-Feature: Your Overall Test name like User Interaction
+	Feature: Your Overall Test name like User Interaction
 
-  Scenario: User Edits a page
-  Scenario: User Deletes a page
+  	  Scenario: User Edits a page
+  	  Scenario: User Deletes a page
   
-```
-
 
 A scenario can have tags (more on tags)[http://alnutile.github.io/behat_editor/tags.html] 
 
 So then this would be tagged @javascript, note this only applies to the one Scenario.
 
 
-```
-Feature: Your Overall Test name like User Interaction
+	Feature: Your Overall Test name like User Interaction
 
-  @javascript
-  Scenario: User Edits a page
+  	  @javascript
+  	  Scenario: User Edits a page
   
-  Scenario: User Deletes a page
+  	  Scenario: User Deletes a page
   
-```
 
 
 More Reading
