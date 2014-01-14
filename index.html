@@ -1,1 +1,11 @@
-Will the non html pages work or just html?
+<h2>Admin Index</h2>
+
+<p>When you visit admin/behat/index you will see the files you have access to.</p>
+
+<p>The source of these files are </p>
+
+<ul>
+<li>Drupals default folder public://behat_tests/</li>
+<li>Any module with a behat_features folder and tests in there (read only)</li>
+<li>Finally any module that hooks into the system to show files. For example this https://github.com/alnutile/github<em>behat</em>editor module will put files in public://behat_github. From there you can see files if they are part of your User Repo or Group's Repos. </li>
+</ul>
