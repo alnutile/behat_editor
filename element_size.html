@@ -1,0 +1,21 @@
+<h2>Element Size</h2>
+
+<p><img src="images/element_size.png" alt="Element size" title=""></p>
+
+<p>This step will help verify size of the element in % compared to the window.</p>
+
+<p>So if this is the page you where testing</p>
+
+<p><img src="images/example_size_image.png" alt="page" title=""></p>
+
+<p>Then the %30 div would be your focus</p>
+
+<p>You would use the jquery / dom path of the element you want to get the size of.</p>
+
+<p>So the test would look like this</p>
+
+<pre><code>Feature: Test Content Sizes
+  Scenario: Test the Content is 30% of the window
+    Given I am on "http://saucelabs.com/test/guinea-pig"
+    Then the element "div#target" should be "30" percent or greater than the window
+</code></pre>

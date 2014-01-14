@@ -6,11 +6,12 @@ The source of these files are
 
  * Drupal's default folder public://behat_tests/
  * Any module with a behat_features folder and tests in there (read only)
- * Finally any module that hooks into the system to show files. For example this https://github.com/alnutile/github_behat_editor module will put files in public://behat_github. From there you can see files if they are part of your User Repo or Group's Repos. 
+ * Finally any module that hooks into the system to show files. For example this [github_behat_editor](https://github.com/alnutile/github_behat_editor) module will put files in **public://behat_github**. From there you can see files if they are part of your User Repo or Group's Repos. 
 
 
 
 ### Docs
+
 
 #### Overview
 
@@ -37,5 +38,15 @@ The source of these files are
  * [Check box](checkbox.html)
  * [Press Click Element](press_click.html)
  * [Select Lists](select.html)
- * [Element Exists](exists.html)
+ * [Element Exists](exists.html) 
+ * [URL Check])(url_check.html)
+ * [Field Value Check(field_value_check.html)
+ * [Element Size](element_size.html)
+ * [Response Code](status_code.html)
+ * [Alert Window](alert_window.html)
+ * [Remove Element](remove_element.html)
+ * [Page Load Wait](page_load.html)
+ * [Hover](hover.html)
+ * [Check for Style on Element](check_element_style.html)
  
+### Steps for Broken HTML
