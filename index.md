@@ -48,5 +48,16 @@ The source of these files are
  * [Page Load Wait](page_load.html)
  * [Hover](hover.html)
  * [Check for Style on Element](check_element_style.html)
+ * [Should See Cookie](cookie.html)
+ * [Click Logout](logout.html)
+ * [Switch back to window](switchback.html)
+ * [Switch to Popup](switch2popup.html)
+ * [Destroy Cookies](cookiesdestroy.html)
+ * [Visible Element](element_visible.html)
+ * [Waiting](waiting.html)
+ 
+ 
+#### Steps that may be removed soon
+ * [Click a # Button](number_button.html)
  
 ### Steps for Broken HTML
