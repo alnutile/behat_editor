@@ -98,6 +98,26 @@ function bulk_editor_run_tag_based_submit($form, &$form_state) {
     $tags = array_filter($form_state['values']['dashboard']);
 
     if($operation == 'gui') {
+        //Going to call things more directly till I get this right
+        //Get the count
+        //Count and Copy the files as needed
+        //
+        //
+        $setup_batch = new BehatEditor\BehatEditorBatchTypeTag();
+        $setup_batch->setupRid('tags', $tags, 'non_background', $settings);
+        $files = new BehatEditor\BehatEditorBatchTypeTag();
+        $params = array('tags' => $tags, 'settings' => $settings, 'rid' => $setup_batch->getCurrentBatchRid());
+        $files->batchSetupFolderCopyFiles($params);
+        $count = $files->getFileCount();
+
+        watchdog('test_count', print_r($count, 1));
+        //Count is done and files are in place
+        //Now to make the operation array
+        // out of each file
+
+        watchdog('test_files_all', print_r($files->getAllFilesArray(), 1));
+
+
         $start = new BehatEditor\BehatEditorBatchRunGui();
         $batch = $start->batchSubmit('tags', $tags, 'non_background', $settings);
         batch_set($batch->getBatch());

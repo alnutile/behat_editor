@@ -13,7 +13,9 @@ use Drupal\BehatEditor;
  */
 
 class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
-
+    public $tags = array();
+    public $total_files;
+    public $files_all = array();
 
     function __construct(){
         parent::__construct();
@@ -40,6 +42,15 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         return $operations;
     }
 
+    function getFileCount() {
+        return $this->total_files;
+    }
+
+    function getAllFilesArray(){
+        return $this->files_all;
+    }
+
+    //@TODO BPFD-258 makes this no longer needed once that is done
     function batchRun(array $params) {
         $this->tag = $params['tag'];
         $this->settings = $params['settings'];
@@ -67,18 +78,41 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         $this->test_results = $results;
     }
 
+    function batchSetupFolderCopyFiles(array $params) {
+        $this->tags = $params['tags'];
+        $this->settings = $params['settings'];
+        //Later may be more than one tag
+        $this->total_files = 0;
+        foreach($this->tags as $tag) {
+            watchdog('test_tag', print_r($tag, 1));
+            $this->tag = $tag;
+            $tag_trimmed = substr($this->tag[0], 1);
+            $this->rid = $params['rid'];
+            $this->temp_uri = file_build_uri("/behat_batch/$this->rid/$tag_trimmed");
+            $prepare = file_prepare_directory($this->temp_uri, $options = FILE_CREATE_DIRECTORY);
+            if(!$prepare) {
+                $message = t('Temp path could not be created !path', array('!path' => $this->temp_uri));
+                throw new \RuntimeException($message);
+            }
+            $this->findFilesAndSetupDirectory();
+        }
+    }
+
     protected function wrapUp(&$fields) {
         //@todo make sure to add this back to clean up after tests
         file_unmanaged_delete_recursive(file_build_uri("/behat_batch/{$this->rid}"));
         parent::wrapUp($fields);
     }
 
-    private function findFilesAndSetupDirectory() {
+    protected function findFilesAndSetupDirectory() {
         $file = new BehatEditor\FileModel(array());
-        $files = $file->getFilesByTag($this->tag);
+        $files = $file->getFilesByTag(array($this->tag));
+        $this->total_files = count($files);
         foreach($files as $key => $value) {
             $copy = file_unmanaged_copy($value['absolute_path_with_file'], $this->temp_uri, FILE_EXISTS_REPLACE);
+            $files_all[$this->tag][] = $copy;
         }
+        $this->files_all = $files_all;
     }
 
 
