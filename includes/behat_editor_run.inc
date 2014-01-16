@@ -64,6 +64,11 @@ function behat_editor_create_and_run_api($action, $scenario, $settings = array()
         $action = $settings['action'];
     }
 
+    $context1 = 'behat_run';
+    if(isset($settings['context'])) {
+        $context1 = $settings['context'];
+    }
+
     $params = array(
         'service_path' => $settings['path'],
         'module' => $settings['module'],
@@ -79,7 +84,7 @@ function behat_editor_create_and_run_api($action, $scenario, $settings = array()
     if($response['file'] != FALSE){
         //@todo return full object on save
         $res = new BehatEditorRun($file->show($params));
-        $run_test_response = $res->exec(FALSE, $settings);
+        $run_test_response = $res->exec(FALSE, $settings, $context1);
         $response = $run_test_response['response'];
 
         if($run_test_response['rid']) {
