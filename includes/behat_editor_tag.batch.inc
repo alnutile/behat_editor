@@ -41,6 +41,7 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
         '#type' => 'tableselect',
         '#header' => $header,
         '#options' => $rows,
+        '#multiple' => FALSE,
         '#empty' => t('No Tags'),
     );
 

@@ -36,6 +36,7 @@ function behat_editor_bulk_form_modules($form, &$form_state) {
         '#type' => 'tableselect',
         '#header' => $header,
         '#options' => $rows,
+        '#multiple' => FALSE,
         '#empty' => t('No Tests Files'),
     );
     BehatEditor\BehatSettingsFormHelper::behatSettingsFields($build);
