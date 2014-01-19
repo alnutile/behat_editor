@@ -116,6 +116,10 @@ class BehatEditorRun {
      * @param array $settings
      *   This can include the user settings id, group settings id
      *   and more.
+     * @param context
+     * @param tags_include
+     * @param this is for the behat command to know what yml profile to use
+     *
      * @return array
      */
     public function exec($javascript = FALSE, $settings = array(), $context1 = 'behat_run', $tag_include = FALSE, $profile = 'default') {

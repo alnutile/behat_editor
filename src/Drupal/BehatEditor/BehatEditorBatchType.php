@@ -53,6 +53,27 @@ abstract class BehatEditorBatchType {
         }
     }
 
+    function setupRid($method, $args, $type, $settings) {
+            $this->method = $method;
+            $this->settings = $settings;
+            $this->form_values = $args;
+            $this->type = $type;
+            $this->setupResults();
+    }
+
+    function getCurrentBatchRid() {
+        return $this->rid;
+    }
+
+    function setTotalCount($params) {}
+
+
+    function updateRid() {
+        $this->setupResultsUpdate();
+    }
+
+
+
     function setUp($method, $args, $type, $settings) {
         $this->method = $method;
         $this->settings = $settings;
@@ -66,12 +87,15 @@ abstract class BehatEditorBatchType {
 
 
     protected function setBatch() {}
+    protected function batchRunForFile() {}
 
     function getBatch() {
         return $this->batch;
     }
 
     protected function parseOperations($operations, $settings) {}
+
+    public function batchSetupFolderCopyFiles() {}
 
 
     function setupResults() {
