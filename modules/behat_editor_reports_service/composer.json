@@ -1,0 +1,10 @@
+{
+    "require": {
+
+    },
+    "autoload": {
+        "psr-0": {
+            "Drupal\\BehatEditorReports": "src/"
+        }
+    }
+}

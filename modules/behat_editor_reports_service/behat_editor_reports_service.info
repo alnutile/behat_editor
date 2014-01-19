@@ -8,3 +8,4 @@ dependencies[] = ctools
 dependencies[] = services
 dependencies[] = rest_server
 dependencies[] = behat_editor
+dependencies[] = angularjs

@@ -1,11 +1,7 @@
 <?php
 
-/**
- * @file
- * this module piggy backs off the install of behat editor
- * using the results table it made to display as a REST API to be
- * used by the new interface
- */
+use Drupal\BehatEditorReports\BehatServiceReportsController;
+
 
 function behat_editor_reports_service_perms() {
     return array(
@@ -41,8 +37,10 @@ function behat_editor_reports_service_delete($id) {
 
 
 function behat_editor_reports_service_get_all($parameters) {
-    watchdog('test_rest', print_r($parameters, 1));
-    return array("OK");
+    composer_manager_register_autoloader();
+    watchdog('test_get_all', print_r($parameters, 1));
+    $resource = new BehatServiceReportsController();
+    return $resource->index();
 }
 
 /**
@@ -175,4 +173,56 @@ function behat_editor_reports_service_access($op, $args) {
     }
 
     return $access;
+}
+
+
+function behat_editor_reports_service_menu() {
+    $items['admin/behat/reports'] = array(
+        'title' => t('Reports all'),
+        'page callback' => 'behat_editor_reports_service_reports',
+        'access arguments' => array('report resource view all'),
+    );
+    $items['behat_editor_reports_service/tpl/behat_editor_reports_service_reports_tpl'] = array(
+        'page callback' => 'behat_editor_reports_service_reports_all',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+
+    );
+    return $items;
+}
+
+function behat_editor_reports_service_reports_all(){
+    return drupal_get_form('behat_editor_reports_service_reports_all_form_builder');
+}
+
+function behat_editor_reports_service_reports_all_form_builderangularjs_examples_nodes_list_form_builder($form, &$form_state) {
+
+    $form['test'] = array('#markup' => "holy odd batman, drupal is different");
+
+    return $form;
+}
+
+function behat_editor_reports_service_reports() {
+    angularjs_init_application('behat_reports');
+    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/reports.js');
+
+    return theme('behat_reports');
+}
+
+function behat_editor_reports_service_theme() {
+    $themes = array();
+
+    $themes['behat_reports'] = array(
+        'template' => 'theme/reports',
+        'parameters' => array(),
+    );
+
+    $themes['behat_editor_reports_service_reports_all'] = array(
+        'template' => 'theme/reports-all',
+        'parameters' => array(
+            'query' => array(),
+        ),
+    );
+
+    return $themes;
 }
