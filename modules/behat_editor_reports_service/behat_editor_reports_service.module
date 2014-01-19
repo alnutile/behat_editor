@@ -1,0 +1,175 @@
+<?php
+
+/**
+ * @file
+ * this module piggy backs off the install of behat editor
+ * using the results table it made to display as a REST API to be
+ * used by the new interface
+ */
+
+function behat_editor_reports_service_perms() {
+    return array(
+        'report resource create',
+        'report resource view',
+        'report resource delete',
+        'report resource edit',
+        'report resource view all',
+    );
+}
+
+
+function behat_editor_reports_service_get($id) {
+    watchdog('test_rest', print_r($id, 1));
+    return array("OK");
+}
+
+function behat_editor_reports_service_create($results) {
+    watchdog('test_rest', print_r($results, 1));
+    return array("OK");
+}
+
+
+function behat_editor_reports_service_update($results) {
+    watchdog('test_rest', print_r($results, 1));
+    return array("OK");
+}
+
+function behat_editor_reports_service_delete($id) {
+    watchdog('test_rest', print_r($id, 1));
+    return array("OK");
+}
+
+
+function behat_editor_reports_service_get_all($parameters) {
+    watchdog('test_rest', print_r($parameters, 1));
+    return array("OK");
+}
+
+function behat_editor_reports_service_resources() {
+    return array(
+        'reports' => array(
+            'retrieve' => array(
+                'help' => 'Retrieve a report record',
+                'callback' => 'behat_editor_reports_service_get',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource view'),
+                'access arguments append' => TRUE,
+                'args' => array(
+                    array(
+                        'name' => 'rid',
+                        'type' => 'int',
+                        'description' => 'the report id (rid)',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'create' => array(
+                'help' => 'Create a report record',
+                'callback' => 'behat_editor_reports_service_create',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource create'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The results structure and settings',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'update' => array(
+                'help' => 'Create a report record',
+                'callback' => 'behat_editor_reports_service_update',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource update'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'rid',
+                        'type' => 'int',
+                        'description' => 'the report id (rid)',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The results structure and settings',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'delete' => array(
+                'help' => 'Delete a report record',
+                'callback' => 'behat_editor_reports_service_delete',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource delete'),
+                'access arguments append' => TRUE,
+                'args' => array(
+                    array(
+                        'name' => 'rid',
+                        'type' => 'int',
+                        'description' => 'the report id (rid)',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'index' => array(
+                'help' => 'Retrieves a listing of reports filtered by tag and or browser and or pass fail etc',
+                'callback' => 'behat_editor_reports_service_get_all',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource view all'),
+                'access arguments append' => FALSE,
+                'args' => array(array(
+                    'name' => 'page',
+                    'type' => 'int',
+                    'description' => '',
+                    'source' => array(
+                        'param' => 'page',
+                    ),
+                    'optional' => TRUE,
+                    'default value' => 0,
+                ),
+                    array(
+                        'name' => 'parameters',
+                        'type' => 'array',
+                        'description' => 'keys are tags, batch browsers pass/fail',
+                        'source' => 'param',
+                        'optional' => TRUE,
+                        'default value' => array(),
+                    ),
+                ),
+            ),
+        ),
+    );
+}
+
+function behat_editor_reports_service_access($op, $args) {
+    global $user;
+    $access = FALSE;
+
+    switch ($op) {
+        case 'report resource view':
+            $access = user_access($op);
+            break;
+        case 'report resource update':
+            $access = user_access($op);
+            break;
+        case 'report resource view all':
+            $access = user_access($op);
+            break;
+        case 'report resoruce delete':
+            $access = user_access($op);
+            break;
+        case 'report resource edit':
+            $access = user_access($op);
+            break;
+    }
+
+    return $access;
+}

@@ -1,0 +1,12 @@
+name = Behat Editor Reports Service
+description = Reports Service for Behat
+core = 7.x
+package = Behat
+version = 7.x-1.0
+project = behat_editor
+dependencies[] = ctools
+dependencies[] = services
+dependencies[] = rest_server
+dependencies[] = behat_editor
+features[ctools][] = services:services:3
+features[features_api][] = api:2
