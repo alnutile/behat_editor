@@ -98,29 +98,86 @@ function bulk_editor_run_tag_based_submit($form, &$form_state) {
     $tags = array_filter($form_state['values']['dashboard']);
 
     if($operation == 'gui') {
-        //Going to call things more directly till I get this right
-        //Get the count
-        //Count and Copy the files as needed
-        //
-        //
-        $setup_batch = new BehatEditor\BehatEditorBatchTypeTag();
-        $setup_batch->setupRid('tags', $tags, 'non_background', $settings);
-        $files = new BehatEditor\BehatEditorBatchTypeTag();
-        $params = array('tags' => $tags, 'settings' => $settings, 'rid' => $setup_batch->getCurrentBatchRid());
-        $files->batchSetupFolderCopyFiles($params);
-        $count = $files->getFileCount();
+        $batch = _behat_editor_batch_tags_setup(array('tags' => $tags, 'settings' => $settings));
+        batch_set($batch);
+    }
+}
 
-        watchdog('test_count', print_r($count, 1));
-        //Count is done and files are in place
-        //Now to make the operation array
-        // out of each file
+function _behat_editor_batch_tags_setup($params) {
+    $operations = array();
+    $setup_batch = new BehatEditor\BehatEditorBatchTypeTag();
+    $setup_batch->setupRid('tags', $params['tags'], 'non_background', $params['settings']);
+    $files = new BehatEditor\BehatEditorBatchTypeTag();
+    $rid = $setup_batch->getCurrentBatchRid();
+    $params = array('tags' => $params['tags'], 'settings' => $params['settings'], 'rid' => $rid);
+    $files->batchSetupFolderCopyFiles($params);
+    $count = $files->getFileCount();
+    $files_all = $files->getAllFilesArray();
+    $setup_batch->setTotalCount(array('rid' => $rid, 'test_count' => $count));
+    foreach($params['tags'] as $tag) {
+        $current = 1;
+        foreach($files_all[$tag] as $file) {
+            $file = drupal_realpath($file);
+            $operations[] = array('_behat_editor_batch_tags_run',
+                array(
+                    'file_path' => $file,
+                    'tag' => $tag,
+                    'rid' => $rid,
+                    'settings' => $params['settings'],
+                    t("Working on File @file test #@current", array('@file' => $file, '@current' => $current)),
+                    'total_found' => $count,
+                    'current' => $current,
+                )
+            );
+            $current++;
+        }
+    }
+    $batch = array(
+        'operations' => $operations,
+        'finished' => '_behat_editor_batch_tags_run_finish',
+        'init_message' => t('Starting the tests'),
+        'error_message' => t('An error occurred. Please check the Reports/DB Logs'),
+        'file' => drupal_get_path('module', 'behat_editor') . '/includes/behat_editor_tag.batch.inc',
+        'progress_message' => t('Total Files found @number', array('@number' => $count)),
+    );
 
-        watchdog('test_files_all', print_r($files->getAllFilesArray(), 1));
+    return $batch;
+}
 
+function _behat_editor_batch_tags_run($file_path, $tag, $rid, $settings, $message, $total, $current, &$context ) {
+    if (empty($context['sandbox'])) {
+        $context['sandbox'] = array();
+        $context['sandbox']['progress'] = 1;
 
-        $start = new BehatEditor\BehatEditorBatchRunGui();
-        $batch = $start->batchSubmit('tags', $tags, 'non_background', $settings);
-        batch_set($batch->getBatch());
+        // Save node count for the termination message.
+        $context['sandbox']['max'] = $total;
+    }
+
+    $context['sandbox'];
+
+    $run = new BehatEditor\BehatEditorBatchTypeTag();
+    $results = $run->batchRunForFile(array('tag' => array($tag), 'rid' => $rid, 'settings' => $settings, 'file_path' => $file_path));
+    $run->batchItemDone(array('item' => $tag));
+
+    //wrap up the batch api info
+    $context['sandbox']['progress']= $current;
+    $context['results'][] = $results;
+    $context['message'] = t("File Tests @name with message @message", array('@name' => $file_path, '@message' => $message));
+}
+
+function _behat_editor_batch_tags_run_finish($success, $results, $operations) {
+    if ($success) {
+        drupal_set_message(t('@count files were tested', array('@count' => count($results))));
+
+        foreach($results as $key => $value) {
+            //$filename = explode('/', $value);
+            //$filename = array_pop($filename);
+            drupal_set_message(t('files !files was tested', array('!files' => $filename)));
+        }
+    }
+    else {
+        $error_operation = reset($operations);
+        drupal_set_message(t('An error occurred while processing @operation with arguments : @args', array('@operation' => $error_operation[0], '@args' => print_r($error_operation[0], TRUE))));
     }
 }
 

@@ -65,6 +65,9 @@ abstract class BehatEditorBatchType {
         return $this->rid;
     }
 
+    function setTotalCount($params) {}
+
+
     function updateRid() {
         $this->setupResultsUpdate();
     }
@@ -84,6 +87,7 @@ abstract class BehatEditorBatchType {
 
 
     protected function setBatch() {}
+    protected function batchRunForFile() {}
 
     function getBatch() {
         return $this->batch;
