@@ -78,7 +78,7 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
  */
 function bulk_editor_run_tag_based_validate($form, &$form_state) {
     // Error if there are no items to select.
-    if (!is_array($form_state['values']['dashboard']) || !count(array_filter($form_state['values']['dashboard']))) {
+    if (!isset($form_state['values']['dashboard'])) {
         form_set_error('', t('No items selected.'));
     }
 }
@@ -96,10 +96,10 @@ function bulk_editor_run_tag_based_submit($form, &$form_state) {
         'browser_version' => $browser,
     );
     $operation = $form_state['values']['operation'];
-    $tags = array_filter($form_state['values']['dashboard']);
+    $tags = $form_state['values']['dashboard'];
 
     if($operation == 'gui') {
-        $batch = _behat_editor_batch_tags_setup(array('tags' => $tags, 'settings' => $settings));
+        $batch = _behat_editor_batch_tags_setup(array('tags' => array($tags), 'settings' => $settings));
         batch_set($batch);
     }
 }

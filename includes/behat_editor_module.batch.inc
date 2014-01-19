@@ -111,7 +111,7 @@ function buildRowsModules() {
  */
 function bulk_editor_run_module_based_validate($form, &$form_state) {
     // Error if there are no items to select.
-    if (!is_array($form_state['values']['dashboard']) || !count(array_filter($form_state['values']['dashboard']))) {
+    if (!isset($form_state['values']['dashboard'])) {
         form_set_error('', t('No items selected.'));
     }
 }
@@ -126,11 +126,11 @@ function bulk_editor_run_module_based_submit($form, &$form_state) {
     );
 
     $operation = $form_state['values']['operation'];
-    $machine_name_and_subfolder = array_filter($form_state['values']['dashboard']);
+    $machine_name_and_subfolder = $form_state['values']['dashboard'];
 
     if($operation == 'gui') {
         $start = new BehatEditor\BehatEditorBatchRunGui();
-        $batch = $start->batchSubmit('module', $machine_name_and_subfolder, 'non_background', $settings);
+        $batch = $start->batchSubmit('module', array($machine_name_and_subfolder), 'non_background', $settings);
         batch_set($batch->getBatch());
     }
 }
