@@ -45,7 +45,10 @@ function behat_editor_reports_service_get_all($parameters) {
     return array("OK");
 }
 
-function behat_editor_reports_service_resources() {
+/**
+ * Implements hook_services_resources()
+ */
+function behat_editor_reports_service_services_resources() {
     return array(
         'reports' => array(
             'retrieve' => array(
