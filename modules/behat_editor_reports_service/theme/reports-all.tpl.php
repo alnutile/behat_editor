@@ -19,8 +19,8 @@
             </div>
             <div class="form-group">
                 <label>User</label>
-                <select ng-model="query.uid" class="form-control">
-                    <option ng-repeat="user in users" value="{{user.uid}}">{{user.mail}}</option>
+                <select ng-model="query.uid" class="form-control" ng-change="setLocation('user_id', '$scope.query.uid')">
+                    <option ng-selected="checkSelected(user.uid, location.user_id)" ng-repeat="user in users" value="{{user.uid}}">{{user.mail}}</option>
                 </select>
             </div>
             <div class="form-group">

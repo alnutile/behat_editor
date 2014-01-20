@@ -10,7 +10,7 @@ use Drupal\BehatEditor;
 class BehatServiceReportsModel {
     public $settings;
 
-    public function __construct($settings) {
+    public function __construct($settings = null) {
         if(empty($settings)) {
             $this->settings = new BehatEditor\BehatSettingsBaseUrl();
         } else {
