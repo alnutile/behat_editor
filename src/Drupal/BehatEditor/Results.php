@@ -39,6 +39,13 @@ class Results {
         return $insert;
     }
 
+    public function updateByRid($params) {
+        $update = db_update('behat_editor_results')
+            ->fields($params['fields'])
+            ->condition('rid', $params['rid'], '=')
+            ->execute();
+    }
+
     static public function getResultsForFile($module, $filename) {
         $query = db_select('behat_editor_results', 'b');
         $query->fields('b');
