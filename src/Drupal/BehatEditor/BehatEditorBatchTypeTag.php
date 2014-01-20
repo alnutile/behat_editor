@@ -140,11 +140,18 @@ class BehatEditorBatchTypeTag extends  BehatEditorBatchType {
         $file = new BehatEditor\FileModel(array());
         $files = $file->getFilesByTag(array($this->tag));
         $this->total_files = count($files);
+        $original_files = array();
         foreach($files as $key => $value) {
             $copy = file_unmanaged_copy($value['absolute_path_with_file'], $this->temp_uri, FILE_EXISTS_REPLACE);
             $files_all[$this->tag][] = $copy;
+            $original_files[$copy] = array('module' => $value['module'], 'filename' => $value['filename']);
         }
         $this->files_all = $files_all;
+        $this->original_files = $original_files;
+    }
+
+    public function getOriginalFiles() {
+        return $this->original_files;
     }
 
 
