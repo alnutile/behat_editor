@@ -26,6 +26,7 @@ class BehatServiceReportsModel {
         $all_urls = array();
         $query = db_select('behat_editor_results', 'b');
         $query->fields('b');
+        $query->groupBy('filename');
         $query->range(0, 100);
         $query->orderBy('b.created', 'DESC');
         $result = $query->execute();

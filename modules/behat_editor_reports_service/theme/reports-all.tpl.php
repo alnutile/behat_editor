@@ -56,7 +56,6 @@
                 <td>{{result.settings.browser_version}}</td>
                 <td>{{result.created + '000' | date:'medium'}}</td>
                 <td>{{result.settings.url}}</td>
-                <td>{{result.settings.url}}</td>
             </tr>
             </tbody>
         </table>
