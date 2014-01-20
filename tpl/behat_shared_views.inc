@@ -18,7 +18,10 @@ function _behat_editor_produce_table_array($files_array) {
             $link = $row['action_path'];
             $latest = _behat_editor_get_latest_result($file_name, $module_name, $row);
             $all_results[$latest['rid']] = $latest['original'];
-            $tags = implode(', ', $row['tags_array']);
+            $tags = array();
+            if(!empty($row['tags_array'])){
+              $tags = implode(', ', $row['tags_array']);
+            }
             $rows[] = array(
                 'data' =>
                     array

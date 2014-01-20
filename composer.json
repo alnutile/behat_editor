@@ -9,6 +9,9 @@
       "email": "alfrednutile@gmail.com"
         }
     ],
+    "require-dev": {
+      "behat/mink-zombie-driver": "~1.0"
+    }, 
     "require": {
         "behat/behat": "2.5.*@stable",
         "behat/mink": "dev-FindWindowNames as 1.5.x-dev",

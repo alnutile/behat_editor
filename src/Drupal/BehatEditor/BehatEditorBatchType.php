@@ -31,9 +31,17 @@ abstract class BehatEditorBatchType {
     protected $temp_uri;
     protected $pass_fail;
     protected $settings;
+    public $resultsTable;
+    public $original_module;
+    public $original_files = array();
 
-    function __construct(){
+    function __construct($resultsTable = FALSE){
         composer_manager_register_autoloader();
+        if($resultsTable) {
+            $this->resultsTable = $resultsTable;
+        } else {
+            $this->resultsTable = new Results();
+        }
 
     }
 
@@ -53,6 +61,27 @@ abstract class BehatEditorBatchType {
         }
     }
 
+    function setupRid($method, $args, $type, $settings) {
+            $this->method = $method;
+            $this->settings = $settings;
+            $this->form_values = $args;
+            $this->type = $type;
+            $this->setupResults();
+    }
+
+    function getCurrentBatchRid() {
+        return $this->rid;
+    }
+
+    function setTotalCount($params) {}
+
+
+    function updateRid() {
+        $this->setupResultsUpdate();
+    }
+
+
+
     function setUp($method, $args, $type, $settings) {
         $this->method = $method;
         $this->settings = $settings;
@@ -66,12 +95,15 @@ abstract class BehatEditorBatchType {
 
 
     protected function setBatch() {}
+    protected function batchRunForFile() {}
 
     function getBatch() {
         return $this->batch;
     }
 
     protected function parseOperations($operations, $settings) {}
+
+    public function batchSetupFolderCopyFiles() {}
 
 
     function setupResults() {
@@ -89,6 +121,8 @@ abstract class BehatEditorBatchType {
         $resultsUpdate = BehatEditor\ResultsBatch::getResultsByRid($this->rid);
         $fields = $resultsUpdate['results'];
         $rids = (is_array(unserialize($fields['results']))) ? unserialize($fields['results']) : array();
+        $this->original_module = $params['original_module_name'];
+        $this->updateModuleNameOnResults(array('rid' => $results_of_test['rid']));
         $fields['results'] = serialize(drupal_map_assoc(array($results_of_test['rid'])) + $rids);
         $fields['count_at'] = $fields['count_at'] + 1;
         $fields['results_count'] = $fields['results_count'] + 1;
@@ -105,6 +139,16 @@ abstract class BehatEditorBatchType {
         $updateResults = new BehatEditor\ResultsBatch();
         $updateResults->update($this->rid, $fields);
         return $this->message;
+    }
+
+    /**
+     * Need to quickly update the results not to have behat_batch
+     * as the module but back to the original module name
+     */
+    protected function updateModuleNameOnResults($params) {
+        $rid = $params['rid'];
+        $fields = array('module' => $this->original_module);
+        $this->resultsTable->updateByRid(array('fields' => $fields, 'rid' => $rid));
     }
 
     /**
