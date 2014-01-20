@@ -192,12 +192,62 @@ function behat_editor_reports_service_menu() {
 }
 
 function behat_editor_reports_service_reports_all(){
-    return drupal_get_form('behat_editor_reports_service_reports_all_form_builder');
+    return theme('behat_editor_reports_service_reports_all');
+    //return drupal_get_form('behat_editor_reports_service_reports_all_form_builder');
 }
 
-function behat_editor_reports_service_reports_all_form_builderangularjs_examples_nodes_list_form_builder($form, &$form_state) {
+function behat_editor_reports_service_reports_all_form_builder($form, &$form_state) {
 
-    $form['test'] = array('#markup' => "holy odd batman, drupal is different");
+
+//    $form['tag'] = array(
+//        '#type' => 'ng_select',
+//        '#title' => t('Tag'),
+//        '#options' => array('@local_test', '@local'),
+//        '#description' => t('Filter by Tag.'),
+//        '#default_value' => '@local_test',
+//        //@QUESTION the model is where?
+//        '#ng_model' => 'results',
+//        '#ng_controller' => 'ReportsAll',
+//        '#attributes' => array(
+//            'ng-change' => 'filterTags()',
+//        ),
+//    );
+
+    $form['title'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Filename'),
+        '#attributes' => array(
+            'ng-model' => 'query.filename',
+            'placeholder' => t('Filter by name'),
+            'autocomplete' => 'off',
+            'class' => array('span5')
+        ),
+        '#ng_controller' => 'ReportsAll',
+    );
+
+    $header = array(
+        t('Filename'),
+        t('Module'),
+        t('Status'),
+        t('Created'),
+    );
+
+    $row = array(
+        '{{result.filename}}',
+        '{{result.module}}',
+        '{{result.status}}',
+        "{{result.created + '000' | date:'medium'}}",
+    );
+
+    $form['table'] = array(
+        '#theme' => 'ng_table',
+        '#header' => $header,
+        '#row' => $row,
+        '#empty' => t('No content found.'),
+        '#ng_repeat' => 'result in results | filter: query',
+        '#ng_model' => 'results',
+        '#ng_empty' => '(results | filter: query).length == 0',
+    );
 
     return $form;
 }

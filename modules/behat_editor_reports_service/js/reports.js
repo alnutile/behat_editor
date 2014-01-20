@@ -1,7 +1,7 @@
 angular.module('behat_reports', []).
     config(function($routeProvider) {
         $routeProvider.
-            when('/', {controller:ReportsAll, templateUrl: Drupal.settings.angularjsApp.basePath + '/behat_editor_reports_service/tpl/behat_editor_reports_service_reports_tpl'}).
+            when('/', {controller:ReportsAll, templateUrl: Drupal.settings.angularjsApp.basePath + 'behat_editor_reports_service/tpl/behat_editor_reports_service_reports_tpl'}).
             otherwise({redirectTo:'/'});
     });
 
@@ -11,6 +11,10 @@ function ReportsAll($scope, $http) {
     var bar_url = Drupal.settings.angularjsApp.basePath;
     $http({method: 'GET', url: bar_url + '/behat_reports_v1/reports'}).
         success(function(data, status, headers, config) {
+            $scope.results = data.results;
+            $scope.browsers = data.browsers;
+            $scope.users = data.users;
+            $scope.urls = data.urls;
             console.log(data);
             // this callback will be called asynchronously
             // when the response is available
