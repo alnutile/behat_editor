@@ -2,6 +2,7 @@
 
 use Drupal\BehatEditorReports\BehatServiceReportsController;
 
+include_once 'behat_editor_reports_service.features.inc';
 
 function behat_editor_reports_service_perms() {
     return array(

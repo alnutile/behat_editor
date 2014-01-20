@@ -9,3 +9,6 @@ dependencies[] = services
 dependencies[] = rest_server
 dependencies[] = behat_editor
 dependencies[] = angularjs
+features[ctools][] = services:services:3
+features[features_api][] = api:2
+features[services_endpoint][] = behat_reports
