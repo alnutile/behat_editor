@@ -102,6 +102,7 @@ function behat_editor_add_form($form, $form_state) {
         'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
     );
     $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
+    _behat_editor_load_help_area($form);
 
     return $form;
 }
