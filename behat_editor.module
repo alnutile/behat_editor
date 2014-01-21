@@ -247,8 +247,12 @@ function behat_editor_menu() {
 function behat_editor_help_getter($doc_name){
     $base_url = BEHAT_EDITOR_HELP_URL;
     $output = drupal_http_request($base_url . $doc_name);
-    $help = _behat_editor_clean_help($output->data);
-    drupal_json_output($help);
+    if($output->code != 200) {
+        $output = 'Error getting page :(';
+    } else {
+        $output = _behat_editor_clean_help($output->data);
+    }
+    drupal_json_output($output);
     exit();
 }
 
@@ -757,10 +761,12 @@ function behat_editor_results_container(&$form) {
         '#attributes' => array('class' => array('panel', 'panel-default')),
     );
 
+    $help =  _behat_editor_make_help_link('past_results.html');
+
     $form['results_area']['container2']['past_results'] = array(
         '#prefix' => "<div class=\"panel-heading\">
                             <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#results-container\">
-                                <h4 class=\"panel-title\">Past Results</h4>
+                                <h4 class=\"panel-title\">Past Results $help</h4>
                             </a>
                         </div>",
         '#markup' => '<div id="results-container" class="panel-collapse collapse">
@@ -793,10 +799,11 @@ function behat_editor_current_test_container(&$form){
         '#attributes' => array('class' => array('panel', 'panel-default')),
     );
 
+    $help =  _behat_editor_make_help_link('current_test.html');
     $form['results_area']['container1']['results'] = array(
         '#prefix' => "<div class=\"panel-heading\">
                         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\">
-                            <h4 class=\"panel-title\">Current Test</h4>
+                            <h4 class=\"panel-title\">Current Test $help</h4>
                         </a></div>",
         '#markup' => theme('behat_editor_results_area', $args = array('params' => array())),
     );
@@ -824,7 +831,7 @@ function behat_editor_theme_registry_alter(&$theme_registry) {
 }
 
 function _behat_editor_make_help_link($doc_name) {
-    return "<a href=\"#modal_slide\" data-doc-name=\"$doc_name\" class=\"help-get\">help?</a>";
+    return "<a href=\"#modal_slide\" data-doc-name=\"$doc_name\" class=\"help-get\"><i class=\"glyphicon glyphicon-comment \"></i></a>";
 }
 function _behat_editor_load_help_area(&$form){
     $path = drupal_get_path('module', 'behat_editor');
@@ -833,10 +840,13 @@ function _behat_editor_load_help_area(&$form){
     drupal_add_css($path . '/css/jquery.pageslide.css');
     drupal_add_css($path . '/css/behat_editor_help_bar.css');
     drupal_add_js(array('behat_editor' => array('behat_editor_help_url' => BEHAT_EDITOR_HELP_URL)), 'setting');
+    drupal_add_js(array('behat_editor' => array('behat_editor_loader_url' => $path . "/images/ajax-loader.gif")), 'setting');
     $slide = <<<HEREDOC
 
         <div id="modal_slide" style="display:none">
             <h2>Help</h2>
+            <a class="btn btn-danger" href="javascript:jQuery.pageslide.close(null, '100')">Close</a>
+            <br>
             <p class="help-content">&nbsp;</p>
             <a class="btn btn-danger" href="javascript:jQuery.pageslide.close(null, '100')">Close</a>
         </div>

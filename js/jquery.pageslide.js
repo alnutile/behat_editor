@@ -179,7 +179,7 @@
         $body.animate(bodyAnimateIn, speed, function() {
             $pageslide.hide();
             _sliding = false;
-            if( typeof callback != 'undefined' ) callback();
+            if( typeof callback != 'undefined' && callback != null) callback();
         });
     }
 	

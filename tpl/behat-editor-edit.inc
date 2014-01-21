@@ -90,10 +90,12 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
         '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-sm-6', 'panel-group'))
     );
 
+    $help =  _behat_editor_make_help_link('filename.html');
+
     $form['questions_area']['filename'] = array(
         '#type' => 'textfield',
         '#name' => 'filename',
-        '#title' => t('Filename:'),
+        '#title' => t('Filename: !link', array('!link' => $help)),
         '#default_value' => $filename,
         '#attributes' => array('disabled' => array('disabled')),
         '#description' => t('What do you want to call this test? Only lowercase alpha/numeric with underscores. Finally end the name in .feature'),

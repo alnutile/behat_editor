@@ -113,12 +113,14 @@ class BehatSettingsFormHelper {
 
     static function behatSettingsContainer(&$form) {
         global $user;
+        $help =  _behat_editor_make_help_link('settings_all.html');
+
         $form['results_area']['settings'] = array(
             '#type' => 'container',
             '#prefix' => "<div class=\"panel-default panel\">
                             <div class=\"panel-heading\">
                               <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#settings\">
-                                <h4 class=\"panel-title\">Settings</h4>
+                                <h4 class=\"panel-title\">Settings $help</h4>
                               </a>
                             </div>
                             <div id=\"settings\" class=\"panel-collapse collapse in\">
@@ -176,11 +178,12 @@ class BehatSettingsFormHelper {
         }
 
 
+        $help =  _behat_editor_make_help_link('settings_groups.html');
 
         $form['results_area']['settings']['group'] = array(
             '#type' => 'select',
             '#options' => $options,
-            '#title' => t('Your Groups base url settings'),
+            '#title' => t('Your Groups base url settings !link', array('!link' => $help)),
             '#empty_option' => t('--none--')
         );
 
@@ -194,9 +197,11 @@ class BehatSettingsFormHelper {
         // Setup default for local user to enter
         // might only need a browser actually
         // or grab from the behat.yml.default / behat.yml files?
+        $help =  _behat_editor_make_help_link('choose_os_browser.html');
+
         $form['results_area']['settings']['os_browser'] = array(
             '#type' => 'container',
-            '#prefix' => t('<hr><h4>Choose an OS and a Browser to run the test on</h4><br>')
+            '#prefix' => t("<hr><h4>Choose an OS and a Browser to run the test on $help</h4><br>")
         );
 
         $form['results_area']['settings']['os_browser']['os'] = array(
