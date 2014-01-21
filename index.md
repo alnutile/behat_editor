@@ -55,9 +55,11 @@ The source of these files are
  * [Destroy Cookies](cookiesdestroy.html)
  * [Visible Element](element_visible.html)
  * [Waiting](waiting.html)
+ * [Switch to Iframe Named](iframe_named.html)
+ * [Switch to Iframe no name](no_name_frame.html)
+ * [Submit by ID](submit_by_id.html)
  
  
 #### Steps that may be removed soon
  * [Click a # Button](number_button.html)
- 
-### Steps for Broken HTML
+ * [OnClick Handler](onlick.html)
