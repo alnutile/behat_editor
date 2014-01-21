@@ -12,6 +12,8 @@ define('BEHAT_EDITOR_DEFAULT_FOLDER', 'behat_tests');
 //tests eg files/behat_tests
 define('BEHAT_EDITOR_DEFAULT_STORAGE_FOLDER', 'behat_tests');
 
+define('BEHAT_EDITOR_HELP_URL', 'http://alnutile.github.io/behat_editor/');
+
 require_once 'behat_editor_services.resource.inc';
 
 /**
@@ -230,7 +232,34 @@ function behat_editor_menu() {
         'file' => 'behat_editor_report_page.inc',
         'file path' => "$path/tpl/",
     );
+
+    $items['behat/help/%'] = array(
+        'page callback' => 'behat_editor_help_getter',
+        'page arguments' => array(2),
+        'type' => MENU_CALLBACK,
+        'access callback' => TRUE,
+    );
+
     return $items;
+}
+
+
+function behat_editor_help_getter($doc_name){
+    $base_url = BEHAT_EDITOR_HELP_URL;
+    $output = drupal_http_request($base_url . $doc_name);
+    if($output->code != 200) {
+        $output = 'Error getting page :(';
+    } else {
+        $output = _behat_editor_clean_help($output->data);
+    }
+    drupal_json_output($output);
+    exit();
+}
+
+function _behat_editor_clean_help($content) {
+    $base_url = BEHAT_EDITOR_HELP_URL;
+    $content = str_replace(array('src="images'), array("style=\"width: 480px; padding: 5px;\" src=\"$base_url/images"), $content);
+    return $content;
 }
 
 
@@ -323,7 +352,7 @@ function behat_editor_theme() {
         'variables' => array(
             'params' => NULL,
         ),
-        'file' => 'tpl/behat_shared_views.inc'
+        'file' => 'tpl/behat_shared_views.inc',
     );
     $items['behat_editor_file_to_html_view'] = array(
         'variables' => array(
@@ -344,6 +373,13 @@ function behat_editor_theme() {
         'file' => 'tpl/behat_shared_views.inc',
         'template' => 'tpl/behat-editor-results-area'
     );
+
+    $items['behat_editor_form_wrapper'] = array(
+        'render element' => 'form',
+        'template' => 'tpl/behat-editor-form',
+        'file' => 'tpl/behat_shared_views.inc',
+    );
+
     $items['behat_editor_view_questions_area'] = array(
         'variables' => array(
             'actions' => NULL,
@@ -725,10 +761,12 @@ function behat_editor_results_container(&$form) {
         '#attributes' => array('class' => array('panel', 'panel-default')),
     );
 
+    $help =  _behat_editor_make_help_link('past_results.html');
+
     $form['results_area']['container2']['past_results'] = array(
         '#prefix' => "<div class=\"panel-heading\">
                             <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#results-container\">
-                                <h4 class=\"panel-title\">Past Results</h4>
+                                <h4 class=\"panel-title\">Past Results $help</h4>
                             </a>
                         </div>",
         '#markup' => '<div id="results-container" class="panel-collapse collapse">
@@ -761,15 +799,15 @@ function behat_editor_current_test_container(&$form){
         '#attributes' => array('class' => array('panel', 'panel-default')),
     );
 
+    $help =  _behat_editor_make_help_link('current_test.html');
     $form['results_area']['container1']['results'] = array(
         '#prefix' => "<div class=\"panel-heading\">
                         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\">
-                            <h4 class=\"panel-title\">Current Test</h4>
+                            <h4 class=\"panel-title\">Current Test $help</h4>
                         </a></div>",
         '#markup' => theme('behat_editor_results_area', $args = array('params' => array())),
     );
 }
-
 
 
 function behat_editor_save_modal(&$form, $filename) {
@@ -783,3 +821,37 @@ function behat_editor_save_modal(&$form, $filename) {
 
     $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
 }
+
+function behat_editor_page_alter(&$page) {
+
+}
+
+function behat_editor_theme_registry_alter(&$theme_registry) {
+
+}
+
+function _behat_editor_make_help_link($doc_name) {
+    return "<a href=\"#modal_slide\" data-doc-name=\"$doc_name\" class=\"help-get\"><i class=\"glyphicon glyphicon-comment \"></i></a>";
+}
+function _behat_editor_load_help_area(&$form){
+    $path = drupal_get_path('module', 'behat_editor');
+    drupal_add_js($path . '/js/jquery.pageslide.js', array('scope' => 'footer'));
+    drupal_add_js($path . '/js/behat_editor_help.js');
+    drupal_add_css($path . '/css/jquery.pageslide.css');
+    drupal_add_css($path . '/css/behat_editor_help_bar.css');
+    drupal_add_js(array('behat_editor' => array('behat_editor_help_url' => BEHAT_EDITOR_HELP_URL)), 'setting');
+    drupal_add_js(array('behat_editor' => array('behat_editor_loader_url' => $path . "/images/ajax-loader.gif")), 'setting');
+    $slide = <<<HEREDOC
+
+        <div id="modal_slide" style="display:none">
+            <h2>Help</h2>
+            <a class="btn btn-danger" href="javascript:jQuery.pageslide.close(null, '100')">Close</a>
+            <br>
+            <p class="help-content">&nbsp;</p>
+            <a class="btn btn-danger" href="javascript:jQuery.pageslide.close(null, '100')">Close</a>
+        </div>
+HEREDOC;
+
+    $form['help_slide'] = array('#markup' => $slide);
+}
+
