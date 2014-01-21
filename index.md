@@ -28,10 +28,16 @@ The source of these files are
  * [URL Admin](urls.html)
  * [Drush Integration](drush.html)
  * [Cron job tests](cron.html)
+ * [Settings Group](settings_group.html)
+ * [Settings Overview](settings_all.html)
+ * [Current Test](current_test.html)
+ * [Choose OS and Browser](choose_os_browser.html)
+ * [Past Results](past_results.html)
  
 #### Steps
 
  * [Feature](feature.html)
+ * [Filename](filename)
  * [Background Step](background.html)
  * [Scenario](scenario.html)
  * [Given URL](given.html) 
