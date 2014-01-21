@@ -76,10 +76,11 @@ function behat_editor_add_form($form, $form_state) {
         '#suffix' => '</div>',
     );
 
+    $help =  _behat_editor_make_help_link('filename.html');
     $form['questions_area']['filename'] = array(
         '#type' => 'textfield',
         '#name' => 'filename',
-        '#title' => t('Filename:'),
+        '#title' => t('Filename: !link', array('!link' => $help)),
         '#default_value' => $filename,
         '#description' => t('What do you want to call this test? Only lowercase alpha/numeric with underscores. Finally end the name in .feature'),
         '#prefix' => '<div class="well">',
@@ -101,6 +102,7 @@ function behat_editor_add_form($form, $form_state) {
         'delete' => array('title' => 'Cancel', 'class' => array('btn', 'btn-success'), 'data' => array('dismiss' => "modal"))
     );
     $form['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
+    _behat_editor_load_help_area($form);
 
     return $form;
 }

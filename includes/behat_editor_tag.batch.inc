@@ -68,6 +68,8 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
         '#submit' => array('bulk_editor_run_tag_based_submit'),
     );
 
+    _behat_editor_load_help_area($build);
+
     return $build;
 }
 
