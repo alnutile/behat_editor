@@ -41,10 +41,12 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
         'filename' => $filename,
         'action' => 'edit'
     );
+    drupal_alter('behat_editor_before_edit', $params);
     //need to pass this for delete to work
     $_SESSION['delete_path'] = $service_path;
 
     $file_info = $file->show($params);
+
     drupal_alter('behat_editor_edit', $file_info);
 
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
