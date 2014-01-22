@@ -1,6 +1,8 @@
 1.5.3
 ----------
 Demo reporting feature in place
+BPFD-294 adding before alters on View and Edit since the file may not be there but modules like
+github_behat_editor need to do a pull to update the repo get it.
 
 0.1.0 MVP
 -----------
