@@ -85,6 +85,6 @@ function behat_editor_view_form($form, $form_state) {
 
     $form['filename'] = array('#type' => 'hidden', '#name' => 'filename', '#default_value' => $file_info['filename_no_ext']);
     $form['module'] = array('#type' => 'hidden', '#default_value' => $module);
-
+    _behat_editor_load_help_area($form);
     return $form;
 }

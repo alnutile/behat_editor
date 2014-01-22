@@ -68,6 +68,8 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
         '#submit' => array('bulk_editor_run_tag_based_submit'),
     );
 
+    _behat_editor_load_help_area($build);
+
     return $build;
 }
 
@@ -78,7 +80,7 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
  */
 function bulk_editor_run_tag_based_validate($form, &$form_state) {
     // Error if there are no items to select.
-    if (!is_array($form_state['values']['dashboard']) || !count(array_filter($form_state['values']['dashboard']))) {
+    if (!isset($form_state['values']['dashboard'])) {
         form_set_error('', t('No items selected.'));
     }
 }
@@ -96,10 +98,10 @@ function bulk_editor_run_tag_based_submit($form, &$form_state) {
         'browser_version' => $browser,
     );
     $operation = $form_state['values']['operation'];
-    $tags = array_filter($form_state['values']['dashboard']);
+    $tags = $form_state['values']['dashboard'];
 
     if($operation == 'gui') {
-        $batch = _behat_editor_batch_tags_setup(array('tags' => $tags, 'settings' => $settings));
+        $batch = _behat_editor_batch_tags_setup(array('tags' => array($tags), 'settings' => $settings));
         batch_set($batch);
     }
 }
@@ -113,21 +115,26 @@ function _behat_editor_batch_tags_setup($params) {
     $params = array('tags' => $params['tags'], 'settings' => $params['settings'], 'rid' => $rid);
     $files->batchSetupFolderCopyFiles($params);
     $count = $files->getFileCount();
+    $original_files_array = $files->getOriginalFiles();
     $files_all = $files->getAllFilesArray();
     $setup_batch->setTotalCount(array('rid' => $rid, 'test_count' => $count));
     foreach($params['tags'] as $tag) {
         $current = 1;
         foreach($files_all[$tag] as $file) {
+            $public_path = $file;
             $file = drupal_realpath($file);
+            $filename = $original_files_array[$public_path]['filename'];
             $operations[] = array('_behat_editor_batch_tags_run',
                 array(
                     'file_path' => $file,
                     'tag' => $tag,
                     'rid' => $rid,
                     'settings' => $params['settings'],
-                    t("Working on File @file test #@current", array('@file' => $file, '@current' => $current)),
+                    t("Tag: @tag and Present Count: #@current", array('@file' => $filename, '@current' => $current, '@tag' => $tag)),
                     'total_found' => $count,
                     'current' => $current,
+                    'original_module_name' => $original_files_array[$public_path]['module'],
+                    'filename' => $filename
                 )
             );
             $current++;
@@ -139,13 +146,13 @@ function _behat_editor_batch_tags_setup($params) {
         'init_message' => t('Starting the tests'),
         'error_message' => t('An error occurred. Please check the Reports/DB Logs'),
         'file' => drupal_get_path('module', 'behat_editor') . '/includes/behat_editor_tag.batch.inc',
-        'progress_message' => t('Total Files found @number', array('@number' => $count)),
+        'progress_message' => t('Total Files found @number <strong>will run 1 test per file so it will take some time.</strong>', array('@number' => $count)),
     );
 
     return $batch;
 }
 
-function _behat_editor_batch_tags_run($file_path, $tag, $rid, $settings, $message, $total, $current, &$context ) {
+function _behat_editor_batch_tags_run($file_path, $tag, $rid, $settings, $message, $total, $current, $original_module_name, $filename, &$context ) {
     if (empty($context['sandbox'])) {
         $context['sandbox'] = array();
         $context['sandbox']['progress'] = 1;
@@ -158,12 +165,12 @@ function _behat_editor_batch_tags_run($file_path, $tag, $rid, $settings, $messag
 
     $run = new BehatEditor\BehatEditorBatchTypeTag();
     $results = $run->batchRunForFile(array('tag' => array($tag), 'rid' => $rid, 'settings' => $settings, 'file_path' => $file_path));
-    $run->batchItemDone(array('item' => $tag));
+    $run->batchItemDone(array('item' => $tag, 'module' => $settings['module'], 'original_module_name' => $original_module_name));
 
     //wrap up the batch api info
     $context['sandbox']['progress']= $current;
     $context['results'][] = $results;
-    $context['message'] = t("File Tests @name with message @message", array('@name' => $file_path, '@message' => $message));
+    $context['message'] = t("File Tests @name with message @message", array('@name' => $filename, '@message' => $message));
 }
 
 function _behat_editor_batch_tags_run_finish($success, $results, $operations) {
@@ -173,7 +180,7 @@ function _behat_editor_batch_tags_run_finish($success, $results, $operations) {
         foreach($results as $key => $value) {
             //$filename = explode('/', $value);
             //$filename = array_pop($filename);
-            drupal_set_message(t('files !files was tested', array('!files' => $filename)));
+            drupal_set_message(t('files !files was tested', array('!files' => $results['file_path'])));
         }
     }
     else {

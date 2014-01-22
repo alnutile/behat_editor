@@ -618,6 +618,8 @@ class FileModel {
      * @return array
      */
     protected function behat_editor_string_feature($string, $scenario, $count, $direction) {
+        $help =  _behat_editor_make_help_link('tags.html');
+
         $results = array();
         $first_word = self::_pop_first_word($string);
         $options = array('Feature:');
@@ -648,7 +650,7 @@ class FileModel {
                     $tags = self::_string_tags($scenario, $count - 1, 0, $direction);
                     //@todo remove number key should be automatic
                     $features_tags[0] = array(
-                        'data' => "<strong>Feature Tags:</strong>",
+                        'data' => "<strong>Feature Tags: $help</strong>",
                         'class' => array('ignore'),
                     );
 

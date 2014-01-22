@@ -204,6 +204,27 @@ function theme_behat_editor_file_to_html_view($vars) {
     return $build;
 }
 
+function theme_behat_editor_form_wrapper($variables) {
+}
+
+function template_preprocess_behat_editor_form_wrapper(&$variables) {
+    $variables['text_form_content'] = array();
+    $text_form_hidden = array();
+
+    foreach (element_children($variables['form']) as $key) {
+        $type = $variables['form'][$key]['#type'];
+        if ($type == 'hidden' || $type == 'token') {
+            $text_form_hidden[] = drupal_render($variables['form'][$key]);
+        }
+        else {
+            $variables['text_form_content'][$key] = drupal_render($variables['form'][$key]);
+        }
+    }
+    $variables['text_form_content']['hidden'] = implode($text_form_hidden);
+
+    $variables['text_form'] = implode($variables['text_form_content']);
+}
+
 /**
  * Preprocess the html to view only
  *
@@ -230,6 +251,10 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
  * @return mixed
  */
 function _behat_editor_questions_form() {
+
+
+    $form['#theme'] = array('behat_editor_form_wrapper');
+
     $form['questions'] = array(
         '#type' => 'fieldset',
         '#title' => t('Build your test using Steps below'),
@@ -239,12 +264,12 @@ function _behat_editor_questions_form() {
         '#collapsed' => FALSE,
     );
 
+
     $form['questions']['feature_name']['feature'] = array(
         '#type' => 'textfield',
         '#name' => 'feature',
         '#title' => t('Feature:'),
-        '#description' => t('Name the Feature. This will name the Test<br>
-        <a href="http://docs.behat.org/guides/1.gherkin.html#features" target="_blank">Read More</a>'),
+        '#description' => t('Name the Feature. This will name the Test. !help', array('!help' => _behat_editor_make_help_link('feature.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'feature_group'),
             'data-type' => array('textfield'),
@@ -269,8 +294,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#name' => 'scenario',
         '#title' => t('Scenario:'),
-        '#description' => t('What do you want to call this Scenario?<br>
-        <a href="http://docs.behat.org/guides/1.gherkin.html#scenario" target="_blank">Read More</a>'),
+        '#description' => t('What do you want to call this Scenario? !help', array('!help' => _behat_editor_make_help_link('scenario.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'scenario_group'),
             'data-type' => array('textfield'),
@@ -297,8 +321,7 @@ function _behat_editor_questions_form() {
         '#name' => 'background',
         '#title' => t('Background:'),
         '#description' => t('Backgrounds run at the start so need to be at the top.
-            They are great for a repeat task like logging in prior to each Scenerio in this one Feature.
-            <a href="http://docs.behat.org/guides/1.gherkin.html#backgrounds" target="_blank">Read More</a>'),
+            They are great for a repeat task like logging in prior to each Scenerio in this one Feature. !help', array('!help' => _behat_editor_make_help_link('background.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'background_group'),
             'data-type' => array('textfield'),
@@ -322,7 +345,7 @@ function _behat_editor_questions_form() {
     $form['questions']['when_i_go_to']['url'] = array(
         '#type' => 'textfield',
         '#title' => t('Given I am on'),
-        '#description' => t('When I go to a URL. Full URL is best'),
+        '#description' => t('When I go to a URL. Full URL is best. !help', array('!help' => _behat_editor_make_help_link('given.html'))),
         '#name' => 'url',
         '#attributes' => array(
             'placeholder' =>  t('a full website address'),
@@ -360,6 +383,7 @@ function _behat_editor_questions_form() {
     $form['questions']['form_fields_and_elements']['when_i_check']['checkbox'] = array(
         '#type' => 'textfield',
         '#title' => t('And I check'),
+        '#description' => t('!help', array('!help' => _behat_editor_make_help_link('checkbox.html'))),
         '#name' => 'checkbox',
         '#attributes' => array(
             'class' => array('col-mg-12', 'when_i_check_group'),
@@ -387,6 +411,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('And I uncheck'),
         '#name' => 'uncheckbox',
+        '#description' => t('!help', array('!help' => _behat_editor_make_help_link('checkbox.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'when_i_uncheck_group'),
             'placeholder' =>  t('value of element'),
@@ -414,7 +439,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('Then the'),
         '#name' => 'checked',
-        '#description' => t('Checks, that checkbox with specified in|name|label|value is checked'),
+        '#description' => t('Checks, that checkbox with specified in|name|label|value is checked !help', array('!help' => _behat_editor_make_help_link('checkbox.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'is_checked_group'),
             'placeholder' =>  t('use id|name|label|value'),
@@ -449,7 +474,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('Then the'),
         '#name' => 'not_checked',
-        '#description' => t('Checks, that checkbox with specified in|name|label|value is NOT checked'),
+        '#description' => t('Checks, that checkbox with specified in|name|label|value is NOT checked !help', array('!help' => _behat_editor_make_help_link('checkbox.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'not_checked'),
             'placeholder' =>  t('use id|name|label|value'),
@@ -486,6 +511,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('And I select'),
         '#name' => 'form_field_and_i_select',
+        '#description' => t('!help', array('!help' => _behat_editor_make_help_link('select.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_select_group'),
             'data-type' => array('textfield'),
@@ -548,6 +574,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('And I fill in'),
         '#name' => 'form_field_and_fill_in',
+        '#description' => t('!help', array('!help' => _behat_editor_make_help_link('fill_in_field.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_fill_in_group'),
             'data-type' => array('textfield'),
@@ -598,7 +625,7 @@ function _behat_editor_questions_form() {
         '#type' => 'select',
         '#title' => t('And I'),
         '#name' => 'click_on_type',
-        '#description' => t('And I click or press on a link or button <b>called</b>'),
+        '#description' => t('And I click or press on a link or button <b>called</b> !help', array('!help' => _behat_editor_make_help_link('press_click.html'))),
         '#options' => array('follow' => t('link'), 'press' => t('button')),
         '#validated' => TRUE,
         '#attributes' => array(
@@ -635,7 +662,7 @@ function _behat_editor_questions_form() {
         '#prefix' => '<div class="qualifier">',
         '#suffix' => '</div>',
         '#title' => t('Then I'),
-        '#description' => t('Then I should see or not see the following text'),
+        '#description' => t('Then I should see or not see the following text !help', array('!help' => _behat_editor_make_help_link('should_see.html'))),
         '#options' => array('should see' => t('see'), 'should not see' => t('not see')),
         '#validated' => TRUE,
         '#attributes' => array(
@@ -671,6 +698,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('Then the url should the url should match'),
         '#name' => 'url_to_check',
+        '#description' => t('!help', array('!help' => _behat_editor_make_help_link('url_check.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'check_url_group'),
             'data-type' => array('textfield'),
@@ -697,6 +725,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('Then the'),
         '#name' => 'form_field_css',
+        '#description' => t('!help', array('!help' => _behat_editor_make_help_link('check_element_style.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'should_see_value_group'),
             'data-type' => array('textfield'),
@@ -746,30 +775,32 @@ function _behat_editor_questions_form() {
     $form['questions']['lower_level_repsonse_code']['header']['#markup'] = t('<h2>Testing Lower Level Items</h2>
     <small class="text-center">note the descriptions of each item. They may require special tags</small><br>
     ');
-    $form['questions']['lower_level_repsonse_code']['code'] = array(
+    $form['questions']['lower_level_response_code']['code'] = array(
         '#type' => 'textfield',
         '#title' => t('Then the response status code should be'),
         '#name' => 'code',
+        '#description' => t('!help', array('!help' => _behat_editor_make_help_link('status_code.html'))),
         '#attributes' => array(
-            'class' => array('col-mg-12', 'lower_level_repsonse_code_group'),
+            'class' => array('col-mg-12', 'lower_level_response_code_group'),
             'placeholder' =>  t('200|400|401'),
             'data-type' => array('textfield'),
             'data-strip-quotes' => array('true'),
         ),
     );
 
-    $form['questions']['lower_level_repsonse_code']['code_button'] = array(
+    $form['questions']['lower_level_response_code']['code_button'] = array(
         '#type' => 'button',
         '#name' => 'code_button',
         '#description' => t('Good for checking if a download link is working. You will have to tag it\'s scenario @mink:goutte'),
         '#value' => t('Add'),
         '#attributes' => array(
-            'data-step-group' => array('lower_level_repsonse_code_group'),
+            'data-step-group' => array('lower_level_response_code_group'),
             'data-method' => array('append'),
             'class' => array('steps')
         ),
         '#suffix' => '<hr>'
     );
+    _behat_editor_load_help_area($form);
 
     return $form;
 }
@@ -821,6 +852,8 @@ function theme_behat_editor_create_html($array) {
 
 }
 
+function theme_behat_editor_questions_form($variables) {
+}
 
 
 

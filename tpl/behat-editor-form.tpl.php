@@ -1,0 +1,1 @@
+<?php  print $text_form; ?>
