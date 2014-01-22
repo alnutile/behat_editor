@@ -3,6 +3,13 @@
 Demo reporting feature in place
 BPFD-294 adding before alters on View and Edit since the file may not be there but modules like
 github_behat_editor need to do a pull to update the repo get it.
+Hotfix on Clone to Repo and Add to Repo have the wrong user UID
+
+1.5.2
+----------
+Integrate docs
+Better report demo area
+Edit mode for one user not sync with other
 
 0.1.0 MVP
 -----------
