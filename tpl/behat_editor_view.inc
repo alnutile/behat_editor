@@ -33,6 +33,7 @@ function behat_editor_view_form($form, $form_state) {
         'filename' => $filename,
         'action' => 'view'
     );
+    drupal_alter('behat_editor_before_view', $params);
     $file_info = $file->show($params);
     drupal_alter('behat_editor_view', $file_info);
 

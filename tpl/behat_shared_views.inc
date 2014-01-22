@@ -696,7 +696,7 @@ function _behat_editor_questions_form() {
     /** Che the url via regular expression */
     $form['questions']['check_url']['url_to_check'] = array(
         '#type' => 'textfield',
-        '#title' => t('Then the url should the url should match'),
+        '#title' => t('Then the url should match'),
         '#name' => 'url_to_check',
         '#description' => t('!help', array('!help' => _behat_editor_make_help_link('url_check.html'))),
         '#attributes' => array(
