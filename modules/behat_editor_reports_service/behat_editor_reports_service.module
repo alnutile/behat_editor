@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @TODO move js files into library for angular
+ *
+ */
 use Drupal\BehatEditorReports\BehatServiceReportsController;
 
 include_once 'behat_editor_reports_service.features.inc';
@@ -194,66 +197,10 @@ function behat_editor_reports_service_menu() {
 
 function behat_editor_reports_service_reports_all(){
     return theme('behat_editor_reports_service_reports_all');
-    //return drupal_get_form('behat_editor_reports_service_reports_all_form_builder');
-}
-
-function behat_editor_reports_service_reports_all_form_builder($form, &$form_state) {
-
-
-//    $form['tag'] = array(
-//        '#type' => 'ng_select',
-//        '#title' => t('Tag'),
-//        '#options' => array('@local_test', '@local'),
-//        '#description' => t('Filter by Tag.'),
-//        '#default_value' => '@local_test',
-//        //@QUESTION the model is where?
-//        '#ng_model' => 'results',
-//        '#ng_controller' => 'ReportsAll',
-//        '#attributes' => array(
-//            'ng-change' => 'filterTags()',
-//        ),
-//    );
-
-    $form['title'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Filename'),
-        '#attributes' => array(
-            'ng-model' => 'query.filename',
-            'placeholder' => t('Filter by name'),
-            'autocomplete' => 'off',
-            'class' => array('span5')
-        ),
-        '#ng_controller' => 'ReportsAll',
-    );
-
-    $header = array(
-        t('Filename'),
-        t('Module'),
-        t('Status'),
-        t('Created'),
-    );
-
-    $row = array(
-        '{{result.filename}}',
-        '{{result.module}}',
-        '{{result.status}}',
-        "{{result.created + '000' | date:'medium'}}",
-    );
-
-    $form['table'] = array(
-        '#theme' => 'ng_table',
-        '#header' => $header,
-        '#row' => $row,
-        '#empty' => t('No content found.'),
-        '#ng_repeat' => 'result in results | filter: query',
-        '#ng_model' => 'results',
-        '#ng_empty' => '(results | filter: query).length == 0',
-    );
-
-    return $form;
 }
 
 function behat_editor_reports_service_reports() {
+    var_dump(angularjs_version_files());
     angularjs_init_application('behat_reports');
     drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/reports.js');
 
