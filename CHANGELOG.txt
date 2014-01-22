@@ -1,3 +1,7 @@
+1.5.3
+----------
+Demo reporting feature in place
+
 0.1.0 MVP
 -----------
 Rework system to deal way better with subfolders
