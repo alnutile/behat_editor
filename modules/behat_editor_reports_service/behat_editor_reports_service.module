@@ -1,0 +1,279 @@
+<?php
+
+use Drupal\BehatEditorReports\BehatServiceReportsController;
+
+include_once 'behat_editor_reports_service.features.inc';
+
+function behat_editor_reports_service_perms() {
+    return array(
+        'report resource create',
+        'report resource view',
+        'report resource delete',
+        'report resource edit',
+        'report resource view all',
+    );
+}
+
+
+function behat_editor_reports_service_get($id) {
+    watchdog('test_rest', print_r($id, 1));
+    return array("OK");
+}
+
+function behat_editor_reports_service_create($results) {
+    watchdog('test_rest', print_r($results, 1));
+    return array("OK");
+}
+
+
+function behat_editor_reports_service_update($results) {
+    watchdog('test_rest', print_r($results, 1));
+    return array("OK");
+}
+
+function behat_editor_reports_service_delete($id) {
+    watchdog('test_rest', print_r($id, 1));
+    return array("OK");
+}
+
+
+function behat_editor_reports_service_get_all($parameters) {
+    composer_manager_register_autoloader();
+    watchdog('test_get_all', print_r($parameters, 1));
+    $resource = new BehatServiceReportsController();
+    return $resource->index();
+}
+
+/**
+ * Implements hook_services_resources()
+ */
+function behat_editor_reports_service_services_resources() {
+    return array(
+        'reports' => array(
+            'retrieve' => array(
+                'help' => 'Retrieve a report record',
+                'callback' => 'behat_editor_reports_service_get',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource view'),
+                'access arguments append' => TRUE,
+                'args' => array(
+                    array(
+                        'name' => 'rid',
+                        'type' => 'int',
+                        'description' => 'the report id (rid)',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'create' => array(
+                'help' => 'Create a report record',
+                'callback' => 'behat_editor_reports_service_create',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource create'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The results structure and settings',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'update' => array(
+                'help' => 'Create a report record',
+                'callback' => 'behat_editor_reports_service_update',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource update'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'rid',
+                        'type' => 'int',
+                        'description' => 'the report id (rid)',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The results structure and settings',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'delete' => array(
+                'help' => 'Delete a report record',
+                'callback' => 'behat_editor_reports_service_delete',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource delete'),
+                'access arguments append' => TRUE,
+                'args' => array(
+                    array(
+                        'name' => 'rid',
+                        'type' => 'int',
+                        'description' => 'the report id (rid)',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'index' => array(
+                'help' => 'Retrieves a listing of reports filtered by tag and or browser and or pass fail etc',
+                'callback' => 'behat_editor_reports_service_get_all',
+                'access callback' => 'behat_editor_reports_service_access',
+                'access arguments' => array('report resource view all'),
+                'access arguments append' => FALSE,
+                'args' => array(array(
+                    'name' => 'page',
+                    'type' => 'int',
+                    'description' => '',
+                    'source' => array(
+                        'param' => 'page',
+                    ),
+                    'optional' => TRUE,
+                    'default value' => 0,
+                ),
+                    array(
+                        'name' => 'parameters',
+                        'type' => 'array',
+                        'description' => 'keys are tags, batch browsers pass/fail',
+                        'source' => 'param',
+                        'optional' => TRUE,
+                        'default value' => array(),
+                    ),
+                ),
+            ),
+        ),
+    );
+}
+
+function behat_editor_reports_service_access($op, $args) {
+    global $user;
+    $access = FALSE;
+
+    switch ($op) {
+        case 'report resource view':
+            $access = user_access($op);
+            break;
+        case 'report resource update':
+            $access = user_access($op);
+            break;
+        case 'report resource view all':
+            $access = user_access($op);
+            break;
+        case 'report resoruce delete':
+            $access = user_access($op);
+            break;
+        case 'report resource edit':
+            $access = user_access($op);
+            break;
+    }
+
+    return $access;
+}
+
+
+function behat_editor_reports_service_menu() {
+    $items['admin/behat/reports'] = array(
+        'title' => t('Reports all'),
+        'page callback' => 'behat_editor_reports_service_reports',
+        'access arguments' => array('report resource view all'),
+    );
+    $items['behat_editor_reports_service/tpl/behat_editor_reports_service_reports_tpl'] = array(
+        'page callback' => 'behat_editor_reports_service_reports_all',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+
+    );
+    return $items;
+}
+
+function behat_editor_reports_service_reports_all(){
+    return theme('behat_editor_reports_service_reports_all');
+    //return drupal_get_form('behat_editor_reports_service_reports_all_form_builder');
+}
+
+function behat_editor_reports_service_reports_all_form_builder($form, &$form_state) {
+
+
+//    $form['tag'] = array(
+//        '#type' => 'ng_select',
+//        '#title' => t('Tag'),
+//        '#options' => array('@local_test', '@local'),
+//        '#description' => t('Filter by Tag.'),
+//        '#default_value' => '@local_test',
+//        //@QUESTION the model is where?
+//        '#ng_model' => 'results',
+//        '#ng_controller' => 'ReportsAll',
+//        '#attributes' => array(
+//            'ng-change' => 'filterTags()',
+//        ),
+//    );
+
+    $form['title'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Filename'),
+        '#attributes' => array(
+            'ng-model' => 'query.filename',
+            'placeholder' => t('Filter by name'),
+            'autocomplete' => 'off',
+            'class' => array('span5')
+        ),
+        '#ng_controller' => 'ReportsAll',
+    );
+
+    $header = array(
+        t('Filename'),
+        t('Module'),
+        t('Status'),
+        t('Created'),
+    );
+
+    $row = array(
+        '{{result.filename}}',
+        '{{result.module}}',
+        '{{result.status}}',
+        "{{result.created + '000' | date:'medium'}}",
+    );
+
+    $form['table'] = array(
+        '#theme' => 'ng_table',
+        '#header' => $header,
+        '#row' => $row,
+        '#empty' => t('No content found.'),
+        '#ng_repeat' => 'result in results | filter: query',
+        '#ng_model' => 'results',
+        '#ng_empty' => '(results | filter: query).length == 0',
+    );
+
+    return $form;
+}
+
+function behat_editor_reports_service_reports() {
+    angularjs_init_application('behat_reports');
+    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/reports.js');
+
+    return theme('behat_reports');
+}
+
+function behat_editor_reports_service_theme() {
+    $themes = array();
+
+    $themes['behat_reports'] = array(
+        'template' => 'theme/reports',
+        'parameters' => array(),
+    );
+
+    $themes['behat_editor_reports_service_reports_all'] = array(
+        'template' => 'theme/reports-all',
+        'parameters' => array(
+            'query' => array(),
+        ),
+    );
+
+    return $themes;
+}
