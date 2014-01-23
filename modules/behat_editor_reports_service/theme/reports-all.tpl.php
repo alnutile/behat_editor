@@ -1,35 +1,38 @@
 
     <div ng-controller="ReportsAll">
-        <form class="form-inline" role="form">
-            <div class="form-group">
-                <label>Pass/Fail</label>
-                <select ng-model="query.status" class="form-control">
-                        <option value="1">Pass</option>
-                        <option value="0">Fail</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Browser</label>
-                <select ng-model="query.settings" class="form-control">
-                    <option ng-repeat="browser in browsers" value="{{browser}}">{{browser}}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <input ng-model="query.filename" placeholder="Filename">
-            </div>
-            <div class="form-group">
-                <label>User</label>
-                <select ng-model="query.uid" class="form-control" ng-change="setLocation('user_id', '$scope.query.uid')">
-                    <option ng-selected="checkSelected(user.uid, location.user_id)" ng-repeat="user in users" value="{{user.uid}}">{{user.mail}}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>URL</label>
-                <select ng-model="query.settings" class="form-control">
-                    <option ng-repeat="url in urls" value="{{url.nice_name}}">{{url.nice_name}}</option>
-                </select>
-            </div>
-        </form>
+        <div class="well">
+            <form class="form-inline" role="form" ng-submit="filterReports()">
+                <div class="form-group">
+                    <label class="sr-only">Pass/Fail</label>
+                    <select ng-change="checkSelected()" ng-model="pass_fail" class="form-control pass_fail">
+                            <option value="">all</option>
+                            <option value="1">Pass</option>
+                            <option value="0">Fail</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">Browser</label>
+                    <select ng-change="checkSelected()" ng-model="browser" class="form-control"  ng-options="key as value for (key, value) in browsers">
+                        <option value="">all</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input placeholder="Filename">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">User</label>
+                    <select  ng-change="checkSelected()" ng-model="user_id" class="form-control user" ng-options="key as value for (key, value) in users">
+                        <option value="">all</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">URL</label>
+                    <select ng-model="url" ng-change="checkSelected()" class="form-control urls" ng-options="value as key for (key, value) in urls">
+                        <option value="">all</option>
+                    </select>
+                </div><input type="submit" class="btn btn-warning" value="Search">
+            </form>
+        </div>
 
         <table
             class="table table-bordered table-hover">
@@ -44,7 +47,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="result in results | filter:query" ng-class="{danger: result.status === '0'}">
+            <tr ng-repeat="result in results" ng-class="{danger: result.status === '0'}">
                 <td>
                     <span ng-switch on="result.status">
                         <span ng-switch-when="1">Pass</span>

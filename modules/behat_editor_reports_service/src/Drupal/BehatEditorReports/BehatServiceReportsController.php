@@ -15,8 +15,6 @@ class BehatServiceReportsController {
     }
 
     public function index($parameters = array()) {
-        if(empty($parameters)) {
-            return $this->model->get_all();
-        }
+        return $this->model->get_all($parameters);
     }
 } 

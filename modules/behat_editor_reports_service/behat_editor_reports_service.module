@@ -40,11 +40,12 @@ function behat_editor_reports_service_delete($id) {
 }
 
 
-function behat_editor_reports_service_get_all($parameters) {
+function behat_editor_reports_service_get_all($page, $parameters) {
     composer_manager_register_autoloader();
+    watchdog('test_page', print_r($page, 1));
     watchdog('test_get_all', print_r($parameters, 1));
     $resource = new BehatServiceReportsController();
-    return $resource->index();
+    return $resource->index(array($page, $parameters));
 }
 
 /**
@@ -130,16 +131,17 @@ function behat_editor_reports_service_services_resources() {
                 'access callback' => 'behat_editor_reports_service_access',
                 'access arguments' => array('report resource view all'),
                 'access arguments append' => FALSE,
-                'args' => array(array(
-                    'name' => 'page',
-                    'type' => 'int',
-                    'description' => '',
-                    'source' => array(
-                        'param' => 'page',
+                'args' => array(
+                    array(
+                        'name' => 'page',
+                        'type' => 'int',
+                        'description' => '',
+                        'source' => array(
+                            'param' => 'page',
+                        ),
+                        'optional' => TRUE,
+                        'default value' => 0,
                     ),
-                    'optional' => TRUE,
-                    'default value' => 0,
-                ),
                     array(
                         'name' => 'parameters',
                         'type' => 'array',
@@ -154,7 +156,7 @@ function behat_editor_reports_service_services_resources() {
     );
 }
 
-function behat_editor_reports_service_access($op, $args) {
+function behat_editor_reports_service_access($op, $args = array()) {
     global $user;
     $access = FALSE;
 
@@ -200,9 +202,10 @@ function behat_editor_reports_service_reports_all(){
 }
 
 function behat_editor_reports_service_reports() {
-    var_dump(angularjs_version_files());
     angularjs_init_application('behat_reports');
-    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/reports.js');
+    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/services.js');
+    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/reportsController.js');
+    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/app.js');
 
     return theme('behat_reports');
 }
