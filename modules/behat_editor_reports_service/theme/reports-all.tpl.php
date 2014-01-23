@@ -1,13 +1,55 @@
 
     <div ng-controller="ReportsAll">
+
+
+            <div class="row well">
+                <span class="col-md-4">
+                    <h2>Browsers Being Tested</h2>
+                    <p>
+                        <ul>
+                            <li ng-repeat="(key, value) in browser_pass_fail_count"> {{ key }}</li>
+                        </ul>
+                    </p>
+                </span>
+                <span class="col-md-4">
+                    <h2>Pass Fail Summary</h2>
+                    <p>
+                        <ul>
+                            <li>Pass: {{pass_fail_chart.pass}}</li>
+                            <li>Fail: {{pass_fail_chart.fail}}</li>
+                        </ul>
+                    </p>
+                </span>
+                <span class="col-md-4">
+                    <h2>URLs Being Tested</h2>
+                    <p>
+                        <ul>
+                            <li ng-repeat="(key, value) in pass_fail_per_url"> {{ key }}</li>
+                        </ul>
+                    </p>
+                </span>
+             </div>
+
+            <div class="row well">
+                <div class="col-md-4">
+                    <div google-chart chart="chart_url_pass_fail" style="{{chart_url_pass_fail.cssStyle}}" on-ready="chartReady()"></div><!-- explicit close of tag seems to be necessary -->
+                </div>
+
+                <div class="col-md-4">
+                    <div google-chart chart="chart_browser_pass_fail" style="{{chart_browser_pass_fail.cssStyle}}" on-ready="chartReady()"></div><!-- explicit close of tag seems to be necessary -->
+                </div>
+
+                <div class="col-md-4">
+                    <div google-chart chart="chart_fail_pass" style="{{chart_fail_pass.cssStyle}}" on-ready="chartReady()"></div><!-- explicit close of tag seems to be necessary -->
+                </div>
+            </div>
+
         <div class="well">
             <form class="form-inline" role="form" ng-submit="filterReports()">
                 <div class="form-group">
                     <label class="sr-only">Pass/Fail</label>
-                    <select ng-change="checkSelected()" ng-model="pass_fail" class="form-control pass_fail">
+                    <select ng-change="checkSelected()" ng-model="pass_fail" class="form-control pass_fail" ng-options="key as value for (key, value) in status_state">
                             <option value="">all</option>
-                            <option value="1">Pass</option>
-                            <option value="0">Fail</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -17,7 +59,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input placeholder="Filename">
+                    <input ng-change="checkChange()" ng-model="filename" placeholder="Filename">
                 </div>
                 <div class="form-group">
                     <label class="sr-only">User</label>

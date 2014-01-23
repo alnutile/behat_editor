@@ -9,6 +9,9 @@ use Drupal\BehatEditor;
 
 class BehatServiceReportsModel {
     public $settings;
+    protected $browserPassFailCount = array();
+    protected $passFailChart = array();
+    protected $passFailPerUrl = array();
 
     public function __construct($settings = null) {
         if(empty($settings)) {
@@ -22,6 +25,7 @@ class BehatServiceReportsModel {
     // paginate as at 100
     public function get_all($parameters = array()) {
         list($page, $params) = $parameters;
+        $browserPassFailCount = array();
         $all_browsers = array();
         $all_users = array();
         $all_urls = array();
@@ -37,7 +41,7 @@ class BehatServiceReportsModel {
             $query->condition('status', "{$params['pass_fail']}", '=');
         }
         if(isset($params['filename']) && $params['filename'] != 'all') {
-            $query->condition('filename', "{$params['filename']}", 'LIKE');
+            $query->condition('filename', "%{$params['filename']}%", 'LIKE');
         }
         if(isset($params['url']) && $params['url'] != 'all') {
             $url = explode('|', $params['url']);
@@ -62,12 +66,15 @@ class BehatServiceReportsModel {
                 $url_state = (($base_url_gsid == $url[1] && $base_url_usid == $url[0]) || $params['url'] == 'all') ? TRUE : FALSE;
                 if( $url_state ) {
                     $browser = (isset($record->settings['browser_version'])) ? $record->settings['browser_version'] : 'undefined';
+                    $this->setBrowsersPassFail($browser, $record);
+                    $this->setPassFailChart($record);
                     $record->settings['browser_version'] = $this->getBrowser($browser);
                     $all_browsers[$browser] = $record->settings['browser_version'];
                     $user = $this->getUser($record->uid);
                     $url_found = $this->getUrl($user['uid'], $base_url_usid, $base_url_gsid);
                     (empty($url_found['nice_name'])) ? $url_found['nice_name'] = 'undefined' : null;
                     $all_urls[$url_found['nice_name']] = $base_url_usid.'|'.$base_url_gsid;
+                    $this->setPassFailPerURL($url_found['nice_name'], $record);
                     $all_users[$user['uid']] = $user['mail'];
                     $record->settings['url'] = $url_found['nice_name'];
                     $tags = $this->getTags($record->results);
@@ -75,7 +82,49 @@ class BehatServiceReportsModel {
                 }
             }
         }
-        return array('results' => $rows, 'error' => 0, 'browsers' => $all_browsers, 'users' => $all_users, 'urls' => $all_urls);
+        return array(
+            'results' => $rows,
+            'error' => 0,
+            'browsers' => $all_browsers,
+            'users' => $all_users,
+            'urls' => $all_urls,
+            'browser_pass_fail_count' => $this->browserPassFailCount,
+            'pass_fail_chart' => $this->passFailChart,
+            'pass_fail_per_url' => $this->passFailPerUrl
+        );
+    }
+
+    protected function setPassFailPerURL($url, $record) {
+        if($record->status == 0) {
+            $fail = $this->passFailPerUrl[$url]['fail'] + 1;
+            $this->passFailPerUrl[$url]['fail'] = $fail;
+        } else {
+            $pass = $this->passFailPerUrl[$url]['pass'] + 1;
+            $this->passFailPerUrl[$url]['pass'] = $pass;
+        }
+    }
+
+    /**
+     * browser = key and pass fail is a count?
+     */
+    protected function setBrowsersPassFail($browser, $record) {
+        if($record->status == 0) {
+            $fail = $this->browserPassFailCount[$this->getBrowser($browser)]['fail'] + 1;
+            $this->browserPassFailCount[$this->getBrowser($browser)]['fail'] = $fail;
+        } else {
+            $pass = $this->browserPassFailCount[$this->getBrowser($browser)]['pass'] + 1;
+            $this->browserPassFailCount[$this->getBrowser($browser)]['pass'] = $pass;
+        }
+    }
+
+    protected function setPassFailChart($record) {
+        if($record->status == 0) {
+            $fail = $this->passFailChart['fail'] + 1;
+            $this->passFailChart['fail'] = $fail;
+        } else {
+            $pass = $this->passFailChart['pass'] + 1;
+            $this->passFailChart['pass'] = $pass;
+        }
     }
 
     protected function getBrowser($browser) {

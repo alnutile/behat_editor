@@ -1,30 +1,31 @@
 'use strict';
 
-var reportsController = angular.module('reportsController', []);
+var reportsController = angular.module('reportsController', ['googlechart']);
 
 reportsController.controller('Report', ['$scope', '$http', '$location', '$route', '$routeParams',
-    function($scope, $http, $location, $route, $routeParam){
-        $http.get('/behat_reports_v1/reports').success(function(data) {
-            $scope.report = data;
-        });
+    function($scope, $http, $location, $route, $routeParam, googlechart){
+
     }]);
 
-reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$route', '$routeParams', 'Report',
-    function($scope, $http, $location, $route, $routeParams, Report){
+reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$route', '$routeParams', 'ReportService',
+    function($scope, $http, $location, $route, $routeParams, ReportService){
+
+
         $scope.query = {};
         $scope.query.uid = null;
         $scope.location = {};
 
         //Prevent Reload on Location update
         //So the user has to click submit
-        var lastRoute = $route.current;
-        $scope.$on('$locationChangeSuccess', function(event) {
-            $route.current = lastRoute;
-        });
+//        var lastRoute = $route.current;
+//        $scope.$on('$locationChangeSuccess', function(event) {
+//            $route.current = lastRoute;
+//        });
+        $scope.status_state = ['Fail', 'Pass'];
 
         $scope.getReports = function(params) {
             var params = params;
-            Report.get({
+            ReportService.get({
                 user_id: params.user_id,
                 browser: params.browser,
                 pass_fail: params.pass_fail,
@@ -36,32 +37,37 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
                 $scope.browsers = data.browsers;
                 $scope.users = data.users;
                 $scope.urls = data.urls;
+                $scope.filename = params.filename;
+                $scope.browser_pass_fail_count = data.browser_pass_fail_count;
+                $scope.pass_fail_chart = data.pass_fail_chart;
+                $scope.pass_fail_per_url = data.pass_fail_per_url;
+                //@TODO move into own service or directive
+                buildCharts($scope);
+                //END CHARTS
             });
         };
 
         //Maybe this is overkill
         var swapNullForAll = function(value) {
             var value = value;
-            if(value == null) {
+            if(value == null || value == '') {
                 return 'all';
             } else {
                 return value;
             }
         }
 
-        //Trigger load of data to start
         $scope.getReports($routeParams);
 
         //React to search
         $scope.filterReports = function(){
             var params = {};
+            $location.search('filename', swapNullForAll(this.filename));
             params.browser = swapNullForAll(this.browser);
             params.url = swapNullForAll(this.url);
             params.user_id = swapNullForAll(this.user_id);
             params.pass_fail = swapNullForAll(this.pass_fail);
             params.filename = swapNullForAll(this.filename);
-            console.log(params);
-            console.log($routeParams);
             $scope.getReports(params);
         };
 
@@ -72,11 +78,13 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
         $scope.url = $routeParams.url;
 
         $scope.checkSelected = function() {
-            $location.search('fiilename', swapNullForAll($scope.filename));
-            $location.search('browser', swapNullForAll($scope.browser));
-            $location.search('pass_fail', swapNullForAll($scope.pass_fail));
-            $location.search('url', swapNullForAll($scope.url));
-            $location.search('user_id', swapNullForAll($scope.user_id));
+            $location.search('browser', swapNullForAll(this.browser));
+            $location.search('pass_fail', swapNullForAll(this.pass_fail));
+            $location.search('url', swapNullForAll(this.url));
+            $location.search('user_id', swapNullForAll(this.user_id));
         };
+
+
+
 
     }]);

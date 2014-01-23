@@ -203,8 +203,10 @@ function behat_editor_reports_service_reports_all(){
 
 function behat_editor_reports_service_reports() {
     angularjs_init_application('behat_reports');
+    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/ng-google-chart.js');
     drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/services.js');
     drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/reportsController.js');
+    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/gcharts.js');
     drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/app.js');
 
     return theme('behat_reports');
