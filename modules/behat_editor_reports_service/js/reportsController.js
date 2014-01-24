@@ -14,17 +14,34 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
         $scope.query = {};
         $scope.query.uid = null;
         $scope.location = {};
+        $scope.filename = null;
 
-        //Prevent Reload on Location update
-        //So the user has to click submit
-//        var lastRoute = $route.current;
-//        $scope.$on('$locationChangeSuccess', function(event) {
-//            $route.current = lastRoute;
-//        });
         $scope.status_state = ['Fail', 'Pass'];
+
+        var setData = function(data, params) {
+            $scope.results = data.results;
+            $scope.browsers = data.browsers;
+            $scope.users = data.users;
+            $scope.urls = data.urls;
+            //$scope.filename = params.filename;
+            $scope.browser_pass_fail_count = data.browser_pass_fail_count;
+            $scope.pass_fail_chart = data.pass_fail_chart;
+            $scope.pass_fail_per_url = data.pass_fail_per_url;
+        };
 
         $scope.getReports = function(params) {
             var params = params;
+            if(Object.keys(params).length > 0) {
+                $scope.getFilteredSet(params);
+            } else {
+                ReportService.query({}, function(data){
+                    setData(data);
+                    buildCharts($scope);
+                });
+            }
+        };
+
+        $scope.getFilteredSet = function(params) {
             ReportService.get({
                 user_id: params.user_id,
                 browser: params.browser,
@@ -33,19 +50,15 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
                 tag: params.tag,
                 url: params.url
             }, function(data){
-                $scope.results = data.results;
-                $scope.browsers = data.browsers;
-                $scope.users = data.users;
-                $scope.urls = data.urls;
-                $scope.filename = params.filename;
-                $scope.browser_pass_fail_count = data.browser_pass_fail_count;
-                $scope.pass_fail_chart = data.pass_fail_chart;
-                $scope.pass_fail_per_url = data.pass_fail_per_url;
-                //@TODO move into own service or directive
+                setData(data, params);
                 buildCharts($scope);
-                //END CHARTS
             });
         };
+
+
+        //Render page on load
+        $scope.getReports($routeParams);
+
 
         //Maybe this is overkill
         var swapNullForAll = function(value) {
@@ -56,8 +69,6 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
                 return value;
             }
         }
-
-        $scope.getReports($routeParams);
 
         //React to search
         $scope.filterReports = function(){

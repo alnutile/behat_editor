@@ -25,6 +25,7 @@ class BehatServiceReportsModel {
     // paginate as at 100
     public function get_all($parameters = array()) {
         list($page, $params) = $parameters;
+
         $browserPassFailCount = array();
         $all_browsers = array();
         $all_users = array();
@@ -51,7 +52,7 @@ class BehatServiceReportsModel {
             $query->condition('settings', "%{$base_url_gsid}%", 'LIKE');
         }
         $query->groupBy('filename');
-        $query->range(0, 100);
+        $query->range(0, 300);
         $query->orderBy('b.created', 'DESC');
         $result = $query->execute();
         $rows = array();
@@ -63,7 +64,7 @@ class BehatServiceReportsModel {
                 $base_url_usid = (isset($record->settings['base_url_usid'])) ? $record->settings['base_url_usid'] : 0;
                 //because I serialized the data
                 //I need to do an extra check on results
-                $url_state = (($base_url_gsid == $url[1] && $base_url_usid == $url[0]) || $params['url'] == 'all') ? TRUE : FALSE;
+                $url_state = ( ($base_url_gsid == $url[1] && $base_url_usid == $url[0]) || $params['url'] == 'all') ? TRUE : FALSE;
                 if( $url_state ) {
                     $browser = (isset($record->settings['browser_version'])) ? $record->settings['browser_version'] : 'undefined';
                     $this->setBrowsersPassFail($browser, $record);

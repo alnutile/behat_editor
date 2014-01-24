@@ -7,13 +7,23 @@ use Drupal\BehatEditorReports\BehatServiceReportsController;
 
 include_once 'behat_editor_reports_service.features.inc';
 
-function behat_editor_reports_service_perms() {
+function behat_editor_reports_service_permission() {
     return array(
-        'report resource create',
-        'report resource view',
-        'report resource delete',
-        'report resource edit',
-        'report resource view all',
+        'report resource create' => array(
+            'title' => t('Create a Report')
+        ),
+        'report resource view' => array(
+            'title' => t('View a Report')
+        ),
+        'report resource delete' => array(
+            'title' => t('Delete a Report')
+        ),
+        'report resource edit' => array(
+            'title' => t('Edit a Report')
+        ),
+        'report resource view all' => array(
+            'title' => t('View all Reports')
+        ),
     );
 }
 
@@ -159,26 +169,11 @@ function behat_editor_reports_service_services_resources() {
 function behat_editor_reports_service_access($op, $args = array()) {
     global $user;
     $access = FALSE;
-
-    switch ($op) {
-        case 'report resource view':
-            $access = user_access($op);
-            break;
-        case 'report resource update':
-            $access = user_access($op);
-            break;
-        case 'report resource view all':
-            $access = user_access($op);
-            break;
-        case 'report resoruce delete':
-            $access = user_access($op);
-            break;
-        case 'report resource edit':
-            $access = user_access($op);
-            break;
+    if(user_access($op)) {
+        return TRUE;
+    } else {
+        return FALSE;
     }
-
-    return $access;
 }
 
 
