@@ -8,7 +8,7 @@ Test should be relative URL based then you will use this to set the URL.
 
 ### Admin URLS
 
-You can administer urls [here](/admin/behat/settings/base_url/groups)
+You can administer urls [here](/admin/behat/settings/base_url/groups){:target="_blank"}
 
 If your url needs basic auth all you need to do is add it like this
 
