@@ -24,7 +24,12 @@ class BehatServiceReportsModel {
     //Get all results
     // paginate as at 100
     public function get_all($parameters = array()) {
-        list($page, $params) = $parameters;
+        list($params) = $parameters;
+
+        //User should only see tests that are
+        // 1. files they made
+        // 2. groups they are in
+        // 3. or file in behat_tests
 
         $browserPassFailCount = array();
         $all_browsers = array();
@@ -52,7 +57,7 @@ class BehatServiceReportsModel {
             $query->condition('settings', "%{$base_url_gsid}%", 'LIKE');
         }
         $query->groupBy('filename');
-        $query->range(0, 300);
+        $query->range(0, 10);
         $query->orderBy('b.created', 'DESC');
         $result = $query->execute();
         $rows = array();
@@ -91,7 +96,10 @@ class BehatServiceReportsModel {
             'urls' => $all_urls,
             'browser_pass_fail_count' => $this->browserPassFailCount,
             'pass_fail_chart' => $this->passFailChart,
-            'pass_fail_per_url' => $this->passFailPerUrl
+            'pass_fail_per_url' => $this->passFailPerUrl,
+            'total_count' => '100',
+            'pager' => theme('pager'),
+
         );
     }
 

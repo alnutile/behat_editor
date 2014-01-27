@@ -75,7 +75,6 @@
                 </div><input type="submit" class="btn btn-warning" value="Search">
             </form>
         </div>
-
         <table
             class="table table-bordered table-hover">
             <thead>
@@ -91,10 +90,7 @@
             <tbody>
             <tr ng-repeat="result in results" ng-class="{danger: result.status === '0'}">
                 <td>
-                    <span ng-switch on="result.status">
-                        <span ng-switch-when="1">Pass</span>
-                        <span ng-switch-when="0">Fail</span>
-                    </span>
+                    <i class="{{result.status|passfail}}"></i>
                 </td>
                 <td>{{result.filename}}</td>
                 <td>{{result.module}}</td>
@@ -104,5 +100,5 @@
             </tr>
             </tbody>
         </table>
-    </div>
 
+    </div>

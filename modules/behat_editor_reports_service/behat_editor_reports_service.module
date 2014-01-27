@@ -50,12 +50,11 @@ function behat_editor_reports_service_delete($id) {
 }
 
 
-function behat_editor_reports_service_get_all($page, $parameters) {
+function behat_editor_reports_service_get_all($parameters) {
     composer_manager_register_autoloader();
-    watchdog('test_page', print_r($page, 1));
     watchdog('test_get_all', print_r($parameters, 1));
     $resource = new BehatServiceReportsController();
-    return $resource->index(array($page, $parameters));
+    return $resource->index(array($parameters));
 }
 
 /**
@@ -143,16 +142,6 @@ function behat_editor_reports_service_services_resources() {
                 'access arguments append' => FALSE,
                 'args' => array(
                     array(
-                        'name' => 'page',
-                        'type' => 'int',
-                        'description' => '',
-                        'source' => array(
-                            'param' => 'page',
-                        ),
-                        'optional' => TRUE,
-                        'default value' => 0,
-                    ),
-                    array(
                         'name' => 'parameters',
                         'type' => 'array',
                         'description' => 'keys are tags, batch browsers pass/fail',
@@ -199,6 +188,7 @@ function behat_editor_reports_service_reports_all(){
 function behat_editor_reports_service_reports() {
     angularjs_init_application('behat_reports');
     drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/ng-google-chart.js');
+    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/filters/report-filters.js');
     drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/services.js');
     drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/reportsController.js');
     drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/gcharts.js');

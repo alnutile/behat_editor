@@ -7,8 +7,8 @@ reportsController.controller('Report', ['$scope', '$http', '$location', '$route'
 
     }]);
 
-reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$route', '$routeParams', 'ReportService',
-    function($scope, $http, $location, $route, $routeParams, ReportService){
+reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$route', '$routeParams', 'ReportService', '$sce',
+    function($scope, $http, $location, $route, $routeParams, ReportService, $sce){
 
 
         $scope.query = {};
@@ -18,15 +18,22 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
 
         $scope.status_state = ['Fail', 'Pass'];
 
-        var setData = function(data, params) {
+
+        var setData = function(data) {
+            $scope.page = 1;
             $scope.results = data.results;
             $scope.browsers = data.browsers;
             $scope.users = data.users;
             $scope.urls = data.urls;
+            //$scope.page = (params.page) ? params : '1';
             //$scope.filename = params.filename;
             $scope.browser_pass_fail_count = data.browser_pass_fail_count;
             $scope.pass_fail_chart = data.pass_fail_chart;
             $scope.pass_fail_per_url = data.pass_fail_per_url;
+            $scope.total_count = data.total_count;
+            $scope.pager =  $sce.getTrustedHtml(data.pager);
+
+            $scope.next_page = ($scope.page * 100 > $scope.total_count) ? $scope.page + 1 : null;
         };
 
         $scope.getReports = function(params) {
@@ -58,6 +65,7 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
 
         //Render page on load
         $scope.getReports($routeParams);
+        console.log($routeParams);
 
 
         //Maybe this is overkill
@@ -75,6 +83,7 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
             var params = {};
             $location.search('filename', swapNullForAll(this.filename));
             params.browser = swapNullForAll(this.browser);
+            params.page = (this.page) ? this.page : 1;
             params.url = swapNullForAll(this.url);
             params.user_id = swapNullForAll(this.user_id);
             params.pass_fail = swapNullForAll(this.pass_fail);

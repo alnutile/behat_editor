@@ -3,7 +3,9 @@
 var behat_reports = angular.module('behat_reports', [
     'ngRoute',
     'reportsController',
-    'reportServices'
+    'reportServices',
+    'reportFilters',
+    'ngSanitize'
 ]);
 
 behat_reports.config(['$routeProvider',

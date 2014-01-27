@@ -133,6 +133,12 @@ function behat_editor_schema() {
                 'description' => 'Settings passed during the test',
                 'serialize' => TRUE,
             ),
+            'base_url_sid' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0,
+                'description' => 'The related sid from behat_editor_base_url_settings',
+            ),
         ),
         'primary key' => array('rid'),
     );
@@ -531,5 +537,64 @@ function behat_editor_update_7020() {
         $schema = behat_editor_schema();
         $field = $schema['behat_editor_batch_results']['fields']['settings'];
         db_add_field('behat_editor_batch_results', 'settings', $field);
+    }
+}
+
+
+/**
+ * Add sid column to results table to join the behat_editor_base_url_settings
+ * table for better reporting.
+ */
+function behat_editor_update_7021(&$sandbox) {
+
+    if (!db_field_exists('behat_editor_results', 'base_url_sid')) {
+        $schema = behat_editor_schema();
+        $field = $schema['behat_editor_results']['fields']['base_url_sid'];
+        db_add_field('behat_editor_results', 'base_url_sid', $field);
+    }
+
+    if(!isset($sandbox['progress'])) {
+        $sandbox['progress'] = 0;
+        $sandbox['current_rid'] = 0;
+        $sandbox['max'] = db_query("SELECT * FROM {behat_editor_results}")->rowCount();
+    }
+
+    $query = db_select('behat_editor_results', 'b');
+    $query->fields('b');
+    $query->condition('b.rid', $sandbox['current_rid'], '>');
+    $query->range(0, 200);
+    $query->orderBy('b.rid', 'ASC');
+    $result = $query->execute();
+
+    if ($result) {
+        foreach ($result as $record) {
+            //@todo new records my not need this so do a check
+            if(!empty($record->settings)) {
+                $record->settings = unserialize($record->settings);
+                if(isset($record->settings['base_url_gsid']) && $record->settings['base_url_gsid'] > 0) {
+                    $sid = $record->settings['base_url_gsid'];
+                } else {
+                    $sid = $record->settings['base_url_usid'];
+                }
+            } else {
+                $sid = 0;
+            }
+            if($sid == null || $sid == '' || !is_numeric($sid)) {
+                $sid = 0;
+            }
+            db_update('behat_editor_results')
+            ->fields(array('base_url_sid' => $sid))
+            ->condition('rid', $record->rid, '=')
+            ->execute();
+            drupal_set_message(t('Updated rid !rid with sid !sid', array('!sid' => $sid, '!rid' => $record->rid)));
+            $sandbox['progress']++;
+            $context['message'] = t("Updated record !rid", array('!rid' => $record->rid));
+            $sandbox['current_rid']++;
+        }
+    }
+
+    $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
+    if ($sandbox['#finished'] === 1) {
+        drupal_set_message(t('Finished updating @total results', array('@total' => $sandbox['max'])));
     }
 }
