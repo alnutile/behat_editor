@@ -2,6 +2,8 @@
 
 namespace Drupal\BehatEditorReports;
 use Drupal\BehatEditor;
+use Drupal\BehatEditor\BehatPermissions;
+use Drupal\BehatEditor\BehatSettingsBaseUrl;
 
 /**
  * @TODO limit by user and group
@@ -9,34 +11,28 @@ use Drupal\BehatEditor;
 
 class BehatServiceReportsModel {
     public $settings;
+    public $permissions;
     protected $browserPassFailCount = array();
     protected $passFailChart = array();
     protected $passFailPerUrl = array();
 
-    public function __construct($settings = null) {
-        if(empty($settings)) {
-            $this->settings = new BehatEditor\BehatSettingsBaseUrl();
-        } else {
-            $this->settings = $settings;
-        }
+    public function __construct(BehatSettingsBaseUrl $settings, BehatPermissions $perms) {
+        $this->settings = $settings;
+        $this->permissions = $perms;
     }
 
-    //Get all results
-    // paginate as at 100
     public function get_all($parameters = array()) {
         list($params) = $parameters;
+        //Users Groups
+        $group_perms_array = $this->permissions->getGroupIDs();
 
-        //User should only see tests that are
-        // 1. files they made
-        // 2. groups they are in
-        // 3. or file in behat_tests
-
-        $browserPassFailCount = array();
         $all_browsers = array();
         $all_users = array();
         $all_urls = array();
         $query = db_select('behat_editor_results', 'b');
         $query->fields('b');
+        $query->join('behat_editor_base_url_settings', 'u', 'u.sid = b.base_url_sid');
+        $query->fields('u');
         if(isset($params['browser']) && $params['browser'] != 'all') {
             $query->condition('settings', "%{$params['browser']}%", 'LIKE');
         }
@@ -50,12 +46,12 @@ class BehatServiceReportsModel {
             $query->condition('filename', "%{$params['filename']}%", 'LIKE');
         }
         if(isset($params['url']) && $params['url'] != 'all') {
-            $url = explode('|', $params['url']);
-            $base_url_usid = $url[0];
-            $base_url_gsid = $url[1];
-            $query->condition('settings', "%{$base_url_usid}%", 'LIKE');
-            $query->condition('settings', "%{$base_url_gsid}%", 'LIKE');
+            $query->condition('b.base_url_sid', $params['url'], '=');
         }
+        //Not going to do uid right now so they can look in their group
+        //$query->condition('b.uid', $this->permissions->uid, '=');
+        $query->condition(db_or()->condition('u.gid', $group_perms_array, 'IN')->condition('u.uid', $this->permissions->uid, '='));
+
         $query->groupBy('filename');
         $query->range(0, 10);
         $query->orderBy('b.created', 'DESC');
@@ -65,27 +61,17 @@ class BehatServiceReportsModel {
             foreach ($result as $record) {
                 $record->results = unserialize($record->results);
                 $record->settings = unserialize($record->settings);
-                $base_url_gsid = (isset($record->settings['base_url_gsid'])) ? $record->settings['base_url_gsid'] : 0;
-                $base_url_usid = (isset($record->settings['base_url_usid'])) ? $record->settings['base_url_usid'] : 0;
-                //because I serialized the data
-                //I need to do an extra check on results
-                $url_state = ( ($base_url_gsid == $url[1] && $base_url_usid == $url[0]) || $params['url'] == 'all') ? TRUE : FALSE;
-                if( $url_state ) {
-                    $browser = (isset($record->settings['browser_version'])) ? $record->settings['browser_version'] : 'undefined';
-                    $this->setBrowsersPassFail($browser, $record);
-                    $this->setPassFailChart($record);
-                    $record->settings['browser_version'] = $this->getBrowser($browser);
-                    $all_browsers[$browser] = $record->settings['browser_version'];
-                    $user = $this->getUser($record->uid);
-                    $url_found = $this->getUrl($user['uid'], $base_url_usid, $base_url_gsid);
-                    (empty($url_found['nice_name'])) ? $url_found['nice_name'] = 'undefined' : null;
-                    $all_urls[$url_found['nice_name']] = $base_url_usid.'|'.$base_url_gsid;
-                    $this->setPassFailPerURL($url_found['nice_name'], $record);
-                    $all_users[$user['uid']] = $user['mail'];
-                    $record->settings['url'] = $url_found['nice_name'];
-                    $tags = $this->getTags($record->results);
-                    $rows[] = (array) $record;
-                }
+                $browser = (isset($record->settings['browser_version'])) ? $record->settings['browser_version'] : 'undefined';
+                $this->setBrowsersPassFail($browser, $record);
+                $this->setPassFailChart($record);
+                $record->settings['browser_version'] = $this->getBrowser($browser);
+                $all_browsers[$browser] = $record->settings['browser_version'];
+                $user = $this->getUser($record->uid);
+                $all_urls[$record->sid] = $record->nice_name;
+                $this->setPassFailPerURL($record->nice_name, $record);
+                $all_users[$user['uid']] = $user['mail'];
+                $tags = $this->getTags($record->results);
+                $rows[] = (array) $record;
             }
         }
         return array(
@@ -164,15 +150,6 @@ class BehatServiceReportsModel {
                 ->fetchAssoc();
             return $result;
         }
-    }
-
-    protected function getUrl($uid, $base_url_usid, $base_url_gsid) {
-        if($base_url_usid == 0) {
-            $settings = $this->settings->getSettingsBySID(array($base_url_gsid));
-        } else {
-            $settings = $this->settings->getSettingsBySID(array($base_url_usid));
-        }
-        return $settings['results'];
     }
 
     protected function getTags($test) {

@@ -172,10 +172,11 @@
                             (label_text == 'Background' || label_text == 'Scenario' || label_text == 'Feature') ? label += ':' : false;
                             draggable_step_string += label;
                         }
-
                         if($(this).data('type') == 'select') {
                             val = $(':selected', this).val();
-                            draggable_step_string += val + ' ';
+                            if(val.length > 0) {
+                                draggable_step_string += val + ' ';
+                            }
                         } else {
                             val = $(this).val();
                             val = Drupal.behat_editor_scenario_builder.string_replace(val);

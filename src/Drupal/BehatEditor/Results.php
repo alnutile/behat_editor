@@ -31,19 +31,23 @@ class Results {
             'status' => '',
             'uid' => $user->uid,
             'settings' => array(),
+            'base_url_sid' => 0
         );
     }
 
     public function insert() {
+        $this->fields['base_url_sid'] = $this->getSid($this->fields['settings']);
         $insert = db_insert('behat_editor_results')->fields($this->fields)->execute();
         return $insert;
     }
 
     public function updateByRid($params) {
+        $this->fields['base_url_sid'] = $this->getSid($this->fields['settings']);
         $update = db_update('behat_editor_results')
             ->fields($params['fields'])
             ->condition('rid', $params['rid'], '=')
             ->execute();
+        return $update;
     }
 
     static public function getResultsForFile($module, $filename) {
@@ -132,18 +136,38 @@ class Results {
     public function prepareResultsAndInsert($output, $return_var = 0, $settings = array(), $filename, $module){
         //Clean Output
         self::cleanHtml($output);
-
         $this->fields['filename'] = $filename;
         $this->fields['module'] = $module;
         $this->fields['results'] = serialize($this->results_cleaned);
         $this->fields['duration'] = $this->getDuration();
         $this->fields['created'] = REQUEST_TIME;
         $this->fields['status'] = $return_var;
+        $this->fields['base_url_sid'] = $this->getSid($settings);
         $this->fields['settings'] = serialize($settings);
 
         drupal_alter('behat_editor_save_results', $saveResults);
         return array('rid' => self::insert(), 'clean_results' => $this->results_cleaned, 'duration' => $this->getDuration());
     }
 
+    /**
+     * Dealing with old api that stored sid of url in
+     * settings
+     */
+    public function getSid($settings) {
+        if(!empty($settings)) {
+            $settings = unserialize($settings);
+            if(isset($settings['base_url_gsid']) && $settings['base_url_gsid'] > 0) {
+                $sid = $settings['base_url_gsid'];
+            } else {
+                $sid = $settings['base_url_usid'];
+            }
+        } else {
+            $sid = 0;
+        }
+        if($sid == null || $sid == '' || !is_numeric($sid)) {
+            $sid = 0;
+        }
+        return $sid;
+    }
 
 }

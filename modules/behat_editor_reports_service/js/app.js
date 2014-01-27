@@ -2,6 +2,7 @@
 
 var behat_reports = angular.module('behat_reports', [
     'ngRoute',
+    'ClientPaginate',
     'reportsController',
     'reportServices',
     'reportFilters',

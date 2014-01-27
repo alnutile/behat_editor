@@ -1,20 +1,15 @@
 'use strict';
 
 angular.module('reportFilters', [])
-    .filter('passfail', function() {
-        return function(status) {
+    .filter('passfail', function () {
+        return function (status) {
             var icon;
-            if(status === '0') {
+            if (status === '0') {
                 icon = "glyphicon glyphicon-minus-sign";
             } else {
                 icon = "glyphicon glyphicon-ok-sign";
             }
             return icon;
         }
-     })
-    .filter('linkToTest', function(){
-        return function(results) {
-            //@TOOD Link to test
-     }
-});
+    });
 

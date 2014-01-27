@@ -7,48 +7,44 @@ reportsController.controller('Report', ['$scope', '$http', '$location', '$route'
 
     }]);
 
-reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$route', '$routeParams', 'ReportService', '$sce',
-    function($scope, $http, $location, $route, $routeParams, ReportService, $sce){
-
+reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$route', '$routeParams', 'ReportService', '$sce', 'ClientPaginate',
+    function($scope, $http, $location, $route, $routeParams, ReportService, $sce, ClientPaginate){
 
         $scope.query = {};
         $scope.query.uid = null;
         $scope.location = {};
         $scope.filename = null;
-
         $scope.status_state = ['Fail', 'Pass'];
-
-
-        var setData = function(data) {
+        $scope.currentPage = 0;
+        $scope.pageSize = 5;
+        $scope.numberOfPages = function () {
+            return Math.ceil($scope.results.length / $scope.pageSize);
+        };
+        var setData = function (data) {
             $scope.page = 1;
             $scope.results = data.results;
             $scope.browsers = data.browsers;
             $scope.users = data.users;
             $scope.urls = data.urls;
-            //$scope.page = (params.page) ? params : '1';
-            //$scope.filename = params.filename;
             $scope.browser_pass_fail_count = data.browser_pass_fail_count;
             $scope.pass_fail_chart = data.pass_fail_chart;
             $scope.pass_fail_per_url = data.pass_fail_per_url;
             $scope.total_count = data.total_count;
             $scope.pager =  $sce.getTrustedHtml(data.pager);
-
             $scope.next_page = ($scope.page * 100 > $scope.total_count) ? $scope.page + 1 : null;
         };
-
         $scope.getReports = function(params) {
             var params = params;
-            if(Object.keys(params).length > 0) {
+            if (Object.keys(params).length > 0) {
                 $scope.getFilteredSet(params);
             } else {
-                ReportService.query({}, function(data){
+                ReportService.query({}, function (data) {
                     setData(data);
                     buildCharts($scope);
                 });
             }
         };
-
-        $scope.getFilteredSet = function(params) {
+        $scope.getFilteredSet = function (params) {
             ReportService.get({
                 user_id: params.user_id,
                 browser: params.browser,
@@ -62,16 +58,13 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
             });
         };
 
-
         //Render page on load
         $scope.getReports($routeParams);
-        console.log($routeParams);
-
 
         //Maybe this is overkill
-        var swapNullForAll = function(value) {
+        var swapNullForAll = function (value) {
             var value = value;
-            if(value == null || value == '') {
+            if (value === null || value === '') {
                 return 'all';
             } else {
                 return value;
@@ -91,7 +84,6 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
             $scope.getReports(params);
         };
 
-
         $scope.browser = $routeParams.browser;
         $scope.user_id = $routeParams.user_id;
         $scope.pass_fail = $routeParams.pass_fail;
@@ -103,8 +95,5 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
             $location.search('url', swapNullForAll(this.url));
             $location.search('user_id', swapNullForAll(this.user_id));
         };
-
-
-
 
     }]);

@@ -69,10 +69,10 @@
                 </div>
                 <div class="form-group">
                     <label class="sr-only">URL</label>
-                    <select ng-model="url" ng-change="checkSelected()" class="form-control urls" ng-options="value as key for (key, value) in urls">
+                    <select ng-model="url" ng-change="checkSelected()" class="form-control urls" ng-options="key as value for (key, value) in urls">
                         <option value="">all</option>
                     </select>
-                </div><input type="submit" class="btn btn-warning" value="Search">
+                </div><input type="submit" class="btn btn-warning" value="Search"> | <a href="/admin/behat/reports">reset</a>
             </form>
         </div>
         <table
@@ -88,7 +88,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="result in results" ng-class="{danger: result.status === '0'}">
+            <tr ng-repeat="result in results | paginate" ng-class="{danger: result.status === '0'}">
                 <td>
                     <i class="{{result.status|passfail}}"></i>
                 </td>
@@ -96,9 +96,10 @@
                 <td>{{result.module}}</td>
                 <td>{{result.settings.browser_version}}</td>
                 <td>{{result.created + '000' | date:'medium'}}</td>
-                <td>{{result.settings.url}}</td>
+                <td>{{result.nice_name}}</td>
             </tr>
             </tbody>
         </table>
+        <paginator></paginator>
 
     </div>
