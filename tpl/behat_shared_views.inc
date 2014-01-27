@@ -574,6 +574,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('And I fill in'),
         '#name' => 'form_field_and_fill_in',
+        '#maxlength' => 300,
         '#description' => t('!help', array('!help' => _behat_editor_make_help_link('fill_in_field.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_fill_in_group'),
