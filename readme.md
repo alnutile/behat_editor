@@ -9,6 +9,10 @@ A key guide can be found here [http://docs.behat.org/guides/1.gherkin.html] to g
 
 ## Install/Setup
 
+**NOTE**
+
+There is a dependecie to Organic Groups that was not made clear in the install file. You need to setup OG and one group node say "Basic Page" otherewise you may get some errors. Issue #98
+
 This module needs composer_manager to setup a number of libraries. For those not able to be managed here it also has a sub module called behat_lib to help setup those libraries.
 
 ### 1. Libraries
