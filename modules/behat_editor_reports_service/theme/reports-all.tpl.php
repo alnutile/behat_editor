@@ -45,6 +45,9 @@
             </div>
 
         <div class="well">
+            <div class="form-group">
+                <input ng-model="query.all" placeholder="Quick Search">
+            </div>
             <form class="form-inline" role="form" ng-submit="filterReports()">
                 <div class="form-group">
                     <label class="sr-only">Pass/Fail</label>
@@ -75,6 +78,15 @@
                 </div><input type="submit" class="btn btn-warning" value="Search"> | <a href="/admin/behat/reports">reset</a>
             </form>
         </div>
+
+        <div class="well" ng-class="{hidden: total_found < 501}">
+            Current Page: {{current_page}}</br>
+            Total Pages: {{total_page}}<br>
+            Per Page: {{max}}<br>
+
+            <button class="btn btn-warning" ng-click="getNext()">Next</button> |
+            <button class="btn btn-warning" ng-click="getBack()" ng-class="{disabled: current_page == 1}">Back</button>
+        </div>
         <table
             class="table table-bordered table-hover">
             <thead>
@@ -88,18 +100,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="result in results | paginate" ng-class="{danger: result.status === '0'}">
-                <td>
-                    <i class="{{result.status|passfail}}"></i>
-                </td>
-                <td>{{result.filename}}</td>
-                <td>{{result.module}}</td>
-                <td>{{result.settings.browser_version}}</td>
-                <td>{{result.created + '000' | date:'medium'}}</td>
-                <td>{{result.nice_name}}</td>
-            </tr>
+                <tr ng-repeat="result in results_table | filter:query.all" ng-class="{danger: result.status === '0'}">
+                    <td data-title="'Status'">
+                        <i class="{{result.status|passfail}}"></i>
+                    </td>
+                    <td data-title="'Filename'">{{result.filename}}</td>
+                    <td data-title="'Module'">{{result.module}}</td>
+                    <td data-title="'Browser'">{{result.settings.browser_version}}</td>
+                    <td data-title="'Created'">{{result.created + '000' | date:'medium'}}</td>
+                    <td data-title="'URL'">{{result.nice_name}}</td>
+                </tr>
             </tbody>
         </table>
-        <paginator></paginator>
 
     </div>

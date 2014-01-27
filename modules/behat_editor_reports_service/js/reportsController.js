@@ -7,32 +7,53 @@ reportsController.controller('Report', ['$scope', '$http', '$location', '$route'
 
     }]);
 
-reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$route', '$routeParams', 'ReportService', '$sce', 'ClientPaginate',
-    function($scope, $http, $location, $route, $routeParams, ReportService, $sce, ClientPaginate){
+reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$route', '$routeParams', 'ReportService', '$sce', 'ngTableParams',
+    function($scope, $http, $location, $route, $routeParams, ReportService, $sce, ngTableParams){
 
         $scope.query = {};
         $scope.query.uid = null;
         $scope.location = {};
         $scope.filename = null;
         $scope.status_state = ['Fail', 'Pass'];
-        $scope.currentPage = 0;
-        $scope.pageSize = 5;
-        $scope.numberOfPages = function () {
-            return Math.ceil($scope.results.length / $scope.pageSize);
-        };
+        $scope.current_page = 1;
+
         var setData = function (data) {
-            $scope.page = 1;
             $scope.results = data.results;
+            $scope.max = 500;
+            $scope.total_found = $scope.results.length;
+            $scope.total_page = Math.round($scope.results.length / $scope.max);
+            $scope.results_table = data.results.slice(0, $scope.max);
             $scope.browsers = data.browsers;
             $scope.users = data.users;
             $scope.urls = data.urls;
             $scope.browser_pass_fail_count = data.browser_pass_fail_count;
             $scope.pass_fail_chart = data.pass_fail_chart;
             $scope.pass_fail_per_url = data.pass_fail_per_url;
-            $scope.total_count = data.total_count;
-            $scope.pager =  $sce.getTrustedHtml(data.pager);
-            $scope.next_page = ($scope.page * 100 > $scope.total_count) ? $scope.page + 1 : null;
+//            $scope.tableParams = new ngTableParams({
+//                page: 1,
+//                count: 5
+//            }, {
+//                total: $scope.results.length,
+//                getData: function ($defer, params) {
+//                    $defer.resolve($scope.results.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+//                }
+//            });
         };
+
+        $scope.getNext = function () {
+          var next = ($scope.current_page - 1) + $scope.max;
+          var upto = next + $scope.max;
+          $scope.results_table = $scope.results.slice(next, upto);
+            $scope.current_page = $scope.current_page + 1;
+        };
+
+        $scope.getBack = function () {
+            var back = ($scope.current_page * $scope.max) - $scope.max;
+            var upto = back + $scope.max;
+            $scope.results_table = $scope.results.slice(back, upto);
+            $scope.current_page = $scope.current_page - 1;
+        };
+
         $scope.getReports = function(params) {
             var params = params;
             if (Object.keys(params).length > 0) {
@@ -44,7 +65,9 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
                 });
             }
         };
+
         $scope.getFilteredSet = function (params) {
+
             ReportService.get({
                 user_id: params.user_id,
                 browser: params.browser,

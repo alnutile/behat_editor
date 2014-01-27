@@ -171,11 +171,21 @@ function behat_editor_reports_service_access($op, $args = array()) {
 
 
 function behat_editor_reports_service_menu() {
-    $items['admin/behat/reports'] = array(
+
+    $items['admin/behat/reports'] =  array(
         'title' => t('Reports all'),
-        'page callback' => 'behat_editor_reports_service_reports',
         'access arguments' => array('report resource view all'),
+        'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
+        'weight' => 20,
+        'page callback' => 'behat_editor_reports_service_reports',
     );
+
+    $items['admin/behat/reports/all'] = array(
+        'title' => t('Reports all'),
+        'type' => MENU_DEFAULT_LOCAL_TASK ,
+        'weight' => -10,
+    );
+
     $items['behat_editor_reports_service/tpl/behat_editor_reports_service_reports_tpl'] = array(
         'page callback' => 'behat_editor_reports_service_reports_all',
         'access arguments' => array('access content'),
@@ -191,15 +201,16 @@ function behat_editor_reports_service_reports_all(){
 
 function behat_editor_reports_service_reports() {
     angularjs_init_application('behat_reports');
-
-    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/directives/ClientPaginate.js');
-    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/ng-google-chart.js');
-    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/filters/report-filters.js');
-    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/services.js');
-    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/reportsController.js');
-    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/gcharts.js');
-    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/filters/report-filters.js');
-    drupal_add_js(drupal_get_path('module', 'behat_editor_reports_service') . '/js/app.js');
+    $path = drupal_get_path('module', 'behat_editor_reports_service');
+    drupal_add_js($path . '/js/libraries/ngtable/ng-table.min.js');
+    drupal_add_css($path . '/js/libraries/ngtable/ng-table.min.css');
+    drupal_add_js($path . '/js/ng-google-chart.js');
+    drupal_add_js($path . '/js/filters/report-filters.js');
+    drupal_add_js($path . '/js/services.js');
+    drupal_add_js($path . '/js/reportsController.js');
+    drupal_add_js($path . '/js/gcharts.js');
+    drupal_add_js($path . '/js/filters/report-filters.js');
+    drupal_add_js($path . '/js/app.js');
 
     return theme('behat_reports');
 }

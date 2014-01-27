@@ -2,15 +2,15 @@
 
 var behat_reports = angular.module('behat_reports', [
     'ngRoute',
-    'ClientPaginate',
     'reportsController',
     'reportServices',
     'reportFilters',
-    'ngSanitize'
+    'ngSanitize',
+    'ngTable'
 ]);
 
 behat_reports.config(['$routeProvider',
-    function($routeProvider) {
+    function ($routeProvider) {
         $routeProvider.
             when('/', {
                 templateUrl: '/behat_editor_reports_service/tpl/behat_editor_reports_service_reports_tpl',

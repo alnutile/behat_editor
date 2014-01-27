@@ -25,7 +25,6 @@ class BehatServiceReportsModel {
         list($params) = $parameters;
         //Users Groups
         $group_perms_array = $this->permissions->getGroupIDs();
-
         $all_browsers = array();
         $all_users = array();
         $all_urls = array();
@@ -35,9 +34,6 @@ class BehatServiceReportsModel {
         $query->fields('u');
         if(isset($params['browser']) && $params['browser'] != 'all') {
             $query->condition('settings', "%{$params['browser']}%", 'LIKE');
-        }
-        if(isset($params['user_id']) && $params['user_id'] != 'all') {
-            $query->condition('uid', "{$params['user_id']}", '=');
         }
         if(isset($params['pass_fail']) && $params['pass_fail'] != 'all') {
             $query->condition('status', "{$params['pass_fail']}", '=');
@@ -50,10 +46,16 @@ class BehatServiceReportsModel {
         }
         //Not going to do uid right now so they can look in their group
         //$query->condition('b.uid', $this->permissions->uid, '=');
-        $query->condition(db_or()->condition('u.gid', $group_perms_array, 'IN')->condition('u.uid', $this->permissions->uid, '='));
+        if(isset($params['user_id']) && $params['user_id'] != 'all') {
+            $uid = $params['user_id'];
+            $query->condition('u.uid', $uid, '=');
+        } else {
+            $uid = $this->permissions->uid;
+            $query->condition(db_or()->condition('u.gid', $group_perms_array, 'IN')->condition('u.uid', $uid, '='));
+        }
 
         $query->groupBy('filename');
-        $query->range(0, 10);
+        //$query->range(0, 200);
         $query->orderBy('b.created', 'DESC');
         $result = $query->execute();
         $rows = array();
