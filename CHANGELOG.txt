@@ -1,3 +1,10 @@
+1.5.4
+---------
+Hotfix BPFD-315
+Issue with spacing on a step in the form that had no value in the select list
+Hotfix BPFD-316 
+'#maxlength' on And I fill in field since some classes are 200+ characters 
+
 1.5.3
 ----------
 Demo reporting feature in place
