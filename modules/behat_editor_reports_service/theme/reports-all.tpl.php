@@ -46,7 +46,7 @@
 
         <div class="well">
             <div class="form-group">
-                <input ng-model="query.all" placeholder="Quick Search">
+                <input ng-model="query.all" placeholder="Quick Search" id="quicksearch">
             </div>
             <form class="form-inline" role="form" ng-submit="filterReports()">
                 <div class="form-group">
