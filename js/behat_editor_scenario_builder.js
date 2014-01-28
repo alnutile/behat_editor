@@ -172,7 +172,6 @@
                             (label_text == 'Background' || label_text == 'Scenario' || label_text == 'Feature') ? label += ':' : false;
                             draggable_step_string += label;
                         }
-
                         if($(this).data('type') == 'select') {
                             val = $(':selected', this).val();
                             if(val.length > 0) {
