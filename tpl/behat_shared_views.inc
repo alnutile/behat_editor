@@ -267,6 +267,7 @@ function _behat_editor_questions_form() {
 
     $form['questions']['feature_name']['feature'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 300,
         '#name' => 'feature',
         '#title' => t('Feature:'),
         '#description' => t('Name the Feature. This will name the Test. !help', array('!help' => _behat_editor_make_help_link('feature.html'))),
@@ -292,6 +293,7 @@ function _behat_editor_questions_form() {
     /** Scenario */
     $form['questions']['test_name']['scenario'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 300,
         '#name' => 'scenario',
         '#title' => t('Scenario:'),
         '#description' => t('What do you want to call this Scenario? !help', array('!help' => _behat_editor_make_help_link('scenario.html'))),
@@ -318,6 +320,7 @@ function _behat_editor_questions_form() {
     /** Background */
     $form['questions']['test_background']['background'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 300,
         '#name' => 'background',
         '#title' => t('Background:'),
         '#description' => t('Backgrounds run at the start so need to be at the top.
@@ -344,6 +347,7 @@ function _behat_editor_questions_form() {
 
     $form['questions']['when_i_go_to']['url'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 300,
         '#title' => t('Given I am on'),
         '#description' => t('When I go to a URL. Full URL is best. !help', array('!help' => _behat_editor_make_help_link('given.html'))),
         '#name' => 'url',
@@ -383,6 +387,7 @@ function _behat_editor_questions_form() {
     $form['questions']['form_fields_and_elements']['when_i_check']['checkbox'] = array(
         '#type' => 'textfield',
         '#title' => t('And I check'),
+        '#maxlength' => 300,
         '#description' => t('!help', array('!help' => _behat_editor_make_help_link('checkbox.html'))),
         '#name' => 'checkbox',
         '#attributes' => array(
@@ -410,6 +415,7 @@ function _behat_editor_questions_form() {
     $form['questions']['when_i_uncheck']['uncheckbox'] = array(
         '#type' => 'textfield',
         '#title' => t('And I uncheck'),
+        '#maxlength' => 300,
         '#name' => 'uncheckbox',
         '#description' => t('!help', array('!help' => _behat_editor_make_help_link('checkbox.html'))),
         '#attributes' => array(
@@ -438,6 +444,7 @@ function _behat_editor_questions_form() {
     $form['questions']['is_checked']['checked'] = array(
         '#type' => 'textfield',
         '#title' => t('Then the'),
+        '#maxlength' => 300,
         '#name' => 'checked',
         '#description' => t('Checks, that checkbox with specified in|name|label|value is checked !help', array('!help' => _behat_editor_make_help_link('checkbox.html'))),
         '#attributes' => array(
@@ -474,6 +481,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('Then the'),
         '#name' => 'not_checked',
+        '#maxlength' => 300,
         '#description' => t('Checks, that checkbox with specified in|name|label|value is NOT checked !help', array('!help' => _behat_editor_make_help_link('checkbox.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'not_checked'),
@@ -510,6 +518,7 @@ function _behat_editor_questions_form() {
     $form['questions']['and_i_select']['select_option'] = array(
         '#type' => 'textfield',
         '#title' => t('And I select'),
+        '#maxlength' => 300,
         '#name' => 'form_field_and_i_select',
         '#description' => t('!help', array('!help' => _behat_editor_make_help_link('select.html'))),
         '#attributes' => array(
@@ -532,6 +541,7 @@ function _behat_editor_questions_form() {
     $form['questions']['and_i_select']['select_name'] = array(
         '#type' => 'textfield',
         '#name' => 'select_name',
+        '#maxlength' => 300,
         '#description' => t('This can be used on Select'),
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_select_group'),
@@ -574,6 +584,7 @@ function _behat_editor_questions_form() {
         '#type' => 'textfield',
         '#title' => t('And I fill in'),
         '#name' => 'form_field_and_fill_in',
+        '#maxlength' => 300,
         '#description' => t('!help', array('!help' => _behat_editor_make_help_link('fill_in_field.html'))),
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_fill_in_group'),
@@ -600,6 +611,7 @@ function _behat_editor_questions_form() {
 
     $form['questions']['and_i_fill_in']['field_text'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 300,
         '#name' => 'field_with_text',
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_fill_in_group'),
@@ -637,6 +649,7 @@ function _behat_editor_questions_form() {
     $form['questions']['and_i_click_on_a']['field_text'] = array(
         '#type' => 'textfield',
         '#name' => 'click_on_text',
+        '#maxlength' => 300,
         '#attributes' => array(
             'class' => array('col-mg-12', 'and_i_click_on_a_group'),
             'data-type' => array('textfield'),
@@ -696,6 +709,7 @@ function _behat_editor_questions_form() {
     /** Che the url via regular expression */
     $form['questions']['check_url']['url_to_check'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 300,
         '#title' => t('Then the url should match'),
         '#name' => 'url_to_check',
         '#description' => t('!help', array('!help' => _behat_editor_make_help_link('url_check.html'))),
@@ -723,6 +737,7 @@ function _behat_editor_questions_form() {
     //     Then the "answer" field should contain "8.9"
     $form['questions']['should_see_value']['form_field_css'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 300,
         '#title' => t('Then the'),
         '#name' => 'form_field_css',
         '#description' => t('!help', array('!help' => _behat_editor_make_help_link('check_element_style.html'))),
@@ -749,6 +764,7 @@ function _behat_editor_questions_form() {
 
     $form['questions']['should_see_value']['form_field_value'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 300,
         '#name' => 'form_field_value',
         '#attributes' => array(
             'class' => array('col-mg-12', 'should_see_value_group'),
@@ -777,6 +793,7 @@ function _behat_editor_questions_form() {
     ');
     $form['questions']['lower_level_response_code']['code'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 300,
         '#title' => t('Then the response status code should be'),
         '#name' => 'code',
         '#description' => t('!help', array('!help' => _behat_editor_make_help_link('status_code.html'))),
