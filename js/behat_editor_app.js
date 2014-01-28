@@ -140,7 +140,7 @@
                 //@todo refactor this optional messages array output
                 //  this was just a way to add messages as an array to the
                 //  alters on some pages
-                if(typeof data.file.data != 'undefined' && data.file.data.messages.length) {
+                if(typeof data.file.data != 'undefined' && data.file.data.messages != 'undefined' && data.file.data.messages.length) {
                    var messages_array = data.file.data.messages;
                    for(var i = 0; i < messages_array.length; i++) {
                        var messages_out = "<div class='alert alert-info'><a href='#' class='close' data-dismiss='alert'>&times;</a>";
@@ -193,6 +193,7 @@
             dismissQueue: dismiss_queue,
             maxVisible: max,
             timeout: timeout,
+
         });
     };
 
@@ -201,16 +202,29 @@
         var scenario_array = new Array();
         for(var i = 0; i < items; i++) {
             if($(scenario[i]).hasClass('tag')) {
-                if($('input', scenario[i]).length > 0) {
                 var tags = $('input', scenario[i]).val();
                 scenario_array[i] = tags;
             } else {
                 scenario_array[i] = $(scenario[i]).text();
-                }
-                scenario_array[i] = tags;
             }
         }
 
+        return scenario_array;
+    }
+
+    Drupal.behat_editor.make_scenario_array_from_view = function(scenario) {
+        var items = scenario.length;
+        var scenario_array = new Array();
+        for(var i = 0; i < items; i++) {
+            if($(scenario[i]).hasClass('tag')) {
+                var tags = $(scenario[i]).text().trim();
+                var tags_array = tags.split('@');
+                var tags = tags_array.join('@', tags_array);
+                scenario_array[i] = tags;
+            } else {
+                scenario_array[i] = $(scenario[i]).text();
+            }
+        }
         return scenario_array;
     }
 
