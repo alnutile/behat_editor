@@ -1,9 +1,17 @@
+1.5.5
+--------
+Fix the bug Clone had where it lost tags BPFD-299
+Added Parent to the Clone so that there is a parent tag to reference the test the clone came from.
+
+
 1.5.4
 ---------
 Hotfix BPFD-315
 Issue with spacing on a step in the form that had no value in the select list
 Hotfix BPFD-316 
 '#maxlength' on And I fill in field since some classes are 200+ characters 
+Reporting is there but VERY BETA but still needs more features
+
 
 1.5.3
 ----------
