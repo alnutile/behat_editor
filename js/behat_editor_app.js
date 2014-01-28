@@ -193,35 +193,21 @@
             dismissQueue: dismiss_queue,
             maxVisible: max,
             timeout: timeout,
-//            onShow: function(type) {
-//                if(type == 'information') {
-////                    $.noty.closeAll();
-////                    $.noty.clearQueue();
-//                }
-//                if(type == 'success') {
-////                   $.noty.closeAll();
-////                   $.noty.clearQueue();
-//                }
-//            }
-//            buttons: [
-//                {
-//                    addClass: 'btn btn-danger', text: 'close', onClick: function($noty) {
-//                        $noty.close();
-//                    }
-//                }
-//            ]
         });
     };
 
     Drupal.behat_editor.make_scenario_array = function(scenario) {
         var items = scenario.length;
-        var scenario_array = new Array()
+        var scenario_array = new Array();
         for(var i = 0; i < items; i++) {
             if($(scenario[i]).hasClass('tag')) {
+                if($('input', scenario[i]).length > 0) {
                 var tags = $('input', scenario[i]).val();
                 scenario_array[i] = tags;
             } else {
                 scenario_array[i] = $(scenario[i]).text();
+                }
+                scenario_array[i] = tags;
             }
         }
 
