@@ -1,0 +1,27 @@
+<div class="pagination text-center" ng-show="paginator.pageCount() > 1">
+    <ul>
+        <li ng-click="paginator.firstPage()" ng-class="paginator.isFirstPage() && 'disabled'">
+            <a>
+                <i class="icon-fast-backward" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+            </a>
+        </li>
+        <li ng-click="paginator.perviousPage()" ng-class="paginator.isFirstPage() && 'disabled'">
+            <a>
+                <i class="icon-step-backward" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+            </a>
+        </li>
+        <li ng-click="paginator.setPage(i)" ng-repeat="i in [] | forLoop:0:paginator.pageCount()" ng-class="paginator.page==i && 'active'">
+            <a>{{i+1}}</a>
+        </li>
+        <li ng-click="paginator.nextPage()" ng-class="paginator.isLastPage() && 'disabled'">
+            <a>
+                <i class="icon-step-forward" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+            </a>
+        </li>
+        <li ng-click="paginator.lastPage()" ng-class="paginator.isLastPage() && 'disabled'">
+            <a>
+                <i class="icon-fast-forward" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+            </a>
+        </li>
+    </ul>
+</div>
