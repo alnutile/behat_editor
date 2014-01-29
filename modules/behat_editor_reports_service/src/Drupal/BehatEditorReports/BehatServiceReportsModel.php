@@ -76,7 +76,7 @@ class BehatServiceReportsModel {
                 $rows[] = (array) $record;
             }
         }
-
+        asort($all_urls, SORT_NATURAL);
         return array(
             'results' => $rows,
             'error' => 0,
