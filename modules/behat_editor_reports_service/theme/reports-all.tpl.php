@@ -72,7 +72,7 @@
                 </div>
                 <div class="form-group">
                     <label class="sr-only">URL</label>
-                    <select ng-model="url" ng-change="checkSelected()" class="form-control urls" ng-options="key as value for (key, value) in urls ">
+                    <select ng-model="url" ng-change="checkSelected()" class="form-control urls" ng-options="key as value for (key, value) in urls | orderBy: key ">
                         <option value="">all</option>
                     </select>
                 </div><input type="submit" class="btn btn-warning" value="Search"> | <a href="/admin/behat/reports">reset</a>
