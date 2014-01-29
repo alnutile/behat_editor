@@ -76,6 +76,7 @@ class BehatServiceReportsModel {
                 $rows[] = (array) $record;
             }
         }
+
         return array(
             'results' => $rows,
             'error' => 0,
