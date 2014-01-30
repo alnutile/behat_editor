@@ -505,7 +505,7 @@ class FileModel {
      * @param $module_name
      * @return array
      */
-    protected function _tags_array($file, $module_name) {
+    public function _tags_array($file, $module_name) {
         $file_to_array = self::_turn_file_to_array($file);
         $tags = array();
         foreach($file_to_array as $key => $value) {

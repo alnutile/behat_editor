@@ -29,6 +29,7 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
             $scope.browser_pass_fail_count = data.browser_pass_fail_count;
             $scope.pass_fail_chart = data.pass_fail_chart;
             $scope.pass_fail_per_url = data.pass_fail_per_url;
+            $scope.tags = data.tags;
 //            $scope.tableParams = new ngTableParams({
 //                page: 1,
 //                count: 5
@@ -74,8 +75,9 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
                 pass_fail: params.pass_fail,
                 filename: params.filename,
                 tag: params.tag,
-                url: params.url
-            }, function(data){
+                url: params.url,
+                tag_name: params.tag_name
+            }, function (data) {
                 setData(data, params);
                 buildCharts($scope);
             });
@@ -104,12 +106,14 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
             params.user_id = swapNullForAll(this.user_id);
             params.pass_fail = swapNullForAll(this.pass_fail);
             params.filename = swapNullForAll(this.filename);
+            params.tag_name = swapNullForAll(this.tag_name);
             $scope.getReports(params);
         };
 
         $scope.browser = $routeParams.browser;
         $scope.user_id = $routeParams.user_id;
         $scope.pass_fail = $routeParams.pass_fail;
+        $scope.tag_name = $routeParams.tag_name;
         $scope.url = $routeParams.url;
 
         $scope.checkSelected = function() {
@@ -117,6 +121,7 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
             $location.search('pass_fail', swapNullForAll(this.pass_fail));
             $location.search('url', swapNullForAll(this.url));
             $location.search('user_id', swapNullForAll(this.user_id));
+            $location.search('tag_name', swapNullForAll(this.tag_name));
         };
 
     }]);
