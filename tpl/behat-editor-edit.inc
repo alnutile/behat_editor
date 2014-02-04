@@ -49,6 +49,8 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     drupal_alter('behat_editor_edit', $file_info);
 
+
+
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
 
     $path = drupal_get_path('module', 'behat_editor');
@@ -75,6 +77,8 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
         '#type' => 'container',
         '#attributes' => array('class' => array('col-lg-12', 'well', 'actions'))
     );
+
+    _behat_editor_file_path($form, $file_info);
 
     $form['actions']['save_test'] = update_test_array($file_info['filename_no_ext'], $module);
 

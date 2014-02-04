@@ -1,0 +1,11 @@
+{
+    "require": {
+        "orangedigital/business-selector-extension": "dev-master",
+        "alnutile/token_file_creator": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Tokenizer": "src/"
+        }
+    }
+}

@@ -6,6 +6,8 @@ use Behat\Behat\Context\ClosuredContextInterface,
     Behat\Behat\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode,
     Behat\Gherkin\Node\TableNode;
+use Behat\MinkExtension\Context\MinkContext,
+    OrangeDigital\BusinessSelectorExtension\Context\BusinessSelectorContext;
 
 //
 // Require 3rd-party libraries here:
@@ -17,19 +19,17 @@ use Behat\Gherkin\Node\PyStringNode,
 /**
  * Features context.
  */
-// class FeatureContext extends BehatContext 
-class FeatureContext extends Drupal\DrupalExtension\Context\DrupalContext
+// class FeatureContext extends BehatContext
+class FeatureContext extends BehatContext
 {
-    /**
-     * Initializes context.
-     * Every scenario gets its own context object.
-     *
-     * @param array $parameters context parameters (set them up through behat.yml)
-     */
+
     public function __construct(array $parameters)
     {
-        // Initialize your context here
+        var_dump($parameters);
+        $this->useContext('mink', new MinkContext($parameters));
+        $this->useContext('BusinessSelectors', new BusinessSelectorContext($parameters));
     }
+
 
 //
 // Place your definition and hook methods here:

@@ -855,3 +855,13 @@ HEREDOC;
     $form['help_slide'] = array('#markup' => $slide);
 }
 
+function _behat_editor_file_path(&$form, $file_info) {
+    $form['filepath'] = array(
+        '#type' => 'hidden',
+        '#default_value' => $file_info['absolute_path']
+    );
+    $form['filename_full'] = array(
+        '#type' => 'hidden',
+        '#default_value' => $file_info['filename']
+    );
+}

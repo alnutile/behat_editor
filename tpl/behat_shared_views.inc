@@ -252,7 +252,6 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
  */
 function _behat_editor_questions_form() {
 
-
     $form['#theme'] = array('behat_editor_form_wrapper');
 
     $form['questions'] = array(

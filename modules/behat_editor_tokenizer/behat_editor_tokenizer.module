@@ -1,0 +1,351 @@
+<?php
+
+use Tokenizer\TokenizerModel;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Yaml\Yaml;
+
+
+include_once 'behat_editor_tokenizer_services.feature.inc';
+
+function behat_editor_tokenizer_permission() {
+    return array(
+        'behat tokenizer create' => array(
+            'title' => t('Create a Tokens')
+        ),
+        'behat tokenizer view' => array(
+            'title' => t('View a Tokens')
+        ),
+        'behat tokenizer delete' => array(
+            'title' => t('Delete a Tokens')
+        ),
+        'behat tokenizer edit' => array(
+            'title' => t('Edit a Tokens')
+        ),
+        'behat tokenizer view all' => array(
+            'title' => t('View all Tokens')
+        ),
+    );
+}
+
+
+
+function behat_editor_tokenizer_get($filename, $parameters) {
+    global $user;
+    composer_manager_register_autoloader();
+    $filename = $parameters['filename'];
+    $token_content = $parameters['token_content'];
+    $filepath = $parameters['fullpath'];
+    $filesystem = new Filesystem();
+    $yaml_parser = new Yaml();
+    $model = new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser);
+    $results = $model->retrieve();
+    drupal_alter('behat_editor_takenizer_post_retrieve', $results);
+    $results['content'] = _behat_editor_tokenizer_set_output_from_model($results['content']);
+    return $results;
+}
+
+function behat_editor_tokenizer_create($parameters) {
+    global $user;
+    composer_manager_register_autoloader();
+    watchdog('test_parms', print_r($parameters, 1));
+    $filename = $parameters['filename'];
+    $token_content = $parameters['token_content'];
+    $filepath = $parameters['fullpath'];
+    $filesystem = new Filesystem();
+    $yaml_parser = new Yaml();
+    $model = new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser);
+    $results = $model->create();
+    drupal_alter('behat_editor_takenizer_post_create', $results);
+    $results['content'] = _behat_editor_tokenizer_set_output_to_model($results['content']);
+    return $results;
+}
+
+/**
+ * @TODO pass the filename for the new token so we can have more than one name
+ */
+function behat_editor_tokenizer_update($filename, $parameters) {
+    global $user;
+    composer_manager_register_autoloader();
+    $filename = $parameters['filename'];
+    $token_content = $parameters['token_content'];
+    $filepath = $parameters['fullpath'];
+    $token_filename = $parameters['token_filename'];
+    $filesystem = new Filesystem();
+    $yaml_parser = new Yaml();
+    $model = new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser);
+    $results = $model->update();
+    drupal_alter('behat_editor_takenizer_post_update', $results);
+    $results['content'] = _behat_editor_tokenizer_set_output_to_model($results['content']);
+    return $results;
+}
+
+function behat_editor_tokenizer_delete($parameters) {
+    global $user;
+    composer_manager_register_autoloader();
+    $filename = $parameters['filename'];
+    $token_content = $parameters['token_content'];
+    $filepath = $parameters['fullpath'];
+    $filesystem = new Filesystem();
+    $yaml_parser = new Yaml();
+    $model = new TokenizerModel($filename, $filepath, $token_content, $filepath, $yaml_parser);
+    $results = $model->delete();
+    drupal_alter('behat_editor_takenizer_post_delete', $results);
+    return $results;
+}
+
+
+function behat_editor_tokenizer_get_all($filename, $parameters) {
+    global $user;
+    composer_manager_register_autoloader();
+    $filename = $parameters['filename'];
+    $token_content = $parameters['token_content'];
+    $filepath = $parameters['fullpath'];
+    $filesystem = new Filesystem();
+    $yaml_parser = new Yaml();
+    $model = new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser);
+    return $model->index();
+}
+
+function _behat_editor_tokenizer_set_output_to_model($token_content) {
+    $token_content_tweak = array();
+    foreach($token_content as $key => $value) {
+        $broken_down = explode(':', $value);
+        $token_content_tweak[$broken_down[0]] = array(trim($broken_down[1]));
+    }
+    return $token_content_tweak;
+}
+
+function _behat_editor_tokenizer_set_output_from_model($token_content) {
+    $token_content_tweak = null;
+    foreach($token_content as $key => $value) {
+        if(strpos($value, '#') !== FALSE) {
+            $token_content_tweak .= "$value\n";
+        } else {
+            $step2 = explode(":", $value);
+            $token_content_tweak .= "$step2[0]: $step2[1]\n";
+        }
+    }
+    return $token_content_tweak;
+}
+
+
+
+/**
+ * Implements hook_services_resources()
+ */
+function behat_editor_tokenizer_services_resources() {
+    return array(
+        'tokenizer' => array(
+            'retrieve' => array(
+                'help' => 'Retrieve a token record',
+                'callback' => 'behat_editor_tokenizer_get',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer view'),
+                'access arguments append' => TRUE,
+                'args' => array(
+                    array(
+                        'name' => 'filename',
+                        'type' => 'string',
+                        'description' => 'filename we are editing to make services happy',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'parameters',
+                        'type' => 'array',
+                        'description' => 'The tokens structure',
+                        'source' => 'param',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'create' => array(
+                'help' => 'Create a token record',
+                'callback' => 'behat_editor_tokenizer_create',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer create'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The tokens structure',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'update' => array(
+                'help' => 'Update a token record',
+                'callback' => 'behat_editor_tokenizer_update',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer update'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'filename',
+                        'type' => 'string',
+                        'description' => 'filename we are editing to make services happy',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'parameters',
+                        'type' => 'array',
+                        'description' => 'The tokens structure',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'delete' => array(
+                'help' => 'Delete a token record',
+                'callback' => 'behat_editor_tokenizer_delete',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer delete'),
+                'access arguments append' => TRUE,
+                'args' => array(
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The tokens structure',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'index' => array(
+                'help' => 'Retrieves a listing Tokens',
+                'callback' => 'behat_editor_tokenizer_get_all',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer view all'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The tokens structure',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+        ),
+    );
+}
+
+function behat_editor_tokenizer_access($op, $args = array()) {
+    global $user;
+    if(user_access($op)) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+function behat_editor_tokenizer_menu() {
+
+    $items['admin/test'] =  array(
+        'title' => t('Tokens Test Area'),
+        'access arguments' => array('behat tokenizer view all'),
+        'type' => MENU_CALLBACK,
+        'page callback' => 'behat_editor_tokenizer_test_area',
+    );
+    return $items;
+}
+
+function behat_editor_tokenizer_test_area() {
+    //1. Test the output of the json
+    //2. Test placing it in a folder as needed
+    //3. Test the alters
+    //4.
+    return "Hello World";
+}
+
+function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
+    $form_batch = array('behat_editor_bulk_form_tags', 'behat_editor_bulk_form_modules');
+    if(in_array($form_id, $form_batch)) {
+
+        composer_manager_register_autoloader();
+//        $path = drupal_get_path('module', 'behat_editor_saucelabs');
+//        $form['#attached']['js']['behat_editor_saucelabs_settings'] = $path . '/js/behat_editor_saucelabs_settings.js';
+    }
+
+    $forms = array('behat_editor_view_form', 'behat_editor_edit_form', 'behat_editor_add_form');
+    //Deal with other forms
+    if(in_array($form_id, $forms)) {
+        composer_manager_register_autoloader();
+
+        $path = drupal_get_path('module', 'behat_editor_tokenizer');
+        $form['#attached']['js']['behat_editor_tokenizer_app'] = $path . '/js/behat_editor_tokenizer_app.js';
+
+        if($form_id == 'behat_editor_add_form') {
+            $form['#attached']['js']['behat_editor_tokenizer_method'] = $path . '/js/behat_editor_tokenizer_add.js';
+        } else if ($form_id == 'behat_editor_edit_form') {
+            $form['#attached']['js']['behat_editor_tokenizer_method'] = $path . '/js/behat_editor_tokenizer_edit.js';
+        } else {
+            $form['#attached']['js']['behat_editor_tokenizer_method'] = $path . '/js/behat_editor_tokenizer_view.js';
+        }
+
+        $form['#attached']['css']['behat_editor_tokenizer_css'] = $path . '/css/behat_editor_tokenizer_app.css';
+
+        $form['results_area']['settings']['tokenizer']['intro'] = array(
+            '#prefix' => '<hr>',
+            '#markup' => '<h4>Manage your tokens below for this test file. Click [help] for more info</h4>',
+        );
+
+        $form['results_area']['settings']['tokenizer']['text'] = array(
+            '#type'         => 'textarea',
+            '#attributes'   => array('id' => 'tokenizer_text')
+        );
+
+        $form['results_area']['settings']['tokenizer']['add'] = array(
+            '#type'         => 'button',
+            '#value'        => t('Add Token File'),
+            '#attributes'   => array('class' => array('btn',  'btn-success', 'add-token', 'tokenizer'))
+        );
+
+        $form['results_area']['settings']['tokenizer']['edit'] = array(
+            '#type'         => 'button',
+            '#value'        => t('Edit Token File'),
+            '#attributes'   => array('id' => 'edit-token', 'class' => array('btn',  'btn-success', 'tokenizer'))
+        );
+
+        $form['results_area']['settings']['tokenizer']['messages'] = array(
+            '#markup'       => '<div id="tokenizer-messages"></div>',
+        );
+
+        $form['results_area']['settings']['tokenizer']['use_token'] = array(
+            '#prefix'       => '<div class="checkbox">',
+            '#title'        => '<span class="help-block">check here to use this token for next test</span>',
+            '#type'         => 'checkbox',
+            '#attributes'   => array('id' => 'use-token'),
+            '#suffix'       => '</div>'
+        );
+
+        $form['results_area']['settings']['tokenizer']['token_filename'] = array(
+            '#type'             => 'hidden',
+            '#default_value'    => false,
+            '#attributes'       => array('id' => 'token_filename')
+        );
+    }
+}
+
+function behat_editor_tokenizer_behat_editor_yml_array_alter(&$behat_yml, $context1, $settings) {
+    if( $context1 == 'generate_yml' ) {
+        //if ( isset($_SESSION['TOKENIZE_TEST']) ) {
+            //$token_path = $_SESSION['TOKENIZE_TEST'];
+            $token_path = '/assets/example/current/sites/default/files/behat_tests/tokens/wikipedia.feature.token';
+            $behat_yml['saucelabs']['extensions']['OrangeDigital\BusinessSelectorExtension\Extension'] = array(
+                'urlFilePath'       => null,
+                'selectorFilePath'  => $token_path,
+                'assetPath'         => null,
+                'timeout'           => 30,
+                'contexts'          => array(
+                    'UIBusinessSelector' => null
+                )
+            );
+            unset($_SESSION['TOKENIZE_TEST']);
+        //}
+    }
+}

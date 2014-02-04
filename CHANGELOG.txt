@@ -1,3 +1,10 @@
+1.5.6
+-------
+Tag filter on reports
+Tickets
+BPFD-295, 279, 278 and 314 are fixed by above
+
+
 1.5.5
 --------
 Fix the bug Clone had where it lost tags BPFD-299
