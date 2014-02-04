@@ -9,6 +9,11 @@ use Drupal\BehatEditor;
 function behat_editor_create_api($query) {
     composer_manager_register_autoloader();
 
+    if(isset($query['clone'])) {
+        $clone = $query['clone'];
+    } else {
+        $clone = FALSE;
+    }
     $action = 'add';
     $params = array(
         'service_path' => $query['path'],
@@ -16,7 +21,8 @@ function behat_editor_create_api($query) {
         'filename' => $query['filename'],
         'action' => $action,
         'parse_type' => 'file',
-        'scenario' => $query['scenario']
+        'scenario' => $query['scenario'],
+        'clone' => $clone
     );
     $file = new Drupal\BehatEditor\FileController();
     $response = $file->create($params);

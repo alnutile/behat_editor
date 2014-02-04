@@ -31,6 +31,7 @@ class FileModel {
     protected $service_path_full;
     protected $params;
     protected $modules;
+    protected $clone;
     protected $module_path;
     protected $action_path;
     protected $file_object;
@@ -43,8 +44,10 @@ class FileModel {
 
     public function createFile(){
         $this->module = $this->params['module'];
+        $this->clone = $this->params['clone'];
         $this->filename = $this->params['filename'];
         $this->scenario = $this->params['scenario'];
+        $this->addParentTag();
         $this->parse_type = $this->params['parse_type'];
         $this->action = $this->params['action'];
         $this->action_path = $this->params['action'];
@@ -59,6 +62,8 @@ class FileModel {
         $this->get_file_info();
         return $this->file_data;
     }
+
+
 
     public function save(){
         $output = array();
@@ -500,7 +505,7 @@ class FileModel {
      * @param $module_name
      * @return array
      */
-    protected function _tags_array($file, $module_name) {
+    public function _tags_array($file, $module_name) {
         $file_to_array = self::_turn_file_to_array($file);
         $tags = array();
         foreach($file_to_array as $key => $value) {
@@ -911,6 +916,31 @@ class FileModel {
         $this->scenario = self::_turn_file_to_array($params['file_text']);
         $this->scenario_array = self::_parse_questions();
         return $this->scenario_array;
+    }
+
+    protected function addParentTag() {
+        if(is_array($this->clone)) {
+            if(strpos($this->scenario[0], '@') !== FALSE) {
+                $parent = $this->_build_parent_tag($this->clone);
+                $this->scenario[0] = $this->scenario[0] . ' ' . $parent;
+            }
+        }
+    }
+
+    protected function _build_parent_tag($clone) {
+        $clone = array_slice($clone, 4);
+        $clone = implode(':', $clone);
+        $parent = "@parent:$clone";
+        $this->_setAllowedTags($parent);
+        return $parent;
+    }
+
+    private function _setAllowedTags($parent) {
+        if ( module_exists('behat_editor_limit_tags')) {
+            $tags = variable_get('behat_editor_limit_tags_allowed_tags', array());
+            array_push($tags, $parent);
+            variable_set('behat_editor_limit_tags_allowed_tags', $tags);
+        }
     }
 
 

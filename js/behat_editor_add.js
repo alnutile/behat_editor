@@ -29,7 +29,7 @@
                     "path": service_path
                 };
                 var data = Drupal.behat_editor.action('POST', token, parameters, url);
-                if(data.error == 0) {
+                if(data.error === 0) {
                     window.location.replace("/admin/behat/edit/" + module + "/" + filename);
                 }
                 Drupal.behat_editor.renderMessage(data);

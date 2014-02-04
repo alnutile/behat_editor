@@ -50,14 +50,14 @@
             </div>
             <form class="form-inline" role="form" ng-submit="filterReports()">
                 <div class="form-group">
-                    <label class="sr-only">Pass/Fail</label>
+                    <label>Pass/Fail</label>
                     <select ng-change="checkSelected()" ng-model="pass_fail" class="form-control pass_fail" ng-options="key as value for (key, value) in status_state">
                             <option value="">all</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="sr-only">Browser</label>
-                    <select ng-change="checkSelected()" ng-model="browser" class="form-control"  ng-options="key as value for (key, value) in browsers">
+                    <label>Browser</label>
+                    <select ng-change="checkSelected()" ng-model="browser" class="form-control input-sm"  ng-options="key as value for (key, value) in browsers">
                         <option value="">all</option>
                     </select>
                 </div>
@@ -65,14 +65,20 @@
                     <input ng-change="checkChange()" ng-model="filename" placeholder="Filename">
                 </div>
                 <div class="form-group">
-                    <label class="sr-only">User</label>
-                    <select  ng-change="checkSelected()" ng-model="user_id" class="form-control user" ng-options="key as value for (key, value) in users">
+                    <label>User</label>
+                    <select  ng-change="checkSelected()" ng-model="user_id" class="form-control user input-sm" ng-options="key as value for (key, value) in users">
                         <option value="">all</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="sr-only">URL</label>
-                    <select ng-model="url" ng-change="checkSelected()" class="form-control urls" ng-options="key as value for (key, value) in urls | orderBy: key ">
+                    <label>Tags</label>
+                    <select  ng-change="checkSelected()" ng-model="tag_name" class="form-control tags input-sm" ng-options="key as value for (key, value) in tags">
+                        <option value="">all</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <select ng-model="url" ng-change="checkSelected()" class="form-control urls input-sm" ng-options="key as value for (key, value) in urls ">
                         <option value="">all</option>
                     </select>
                 </div><input type="submit" class="btn btn-warning" value="Search"> | <a href="/admin/behat/reports">reset</a>
