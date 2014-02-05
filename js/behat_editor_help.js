@@ -14,8 +14,17 @@
     }
 
     Drupal.behat_editor_help.click = function (context) {
+        jQuery('.help-content a', context).filter(function(){
+            if (this.href.indexOf(location.origin) === 0) {
+               $(this).addClass('local');
+            } else {
+               $(this).attr('target', '_blank');
+            }
+
+        });
+
         jQuery('.help-content a', context).on('click', function (e) {
-            if(!$(this).hasClass('btn')){
+            if($(this).hasClass('local')){
                 e.preventDefault();
                 var doc_name = $(this).attr('href');
                 Drupal.behat_editor_help.get(doc_name, context);
@@ -27,6 +36,7 @@
         attach: function (context) {
             $('.help-get', context).on('click', function(e){
                 e.preventDefault();
+                console.log('This is triggered');
                 var doc_name = $(this).data('doc-name');
                 Drupal.behat_editor_help.get(doc_name, context);
             });
