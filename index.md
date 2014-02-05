@@ -10,11 +10,12 @@ The source of these files are
 
 
 
-### Docs
+### Docs Available see below
 
 
 #### Overview
 
+ * [Using inline help](docs_inline.html)
  * [Writing](writing.html)
  * [Tags](tags.html)
  * [Add a Test](add.html)
@@ -26,6 +27,7 @@ The source of these files are
  * [Repos/Github](repos.html)
  * [SauceLabs](saucelabs.html)
  * [URL Admin](urls.html)
+ * [Basic Authentication Setup(basic_auth.html)
  * [Drush Integration](drush.html)
  * [Cron job tests](cron.html)
  * [Settings Group](settings_group.html)
@@ -33,6 +35,8 @@ The source of these files are
  * [Current Test](current_test.html)
  * [Choose OS and Browser](choose_os_browser.html)
  * [Past Results](past_results.html)
+ * [Manage User](add_user.html)
+ * [Custom Module](custom_module.html)
  
 #### Steps
 
@@ -64,7 +68,31 @@ The source of these files are
  * [Switch to Iframe Named](iframe_named.html)
  * [Switch to Iframe no name](no_name_frame.html)
  * [Submit by ID](submit_by_id.html)
+ * [Mobile](mobile.html)
  
+ 
+#### Videos
+
+ * [URLs Settings](http://www.youtube.com/watch?v=DiQ0AihBkzQ)
+ * [URL Usage](http://www.youtube.com/watch?v=qjw7FS4afQM)
+ * [URL Usage 2](http://www.youtube.com/watch?v=pEBKsVhFqWU)
+ * [Basic Auth Settings](http://www.youtube.com/watch?v=Lr9QMnfTpPc)
+ * [Tags](http://www.youtube.com/watch?v=f-330tQBe2E)
+ * [Repo Setup](http://www.youtube.com/watch?v=f3ko6E3DB0s)
+ * [Intro to a custom module](http://www.youtube.com/watch?v=_snyCI3mJvI) 
+ * [Groups](http://www.youtube.com/watch?v=J1eI8-pEK8g)
+ * [Add User](http://www.youtube.com/watch?v=qGcbey8eHGg)
+ * [Add test to GitRepo](http://www.youtube.com/watch?v=n_VHS4scPm0)
+ * [Choosing a Browser](http://www.youtube.com/watch?v=8XcK2Y8fvvU)
+ * [Batch or Bulk jobs](http://www.youtube.com/watch?v=AKLeKEmDYKo)
+ * [Training Video 1](http://www.youtube.com/watch?v=hlvM5KLhPd8)
+ * [Inline Help](http://www.youtube.com/watch?v=b4YEmBgBk2Q)
+ * [Backgrounds](http://youtu.be/hAEPfTAZG20)
+ * [Checkbox Video](http://youtu.be/C1R9chjtIfk)
+ * [Pressing Click](http://youtu.be/qL-LBPpZ-Mg)
+ * [Scenario Step 1](http://youtu.be/UwH_lPMgcQc)
+ * [Scenario Step 2](http://youtu.be/vUcoZVfuDac)
+ * [Drush](http://youtu.be/bFx3pxPkvVo)
  
 #### Steps that may be removed soon
  * [Click a # Button](number_button.html)

@@ -2,6 +2,10 @@
 
 ![Press-Click](images/press_click.png)
 
+There is a video here as well
+
+[Video](http://youtu.be/qL-LBPpZ-Mg)
+
 This collection of boxes helps to deal with different combinations of elements.
 
 

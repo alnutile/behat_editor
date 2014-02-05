@@ -1,5 +1,8 @@
 ## Tags
 
+There is a video here
+[Tags](http://www.youtube.com/watch?v=f-330tQBe2E)
+
 Tags are key to organizing tests. But tags also trigger built in features
 
 ####Example tags that offer functionality

@@ -17,5 +17,14 @@ http://username:password@test.com
 The password will need to pass %40 if there is an @ symbol in it.
 
 
-@TODO add url to #video
+You can see a video here
 
+### Videos
+
+[Video 1](http://www.youtube.com/watch?v=qjw7FS4afQM)
+
+And how to use them
+
+[Video 2](http://www.youtube.com/watch?v=DiQ0AihBkzQ)
+
+Here are some notes from the video [coming soon...]

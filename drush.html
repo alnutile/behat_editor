@@ -1,1 +1,38 @@
+<h2>Drush</h2>
 
+<p>You can see the video here 
+<a href="http://youtu.be/bFx3pxPkvVo">Drush Video</a></p>
+
+<p>Drush is a command line interface for drupal</p>
+
+<p>You can use drush --help to see all the commands for behat</p>
+
+<p>the behat_editor module will allow you to run tests from the command line.</p>
+
+<p>You will need to use</p>
+
+<p>drush bus 1 </p>
+
+<p>to get the URLs for user 1</p>
+
+<p>or</p>
+
+<p>drush bug 3</p>
+
+<p>to get the URLs for group 3</p>
+
+<p>once you have that you can run a test</p>
+
+<p>Do </p>
+
+<p>drush br --help </p>
+
+<p>to see all the switches needed to run a test via drush.</p>
+
+<p>Your final command may end up like this</p>
+
+<p>drush br behat<em>tests 'behat</em>tests/wikipedia.feature' 1 0 default 0 74</p>
+
+<p>This would run the wikipedia.feature test in the behat_tests module folder with javascript on (1) no specific tags (0) default profile 0 URL id and 74 for the ID that group 3 has for this test.</p>
+
+<p>The video will help more though :)</p>

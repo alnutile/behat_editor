@@ -1,5 +1,10 @@
 ## Check Box
 
+You can see a video here as well
+
+[Checkbox Video](http://youtu.be/C1R9chjtIfk)
+
+
 ![Check box](images/checkbox.png)
 
 This Step will help you to check a checkbox.

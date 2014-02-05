@@ -1,0 +1,164 @@
+<h1>Introduction to Custom Module: Overview to Extending Behat Editor</h1>
+
+<p>You can see the related video here</p>
+
+<p><a href="http://www.youtube.com/watch?v=_snyCI3mJvI">Intro to a custom module</a></p>
+
+<h2>######How to use the example module and start working on things </h2>
+
+<h4>Here you can find:</h4>
+
+<ul>
+<li>How to put your tests inside of a custom module</li>
+<li>Write your own features</li>
+<li>Custom Step definitions</li>
+<li>How to add form elements to the form UI</li>
+<li>Github Integration </li>
+</ul>
+
+<p>--</p>
+
+<h6><strong><em>The benefit of this module is that it allows you to write your own sub contexts and then add them to the form that behat uses to do tests, create tests, and collect all your tests inside of a folder.</em></strong></h6>
+
+<h2>    Important: You have to have your custom steps in place as needed</h2>
+
+<h5>Depending on what your team is doing you might not need to add them to the form.</h5>
+
+<h6>If you do - this is how:</h6>
+
+<p>&rarr; Once you download this module it will then go through composure manager to start building the needed composure libraries </p>
+
+<pre><code>    There is only a couple things going on in this module.
+</code></pre>
+
+<p>1. A form alter to alter the UI 
+2. It also has the Behat Inc file (see image below)</p>
+
+<p><img src="images/druple_ext_file.png" alt="<druple_ext_file>" title=""></p>
+
+<pre><code>    NOTE: This is the file that the druple extension module looks for to then pull in your sub context custom steps
+</code></pre>
+
+<p>So in this case you could add a couple 
+* Press the x path and followed the x path</p>
+
+<p>--
+        Why would you do this? </p>
+
+<pre><code>        * If they did not initially exist in a way that worked.
+
+        * Or this was something you needed that did not already exist.
+</code></pre>
+
+<h5>In these cases you will have to write them.</h5>
+
+<ul>
+<li><p>Once you write them here you can use them in your test</p></li>
+<li><p>In this case all of the tests will live in the Behat feature folder.  </p></li>
+</ul>
+
+<p><strong>Here is an example of the test using those particular steps</strong> 
+<img src="images/x_file.png" alt="<x_path_example>" title=""></p>
+
+<ul>
+<li>Click the X path</li>
+<li><p>Follow the X path </p>
+
+<pre><code>Now any test inside your behat features folder will be seen and you can run it
+</code></pre>
+
+<p><strong><em>It has to be in that folder it can not be in a subfolder right now</em></strong></p></li>
+</ul>
+
+<p>-
+    You can use all of our existing steps of course but if you need any custom ones you would put them in the behat inc folder. </p>
+
+<h2>####If you want those steps to show up in the graphical interface that you have in the form:</h2>
+
+<p>&rarr; you would then start building your form alter to make those steps show up in the form.</p>
+
+<p>&rarr; Add your steps to the particular grouping category</p>
+
+<p>&rarr; Start making the form fields needed to make those steps work</p>
+
+<pre><code>There are a number of elements of the form to make it work right with the javascript.
+</code></pre>
+
+<p><img src="images/form_fields_elements.png" alt="<elements_examp>" title=""></p>
+
+<pre><code>Ideally the code and the numbers that come with the code will help you read it.
+</code></pre>
+
+<p>Some of these codes are: </p>
+
+<ul>
+<li>The 'AND I' title </li>
+<li>The select list with the values</li>
+<li><p>As well as the grouping of these elements with the group class </p>
+
+<pre><code>Those grouping elements help the final add button trigger the javascript to grab the right text and the right values and to create the graphical scenario builder and we will look at that in a moment.
+</code></pre>
+
+<h6>If you visit the scenario builder you will see that the form alter that this module created is now inside of the 'questions area', 'questions', 'questions', 'form field', 'form fields', and 'elements'.</h6>
+
+<pre><code>**That is what makes up the group**
+</code></pre></li>
+<li>There is a handful of them that you will discover and will make clear to put them in. </li>
+</ul>
+
+<p>-</p>
+
+<p><img src="images/and_i_check.png" alt="<and_i_check>" title=""></p>
+
+<ul>
+<li><p>The group here then helped this group that was made custom to show up with a group that already existed</p></li>
+<li><p>Now you have your particular custom step</p></li>
+</ul>
+
+<p>-
+    You should now be able to see that you have your 'AND I' and 'your select options' as well as your next set of select options (which doesn't have a title because you are not adding any text other than the "select value" and finally the field that they are filling in and then the add button.</p>
+
+<h5>NOTE: It might take a while to get use to the layout</h5>
+
+<h6>Another thing to keep in mind is that all of these form elements come from the behat editor form file. And right now it is in this oddly named behat shared views and you can see the form here and start grabbing ideas here on how the other formats were built.</h6>
+
+<p>So now if I was to put AND I press : we will just use : CSS path for a moment we will just say : Test1 p for example </p>
+
+<p>There are so many different ways to do it but we will just use that and I press the element DIVtest 1. Since it is not a link we can't follow it or link it we press it</p>
+
+<p>and thats it now your step will pass. </p>
+
+<pre><code>And again if you didn't add it to the UI no big deal because in your case you might just be uploading your test
+</code></pre>
+
+<h4>UPLOADING YOUR TEST</h4>
+
+<ul>
+<li><p>Go back to the admin interface</p></li>
+<li><p>Notice here that all the tests have a module folder</p></li>
+<li><p>If you look for your test "behat_editor" you will see that there is the example module folder and all the tests in that folder will have their own lines here. This way you can quickly search for your test. </p>
+
+<pre><code>You will not be able to edit or delete it, because you are managing it in your folder for your module. However, you can view it and run it.
+</code></pre></li>
+<li><p>When you go back to your code you have a chance to add more tests to your behat features folder and then upload them. </p>
+
+<pre><code>We will have a jenkins server setup so that when you upload a new test to your branch in your repositories it will then automatically push it to your site so that you will then see it within a moment or two.
+</code></pre></li>
+</ul>
+
+<hr>
+
+<h6>NOTE:</h6>
+
+<h5>* You are more then welcome to use the UI and create a test here, save it, and then in a moment you will get a link to the test so you can just download it.</h5>
+
+<hr>
+
+<p><strong>To Do This:</strong></p>
+
+<ul>
+<li>Download to your behat features folder in your module</li>
+<li>Upload via github</li>
+<li>Now its yours and its in a place your team can share </li>
+<li>Then delete it from the other folder just so no one gets confused. </li>
+</ul>

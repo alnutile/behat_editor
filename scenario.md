@@ -2,6 +2,13 @@
 
 ![Scenario Image](images/scenario.png)
 
+
+There are two videos as well
+
+ * [Scenario Step 1](http://youtu.be/UwH_lPMgcQc)
+ * [Scenario Step 2](http://youtu.be/vUcoZVfuDac)
+ 
+
 All test must have one Scenario at least but can have more. This is a how a test will typically layout.
 
 A Scenario will summarize that Step in the test.
