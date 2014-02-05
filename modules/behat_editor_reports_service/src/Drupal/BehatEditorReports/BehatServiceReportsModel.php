@@ -12,9 +12,10 @@ use Drupal\BehatEditor\BehatSettingsBaseUrl;
 class BehatServiceReportsModel {
     public $settings;
     public $permissions;
-    protected $browserPassFailCount = array();
-    protected $passFailChart = array();
-    protected $passFailPerUrl = array();
+    public $tags = array();
+    public $browserPassFailCount = array();
+    public $passFailChart = array();
+    public $passFailPerUrl = array();
 
     public function __construct(BehatSettingsBaseUrl $settings, BehatPermissions $perms) {
         $this->settings = $settings;
@@ -32,6 +33,9 @@ class BehatServiceReportsModel {
         $query->fields('b');
         $query->join('behat_editor_base_url_settings', 'u', 'u.sid = b.base_url_sid');
         $query->fields('u');
+        if(isset($params['tag_name']) && $params['tag_name'] != 'all') {
+            $query->condition('results', "%{$params['tag_name']}%", 'LIKE');
+        }
         if(isset($params['browser']) && $params['browser'] != 'all') {
             $query->condition('settings', "%{$params['browser']}%", 'LIKE');
         }
@@ -72,10 +76,12 @@ class BehatServiceReportsModel {
                 $all_urls[$record->sid] = $record->nice_name;
                 $this->setPassFailPerURL($record->nice_name, $record);
                 $all_users[$user['uid']] = $user['mail'];
-                $tags = $this->getTags($record->results);
+                $tags = $this->getTags($record->results, $record->module);
                 $rows[] = (array) $record;
             }
         }
+        asort($all_urls, SORT_NATURAL);
+        asort($this->tags, SORT_NATURAL);
         return array(
             'results' => $rows,
             'error' => 0,
@@ -87,6 +93,7 @@ class BehatServiceReportsModel {
             'pass_fail_per_url' => $this->passFailPerUrl,
             'total_count' => '100',
             'pager' => theme('pager'),
+            'tags' => $this->tags,
 
         );
     }
@@ -154,10 +161,15 @@ class BehatServiceReportsModel {
         }
     }
 
-    protected function getTags($test) {
-        //watchdog('test_tags_coming_in', print_r($test, 1));
-        //$step1 = explode('<li>', $test);
-        //$step2 = explode('</li>', $step1);
-        //watchdog('test_tags', print_r($step1, 1));
+    protected function getTags($test, $module) {
+
+        $test = str_replace(array("</li>", "<li>", "<ul>", "</ul>", "Scenario", "Feature"), " ", $test);
+        $test = strip_tags($test);
+        $test = explode(" ", $test);
+        foreach($test as $key => $value) {
+            if(strpos($value, '@') !== FALSE && strpos($value, '@') <= 0) {
+                $this->tags[$value] = $value;
+            }
+        }
     }
 }
