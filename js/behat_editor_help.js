@@ -43,7 +43,6 @@
 
             $(".help-get").pageslide({ direction: "left", modal: true, offset: '100' });
 
-
         }
     };
 
