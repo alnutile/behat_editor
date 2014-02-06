@@ -13,9 +13,9 @@ class BehatServiceReportsModel {
     public $settings;
     public $permissions;
     public $tags = array();
-    protected $browserPassFailCount = array();
-    protected $passFailChart = array();
-    protected $passFailPerUrl = array();
+    public $browserPassFailCount = array();
+    public $passFailChart = array();
+    public $passFailPerUrl = array();
 
     public function __construct(BehatSettingsBaseUrl $settings, BehatPermissions $perms) {
         $this->settings = $settings;
