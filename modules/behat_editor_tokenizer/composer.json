@@ -1,11 +1,12 @@
 {
     "require": {
         "orangedigital/business-selector-extension": "dev-master",
-        "alnutile/token_file_creator": "dev-master"
+        "alnutile/token_file_creator": "dev-master",
+        "twig/twig": "dev-master"
     },
     "autoload": {
         "psr-0": {
-            "Tokenizer": "src/"
+            "Drupal\\Tokenizer": "src/"
         }
     }
 }

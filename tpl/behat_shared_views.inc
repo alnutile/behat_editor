@@ -240,7 +240,9 @@ function template_preprocess_behat_editor_file_to_html_view(&$variables) {
         'file_text' => $file_text,
         'parse_type' => 'html_view',
     );
+
     $file_to_html_array = $file->output_file_text_to_html_array($params);
+
     $make_it_html = theme('item_list', $vars = array('attributes' => array('class' => array('scenario'), 'data-mode' => 'view-mode'), 'items' => $file_to_html_array));
     $variables['file_text'] = $make_it_html;
 }

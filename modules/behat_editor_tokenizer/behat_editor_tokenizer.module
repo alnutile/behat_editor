@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\Tokenizer\TokenizerController;
 use Tokenizer\TokenizerModel;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
@@ -27,107 +28,25 @@ function behat_editor_tokenizer_permission() {
     );
 }
 
-
-
-function behat_editor_tokenizer_get($filename, $parameters) {
+function behat_editor_tokenizer_callback($method, $parameters) {
     global $user;
     composer_manager_register_autoloader();
     $filename = $parameters['filename'];
     $token_content = $parameters['token_content'];
     $filepath = $parameters['fullpath'];
+    $alter = 'behat_editor_takenizer_pre_' . $method;
+    drupal_alter($alter, $results);
     $filesystem = new Filesystem();
     $yaml_parser = new Yaml();
-    $model = new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser);
-    $results = $model->retrieve();
-    drupal_alter('behat_editor_takenizer_post_retrieve', $results);
-    $results['content'] = _behat_editor_tokenizer_set_output_from_model($results['content']);
-    return $results;
-}
-
-function behat_editor_tokenizer_create($parameters) {
-    global $user;
-    composer_manager_register_autoloader();
-    watchdog('test_parms', print_r($parameters, 1));
-    $filename = $parameters['filename'];
-    $token_content = $parameters['token_content'];
-    $filepath = $parameters['fullpath'];
-    $filesystem = new Filesystem();
-    $yaml_parser = new Yaml();
-    $model = new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser);
-    $results = $model->create();
-    drupal_alter('behat_editor_takenizer_post_create', $results);
-    $results['content'] = _behat_editor_tokenizer_set_output_to_model($results['content']);
-    return $results;
-}
-
-/**
- * @TODO pass the filename for the new token so we can have more than one name
- */
-function behat_editor_tokenizer_update($filename, $parameters) {
-    global $user;
-    composer_manager_register_autoloader();
-    $filename = $parameters['filename'];
-    $token_content = $parameters['token_content'];
-    $filepath = $parameters['fullpath'];
-    $token_filename = $parameters['token_filename'];
-    $filesystem = new Filesystem();
-    $yaml_parser = new Yaml();
-    $model = new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser);
-    $results = $model->update();
-    drupal_alter('behat_editor_takenizer_post_update', $results);
-    $results['content'] = _behat_editor_tokenizer_set_output_to_model($results['content']);
-    return $results;
-}
-
-function behat_editor_tokenizer_delete($parameters) {
-    global $user;
-    composer_manager_register_autoloader();
-    $filename = $parameters['filename'];
-    $token_content = $parameters['token_content'];
-    $filepath = $parameters['fullpath'];
-    $filesystem = new Filesystem();
-    $yaml_parser = new Yaml();
-    $model = new TokenizerModel($filename, $filepath, $token_content, $filepath, $yaml_parser);
-    $results = $model->delete();
-    drupal_alter('behat_editor_takenizer_post_delete', $results);
-    return $results;
-}
-
-
-function behat_editor_tokenizer_get_all($filename, $parameters) {
-    global $user;
-    composer_manager_register_autoloader();
-    $filename = $parameters['filename'];
-    $token_content = $parameters['token_content'];
-    $filepath = $parameters['fullpath'];
-    $filesystem = new Filesystem();
-    $yaml_parser = new Yaml();
-    $model = new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser);
-    return $model->index();
-}
-
-function _behat_editor_tokenizer_set_output_to_model($token_content) {
-    $token_content_tweak = array();
-    foreach($token_content as $key => $value) {
-        $broken_down = explode(':', $value);
-        $token_content_tweak[$broken_down[0]] = array(trim($broken_down[1]));
+    if( $method == 'update' || $method == 'create' ) {
+        $token_content = TokenizerController::processFromViewToModel($token_content);
     }
-    return $token_content_tweak;
+    $model = new TokenizerController(new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser));
+    $results = $model->$method();
+    $alter = 'behat_editor_takenizer_post_' . $method;
+    drupal_alter($alter, $results);
+    return $results;
 }
-
-function _behat_editor_tokenizer_set_output_from_model($token_content) {
-    $token_content_tweak = null;
-    foreach($token_content as $key => $value) {
-        if(strpos($value, '#') !== FALSE) {
-            $token_content_tweak .= "$value\n";
-        } else {
-            $step2 = explode(":", $value);
-            $token_content_tweak .= "$step2[0]: $step2[1]\n";
-        }
-    }
-    return $token_content_tweak;
-}
-
 
 
 /**
@@ -138,15 +57,15 @@ function behat_editor_tokenizer_services_resources() {
         'tokenizer' => array(
             'retrieve' => array(
                 'help' => 'Retrieve a token record',
-                'callback' => 'behat_editor_tokenizer_get',
+                'callback' => 'behat_editor_tokenizer_callback',
                 'access callback' => 'behat_editor_tokenizer_access',
                 'access arguments' => array('behat tokenizer view'),
                 'access arguments append' => TRUE,
                 'args' => array(
                     array(
-                        'name' => 'filename',
+                        'name' => 'method',
                         'type' => 'string',
-                        'description' => 'filename we are editing to make services happy',
+                        'description' => 'method of controller',
                         'source' => array('path' => '0'),
                         'optional' => FALSE,
                     ),
@@ -161,11 +80,18 @@ function behat_editor_tokenizer_services_resources() {
             ),
             'create' => array(
                 'help' => 'Create a token record',
-                'callback' => 'behat_editor_tokenizer_create',
+                'callback' => 'behat_editor_tokenizer_callback',
                 'access callback' => 'behat_editor_tokenizer_access',
                 'access arguments' => array('behat tokenizer create'),
                 'access arguments append' => FALSE,
                 'args' => array(
+                    array(
+                        'name' => 'method',
+                        'type' => 'string',
+                        'description' => 'method of controller',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
                     array(
                         'name' => 'data',
                         'type' => 'struct',
@@ -177,15 +103,15 @@ function behat_editor_tokenizer_services_resources() {
             ),
             'update' => array(
                 'help' => 'Update a token record',
-                'callback' => 'behat_editor_tokenizer_update',
+                'callback' => 'behat_editor_tokenizer_callback',
                 'access callback' => 'behat_editor_tokenizer_access',
                 'access arguments' => array('behat tokenizer update'),
                 'access arguments append' => FALSE,
                 'args' => array(
                     array(
-                        'name' => 'filename',
+                        'name' => 'method',
                         'type' => 'string',
-                        'description' => 'filename we are editing to make services happy',
+                        'description' => 'method of controller',
                         'source' => array('path' => '0'),
                         'optional' => FALSE,
                     ),
@@ -200,11 +126,18 @@ function behat_editor_tokenizer_services_resources() {
             ),
             'delete' => array(
                 'help' => 'Delete a token record',
-                'callback' => 'behat_editor_tokenizer_delete',
+                'callback' => 'behat_editor_tokenizer_callback',
                 'access callback' => 'behat_editor_tokenizer_access',
                 'access arguments' => array('behat tokenizer delete'),
                 'access arguments append' => TRUE,
                 'args' => array(
+                    array(
+                        'name' => 'method',
+                        'type' => 'string',
+                        'description' => 'method of controller',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
                     array(
                         'name' => 'data',
                         'type' => 'struct',
@@ -216,11 +149,18 @@ function behat_editor_tokenizer_services_resources() {
             ),
             'index' => array(
                 'help' => 'Retrieves a listing Tokens',
-                'callback' => 'behat_editor_tokenizer_get_all',
+                'callback' => 'behat_editor_tokenizer_callback',
                 'access callback' => 'behat_editor_tokenizer_access',
                 'access arguments' => array('behat tokenizer view all'),
                 'access arguments append' => FALSE,
                 'args' => array(
+                    array(
+                        'name' => 'method',
+                        'type' => 'string',
+                        'description' => 'method of controller',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
                     array(
                         'name' => 'data',
                         'type' => 'struct',
@@ -264,12 +204,6 @@ function behat_editor_tokenizer_test_area() {
 
 function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
     $form_batch = array('behat_editor_bulk_form_tags', 'behat_editor_bulk_form_modules');
-    if(in_array($form_id, $form_batch)) {
-
-        composer_manager_register_autoloader();
-//        $path = drupal_get_path('module', 'behat_editor_saucelabs');
-//        $form['#attached']['js']['behat_editor_saucelabs_settings'] = $path . '/js/behat_editor_saucelabs_settings.js';
-    }
 
     $forms = array('behat_editor_view_form', 'behat_editor_edit_form', 'behat_editor_add_form');
     //Deal with other forms
@@ -278,6 +212,8 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
 
         $path = drupal_get_path('module', 'behat_editor_tokenizer');
         $form['#attached']['js']['behat_editor_tokenizer_app'] = $path . '/js/behat_editor_tokenizer_app.js';
+        drupal_add_js($path . '/library/xeditable/js/bootstrap-editable.js', array('scope' => 'footer'));
+        $form['#attached']['css']['behat_editor_tokenizer_editable'] = $path . '/library/xeditable/css/bootstrap-editable.css';
 
         if($form_id == 'behat_editor_add_form') {
             $form['#attached']['js']['behat_editor_tokenizer_method'] = $path . '/js/behat_editor_tokenizer_add.js';
@@ -295,7 +231,7 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
         );
 
         $form['results_area']['settings']['tokenizer']['text'] = array(
-            '#type'         => 'textarea',
+            '#markup'         => '<div class="token-table"> </div>',
             '#attributes'   => array('id' => 'tokenizer_text')
         );
 
@@ -307,7 +243,7 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
 
         $form['results_area']['settings']['tokenizer']['edit'] = array(
             '#type'         => 'button',
-            '#value'        => t('Edit Token File'),
+            '#value'        => t('Update Token File'),
             '#attributes'   => array('id' => 'edit-token', 'class' => array('btn',  'btn-success', 'tokenizer'))
         );
 
@@ -328,6 +264,8 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
             '#default_value'    => false,
             '#attributes'       => array('id' => 'token_filename')
         );
+
+
     }
 }
 

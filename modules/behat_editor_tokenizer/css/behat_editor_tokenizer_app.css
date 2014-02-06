@@ -5,3 +5,7 @@ button.tokenizer  {
     max-width: 30%;
     margin-bottom: 5px;
 }
+
+button#edit-token, button.add-token , div.form-item-use-token {
+    display: none;
+}

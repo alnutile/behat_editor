@@ -20,16 +20,34 @@
 
     };
 
-    Drupal.behat_editor_tokenizer.show_edit_group_buttons = function() {
-        $('.add-token').hide();
-        $('#edit-token').show();
-        $('#use-token').show();
+    Drupal.behat_editor_tokenizer.convertTableToArray = function () {
+        //thanks! http://jsfiddle.net/uNvmT/1/
+        var array = [];
+        $('table.tokens tr').has('td').each(function() {
+            var arrayItem = {};
+            $('td', $(this)).each(function(index, item) {
+                arrayItem[index] = $(item).text();
+            });
+            array.push(arrayItem);
+        });
+        return array;
+    }
+
+    Drupal.behat_editor_tokenizer.setText = function (token_text, context) {
+        $('.token-table', context).append(token_text);
+        Drupal.behat_editor_tokenizer.add_row(context);
+    }
+
+    Drupal.behat_editor_tokenizer.show_edit_group_buttons = function (context) {
+        $('.add-token', context).hide();
+        $('#edit-token', context).show();
+        $('form.form-item-use-token', context).show();
     };
 
-    Drupal.behat_editor_tokenizer.show_add_group_buttons = function() {
-        $('.add-token').show();
-        $('#edit-token').hide();
-        $('#use-token').hide();
+    Drupal.behat_editor_tokenizer.show_add_group_buttons = function (context) {
+        $('.add-token', context).show();
+        $('#edit-token', context).hide();
+        $('form.form-item-use-token', context).hide();
     };
 
     Drupal.behaviors.behat_editor_tokenizer_edit = {
@@ -57,35 +75,35 @@
                 "fullpath": filepath,
                 "token_content": {}
             };
-            url = '/behat_tokenizer_v1/tokenizer/getfile';
+            url = '/behat_tokenizer_v1/tokenizer/retrieve';
             type = 'GET';
             results = Drupal.behat_editor.action('GET', token, parameters, url, false);
+            token_text = (results.content !== null) ? results.content : null;
+            filename = results.filename;
+            $('input[name=token_filename]').val(filename);
+            Drupal.behat_editor_tokenizer.setText(token_text, context);
 
-            if (results.errors === 1) {
-                Drupal.behat_editor_tokenizer.show_add_group_buttons();
+            if ( results.message == 'File is missing please create one') {
+                Drupal.behat_editor_tokenizer.show_add_group_buttons(context);
+                results.message = "You an add a token file";
             } else {
-                token_text = (results.content !== null) ? results.content : null;
-                filename = results.filename;
-                $('input[name=token_filename]').val(filename);
-                results.message = "Ready to edit the file";
-                $('#tokenizer_text').val(token_text);
-                Drupal.behat_editor_tokenizer.show_edit_group_buttons();
+                Drupal.behat_editor_tokenizer.show_edit_group_buttons(context);
+                results.message = "You can update your token files above";
             }
 
             Drupal.behat_editor_tokenizer.message(results);
 
-            $('.add-token').on('click', function () {
+            $('.add-token', context).on('click', function () {
                 results = null;
                 new_filename = 'newfile';
-                token_content = $('#tokenizer_text').val().split("\n");
-                console.log(token_content);
+                token_content = Drupal.behat_editor_tokenizer.convertTableToArray();
                 parameters = {
                     "filename": filename_full,
                     "fullpath": filepath,
                     "token_content": token_content,
                     "new_filename": new_filename
                 };
-                url = '/behat_tokenizer_v1/tokenizer';
+                url = '/behat_tokenizer_v1/tokenizer/create';
                 results = Drupal.behat_editor.action('POST', token, parameters, url, true);
                 Drupal.behat_editor_tokenizer.message(results);
 
@@ -100,7 +118,7 @@
                     parameters,
                     url,
                     results;
-                token_content = $('#tokenizer_text').val().split("\n");
+                token_content = Drupal.behat_editor_tokenizer.convertTableToArray();
                 token_filename = $('input[name=token_filename]').val();
                 parameters = {
                     "filename": filename_full,
@@ -108,12 +126,12 @@
                     "token_content": token_content,
                     "token_filename": token_filename
                 };
-                url = '/behat_tokenizer_v1/tokenizer/settoken';
+                url = '/behat_tokenizer_v1/tokenizer/update';
                 results = Drupal.behat_editor.action('PUT', token, parameters, url, true);
                 Drupal.behat_editor_tokenizer.message(results);
             });
 
-
+            $('a.editable', context).editable();
         }
     }
 
