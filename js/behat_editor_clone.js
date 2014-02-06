@@ -35,7 +35,7 @@
                 };
                 var data = Drupal.behat_editor.action('POST', token, parameters, url);
                 if (data.error === 0) {
-                    window.location.replace("/admin/behat/edit/" + module + "/" + filename);
+                    window.location.replace("/admin/behat/view/" + module + "/" + filename);
                 }
                 Drupal.behat_editor.renderMessage(data);
             });
