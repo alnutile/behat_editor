@@ -36,6 +36,12 @@
     Drupal.behat_editor_tokenizer.setText = function (token_text, context) {
         $('.token-table', context).append(token_text);
         Drupal.behat_editor_tokenizer.add_row(context);
+        var selectable = Drupal.behat_editor_tokenizer.selectable();
+        console.log(selectable);
+        $('a.selectable', context).editable({
+            value: 0,
+            source: selectable
+        });
     }
 
     Drupal.behat_editor_tokenizer.show_edit_group_buttons = function (context) {
