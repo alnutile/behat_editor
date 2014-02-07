@@ -20,6 +20,16 @@
 
     };
 
+    Drupal.behat_editor_tokenizer.setMessages = function (results, context) {
+        if (results.message === 'File is missing please create one') {
+            Drupal.behat_editor_tokenizer.show_add_group_buttons(context);
+            results.message = "You an add a token file";
+        } else {
+            Drupal.behat_editor_tokenizer.show_edit_group_buttons(context);
+            results.message = "You can update your token files above";
+        }
+    };
+
     Drupal.behat_editor_tokenizer.convertTableToArray = function () {
         //thanks! http://jsfiddle.net/uNvmT/1/
         var array = [];
@@ -34,15 +44,22 @@
     }
 
     Drupal.behat_editor_tokenizer.setText = function (token_text, context) {
-        $('.token-table', context).append(token_text);
+        $(token_text).each(function(){
+            var content = this.content;
+            Drupal.behat_editor_tokenizer.appendToTable(content, context);
+            Drupal.behat_editor_tokenizer.setMessages(content, context);
+        });
+    };
+
+    Drupal.behat_editor_tokenizer.appendToTable = function (results, context) {
+        $('.token-table', context).append(results);
         Drupal.behat_editor_tokenizer.add_row(context);
         var selectable = Drupal.behat_editor_tokenizer.selectable();
-        console.log(selectable);
         $('a.selectable', context).editable({
             value: 0,
             source: selectable
         });
-    }
+    };
 
     Drupal.behat_editor_tokenizer.show_edit_group_buttons = function (context) {
         $('.add-token', context).hide();
@@ -84,18 +101,14 @@
             url = '/behat_tokenizer_v1/tokenizer/retrieve';
             type = 'GET';
             results = Drupal.behat_editor.action('GET', token, parameters, url, false);
-            token_text = (results.content !== null) ? results.content : null;
+            token_text = ($(results).length) ? results : [];
             filename = results.filename;
+
             $('input[name=token_filename]').val(filename);
+
             Drupal.behat_editor_tokenizer.setText(token_text, context);
 
-            if ( results.message == 'File is missing please create one') {
-                Drupal.behat_editor_tokenizer.show_add_group_buttons(context);
-                results.message = "You an add a token file";
-            } else {
-                Drupal.behat_editor_tokenizer.show_edit_group_buttons(context);
-                results.message = "You can update your token files above";
-            }
+
 
             Drupal.behat_editor_tokenizer.message(results);
 

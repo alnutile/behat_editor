@@ -25,7 +25,7 @@ class TokenizerController {
     {
         $this->results = $this->model->retrieve();
         $this->processFromModelToView();
-        return $this->results;
+        return array($this->results);
     }
 
     public function create()
