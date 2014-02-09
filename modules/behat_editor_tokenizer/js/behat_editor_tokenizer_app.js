@@ -69,6 +69,7 @@
         $('.token-table', context).append(results);
         $('table#' + filename_id + ' a.editable', context).editable();
         Drupal.behat_editor_tokenizer.add_row(context, filename_id);
+        Drupal.behat_editor_tokenizer.sesssion_set(filename_id, context);
     };
 
     Drupal.behat_editor_tokenizer.show_edit_group_buttons = function (context) {
@@ -110,7 +111,10 @@
     Drupal.behat_editor_tokenizer.add_new_token_table = function (context) {
         var token_filename,
             token_filename_id,
+            testname_starts,
+            token,
             testname;
+        token = Drupal.behat_editor.get_token();
         testname = $('input[name=filename_full]').val();
         testname_starts = testname.split('.');
         testname = testname_starts[0];
@@ -187,6 +191,32 @@
         $('a.selectable', context).editable({
             prepend: "not selected",
             source:  selectable
+        });
+    }
+
+    Drupal.behat_editor_tokenizer.sesssion_set = function (filename_id, context) {
+        $('button.session-set[data-target=' + filename_id + '').on('click', function (e){
+            e.preventDefault();
+            var token_filename = $(this).data('filename');
+            var test_path = $('input[name=filepath]').val();
+            if ( !$(this).hasClass('active-session') ) {
+                $('button.session-set').text('use for next test?');
+                var set = 'true';
+                $(this).text("active for next test");
+            } else {
+                $(this).text("use for next test?");
+                var set = 'false';
+            }
+            var parameters = {
+                "token_filename": token_filename,
+                "set":  set,
+                "test_path": test_path
+            }
+            var token = Drupal.behat_editor.get_token();
+            url = '/behat_tokenizer_v1/session';
+            $(this).toggleClass('active-session');
+            results = Drupal.behat_editor.action('GET', token, parameters, url, false);
+            Drupal.behat_editor_tokenizer.message(results);
         });
     }
 

@@ -207,6 +207,32 @@ function behat_editor_tokenizer_get_template() {
     exit();
 }
 
+
+/**
+ * Why not use services for this you ask?
+ * Say it's target_actions or relationships
+ * BECAUSE IT MAKES MY JOB NOT FUN :(
+ * I have not seen REST as un RESTFul eg hard
+ * as when it comes to writing services.
+ * rant over
+ */
+function behat_editor_tokenizer_set_session() {
+    $token_filename     = $_REQUEST['token_filename'];
+    $test_path          = $_REQUEST['test_path'];
+    $set                = $_REQUEST['set'];
+
+    if( $set === 'true' ) {
+        $message = array('errors' => 0, 'message' => "This is now set for the next test $token_filename");
+        $_SESSION['TOKENIZE_TEST'] = $test_path . '/tokens/' . $token_filename;
+    } else {
+        $message = array('errors' => 0, 'message' => "This is no longer set for the next test $token_filename");
+        unset($_SESSION['TOKENIZE_TEST']);
+    }
+
+    drupal_json_output($message);
+    exit();
+}
+
 function behat_editor_tokenizer_access($op, $args = array()) {
     global $user;
     if(user_access($op)) {
@@ -229,6 +255,12 @@ function behat_editor_tokenizer_menu() {
         'access arguments' => array('behat tokenizer create'),
         'type' => MENU_CALLBACK,
         'page callback' => 'behat_editor_tokenizer_get_template',
+    );
+    $items['behat_tokenizer_v1/session'] =  array(
+        'title' => t('Set next test'),
+        'access arguments' => array('behat tokenizer create'),
+        'type' => MENU_CALLBACK,
+        'page callback' => 'behat_editor_tokenizer_set_session',
     );
     return $items;
 }
@@ -284,10 +316,9 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
 
 function behat_editor_tokenizer_behat_editor_yml_array_alter(&$behat_yml, $context1, $settings) {
     if( $context1 == 'generate_yml' ) {
-        //if ( isset($_SESSION['TOKENIZE_TEST']) ) {
-            //$token_path = $_SESSION['TOKENIZE_TEST'];
-            $token_path = '/assets/example/current/sites/default/files/behat_tests/tokens/wikipedia.feature.token';
-            $behat_yml['saucelabs']['extensions']['OrangeDigital\BusinessSelectorExtension\Extension'] = array(
+        if ( isset($_SESSION['TOKENIZE_TEST']) ) {
+            $token_path = $_SESSION['TOKENIZE_TEST'];
+            $behat_yml['default']['extensions']['OrangeDigital\BusinessSelectorExtension\Extension'] = array(
                 'urlFilePath'       => null,
                 'selectorFilePath'  => $token_path,
                 'assetPath'         => null,
@@ -297,6 +328,6 @@ function behat_editor_tokenizer_behat_editor_yml_array_alter(&$behat_yml, $conte
                 )
             );
             unset($_SESSION['TOKENIZE_TEST']);
-        //}
+        }
     }
 }
