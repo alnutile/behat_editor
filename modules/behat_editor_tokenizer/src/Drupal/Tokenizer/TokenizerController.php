@@ -15,6 +15,9 @@ class TokenizerController {
     public $template;
     public $loader;
     public $results;
+    public $token_filename;
+    public $token_filename_id;
+    public $token_content_tweak_array;
 
     public function __construct(TokenizerModel $model)
     {
@@ -25,7 +28,7 @@ class TokenizerController {
     {
         $this->results = $this->model->retrieve();
         $this->processFromModelToView();
-        return array($this->results);
+        return $this->results;
     }
 
     public function create()
@@ -67,20 +70,35 @@ class TokenizerController {
         $loader = new Twig_Loader_Filesystem(__DIR__ . '/templates/');
         $twig = new Twig_Environment($loader);
 
-        $this->token_array_preprocess = $this->results['content'];
+        $this->token_array_preprocess       = $this->results['content'];
+        $this->token_filename               = $this->results['filename'];
+        $this->token_filename_id            = str_replace('.', '_', $this->results['filename']);
         $token_content_tweak = null;
+        $this->process_yaml_array();
+
+        $this->token_array_postprocess = $twig->render('editable_table.html', array('tokens' => $this->token_content_tweak_array, 'filename' => $this->token_filename ,'filename_id' => $this->token_filename_id));
+        $this->results['content'] = $this->token_array_postprocess;
+    }
+
+    public static function getStarterTable($filename, $filename_id)
+    {
+        $loader = new Twig_Loader_Filesystem(__DIR__ . '/templates/');
+        $twig = new Twig_Environment($loader);
+        return $twig->render('editable_table_starter.html',
+            array('filename' => $filename ,'filename_id' => $filename_id));
+    }
+
+    protected function process_yaml_array()
+    {
         $count = 0;
         foreach($this->token_array_preprocess as $key => $value) {
             if(strpos($key, '#') !== FALSE) {
                 $token_content_tweak_array["comment|$count"] = $key;
                 $count = $count + 1;
             } else {
-                $token_content_tweak_array[$key] = $value;
+                $this->token_content_tweak_array[$key] = $value;
             }
         }
-
-        $this->token_array_postprocess = $twig->render('editable_table.html', array('tokens' => $token_content_tweak_array));
-        $this->results['content'] = $this->token_array_postprocess;
     }
 
     public static function processFromViewToModel($content)
@@ -100,5 +118,18 @@ class TokenizerController {
             }
         }
         return $token_content_tweak;
+    }
+
+    public static function getFilesFromTestName($filename, $filepath, $finder)
+    {
+        $filename_start = explode('.', $filename);
+
+        $iterator = $finder
+            ->files()
+            ->name($filename_start[0] . '*')
+            ->depth(0)
+            ->in($filepath . '/tokens');
+
+        return $iterator;
     }
 }

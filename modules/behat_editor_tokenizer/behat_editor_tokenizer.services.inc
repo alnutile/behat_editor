@@ -55,6 +55,11 @@ function behat_editor_tokenizer_default_services_endpoint() {
                     'enabled' => '1',
                 ),
             ),
+            'targeted_actions' => array(
+                'templates' => array(
+                    'enabled' => '1',
+                ),
+            ),
         ),
     );
     $endpoint->debug = 0;

@@ -1,4 +1,4 @@
-<table class="tokens table table-striped table-condensed">
+<table class="tokens table table-striped table-condensed" id="{{ filename_id }}">
     <thead>
         <tr>
             <th>Key</th>
@@ -8,13 +8,14 @@
     {% for key, token in tokens %}
         <tr>
             {% if key == 'Default URL' %}
-                <td><strong>{{ key }}</strong></td><td><a data-value="{{ token }}" class="selectable" href="#" id="{{ token }}" data-type="select" data-title="{{ token }}" ></a></td>
+                <td><strong>{{ key }}</strong></td><td><a data-value="{{ token }}" class="selectable" href="#" data-type="select" data-title="{{ token }}" ></a></td>
             {% else %}
-                <td><a class="editable" href="#" id="{{ key }}" data-type="text">{{ key }}</a></td><td><a class="editable" href="#" id="{{ token }}" data-type="textarea" data-title="{{ token }}" >{{ token }}</a></td>
+                <td><a class="editable" href="#" data-type="text">{{ key }}</a></td><td><a class="editable" href="#" data-type="textarea" data-title="{{ token }}" >{{ token }}</a></td>
             {% endif %}
         </tr>
     {% endfor %}
 
 </table>
-<button class="new-row btn btn-sm btn-info">add row</button>
+<button data-target="{{ filename_id }}" class="new-row btn btn-sm btn-info">add row</button>
+<button data-target="{{ filename_id }}" data-filename="{{ filename }}"  class="save-row btn btn-sm btn-danger">save this test</button>
 <hr>

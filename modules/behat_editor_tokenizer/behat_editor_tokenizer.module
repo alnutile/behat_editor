@@ -4,7 +4,7 @@ use Drupal\Tokenizer\TokenizerController;
 use Tokenizer\TokenizerModel;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
-
+use Symfony\Component\Finder;
 
 include_once 'behat_editor_tokenizer_services.feature.inc';
 
@@ -38,13 +38,27 @@ function behat_editor_tokenizer_callback($method, $parameters) {
     drupal_alter($alter, $results);
     $filesystem = new Filesystem();
     $yaml_parser = new Yaml();
+
     if( $method == 'update' || $method == 'create' ) {
         $token_content = TokenizerController::processFromViewToModel($token_content);
     }
-    $model = new TokenizerController(new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser));
-    $results = $model->$method();
-    $alter = 'behat_editor_takenizer_post_' . $method;
-    drupal_alter($alter, $results);
+
+    if( $method == 'retrieve') {
+        //1. This means some work on my part to find all files in the path
+        $iterator = TokenizerController::getFilesFromTestName($filename, $filepath, $finder = new Finder\Finder());
+        foreach($iterator as $file) {
+            $model = new TokenizerController(new TokenizerModel($file->getFilename(), $filepath . '/tokens', $token_content, $filesystem, $yaml_parser));
+            $each_results = $model->$method();
+            $alter = 'behat_editor_takenizer_post_' . $method;
+            drupal_alter($alter, $each_results);
+            $results[] = $each_results;
+        }
+    } else {
+        $model = new TokenizerController(new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser));
+        $results = $model->$method();
+        $alter = 'behat_editor_takenizer_post_' . $method;
+        drupal_alter($alter, $results);
+    }
     return $results;
 }
 
@@ -55,6 +69,7 @@ function behat_editor_tokenizer_callback($method, $parameters) {
 function behat_editor_tokenizer_services_resources() {
     return array(
         'tokenizer' => array(
+            'operations' => array(
             'retrieve' => array(
                 'help' => 'Retrieve a token record',
                 'callback' => 'behat_editor_tokenizer_callback',
@@ -167,11 +182,29 @@ function behat_editor_tokenizer_services_resources() {
                         'description' => 'The tokens structure',
                         'source' => 'data',
                         'optional' => FALSE,
+                        ),
                     ),
                 ),
             ),
-        ),
+        )
     );
+}
+
+/**
+ * Why not use services for this you ask?
+ * Say it's target_actions or relationships
+ * BECAUSE IT MAKES MY JOB NOT FUN :(
+ * I have not seen REST as un RESTFul eg hard
+ * as when it comes to writing services.
+ * rant over
+ */
+function behat_editor_tokenizer_get_template() {
+    $filename = $_REQUEST['token_filename'];
+    $filename_id = $_REQUEST['token_filename_id'];
+    //1. get template
+    $output = TokenizerController::getStarterTable($filename, $filename_id);
+    drupal_json_output($output);
+    exit();
 }
 
 function behat_editor_tokenizer_access($op, $args = array()) {
@@ -190,6 +223,12 @@ function behat_editor_tokenizer_menu() {
         'access arguments' => array('behat tokenizer view all'),
         'type' => MENU_CALLBACK,
         'page callback' => 'behat_editor_tokenizer_test_area',
+    );
+    $items['behat_tokenizer_v1/templates'] =  array(
+        'title' => t('Get Template output'),
+        'access arguments' => array('behat tokenizer create'),
+        'type' => MENU_CALLBACK,
+        'page callback' => 'behat_editor_tokenizer_get_template',
     );
     return $items;
 }
@@ -215,13 +254,9 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
         drupal_add_js($path . '/library/xeditable/js/bootstrap-editable.js', array('scope' => 'footer'));
         $form['#attached']['css']['behat_editor_tokenizer_editable'] = $path . '/library/xeditable/css/bootstrap-editable.css';
 
-        if($form_id == 'behat_editor_add_form') {
-            $form['#attached']['js']['behat_editor_tokenizer_method'] = $path . '/js/behat_editor_tokenizer_add.js';
-        } else if ($form_id == 'behat_editor_edit_form') {
-            $form['#attached']['js']['behat_editor_tokenizer_method'] = $path . '/js/behat_editor_tokenizer_edit.js';
-        } else {
-            $form['#attached']['js']['behat_editor_tokenizer_method'] = $path . '/js/behat_editor_tokenizer_view.js';
-        }
+        $form['#attached']['js']['behat_editor_tokenizer_add'] = $path . '/js/behat_editor_tokenizer_add.js';
+        $form['#attached']['js']['behat_editor_tokenizer_update'] = $path . '/js/behat_editor_tokenizer_update.js';
+        $form['#attached']['js']['behat_editor_tokenizer_view'] = $path . '/js/behat_editor_tokenizer_view.js';
 
         $form['#attached']['css']['behat_editor_tokenizer_css'] = $path . '/css/behat_editor_tokenizer_app.css';
 
@@ -241,31 +276,9 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
             '#attributes'   => array('class' => array('btn',  'btn-success', 'add-token', 'tokenizer'))
         );
 
-        $form['results_area']['settings']['tokenizer']['edit'] = array(
-            '#type'         => 'button',
-            '#value'        => t('Update Token File'),
-            '#attributes'   => array('id' => 'edit-token', 'class' => array('btn',  'btn-success', 'tokenizer'))
-        );
-
         $form['results_area']['settings']['tokenizer']['messages'] = array(
             '#markup'       => '<div id="tokenizer-messages"></div>',
         );
-
-        $form['results_area']['settings']['tokenizer']['use_token'] = array(
-            '#prefix'       => '<div class="checkbox">',
-            '#title'        => '<span class="help-block">check here to use this token for next test</span>',
-            '#type'         => 'checkbox',
-            '#attributes'   => array('id' => 'use-token'),
-            '#suffix'       => '</div>'
-        );
-
-        $form['results_area']['settings']['tokenizer']['token_filename'] = array(
-            '#type'             => 'hidden',
-            '#default_value'    => false,
-            '#attributes'       => array('id' => 'token_filename')
-        );
-
-
     }
 }
 
