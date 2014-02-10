@@ -25,21 +25,16 @@ class FeatureContext extends BehatContext
 
     public function __construct(array $parameters)
     {
-        var_dump($parameters);
         $this->useContext('mink', new MinkContext($parameters));
         $this->useContext('BusinessSelectors', new BusinessSelectorContext($parameters));
     }
 
+    /**
+     * @Given /^I try again$/
+     */
+    public function iTryAgain()
+    {
+        throw new PendingException();
+    }
 
-//
-// Place your definition and hook methods here:
-//
-//    /**
-//     * @Given /^I have done something with "([^"]*)"$/
-//     */
-//    public function iHaveDoneSomethingWith($argument)
-//    {
-//        doSomethingWith($argument);
-//    }
-//
 }
