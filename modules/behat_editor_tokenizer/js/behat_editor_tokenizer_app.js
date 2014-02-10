@@ -61,7 +61,6 @@
 
             Drupal.behat_editor_tokenizer.appendToTable(content, filename_id, context);
             Drupal.behat_editor_tokenizer.add_selectable(context, filename);
-            //Drupal.behat_editor_tokenizer.setMessages(message, context);
         });
     };
 
@@ -146,6 +145,8 @@
             prepend: "not selected",
             source:  selectable
         });
+        Drupal.behat_editor_tokenizer.sesssion_set(token_filename_id, context);
+
         var results = {};
         results.errors = 0;
         results.message = 'Your new token set table has been added above';
