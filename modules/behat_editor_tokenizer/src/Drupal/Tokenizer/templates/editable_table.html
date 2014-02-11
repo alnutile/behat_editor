@@ -9,7 +9,7 @@
     {% for key, token in tokens %}
         <tr>
             {% if key == 'Default URL' %}
-                <td><strong>{{ key }}</strong></td><td><a data-value="{{ token }}" class="selectable" href="#" data-type="select" data-title="{{ token }}" ></a></td>
+                <td><strong>{{ key }}</strong></td><td><a data-target="{{ filename_id }}" data-value="{{ token }}" class="selectable" href="#" data-type="select" data-title="{{ token }}" ></a></td>
             {% else %}
                 <td><a class="editable" href="#" data-type="text">{{ key }}</a></td><td><a class="editable" href="#" data-type="textarea" data-title="{{ token }}" >{{ token }}</a></td>
             {% endif %}

@@ -280,7 +280,8 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
     //Deal with other forms
     if(in_array($form_id, $forms)) {
         composer_manager_register_autoloader();
-
+        //start user with clean slates
+        unset($_SESSION['TOKENIZE_TEST']);
         $path = drupal_get_path('module', 'behat_editor_tokenizer');
         drupal_add_js($path . '/library/xeditable/js/bootstrap-editable.js', array('scope' => 'footer'));
         $form['#attached']['css']['behat_editor_tokenizer_editable'] = $path . '/library/xeditable/css/bootstrap-editable.css';
@@ -327,7 +328,8 @@ function behat_editor_tokenizer_behat_editor_yml_array_alter(&$behat_yml, $conte
                     'UIBusinessSelector' => null
                 )
             );
-            unset($_SESSION['TOKENIZE_TEST']);
+            //@TODO not sure here should I unset it or force user to unset?
+            //unset($_SESSION['TOKENIZE_TEST']);
         }
     }
 }

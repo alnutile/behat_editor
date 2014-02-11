@@ -25,8 +25,9 @@
                 ' ' + message + '</div>';
             $('#tokenizer-messages').append(alert);
         }
-
     };
+
+
 
     Drupal.behat_editor_tokenizer.setMessages = function (results, context) {
         if (results.message === 'File is missing please create one') {
@@ -58,7 +59,6 @@
     Drupal.behat_editor_tokenizer.appendToTable = function (results, filename_id, context) {
         $('.token-table', context).append(results);
         $('table#' + filename_id + ' a.editable', context).editable();
-        Drupal.behat_editor_tokenizer.sesssion_set(filename_id, context);
     };
 
     Drupal.behat_editor_tokenizer.show_edit_group_buttons = function (context) {
@@ -200,10 +200,13 @@
             var test_path = $('input[name=filepath]').val();
             if ( !$(this).hasClass('active-session') ) {
                 $('button.session-set').text('use for next test?');
+                $('button.session-set').removeClass('btn-success').addClass('btn-warning');
                 var set = 'true';
                 $(this).text("active for next test");
+                $(this).addClass('btn-success').removeClass('btn-warning');
             } else {
                 $(this).text("use for next test?");
+                $(this).removeClass('btn-success').addClass('btn-warning');
                 var set = 'false';
             }
             var parameters = {
@@ -262,6 +265,16 @@
                     Drupal.behat_editor_tokenizer.append_actions(context, filename_id);
                 });
             }
+
+            $('select#edit-group', context).on('change', function(){
+                var selected = $('select#edit-group option:selected').text();
+                $('body a.selectable').each(function() {
+                    if ( $(this).text() === selected ) {
+                        var targetButton = $(this).data('target');
+                        $('button.session-set[data-target=' + targetButton + ']').click();
+                    }
+                });
+            });
         }
     }
 
