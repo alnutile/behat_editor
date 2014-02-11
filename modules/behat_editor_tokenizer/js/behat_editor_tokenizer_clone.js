@@ -20,14 +20,6 @@
             token_filename = testname + '.' + timeStamp + '.token';
             token_filename_id = testname + '_' + timeStamp + '_token';
 
-//            targetTable = targetTable.replace(new RegExp(filename_id, "g"), token_filename_id);
-//            targetTable = targetTable.replace(new RegExp(targetFilename, "g"), token_filename);
-//
-//            var content = '<div class="table-wrapper-' + token_filename_id + '">' +
-//                targetTable +
-//                '</div><hr>';
-//            var targetAppend = 'div.token-table';
-
             Drupal.behat_editor_tokenizer.add_new_token_table(context, token_filename, token_filename_id);
             //@TODO had issues with the selectable inline feature so I did it this way
             $('div.table-wrapper-' + token_filename_id + ' tr:eq(2)').remove();
