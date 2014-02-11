@@ -51,23 +51,13 @@
         return array;
     }
 
-    Drupal.behat_editor_tokenizer.setText = function (results, context) {
-        $(results).each(function(){
-            var content = this.content;
-            var errors = this.errors;
-            var message = this.message;
-            var filename = this.filename;
-            var filename_id = filename.replace(/\./g, '_');
-
+    Drupal.behat_editor_tokenizer.setText = function (filename_id, context, content) {
             Drupal.behat_editor_tokenizer.appendToTable(content, filename_id, context);
-            Drupal.behat_editor_tokenizer.add_selectable(context, filename);
-        });
     };
 
     Drupal.behat_editor_tokenizer.appendToTable = function (results, filename_id, context) {
         $('.token-table', context).append(results);
         $('table#' + filename_id + ' a.editable', context).editable();
-        Drupal.behat_editor_tokenizer.add_row(context, filename_id);
         Drupal.behat_editor_tokenizer.sesssion_set(filename_id, context);
     };
 
@@ -107,10 +97,17 @@
         });
     };
 
-    Drupal.behat_editor_tokenizer.add_new_token_table = function (context) {
-        var token_filename,
-            token_filename_id,
-            testname_starts,
+    Drupal.behat_editor_tokenizer.append_actions = function ( context, token_filename_id ) {
+        Drupal.behat_editor_tokenizer.add_row(context, token_filename_id);
+        Drupal.behat_editor_tokenizer.create_row(context, token_filename_id);
+        Drupal.behat_editor_tokenizer.set_editable(context, token_filename_id);
+        Drupal.behat_editor_tokenizer.set_selectable(context, token_filename_id);
+        Drupal.behat_editor_tokenizer.sesssion_set(token_filename_id, context);
+        Drupal.behat_editor_tokenizer.clone(context, token_filename_id);
+    };
+
+    Drupal.behat_editor_tokenizer.add_new_token_table = function (context, token_filename, token_filename_id) {
+        var testname_starts,
             token,
             testname;
         token = Drupal.behat_editor.get_token();
@@ -118,8 +115,10 @@
         testname_starts = testname.split('.');
         testname = testname_starts[0];
         var timeStamp = new Date().getTime();
-        token_filename = testname + '.' + timeStamp + '.token';
-        token_filename_id = testname + '_' + timeStamp + '_token';
+        if ( token_filename_id === undefined && token_filename === undefined) {
+            var token_filename = testname + '.' + timeStamp + '.token';
+            var token_filename_id = testname + '_' + timeStamp + '_token';
+        }
         //Request a template from the url
         token = Drupal.behat_editor.get_token();
         parameters = {
@@ -129,29 +128,28 @@
         url = '/behat_tokenizer_v1/templates';
         type = 'GET';
         results = Drupal.behat_editor.action('GET', token, parameters, url, false);
-        var selectable = Drupal.behat_editor_tokenizer.selectable();
+
         // figure out if this is the first token table or not
-        if ( $('.token-table hr:last').length === 0 ) {
+        if ( $('.token-table div.table-wrapper').length === 0 ) {
             var targetAppend = 'div.token-table';
             $(targetAppend).append(results);
         } else {
-            var targetAppend = '.token-table hr:last';
+            var targetAppend = '.token-table div.table-wrapper:last';
             $(results).insertAfter(targetAppend);
         }
-        Drupal.behat_editor_tokenizer.add_row(context, token_filename_id);
-        Drupal.behat_editor_tokenizer.create_row(context, token_filename_id);
+    }
+
+    Drupal.behat_editor_tokenizer.set_editable = function ( context, token_filename_id ) {
         $('table#' + token_filename_id + ' a.editable', context).editable();
+    };
+
+    Drupal.behat_editor_tokenizer.set_selectable = function ( context, token_filename_id ) {
+        var selectable = Drupal.behat_editor_tokenizer.selectable();
         $('table#' + token_filename_id + ' a.selectable', context).editable({
             prepend: "not selected",
             source:  selectable
         });
-        Drupal.behat_editor_tokenizer.sesssion_set(token_filename_id, context);
-
-        var results = {};
-        results.errors = 0;
-        results.message = 'Your new token set table has been added above';
-        Drupal.behat_editor_tokenizer.message(results);
-    }
+    };
 
     Drupal.behat_editor_tokenizer.create_row = function ( context, filename_id ) {
         $('button.create-row[data-target=' + filename_id + ']', context).on('click', function (e) {
@@ -248,8 +246,21 @@
             results = Drupal.behat_editor.action('GET', token, parameters, url, false);
             if ( results === null ) {
                 Drupal.behat_editor_tokenizer.add_new_token_table(context);
+                Drupal.behat_editor_tokenizer.append_actions(context, token_filename_id);
+                var results = {};
+                results.errors = 0;
+                results.message = 'Your new token set table has been added above';
+                Drupal.behat_editor_tokenizer.message(results);
             } else {
-                Drupal.behat_editor_tokenizer.setText(results, context);
+                $(results).each(function(){
+                    var content = this.content;
+                    var errors = this.errors;
+                    var message = this.message;
+                    var filename = this.filename;
+                    var filename_id = filename.replace(/\./g, '_');
+                    Drupal.behat_editor_tokenizer.setText(filename_id, context, content);
+                    Drupal.behat_editor_tokenizer.append_actions(context, filename_id);
+                });
             }
         }
     }

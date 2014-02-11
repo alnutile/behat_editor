@@ -282,11 +282,11 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
         composer_manager_register_autoloader();
 
         $path = drupal_get_path('module', 'behat_editor_tokenizer');
-        $form['#attached']['js']['behat_editor_tokenizer_app'] = $path . '/js/behat_editor_tokenizer_app.js';
         drupal_add_js($path . '/library/xeditable/js/bootstrap-editable.js', array('scope' => 'footer'));
         $form['#attached']['css']['behat_editor_tokenizer_editable'] = $path . '/library/xeditable/css/bootstrap-editable.css';
-
+        $form['#attached']['js']['behat_editor_tokenizer_app'] = $path . '/js/behat_editor_tokenizer_app.js';
         $form['#attached']['js']['behat_editor_tokenizer_add'] = $path . '/js/behat_editor_tokenizer_add.js';
+        $form['#attached']['js']['behat_editor_tokenizer_clone'] = $path . '/js/behat_editor_tokenizer_clone.js';
         $form['#attached']['js']['behat_editor_tokenizer_update'] = $path . '/js/behat_editor_tokenizer_update.js';
         $form['#attached']['js']['behat_editor_tokenizer_view'] = $path . '/js/behat_editor_tokenizer_view.js';
 
