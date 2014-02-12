@@ -49,9 +49,8 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     drupal_alter('behat_editor_edit', $file_info);
 
-    $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
-
     $path = drupal_get_path('module', 'behat_editor');
+
     $form['#attached']['js']['behat_editor_tags'] = $path . '/js/jquery.behat_editor.apply_tags.js';
     $form['#attached']['js']['behat_editor_close'] = $path . '/js/jquery.behat_editor.close_button.js';
     $form['#attached']['js']['behat_editor_app'] = $path . '/js/behat_editor_app.js';
@@ -67,6 +66,49 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     $form['#attached']['css']['behat_app_css'] = $path . '/css/behat_editor_app.css';
     $form['#attached']['css']['behat_add_css'] = $path . '/css/behat_editor_edit.css';
     $form['#attached']['css']['behat_add_css'] = $path . '/css/behat_editor_help_bar.css';
+
+    $form['questions_area'] = array(
+        '#type' => 'container',
+        '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-sm-6', 'panel-group'))
+    );
+
+    if ( !empty($_SERVER['QUERY_STRING'])) {
+        $query_array = array();
+        $query = $_SERVER['QUERY_STRING'];
+        parse_str($query, $query_array);
+        if ( isset($query_array['ace'])) {
+            //1 Make a text box instead
+            //2 place the $file_info in there
+            drupal_add_css($path . '/js/libraries/ace/ace_setup.css');
+            drupal_add_js($path . '/js/libraries/ace/ace.js');
+            drupal_add_js($path . '/js/libraries/ace/ace_setup.js');
+            $plain_text = $file_info['scenario'];
+            $form['ace']['existing_test_ace'] = array(
+                '#prefix' => '<div id="ace-wrapper" class="col-sm-6 panel-group form-wrapper"><h4>Your Test</h4><hr><div id="test-textbox">',
+                '#markup' =>  $plain_text,
+                '#suffix' => '</div></div>'
+            );
+//            $form['questions_area']['existing_test_ace'] = array(
+//                '#markup' => '<div id="custom_ace_container">
+//                                <div name="custom_ace" id="custom_ace" style="border: 1px solid #DFDFDF; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; width: 100%; height: 400px; position: relative;"></div>
+//                              </div>'
+//            );
+//            $form['questions_area']['existing_test'] = array(
+//                '#prefix' => '<h4>Your Test</h4><hr>',
+//                '#type'   => 'textarea',
+//                '#value' =>  $plain_text,
+//                '#attributes' => array('id' => 'test-textbox')
+//            );
+        }
+    }
+    $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
+    $form['questions_area']['existing_test'] = array(
+        '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array())),
+        '#prefix' => '<div class="well test"><h4>Your Test</h4><hr>',
+        '#suffix' => '</div>'
+    );
+    $form['questions_area']['question'] =  _behat_editor_questions_form();
+
     $form['#attributes'] = array('class' => array('scenario-builder'));
     $form['header'] = array(
         '#markup' => '<h3>Editing: ' . $filename . '</h3>'
@@ -74,7 +116,8 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     $form['actions'] = array(
         '#type' => 'container',
-        '#attributes' => array('class' => array('col-lg-12', 'well', 'actions'))
+        '#attributes' => array('class' => array('col-lg-12', 'well', 'actions')),
+        '#weight' => -100
     );
 
     $form['actions']['save_test'] = update_test_array($file_info['filename_no_ext'], $module);
@@ -88,6 +131,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     $form['actions']['admin_area'] = admin_button_array();
 
     $help =  _behat_editor_make_help_link('index.html');
+
     $form['actions']['help'] = array(
         '#prefix' => '<hr><div class="text-success">',
         '#markup' => t('There are icons like this one !help for you to get help through the site', array('!help' => $help)),
@@ -96,10 +140,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     );
 
 
-    $form['questions_area'] = array(
-        '#type' => 'container',
-        '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-sm-6', 'panel-group'))
-    );
+
 
     $help =  _behat_editor_make_help_link('filename.html');
 
@@ -113,14 +154,6 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
         '#prefix' => '<div class="well">',
         "#suffix" => '</div>'
     );
-
-    $form['questions_area']['existing_test'] = array(
-        '#markup' => theme('behat_editor_view_questions_area', array('questions' => $file_to_html['file_text'], 'actions' => array())),
-        '#prefix' => '<div class="well test"><h4>Your Test</h4><hr>',
-        '#suffix' => '</div>'
-    );
-
-    $form['questions_area']['question'] =  _behat_editor_questions_form();
 
     behat_editor_current_test_container($form);
     BehatEditor\BehatSettingsFormHelper::behatSettingsContainer($form);

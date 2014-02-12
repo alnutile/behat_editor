@@ -32,6 +32,7 @@
                 //$('#edit-container1 a.collapsed').click();
                 e.preventDefault();
                 var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
+
                 var url = $(this).attr('href');
                 var url_args = window.location.pathname;
                 var url_args_array = url_args.split('/');
@@ -66,7 +67,14 @@
                     } else {
                         action = 'save';
                     }
-                    var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
+
+                    if ( $('#test-textbox').length ) {
+                        var scenario = Drupal.ace.editor.getValue();
+                        var scenario_array = scenario.split("\n");
+                    } else {
+                        var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
+                    }
+
                     var parameters = {
                         "scenario": scenario_array,
                         "settings": {
