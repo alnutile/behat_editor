@@ -51,6 +51,7 @@ function behat_editor_add_form($form, $form_state) {
 
     $form['#attached']['css']['behat_app_css'] = $path . '/css/behat_editor_app.css';
     $form['#attached']['css']['behat_add_css'] = $path . '/css/behat_editor_add.css';
+    $form['#attached']['css']['behat_add_css'] = $path . '/css/behat_editor_help_bar.css';
     $form['#attributes'] = array('class' => array('scenario-builder'));
     $form['header'] = array(
         '#markup' => '<h3>Feature: ' . $filename . '</h3>'
@@ -64,7 +65,13 @@ function behat_editor_add_form($form, $form_state) {
     $form['actions']['run_test'] = run_test_array($filename_no_ext, $default_path, 'create_run');
     $form['actions']['add_test'] = add_test_array($filename_no_ext, $default_path);
     $form['actions']['admin_area'] = admin_button_array();
-
+    $help =  _behat_editor_make_help_link('index.html');
+    $form['actions']['help'] = array(
+        '#prefix' => '<hr><div class="text-success">',
+        '#markup' => t('There are icons like this one !help for you to get help through the site', array('!help' => $help)),
+        '#suffix' => '</div>',
+        '#weight' => 200
+    );
     $form['questions_area'] = array(
         '#type' => 'container',
         '#attributes' => array('id' => 'accordion_questions', 'class' => array('col-sm-6', 'panel-group'))

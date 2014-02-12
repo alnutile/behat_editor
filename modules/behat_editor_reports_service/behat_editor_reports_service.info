@@ -1,12 +1,9 @@
 name = Behat Editor Reports Service
 description = Reports Service for Behat
 core = 7.x
-package = Behat
+package = Behat Editor
 version = 7.x-1.0
 project = behat_editor
-dependencies[] = ctools
-dependencies[] = services
-dependencies[] = rest_server
 dependencies[] = behat_editor
 dependencies[] = angularjs
 features[ctools][] = services:services:3

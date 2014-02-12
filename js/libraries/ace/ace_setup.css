@@ -1,0 +1,12 @@
+#ace-wrapper {
+
+}
+
+#test-textbox {
+    position: relative;
+    height: 500px;
+}
+
+#accordion_questions {
+    display: none;
+}

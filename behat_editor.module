@@ -831,8 +831,9 @@ function behat_editor_theme_registry_alter(&$theme_registry) {
 }
 
 function _behat_editor_make_help_link($doc_name) {
-    return "<a href=\"#modal_slide\" data-doc-name=\"$doc_name\" class=\"help-get\"><i class=\"glyphicon glyphicon-comment \"></i></a>";
+    return "<a href=\"#modal_slide_content\" data-doc-name=\"$doc_name\" class=\"help-get\"><i class=\"glyphicon glyphicon-comment \"></i></a>";
 }
+
 function _behat_editor_load_help_area(&$form){
     $path = drupal_get_path('module', 'behat_editor');
     drupal_add_js($path . '/js/jquery.pageslide.js', array('scope' => 'footer'));
@@ -843,7 +844,7 @@ function _behat_editor_load_help_area(&$form){
     drupal_add_js(array('behat_editor' => array('behat_editor_loader_url' => $path . "/images/ajax-loader.gif")), 'setting');
     $slide = <<<HEREDOC
 
-        <div id="modal_slide" style="display:none">
+        <div id="modal_slide_content" style="display:none">
             <h2>Help</h2>
             <a class="btn btn-danger" href="javascript:jQuery.pageslide.close(null, '100')">Close</a>
             <br>

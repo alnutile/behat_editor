@@ -44,12 +44,22 @@ function behat_editor_index() {
         '#attributes' => array('role' => 'button', 'class' => array('btn', 'btn-success', 'btn-md', 'add')),
     );
 
-    $build['actions']['manage_tags'] = array(
-        '#type' => 'link',
-        '#title' => t('Manage Tags'),
-        '#href' => "admin/config/behat_editor/allowed_tags",
-        '#attributes' => array('role' => 'button', 'class' => array('btn', 'btn-default', 'btn-md',  'manage_tags')),
+    if ( module_exists('behat_editor_limit_tags') ) {
+        $build['actions']['manage_tags'] = array(
+            '#type' => 'link',
+            '#title' => t('Manage Tags'),
+            '#href' => "admin/config/behat_editor/allowed_tags",
+            '#attributes' => array('role' => 'button', 'class' => array('btn', 'btn-default', 'btn-md',  'manage_tags')),
+        );
+    }
+
+    $help =  _behat_editor_make_help_link('index.html');
+    $build['actions']['help'] = array(
+        '#prefix' => '<span class="text-success">',
+        '#markup' => t('There are icons like this one !help for you to get help through the site', array('!help' => $help)),
+        '#suffix' => '</span>'
     );
+
 
     $build['file_form_fieldset'] = drupal_get_form('behat_editor_file_uploader');
 
@@ -81,5 +91,7 @@ function behat_editor_index() {
     );
     $build['message']['#markup'] = behat_editor_modal($title, $body, $buttons);
     behat_editor_results_history_modal($build);
+    _behat_editor_load_help_area($build);
+
     return $build;
 }
