@@ -50,7 +50,6 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     drupal_alter('behat_editor_edit', $file_info);
 
     $path = drupal_get_path('module', 'behat_editor');
-    dpm($file_info);
 
     $form['#attached']['js']['behat_editor_tags'] = $path . '/js/jquery.behat_editor.apply_tags.js';
     $form['#attached']['js']['behat_editor_close'] = $path . '/js/jquery.behat_editor.close_button.js';
