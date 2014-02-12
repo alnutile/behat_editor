@@ -27,7 +27,7 @@ The source of these files are
  * [Repos/Github](repos.html)
  * [SauceLabs](saucelabs.html)
  * [URL Admin](urls.html)
- * [Basic Authentication Setup(basic_auth.html)
+ * [Basic Authentication Setup](basic_auth.html)
  * [Drush Integration](drush.html)
  * [Cron job tests](cron.html)
  * [Settings Group](settings_group.html)
@@ -37,6 +37,7 @@ The source of these files are
  * [Past Results](past_results.html)
  * [Manage User](add_user.html)
  * [Custom Module](custom_module.html)
+ * [Tokens](tokens.html)
  
 #### Steps
 
@@ -93,7 +94,8 @@ The source of these files are
  * [Scenario Step 1](http://youtu.be/UwH_lPMgcQc)
  * [Scenario Step 2](http://youtu.be/vUcoZVfuDac)
  * [Drush](http://youtu.be/bFx3pxPkvVo)
- 
+ * [Tokens Video](http://www.youtube.com/watch?v=o2-YGlTHh-Q&feature=youtu.be)
+
 #### Steps that may be removed soon
  * [Click a # Button](number_button.html)
  * [OnClick Handler](onlick.html)
