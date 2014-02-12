@@ -4,8 +4,15 @@
                 var token = Drupal.behat_editor.get_token();
                 $('a.save').click(function(e){
                     e.preventDefault();
-                    var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
-                    var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
+
+                    //look for ace editor
+                    if ( $('#test-textbox').length ) {
+                        var scenario = Drupal.ace.editor.getValue();
+                        var scenario_array = scenario.split("\n");
+                    } else {
+                        var scenario = $('ul.scenario:eq(0) > li').not('.ignore');
+                        var scenario_array = Drupal.behat_editor.make_scenario_array(scenario);
+                    }
                     var url = $(this).attr('href');
                     var url_args = window.location.pathname;
                     var url_args_array = url_args.split('/');
