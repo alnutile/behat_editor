@@ -47,7 +47,13 @@
         return token;
     }
 
-    Drupal.behat_editor.action = function(type, token, parameters, url) {
+    Drupal.behat_editor.action = function(type, token, parameters, url, stringify) {
+        stringify = typeof stringify !== 'undefined' ? stringify : true;
+
+        if( stringify === true ) {
+            parameters = JSON.stringify(parameters)
+        }
+
         var results = '';
         $.ajax({
                 type: type,
@@ -55,7 +61,7 @@
                     request.setRequestHeader("X-CSRF-Token", token);
                 },
                 url: url,
-                data: JSON.stringify(parameters),
+                data: parameters,
                 dataType: "json",
                 async: false,
                 contentType: 'application/json'

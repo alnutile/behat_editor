@@ -1,9 +1,21 @@
+1.5.8
+------
+Hotfix on the sync issue with github
+Added inline ACE editor to circumvent the need for github edit mode to help with the problem
+Tokens added as well using the https://github.com/orangedigital/business-selector-extension library
+
 1.5.7
 -------
 Reports has a tag filter
 Some bug fixes or efforts at fixing them
 Index has a help link
 More help integration
+
+1.5.6
+-------
+Tag filter on reports
+Tickets
+BPFD-295, 279, 278 and 314 are fixed by above
 
 1.5.5
 --------
