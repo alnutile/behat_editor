@@ -20,7 +20,6 @@
         "behat/mink-selenium2-driver": "dev-FindWindowNamesInSelenium2",
         "behat/mink-extension": "dev-CommandTimeout",
         "behat/mink-sahi-driver": "*",
-        "orangedigital/business-selector-extension": "*",
         "twitter/bootstrap": "dev-master",
         "drupal/drupal-extension": "*"
     },

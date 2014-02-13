@@ -137,6 +137,8 @@
             var targetAppend = '.token-table div.table-wrapper:last';
             $(results).insertAfter(targetAppend);
         }
+
+        Drupal.behat_editor_tokenizer.append_actions(context, token_filename_id);
     }
 
     Drupal.behat_editor_tokenizer.set_editable = function ( context, token_filename_id ) {
@@ -249,7 +251,6 @@
             results = Drupal.behat_editor.action('GET', token, parameters, url, false);
             if ( results === null ) {
                 Drupal.behat_editor_tokenizer.add_new_token_table(context);
-                Drupal.behat_editor_tokenizer.append_actions(context, token_filename_id);
                 var results = {};
                 results.errors = 0;
                 results.message = 'Your new token set table has been added above';

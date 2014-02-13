@@ -29,12 +29,4 @@ class FeatureContext extends BehatContext
         $this->useContext('BusinessSelectors', new BusinessSelectorContext($parameters));
     }
 
-    /**
-     * @Given /^I try again$/
-     */
-    public function iTryAgain()
-    {
-        throw new PendingException();
-    }
-
 }

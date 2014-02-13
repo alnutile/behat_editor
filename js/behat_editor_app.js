@@ -34,17 +34,23 @@
     };
 
     Drupal.behat_editor.get_token = function() {
-        var token = 'null';
-        $.ajax(
-            {
-                url:'/services/session/token',
-                async: false,
-                global: false
-            }
-        ).done(function(data){
-                token = data;
-        });
-        return token;
+
+        if ( $('body').data('token') ) {
+            return $('body').data('token');
+        } else {
+            var token = 'null';
+            $.ajax(
+                {
+                    url:'/services/session/token',
+                    async: false,
+                    global: false
+                }
+            ).done(function(data){
+                    token = data;
+                    $('body').data('token', token);
+            });
+            return token;
+        }
     }
 
     Drupal.behat_editor.action = function(type, token, parameters, url, stringify) {

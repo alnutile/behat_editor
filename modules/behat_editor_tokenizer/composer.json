@@ -1,6 +1,6 @@
 {
     "require": {
-        "orangedigital/business-selector-extension": "dev-master",
+        "alnutile/business-selector-extension": "*",
         "alnutile/token_file_creator": "dev-master",
         "twig/twig": "dev-master"
     },

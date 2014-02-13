@@ -293,9 +293,11 @@ function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
 
         $form['#attached']['css']['behat_editor_tokenizer_css'] = $path . '/css/behat_editor_tokenizer_app.css';
 
+        $help = _behat_editor_make_help_link('tokens.html');
         $form['results_area']['settings']['tokenizer']['intro'] = array(
-            '#prefix' => '<hr>',
-            '#markup' => '<h4>Manage your tokens below for this test file. Click [help] for more info</h4>',
+            '#prefix' => '<hr><h4>',
+            '#suffix' => '</h4>',
+            '#markup' => t('Manage your tokens below for this test file. Click !help for more info', array('!help' => $help))
         );
 
         $form['results_area']['settings']['tokenizer']['text'] = array(

@@ -75,7 +75,7 @@ function behat_editor_view_form($form, $form_state) {
     );
 
 
-
+    _behat_editor_file_path($form, $file_info);
 
     behat_editor_current_test_container($form);
     BehatEditor\BehatSettingsFormHelper::behatSettingsContainer($form);
