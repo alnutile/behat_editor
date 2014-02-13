@@ -22,6 +22,7 @@ Or you can click the "use this test?" button as well.
 
 prefix each row as needed with And or When or Given or Then
 
+  * I should see "ARG" on the page
   * I go to the page "ARG"
   * I follow the link "ARG"
   * I press the "ARG" button
