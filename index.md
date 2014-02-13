@@ -38,6 +38,7 @@ The source of these files are
  * [Manage User](add_user.html)
  * [Custom Module](custom_module.html)
  * [Tokens](tokens.html)
+ * [Ace Editor](ace.html)
  
 #### Steps
 
