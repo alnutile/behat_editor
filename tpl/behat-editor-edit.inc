@@ -66,6 +66,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     $form['#attached']['css']['behat_app_css'] = $path . '/css/behat_editor_app.css';
     $form['#attached']['css']['behat_add_css'] = $path . '/css/behat_editor_edit.css';
+    $form['#attached']['css']['behat_add_css'] = $path . '/css/behat_editor_help_bar.css';
     $form['#attributes'] = array('class' => array('scenario-builder'));
     $form['header'] = array(
         '#markup' => '<h3>Editing: ' . $filename . '</h3>'
@@ -85,6 +86,14 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
     }
 
     $form['actions']['admin_area'] = admin_button_array();
+
+    $help =  _behat_editor_make_help_link('index.html');
+    $form['actions']['help'] = array(
+        '#prefix' => '<hr><div class="text-success">',
+        '#markup' => t('There are icons like this one !help for you to get help through the site', array('!help' => $help)),
+        '#suffix' => '</div>',
+        '#weight' => 200
+    );
 
 
     $form['questions_area'] = array(

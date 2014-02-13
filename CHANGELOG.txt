@@ -1,3 +1,10 @@
+1.5.7
+-------
+Reports has a tag filter
+Some bug fixes or efforts at fixing them
+Index has a help link
+More help integration
+
 1.5.5
 --------
 Fix the bug Clone had where it lost tags BPFD-299
