@@ -11,7 +11,21 @@ A key guide can be found here [http://docs.behat.org/guides/1.gherkin.html] to g
 
 **PHP VERSION**
 
-This module requires (php 5.4)[http://www.php.net/downloads.php].
+This module requires php 5.4 http://www.php.net/downloads.php
+
+Commands for setting up php 5.4 on Ubuntu Precise Pangolin (12.04 LTS):
+
+```bash
+ sudo add-apt-repository -y ppa:ondrej/php5-oldstable
+```
+
+```bash
+ sudo apt-get update
+```
+
+```bash
+ sudo apt-get install
+```
 
 **NOTE**
 
