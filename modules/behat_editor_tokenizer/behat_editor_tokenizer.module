@@ -57,6 +57,7 @@ function behat_editor_tokenizer_callback($method, $parameters) {
     } else {
         $model = new TokenizerController(new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser));
         $results = $model->$method();
+        $results['filepath'] = $filepath;
         $alter = 'behat_editor_takenizer_post_' . $method;
         drupal_alter($alter, $results);
     }
