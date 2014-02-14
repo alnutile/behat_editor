@@ -2,6 +2,7 @@ name = Behat Editor
 description = Edit and View Behat files as well as run tests
 core = 7.x
 version = 7.x-1.0
+php = 5.4
 package = Behat Editor
 files[] = behat_editor.test
 files[] = behat_editor.services.inc
@@ -11,6 +12,7 @@ dependencies[] = ctools
 dependencies[] = services
 dependencies[] = libraries (>=2.x)
 dependencies[] = behat_lib
+dependencies[] = behat_editor_services
 features[ctools][] = services:services:3
 features[features_api][] = api:2
 features[services_endpoint][] = behat_editor_services
