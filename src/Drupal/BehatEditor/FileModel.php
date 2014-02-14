@@ -88,8 +88,6 @@ class FileModel {
     public function deleteFile(){
         $path = drupal_get_path('module', $this->params['module']);
         if(!empty($path)) {
-//            drupal_set_message(t('File could not be deleted it is part of a module'), 'error');
-//            drupal_goto('admin/behat/index');
             $message = t('The file could not be saved !file because it is a module', array('!file' => $this->full_path_with_file . '/' . $this->filename));
             $output = array('message' => $message, 'file' => null, 'data' => null, 'error' => '1');
             return $output;
@@ -319,13 +317,19 @@ class FileModel {
      */
     protected function _process_text(){
         $file = '';
+        $previous_key = 'none';
         foreach($this->scenario_array as $key) {
             $new_line = $this->_new_line($key['new_line']);
             $new_line_above = $this->_new_line($key['new_line_above']);
-            $spaces = $this->_spaces($key['spaces']);
+            if($previous_key === 'none' && strpos($key['string'], "@") !== FALSE) {
+              $spaces = '';
+            } else {
+              $spaces = $this->_spaces($key['spaces']);
+            }
+            $previous_key = $key['string'];
+
             $file = $file . "{$new_line_above}" . "{$spaces}" . $key['string'] . "{$new_line}\r\n";
         }
-
         return $file;
     }
 
