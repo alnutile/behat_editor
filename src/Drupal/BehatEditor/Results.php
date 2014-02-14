@@ -21,9 +21,13 @@ class Results {
     public $duration;
     protected $settings_getter;
 
-    public function __construct(BehatSettingsBaseUrl $settings_getter) {
+    public function __construct(BehatSettingsBaseUrl $settings_getter = null) {
         global $user;
-        $this->settings_getter = $settings_getter;
+        if ( $settings_getter === 'null') {
+            $this->settings_getter = new BehatSettingsBaseUrl();
+        } else {
+            $this->settings_getter = $settings_getter;
+        }
         $this->fields = array(
             'filename' => '',
             'module' => '',
