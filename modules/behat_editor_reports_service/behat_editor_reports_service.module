@@ -204,6 +204,7 @@ function behat_editor_reports_service_reports() {
     $path = drupal_get_path('module', 'behat_editor_reports_service');
     drupal_add_js($path . '/js/libraries/ngtable/ng-table.min.js');
     drupal_add_css($path . '/js/libraries/ngtable/ng-table.min.css');
+    drupal_add_css($path . '/css/app.css');
     drupal_add_js($path . '/js/ng-google-chart.js');
     drupal_add_js($path . '/js/filters/report-filters.js');
     drupal_add_js($path . '/js/services.js');

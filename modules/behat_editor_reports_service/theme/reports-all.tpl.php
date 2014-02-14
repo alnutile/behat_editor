@@ -23,7 +23,7 @@
                 <span class="col-md-4">
                     <h2>URLs Being Tested</h2>
                     <p>
-                        <ul>
+                        <ul class="report-sites-all">
                             <li ng-repeat="(key, value) in pass_fail_per_url"> {{ key }}</li>
                         </ul>
                     </p>
