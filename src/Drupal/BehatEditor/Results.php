@@ -70,6 +70,7 @@ class Results {
                 $record->results = unserialize($record->results);
                 $record->settings   = unserialize($record->settings);
                 self::getURLResults($record);
+                self::getUserResults($record);
                 $rows[] = (array) $record;
             }
         }
@@ -90,6 +91,7 @@ class Results {
                 $record->results = unserialize($record->results);
                 $record->settings   = unserialize($record->settings);
                 self::getURLResults($record);
+                self::getUserResults($record);
                 $rows[] = (array) $record;
             }
         }
@@ -114,6 +116,7 @@ class Results {
                 $record->results    = unserialize($record->results);
                 $record->settings   = unserialize($record->settings);
                 self::getURLResults($record);
+                self::getUserResults($record);
                 $rows[]             = (array) $record;
             }
         }
@@ -124,6 +127,11 @@ class Results {
         $settings_getter = new BehatSettingsBaseUrl();
         $url = $settings_getter->getSettingsBySID(array($record->base_url_sid));
         $record->url        = $url['results'];
+    }
+
+    protected function getUserResults(&$record) {
+        $user = user_load($record->uid);
+        $record->user = $user;
     }
 
     public function cleanHtml($results){
