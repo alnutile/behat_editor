@@ -196,7 +196,7 @@
     }
 
     Drupal.behat_editor_tokenizer.sesssion_set = function (filename_id, context) {
-        $('button.session-set[data-target=' + filename_id + '').on('click', function (e){
+        $('button.session-set[data-target=' + filename_id + ']').on('click', function (e){
             e.preventDefault();
             var token_filename = $(this).data('filename');
             var test_path = $('input[name=filepath]').val();
