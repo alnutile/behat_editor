@@ -123,13 +123,13 @@ class Results {
         return array('results' => $rows, 'error' => 0);
     }
 
-    protected function getURLResults(&$record) {
+    protected static function getURLResults(&$record) {
         $settings_getter = new BehatSettingsBaseUrl();
         $url = $settings_getter->getSettingsBySID(array($record->base_url_sid));
         $record->url        = $url['results'];
     }
 
-    protected function getUserResults(&$record) {
+    protected static function getUserResults(&$record) {
         $user = user_load($record->uid);
         $record->user = $user;
     }

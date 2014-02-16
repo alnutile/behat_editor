@@ -1,6 +1,6 @@
 {
     "require": {
-        "alnutile/business-selector-extension": "*",
+        "alnutile/business-selector-extension": "master",
         "alnutile/token_file_creator": "dev-master",
         "twig/twig": "dev-master"
     },

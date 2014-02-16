@@ -36,7 +36,6 @@
         attach: function (context) {
             $('.help-get', context).on('click', function(e){
                 e.preventDefault();
-                console.log('This is triggered');
                 var doc_name = $(this).data('doc-name');
                 Drupal.behat_editor_help.get(doc_name, context);
             });

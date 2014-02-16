@@ -20,12 +20,12 @@ use Behat\MinkExtension\Context\MinkContext,
  * Features context.
  */
 // class FeatureContext extends BehatContext
-class FeatureContext extends BehatContext
+class FeatureContext extends Drupal\DrupalExtension\Context\DrupalContext
 {
 
     public function __construct(array $parameters)
     {
-        $this->useContext('mink', new MinkContext($parameters));
+        //$this->useContext('mink', new MinkContext($parameters));
         $this->useContext('BusinessSelectors', new BusinessSelectorContext($parameters));
     }
 

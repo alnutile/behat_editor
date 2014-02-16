@@ -21,14 +21,4 @@ class BehatEditorTokenizerSubContext extends BehatContext implements DrupalSubCo
     public static function getAlias() {
         return 'behat_editor_tokenizer';
     }
-
-    /**
-     * @When /^I fill in the "([^"]*)" field with "([^"]*)"$/
-     */
-    public function iFillInTheFieldWith($elementName, $value) {
-        $element = $this->findElementWithBusinessSelector($elementName);
-        $element->setValue($value);
-    }
-
-
 } 
