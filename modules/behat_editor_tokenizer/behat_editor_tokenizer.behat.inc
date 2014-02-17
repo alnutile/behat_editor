@@ -21,4 +21,4 @@ class BehatEditorTokenizerSubContext extends BehatContext implements DrupalSubCo
     public static function getAlias() {
         return 'behat_editor_tokenizer';
     }
-} 
+}

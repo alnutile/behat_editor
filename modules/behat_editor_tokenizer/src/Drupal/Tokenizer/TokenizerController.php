@@ -120,8 +120,12 @@ class TokenizerController {
         return $token_content_tweak;
     }
 
-    public static function getFilesFromTestName($filename, $filepath, $finder)
+    public static function getFilesFromTestName($filename, $filepath, $finder, $filesystem)
     {
+        //First see if folder exists if it does not
+        //we know then there is nothing to retrieve
+        if(!$filesystem->exists($filepath . '/tokens')) { return array(); }
+
         $filename_start = explode('.', $filename);
 
         $iterator = $finder

@@ -31,6 +31,7 @@ function behat_editor_tokenizer_permission() {
 function behat_editor_tokenizer_callback($method, $parameters) {
     global $user;
     composer_manager_register_autoloader();
+    $results = array();
     $filename = $parameters['filename'];
     $token_content = $parameters['token_content'];
     $filepath = $parameters['fullpath'];
@@ -45,7 +46,7 @@ function behat_editor_tokenizer_callback($method, $parameters) {
 
     if( $method == 'retrieve') {
         //1. This means some work on my part to find all files in the path
-        $iterator = TokenizerController::getFilesFromTestName($filename, $filepath, $finder = new Finder\Finder());
+        $iterator = TokenizerController::getFilesFromTestName($filename, $filepath, $finder = new Finder\Finder(), new Filesystem());
         foreach($iterator as $file) {
             $model = new TokenizerController(new TokenizerModel($file->getFilename(), $filepath . '/tokens', $token_content, $filesystem, $yaml_parser));
             $each_results = $model->$method();
@@ -56,6 +57,7 @@ function behat_editor_tokenizer_callback($method, $parameters) {
     } else {
         $model = new TokenizerController(new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser));
         $results = $model->$method();
+        $results['filepath'] = $filepath;
         $alter = 'behat_editor_takenizer_post_' . $method;
         drupal_alter($alter, $results);
     }

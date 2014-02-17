@@ -6,6 +6,7 @@ use Behat\Behat\Context\ClosuredContextInterface,
     Behat\Behat\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode,
     Behat\Gherkin\Node\TableNode;
+use Drupal\DrupalExtension;
 use Behat\MinkExtension\Context\MinkContext,
     OrangeDigital\BusinessSelectorExtension\Context\BusinessSelectorContext;
 
@@ -28,5 +29,4 @@ class FeatureContext extends Drupal\DrupalExtension\Context\DrupalContext
         //$this->useContext('mink', new MinkContext($parameters));
         $this->useContext('BusinessSelectors', new BusinessSelectorContext($parameters));
     }
-
 }
