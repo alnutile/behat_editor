@@ -49,6 +49,7 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
 
     drupal_alter('behat_editor_edit', $file_info);
 
+
     $path = drupal_get_path('module', 'behat_editor');
 
     $form['#attached']['js']['behat_editor_tags'] = $path . '/js/jquery.behat_editor.apply_tags.js';
@@ -88,17 +89,6 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
                 '#markup' =>  $plain_text,
                 '#suffix' => '</div></div>'
             );
-//            $form['questions_area']['existing_test_ace'] = array(
-//                '#markup' => '<div id="custom_ace_container">
-//                                <div name="custom_ace" id="custom_ace" style="border: 1px solid #DFDFDF; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; width: 100%; height: 400px; position: relative;"></div>
-//                              </div>'
-//            );
-//            $form['questions_area']['existing_test'] = array(
-//                '#prefix' => '<h4>Your Test</h4><hr>',
-//                '#type'   => 'textarea',
-//                '#value' =>  $plain_text,
-//                '#attributes' => array('id' => 'test-textbox')
-//            );
         }
     }
     $file_to_html = theme('behat_editor_file_to_html_edit', $vars = array('file_text' => $file_info['scenario']));
@@ -119,6 +109,8 @@ function behat_editor_edit_form($form, $form_state, $module, $filename) {
         '#attributes' => array('class' => array('col-lg-12', 'well', 'actions')),
         '#weight' => -100
     );
+
+    _behat_editor_file_path($form, $file_info);
 
     $form['actions']['save_test'] = update_test_array($file_info['filename_no_ext'], $module);
 

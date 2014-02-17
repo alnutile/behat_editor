@@ -42,7 +42,7 @@ class Settings {
     }
 
     private function setFeaturesPath(){
-        $path = drupal_get_path('module', 'behat_editor') . '/behat/features/bootstrap/FeatureContext.php';
+        $path = drupal_get_path('module', 'behat_editor') . '/behat/features/bootstrap/';
         $full_path = drupal_realpath($path);
         $this->behat_yml_defaults['default']['paths']['bootstrap'] = $full_path;
     }

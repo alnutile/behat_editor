@@ -9,9 +9,27 @@ A key guide can be found here [http://docs.behat.org/guides/1.gherkin.html] to g
 
 ## Install/Setup
 
+**PHP VERSION**
+
+This module requires php 5.4 http://www.php.net/downloads.php
+
+Commands for setting up php 5.4 on Ubuntu Precise Pangolin (12.04 LTS):
+
+```bash
+ sudo add-apt-repository -y ppa:ondrej/php5-oldstable
+```
+
+```bash
+ sudo apt-get update
+```
+
+```bash
+ sudo apt-get install
+```
+
 **NOTE**
 
-There is a dependecie to Organic Groups that was not made clear in the install file. You need to setup OG and one group node say "Basic Page" otherewise you may get some errors. Issue #98
+There is a dependency to Organic Groups that was not made clear in the install file. You need to setup OG and one group node say "Basic Page" otherwise you may get some errors. Issue #98
 
 This module needs composer_manager to setup a number of libraries. For those not able to be managed here it also has a sub module called behat_lib to help setup those libraries.
 

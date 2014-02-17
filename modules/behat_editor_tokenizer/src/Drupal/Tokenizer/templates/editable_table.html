@@ -1,0 +1,23 @@
+<div class="table-wrapper table-wrapper-{{ filename_id }}">
+    <table class="tokens table table-striped table-condensed" id="{{ filename_id }}">
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Token</th>
+        </tr>
+    </thead>
+    {% for key, token in tokens %}
+        <tr>
+            {% if key == 'Default URL' %}
+                <td><strong>{{ key }}</strong></td><td><a data-target="{{ filename_id }}" data-value="{{ token }}" class="selectable" href="#" data-type="select" data-title="{{ token }}" ></a></td>
+            {% else %}
+                <td><a class="editable" href="#" data-type="text">{{ key }}</a></td><td><a class="editable" href="#" data-type="textarea" data-title="{{ token }}" >{{ token }}</a></td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+
+</table>
+    <button data-target="{{ filename_id }}" data-filename="{{ filename }}"  class="save-row btn btn-sm btn-danger">save this set</button>
+    {% include 'buttons.html' %}
+    <hr>
+</div>

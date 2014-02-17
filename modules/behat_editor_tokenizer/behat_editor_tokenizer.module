@@ -1,0 +1,339 @@
+<?php
+
+use Drupal\Tokenizer\TokenizerController;
+use Tokenizer\TokenizerModel;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Finder;
+
+include_once 'behat_editor_tokenizer_services.feature.inc';
+
+function behat_editor_tokenizer_permission() {
+    return array(
+        'behat tokenizer create' => array(
+            'title' => t('Create a Tokens')
+        ),
+        'behat tokenizer view' => array(
+            'title' => t('View a Tokens')
+        ),
+        'behat tokenizer delete' => array(
+            'title' => t('Delete a Tokens')
+        ),
+        'behat tokenizer edit' => array(
+            'title' => t('Edit a Tokens')
+        ),
+        'behat tokenizer view all' => array(
+            'title' => t('View all Tokens')
+        ),
+    );
+}
+
+function behat_editor_tokenizer_callback($method, $parameters) {
+    global $user;
+    composer_manager_register_autoloader();
+    $results = array();
+    $filename = $parameters['filename'];
+    $token_content = $parameters['token_content'];
+    $filepath = $parameters['fullpath'];
+    $alter = 'behat_editor_takenizer_pre_' . $method;
+    drupal_alter($alter, $results);
+    $filesystem = new Filesystem();
+    $yaml_parser = new Yaml();
+
+    if( $method == 'update' || $method == 'create' ) {
+        $token_content = TokenizerController::processFromViewToModel($token_content);
+    }
+
+    if( $method == 'retrieve') {
+        //1. This means some work on my part to find all files in the path
+        $iterator = TokenizerController::getFilesFromTestName($filename, $filepath, $finder = new Finder\Finder(), new Filesystem());
+        foreach($iterator as $file) {
+            $model = new TokenizerController(new TokenizerModel($file->getFilename(), $filepath . '/tokens', $token_content, $filesystem, $yaml_parser));
+            $each_results = $model->$method();
+            $alter = 'behat_editor_takenizer_post_' . $method;
+            drupal_alter($alter, $each_results);
+            $results[] = $each_results;
+        }
+    } else {
+        $model = new TokenizerController(new TokenizerModel($filename, $filepath, $token_content, $filesystem, $yaml_parser));
+        $results = $model->$method();
+        $results['filepath'] = $filepath;
+        $alter = 'behat_editor_takenizer_post_' . $method;
+        drupal_alter($alter, $results);
+    }
+    return $results;
+}
+
+
+/**
+ * Implements hook_services_resources()
+ */
+function behat_editor_tokenizer_services_resources() {
+    return array(
+        'tokenizer' => array(
+            'operations' => array(
+            'retrieve' => array(
+                'help' => 'Retrieve a token record',
+                'callback' => 'behat_editor_tokenizer_callback',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer view'),
+                'access arguments append' => TRUE,
+                'args' => array(
+                    array(
+                        'name' => 'method',
+                        'type' => 'string',
+                        'description' => 'method of controller',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'parameters',
+                        'type' => 'array',
+                        'description' => 'The tokens structure',
+                        'source' => 'param',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'create' => array(
+                'help' => 'Create a token record',
+                'callback' => 'behat_editor_tokenizer_callback',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer create'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'method',
+                        'type' => 'string',
+                        'description' => 'method of controller',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The tokens structure',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'update' => array(
+                'help' => 'Update a token record',
+                'callback' => 'behat_editor_tokenizer_callback',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer update'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'method',
+                        'type' => 'string',
+                        'description' => 'method of controller',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'parameters',
+                        'type' => 'array',
+                        'description' => 'The tokens structure',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'delete' => array(
+                'help' => 'Delete a token record',
+                'callback' => 'behat_editor_tokenizer_callback',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer delete'),
+                'access arguments append' => TRUE,
+                'args' => array(
+                    array(
+                        'name' => 'method',
+                        'type' => 'string',
+                        'description' => 'method of controller',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The tokens structure',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                    ),
+                ),
+            ),
+            'index' => array(
+                'help' => 'Retrieves a listing Tokens',
+                'callback' => 'behat_editor_tokenizer_callback',
+                'access callback' => 'behat_editor_tokenizer_access',
+                'access arguments' => array('behat tokenizer view all'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'method',
+                        'type' => 'string',
+                        'description' => 'method of controller',
+                        'source' => array('path' => '0'),
+                        'optional' => FALSE,
+                    ),
+                    array(
+                        'name' => 'data',
+                        'type' => 'struct',
+                        'description' => 'The tokens structure',
+                        'source' => 'data',
+                        'optional' => FALSE,
+                        ),
+                    ),
+                ),
+            ),
+        )
+    );
+}
+
+/**
+ * Why not use services for this you ask?
+ * Say it's target_actions or relationships
+ * BECAUSE IT MAKES MY JOB NOT FUN :(
+ * I have not seen REST as un RESTFul eg hard
+ * as when it comes to writing services.
+ * rant over
+ */
+function behat_editor_tokenizer_get_template() {
+    $filename = $_REQUEST['token_filename'];
+    $filename_id = $_REQUEST['token_filename_id'];
+    //1. get template
+    $output = TokenizerController::getStarterTable($filename, $filename_id);
+    drupal_json_output($output);
+    exit();
+}
+
+
+/**
+ * Why not use services for this you ask?
+ * Say it's target_actions or relationships
+ * BECAUSE IT MAKES MY JOB NOT FUN :(
+ * I have not seen REST as un RESTFul eg hard
+ * as when it comes to writing services.
+ * rant over
+ */
+function behat_editor_tokenizer_set_session() {
+    $token_filename     = $_REQUEST['token_filename'];
+    $test_path          = $_REQUEST['test_path'];
+    $set                = $_REQUEST['set'];
+
+    if( $set === 'true' ) {
+        $message = array('errors' => 0, 'message' => "This is now set for the next test $token_filename");
+        $_SESSION['TOKENIZE_TEST'] = $test_path . '/tokens/' . $token_filename;
+    } else {
+        $message = array('errors' => 0, 'message' => "This is no longer set for the next test $token_filename");
+        unset($_SESSION['TOKENIZE_TEST']);
+    }
+
+    drupal_json_output($message);
+    exit();
+}
+
+function behat_editor_tokenizer_access($op, $args = array()) {
+    global $user;
+    if(user_access($op)) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+function behat_editor_tokenizer_menu() {
+
+    $items['admin/test'] =  array(
+        'title' => t('Tokens Test Area'),
+        'access arguments' => array('behat tokenizer view all'),
+        'type' => MENU_CALLBACK,
+        'page callback' => 'behat_editor_tokenizer_test_area',
+    );
+    $items['behat_tokenizer_v1/templates'] =  array(
+        'title' => t('Get Template output'),
+        'access arguments' => array('behat tokenizer create'),
+        'type' => MENU_CALLBACK,
+        'page callback' => 'behat_editor_tokenizer_get_template',
+    );
+    $items['behat_tokenizer_v1/session'] =  array(
+        'title' => t('Set next test'),
+        'access arguments' => array('behat tokenizer create'),
+        'type' => MENU_CALLBACK,
+        'page callback' => 'behat_editor_tokenizer_set_session',
+    );
+    return $items;
+}
+
+function behat_editor_tokenizer_test_area() {
+    //1. Test the output of the json
+    //2. Test placing it in a folder as needed
+    //3. Test the alters
+    //4.
+    return "Hello World";
+}
+
+function behat_editor_tokenizer_form_alter(&$form, $form_state, $form_id) {
+    $form_batch = array('behat_editor_bulk_form_tags', 'behat_editor_bulk_form_modules');
+
+    $forms = array('behat_editor_view_form', 'behat_editor_edit_form', 'behat_editor_add_form');
+    //Deal with other forms
+    if(in_array($form_id, $forms)) {
+        composer_manager_register_autoloader();
+        //start user with clean slates
+        unset($_SESSION['TOKENIZE_TEST']);
+        $path = drupal_get_path('module', 'behat_editor_tokenizer');
+        drupal_add_js($path . '/library/xeditable/js/bootstrap-editable.js', array('scope' => 'footer'));
+        $form['#attached']['css']['behat_editor_tokenizer_editable'] = $path . '/library/xeditable/css/bootstrap-editable.css';
+        $form['#attached']['js']['behat_editor_tokenizer_app'] = $path . '/js/behat_editor_tokenizer_app.js';
+        $form['#attached']['js']['behat_editor_tokenizer_add'] = $path . '/js/behat_editor_tokenizer_add.js';
+        $form['#attached']['js']['behat_editor_tokenizer_clone'] = $path . '/js/behat_editor_tokenizer_clone.js';
+        $form['#attached']['js']['behat_editor_tokenizer_update'] = $path . '/js/behat_editor_tokenizer_update.js';
+        $form['#attached']['js']['behat_editor_tokenizer_view'] = $path . '/js/behat_editor_tokenizer_view.js';
+
+        $form['#attached']['css']['behat_editor_tokenizer_css'] = $path . '/css/behat_editor_tokenizer_app.css';
+
+        $help = _behat_editor_make_help_link('tokens.html');
+        $form['results_area']['settings']['tokenizer']['intro'] = array(
+            '#prefix' => '<hr><h4>',
+            '#suffix' => '</h4>',
+            '#markup' => t('Manage your tokens below for this test file. Click !help for more info', array('!help' => $help))
+        );
+
+        $form['results_area']['settings']['tokenizer']['text'] = array(
+            '#markup'         => '<div class="token-table"> </div>',
+            '#attributes'   => array('id' => 'tokenizer_text')
+        );
+
+        $form['results_area']['settings']['tokenizer']['add'] = array(
+            '#type'         => 'button',
+            '#value'        => t('Add Token File'),
+            '#attributes'   => array('class' => array('btn',  'btn-success', 'add-token', 'tokenizer'))
+        );
+
+        $form['results_area']['settings']['tokenizer']['messages'] = array(
+            '#markup'       => '<div id="tokenizer-messages"></div>',
+        );
+    }
+}
+
+function behat_editor_tokenizer_behat_editor_yml_array_alter(&$behat_yml, $context1, $settings) {
+    if( $context1 == 'generate_yml' ) {
+        if ( isset($_SESSION['TOKENIZE_TEST']) ) {
+            $token_path = $_SESSION['TOKENIZE_TEST'];
+            $behat_yml['default']['extensions']['OrangeDigital\BusinessSelectorExtension\Extension'] = array(
+                'urlFilePath'       => null,
+                'selectorFilePath'  => $token_path,
+                'assetPath'         => null,
+                'timeout'           => 30,
+                'contexts'          => array(
+                    'UIBusinessSelector' => null
+                )
+            );
+            //@TODO not sure here should I unset it or force user to unset?
+            //unset($_SESSION['TOKENIZE_TEST']);
+        }
+    }
+}

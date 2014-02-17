@@ -34,20 +34,32 @@
     };
 
     Drupal.behat_editor.get_token = function() {
-        var token = 'null';
-        $.ajax(
-            {
-                url:'/services/session/token',
-                async: false,
-                global: false
-            }
-        ).done(function(data){
-                token = data;
-        });
-        return token;
+
+        if ( $('body').data('token') ) {
+            return $('body').data('token');
+        } else {
+            var token = 'null';
+            $.ajax(
+                {
+                    url:'/services/session/token',
+                    async: false,
+                    global: false
+                }
+            ).done(function(data){
+                    token = data;
+                    $('body').data('token', token);
+            });
+            return token;
+        }
     }
 
-    Drupal.behat_editor.action = function(type, token, parameters, url) {
+    Drupal.behat_editor.action = function(type, token, parameters, url, stringify) {
+        stringify = typeof stringify !== 'undefined' ? stringify : true;
+
+        if( stringify === true ) {
+            parameters = JSON.stringify(parameters)
+        }
+
         var results = '';
         $.ajax({
                 type: type,
@@ -55,7 +67,7 @@
                     request.setRequestHeader("X-CSRF-Token", token);
                 },
                 url: url,
-                data: JSON.stringify(parameters),
+                data: parameters,
                 dataType: "json",
                 async: false,
                 contentType: 'application/json'
