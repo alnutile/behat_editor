@@ -19,9 +19,15 @@ class Results {
     public $fields = array();
     public $results_cleaned;
     public $duration;
+    protected $settings_getter;
 
-    public function __construct() {
+    public function __construct(BehatSettingsBaseUrl $settings_getter = null) {
         global $user;
+        if ( $settings_getter === 'null') {
+            $this->settings_getter = new BehatSettingsBaseUrl();
+        } else {
+            $this->settings_getter = $settings_getter;
+        }
         $this->fields = array(
             'filename' => '',
             'module' => '',
@@ -62,6 +68,9 @@ class Results {
             foreach ($result as $record) {
                 //@todo new records my not need this so do a check
                 $record->results = unserialize($record->results);
+                $record->settings   = unserialize($record->settings);
+                self::getURLResults($record);
+                self::getUserResults($record);
                 $rows[] = (array) $record;
             }
         }
@@ -80,6 +89,9 @@ class Results {
         if ($result) {
             foreach ($result as $record) {
                 $record->results = unserialize($record->results);
+                $record->settings   = unserialize($record->settings);
+                self::getURLResults($record);
+                self::getUserResults($record);
                 $rows[] = (array) $record;
             }
         }
@@ -91,6 +103,7 @@ class Results {
         return array('results' => $rows, 'error' => 0);
     }
 
+    //@TODO why is this static?
     static public function getResultsForRids(array $rids) {
         $query = db_select('behat_editor_results', 'b');
         $query->fields('b');
@@ -100,11 +113,25 @@ class Results {
         $rows = array();
         if ($result) {
             foreach ($result as $record) {
-                $record->results = unserialize($record->results);
-                $rows[] = (array) $record;
+                $record->results    = unserialize($record->results);
+                $record->settings   = unserialize($record->settings);
+                self::getURLResults($record);
+                self::getUserResults($record);
+                $rows[]             = (array) $record;
             }
         }
         return array('results' => $rows, 'error' => 0);
+    }
+
+    protected static function getURLResults(&$record) {
+        $settings_getter = new BehatSettingsBaseUrl();
+        $url = $settings_getter->getSettingsBySID(array($record->base_url_sid));
+        $record->url        = $url['results'];
+    }
+
+    protected static function getUserResults(&$record) {
+        $user = user_load($record->uid);
+        $record->user = $user;
     }
 
     public function cleanHtml($results){

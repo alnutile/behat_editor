@@ -37,6 +37,21 @@ function behat_editor_report() {
                     $title = "<h4>Filename: {$value['filename']}</h4>";
                 }
                 $output = $title;
+                list($browser, $version) = explode('|', $value['settings']['browser_version']);
+                $browser = ucwords($browser);
+                $group   = $value['url']['gid'];
+                if ($group != 0 ) {
+                    $group = node_load($group)->title;
+                } else {
+                    $group = "Ran as user";
+                }
+                $created = date('m-d-Y H:i ', $value['created']);
+                $output .= "<div><strong>Created:</strong>  $created </div>";
+                $output .= "<div><strong>Browser:</strong>  $browser $version </div>";
+                $output .= "<div><strong>Group:</strong>  $group </div>";
+                $output .= "<div><strong>Operating System:</strong>  {$value['settings']['os_version']} </div>";
+                $output .= "<div><strong>URL:</strong> {$value['url']['nice_name']} @  {$value['url']['base_url']} </div>";
+                $output .= "<div><strong>User:</strong> {$value['user']->name} {$value['user']->mail} </div>";
                 $output .= $value['results'];
                 $build[$key] = array(
                     '#markup' => $output,

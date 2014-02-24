@@ -1,3 +1,14 @@
+1.5.9
+-----
+modify behat reports so that the urls scroll so the page is not so long
+remove spaces from tokens so on view and edit they are not moving over 1 space
+release-2-17-2014_1_5_9#diff-c98b5196a860f888ea6638e5e1c4c0caL325
+more meta data in results
+release-2-17-2014_1_5_9#diff-6f81021efb106dc43ac48980537b3b4aR24
+  * instantiate the BehatSettingsBaseURL class in the __constructor
+  * display more info like URL, User etc in reports
+
+
 1.5.8
 ------
 Hotfix on the sync issue with github
