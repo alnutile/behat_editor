@@ -19,6 +19,7 @@ function behat_editor_bulk_form_tags($form, &$form_state) {
 
     $path = drupal_get_path('module', 'behat_editor');
     $build['#attached']['js']['behat_editor_sids'] = $path . '/js/behat_editor_sids.js';
+    $build['#attached']['css']['behat_editor_batch'] = $path . '/css/behat_editor_batch.css';
 
 
     $build['overview'] = array(
