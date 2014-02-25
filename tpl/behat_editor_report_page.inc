@@ -11,6 +11,10 @@ function behat_editor_report() {
     $arg = arg(3);
     if(!empty($arg)) {
         composer_manager_register_autoloader();
+        $path = drupal_get_path('module', 'behat_editor');
+        $loader     = new Twig_Loader_Filesystem($path . '/twig/');
+        $twig       = new Twig_Environment($loader);
+
         $rids = array_slice(arg(), 3);
         $build['intro'] = array(
             '#markup' => t('<h3>Below are the results for the following tests <small>@tests</small></h3>', array('@tests' => "#" . implode(' #', $rids)))
@@ -46,13 +50,12 @@ function behat_editor_report() {
                     $group = "Ran as user";
                 }
                 $created = date('m-d-Y H:i ', $value['created']);
-                $output .= "<div><strong>Created:</strong>  $created </div>";
-                $output .= "<div><strong>Browser:</strong>  $browser $version </div>";
-                $output .= "<div><strong>Group:</strong>  $group </div>";
-                $output .= "<div><strong>Operating System:</strong>  {$value['settings']['os_version']} </div>";
-                $output .= "<div><strong>URL:</strong> {$value['url']['nice_name']} @  {$value['url']['base_url']} </div>";
-                $output .= "<div><strong>User:</strong> {$value['user']->name} {$value['user']->mail} </div>";
-                $output .= $value['results'];
+                $os_version = $value['settings']['os_version'];
+                $url        = $value['url']['base_url'];
+                $nice_name  = $value['url']['nice_name'];
+                $mail       = $value['user']->mail;
+                $results    = $value['results'];
+                $output = $twig->render('reports.html', compact('title', 'created', 'browser', 'version', 'group', 'os_version', 'url', 'nice_name'. 'mail', 'results'));
                 $build[$key] = array(
                     '#markup' => $output,
                 );

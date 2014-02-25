@@ -11,6 +11,8 @@
             $('a.result', context).on('click', function(e){
                 e.preventDefault();
                 var rid = $(this).data('rid');
+                //this data comes from
+                //behat_vagrant/behat_pfiser/assets/example/current/sites/all/modules/custom/behat_editor/tpl/behat_shared_views.inc:56
                 var body = Drupal.settings.behat_editor.results[rid].results;
                 if (body instanceof Array) {
                     body = body.join("<br />");
