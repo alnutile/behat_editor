@@ -69,7 +69,16 @@ function _behat_editor_get_latest_result($file_name, $module_name, $file_object 
     $result = '';
     $results = BehatEditor\Results::getLatestResultForFile($module_name, $file_name, $file_object);
     if(isset($results['results'][0])) {
+
         $value = $results['results'][0];
+        list($browser, $version) = explode('|', $value['settings']['browser_version']);
+        $browser = ucwords($browser);
+        $group   = $value['url']['gid'];
+        if ($group != 0 ) {
+            $group = node_load($group)->title;
+        } else {
+            $group = "Ran as user";
+        }
         $title = "<h4>" . $value['filename'] . "</h4>";
         $created = date('m-d-Y H:i ', $value['created']);
         $os_version = $value['settings']['os_version'];

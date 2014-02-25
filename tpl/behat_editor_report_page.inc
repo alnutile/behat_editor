@@ -23,6 +23,7 @@ function behat_editor_report() {
         $results = BehatEditor\Results::getResultsForRids($rids);
         if($results['results']) {
             foreach($results['results'] as $key => $value) {
+                dpm($value);
                 //If batch test then want to grab the files / tags being used
                 if(strpos($value['filename'], '|')) {
                     //Get Row from Batch Report
