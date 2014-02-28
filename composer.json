@@ -20,7 +20,8 @@
         "behat/mink-selenium2-driver": "dev-FindWindowNamesInSelenium2",
         "behat/mink-extension": "dev-CommandTimeout",
         "behat/mink-sahi-driver": "*",
-        "drupal/drupal-extension": "*"
+        "drupal/drupal-extension": "*",
+        "twig/twig": "1.15.*@dev"
     },
     "minimum-stability": "dev",
     "config": {

@@ -58,14 +58,38 @@ function _behat_editor_produce_table_array($files_array) {
 }
 
 function _behat_editor_get_latest_result($file_name, $module_name, $file_object = array()){
+    composer_manager_register_autoloader();
+    $path = drupal_get_path('module', 'behat_editor');
+    $loader     = new Twig_Loader_Filesystem($path . '/twig/');
+    $twig       = new Twig_Environment($loader);
+
     $output = '';
     $pass_fail = 'na';
     $rid = 0;
     $result = '';
     $results = BehatEditor\Results::getLatestResultForFile($module_name, $file_name, $file_object);
     if(isset($results['results'][0])) {
-        $result = $results['results'][0];
-        $rid = $results['results'][0]['rid'];
+
+        $value = $results['results'][0];
+        list($browser, $version) = explode('|', $value['settings']['browser_version']);
+        $browser = ucwords($browser);
+        $group   = $value['url']['gid'];
+        if ($group != 0 ) {
+            $group = node_load($group)->title;
+        } else {
+            $group = "Ran as user";
+        }
+        $title = "<h4>" . $value['filename'] . "</h4>";
+        $created = date('m-d-Y H:i ', $value['created']);
+        $os_version = $value['settings']['os_version'];
+        $url        = $value['url']['base_url'];
+        $nice_name  = $value['url']['nice_name'];
+        $mail       = $value['user']->mail;
+        $results    = $value['results'];
+
+        $result['results'] = $twig->render('reports.html', compact('title', 'created', 'browser', 'version', 'group', 'os_version', 'url', 'nice_name'. 'mail', 'results'));
+
+        $rid = $value['rid'];
         if($result['status'] == 0) {
             $pass_fail = "pass";
             $status = '<i class="glyphicon glyphicon-thumbs-up"></i>';
@@ -73,7 +97,7 @@ function _behat_editor_get_latest_result($file_name, $module_name, $file_object 
             $pass_fail = 'fail';
             $status = '<i class="glyphicon glyphicon-thumbs-down"></i>';
         }
-        $output .= '<a class="result" data-rid="'.$result['rid'].'" href="/admin/behat/report/' . $result['rid'] .'" target="_blank"><span class="hidden">' . $pass_fail . '</span>' . $status . '</a>';
+        $output .= '<a class="result" data-rid="'.$rid.'" href="/admin/behat/report/' . $rid .'" target="_blank"><span class="hidden">' . $pass_fail . '</span>' . $status . '</a>';
     } else {
         $output = 'n/a';
     }

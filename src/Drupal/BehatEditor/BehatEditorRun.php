@@ -126,7 +126,7 @@ class BehatEditorRun {
         if($javascript == TRUE) {
             $tags_exclude = '';
         } else {
-            $tags_exclude = "--tags '~@javascript'";
+            //$tags_exclude = "--tags '~@javascript'";
         }
 
         if($tag_include) {
