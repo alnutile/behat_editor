@@ -126,7 +126,7 @@ class BehatEditorRun {
         if($javascript == TRUE) {
             $tags_exclude = '';
         } else {
-            $tags_exclude = "--tags '~@javascript'";
+            //$tags_exclude = "--tags '~@javascript'";
         }
 
         if($tag_include) {
@@ -156,7 +156,7 @@ class BehatEditorRun {
 
         exec($command, $output, $return_var);
         watchdog('behat_command', print_r($command, 1), array(), WATCHDOG_NOTICE);
-        #$behat_yml_path->deleteBehatYmlFile();
+        $behat_yml_path->deleteBehatYmlFile();
 
         $results = new Results();
         $results_params = array(

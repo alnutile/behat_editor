@@ -1,3 +1,12 @@
+1.6.0
+-------
+Twig composer added back
+Update mockery composer.json to help with the build
+Use Twig for report output as well.
+This output is seen in 2 places so it was good to centralize the output
+Report Modal now has more output
+
+
 1.5.9
 -----
 modify behat reports so that the urls scroll so the page is not so long
