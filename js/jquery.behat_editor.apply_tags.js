@@ -79,7 +79,7 @@
                     autocomplete: {delay: 0, minLength: 1},
                     beforeTagAdded:  function(event, ui) {
                         var tag = ui.tagLabel;
-                        if($(Drupal.settings.tags_allowed).length) {
+                        if(Drupal.settings.tags_allowed.size != undefined) {
                             var allowed = Drupal.settings.tags_allowed;
                             if(jQuery.inArray( tag, allowed, 0) == -1) {
                                 if (!ui.duringInitialization) {
