@@ -1,5 +1,17 @@
 # Behat Editor and Gherkin Generator
 
+## Note
+
+There is a vagrant install available https://github.com/alnutile/behat-vagrant
+
+There is a phase 2 to this project the new UI can be seen here http://angular.behateditor.io/#/
+
+and the repo is here https://github.com/alnutile/behat_angular_frontend_core 
+
+It will be framework agnostic and so is the new backend https://github.com/alnutile/behat_editor_core
+
+I have it working in Laravel and Drupal.
+
 ## About
 
 This module will allow a user to make Gherkin formatted test files for behat as well as centralize reports of tests. So even if the graphical interface is not needed to build the tests you can still use the site to run and review tests. 
