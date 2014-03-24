@@ -29,4 +29,21 @@ class FeatureContext extends Drupal\DrupalExtension\Context\DrupalContext
         //$this->useContext('mink', new MinkContext($parameters));
         $this->useContext('BusinessSelectors', new BusinessSelectorContext($parameters));
     }
+    
+        /**
+     * See if element is not visible
+     *
+     * @Then /^element "([^"]*)" is not visible$/
+     */
+    public function elementIsNotVisible($arg) {
+
+        $el = $this->getSession()->getPage()->find('css', $arg);
+        if($el) {
+            if($el->isVisible()){
+                throw new Exception('Element is visible');
+            }
+        } else {
+            throw new Exception('Element not found');
+        }
+    }
 }
