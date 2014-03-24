@@ -5,6 +5,7 @@ Update mockery composer.json to help with the build
 Use Twig for report output as well.
 This output is seen in 2 places so it was good to centralize the output
 Report Modal now has more output
+Turn off the ~@javascript tag default in the BehatEditorRun
 
 
 1.5.9

@@ -324,7 +324,7 @@ function behat_editor_tokenizer_behat_editor_yml_array_alter(&$behat_yml, $conte
         if ( isset($_SESSION['TOKENIZE_TEST']) ) {
             $token_path = $_SESSION['TOKENIZE_TEST'];
             $behat_yml['default']['extensions']['OrangeDigital\BusinessSelectorExtension\Extension'] = array(
-                'urlFilePath'       => null,
+                'urlFilePath'       => $token_path,
                 'selectorFilePath'  => $token_path,
                 'assetPath'         => null,
                 'timeout'           => 30,
