@@ -29,8 +29,8 @@ class FeatureContext extends Drupal\DrupalExtension\Context\DrupalContext
         //$this->useContext('mink', new MinkContext($parameters));
         $this->useContext('BusinessSelectors', new BusinessSelectorContext($parameters));
     }
-    
-        /**
+
+    /**
      * See if element is not visible
      *
      * @Then /^element "([^"]*)" is not visible$/

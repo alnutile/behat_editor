@@ -1,3 +1,7 @@
+1.6.1
+------
+Token support added for URLs logic
+
 1.6.0
 -------
 Twig composer added back
