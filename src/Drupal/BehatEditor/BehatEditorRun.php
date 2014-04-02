@@ -48,7 +48,6 @@ class BehatEditorRun {
     public function __construct($file_object) {
 
         composer_manager_register_autoloader();
-        $path = drupal_get_path('module', 'behat_editor');
         $this->yml_path = $this->setBehatYmlPath()->getBehatYmlPath();
         $this->behat_path = _behat_editor_behat_bin_folder();
         $this->absolute_file_path = '';
