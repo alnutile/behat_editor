@@ -8,6 +8,7 @@
 namespace Drupal\BehatEditor;
 
 use Drupal\BehatEditor;
+use Drupal\BehatEditor\BehatEditorRunHelpers;
 
 /**
  * Class BehatEditorRun
@@ -21,6 +22,7 @@ use Drupal\BehatEditor;
  */
 
 class BehatEditorRun {
+    use BehatEditorRunHelpers;
 
     public $behat_path = '';
     public $absolute_file_path = '';
@@ -29,7 +31,6 @@ class BehatEditorRun {
     public $module = '';
     public $relative_path = '';
     public $filename = '';
-    public $yml_path = '';
     public $filename_no_ext = '';
     public $file_array;
     public $file_object = array();
@@ -48,7 +49,7 @@ class BehatEditorRun {
 
         composer_manager_register_autoloader();
         $path = drupal_get_path('module', 'behat_editor');
-        $this->yml_path = drupal_realpath($path) . '/behat/behat.yml';
+        $this->yml_path = $this->setBehatYmlPath()->getBehatYmlPath();
         $this->behat_path = _behat_editor_behat_bin_folder();
         $this->absolute_file_path = '';
         $this->file_full_path = $file_object['absolute_path_with_file'];
@@ -60,6 +61,8 @@ class BehatEditorRun {
         $this->file_object = $file_object;
         $this->output_file = self::getPath();
     }
+
+
 
     /**
      * Decide what path we should be storing files at
@@ -123,6 +126,7 @@ class BehatEditorRun {
      * @return array
      */
     public function exec($javascript = FALSE, $settings = array(), $context1 = 'behat_run', $tag_include = FALSE, $profile = 'default') {
+        $tags_exclude = '';
         if($javascript == TRUE) {
             $tags_exclude = '';
         } else {
@@ -154,9 +158,11 @@ class BehatEditorRun {
         drupal_alter('behat_editor_command', $command, $context1);
         $command = implode(' ', $command);
 
+        watchdog("Behat_Run_Path", print_r($this->behat_path, 1));
+
         exec($command, $output, $return_var);
         watchdog('behat_command', print_r($command, 1), array(), WATCHDOG_NOTICE);
-        $behat_yml_path->deleteBehatYmlFile();
+        //$behat_yml_path->deleteBehatYmlFile();
 
         $results = new Results();
         $results_params = array(
@@ -247,10 +253,13 @@ class BehatEditorRun {
 
     //@todo remove tag arg in behatCommandArray
     public function behatCommandArray() {
+
+        $path = $this->getBehatYmlPath();
+        watchdog('behat_yml_path', print_r($path, 1));
         return array(
             'pre_command' => "cd $this->behat_path &&",
             'run' => "./bin/behat",
-            'config' => "--config=\"$this->yml_path\"",
+            'config' => "--config=\"$path\"",
             'path' => '--no-paths',
             'tags' => "$this->tags",
             'format' => '--format=html',

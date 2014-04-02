@@ -4,9 +4,11 @@
 namespace Drupal\BehatEditor;
 
 use Symfony\Component\Yaml;
-
+use Drupal\BehatEditor\BehatEditorRunHelpers;
 
 class GenerateBehatYml {
+    use BehatEditorRunHelpers;
+
     public $behat_yml = array();
     private $loader;
     private $settings;
@@ -74,12 +76,14 @@ class GenerateBehatYml {
         $behat_yml_parse = array();
         $path = drupal_get_path('module', 'behat_editor');
         //Check for custom file
-        $behat_yml_path_custom = drupal_realpath($path) . '/behat/behat.yml';
+        //$behat_yml_path_custom = drupal_realpath($path) . '/behat/behat.yml';
+        $behat_yml_path_custom = $this->setBehatYmlPath()->getBehatYmlPath();
         if(file_exists($behat_yml_path_custom)) {
             $behat_yml_path = $behat_yml_path_custom;
         } else {
             $behat_yml_path = drupal_realpath($path) . '/behat/behat.yml.example';
         }
+
         $loader = new Yaml\Yaml();
         $behat_yml_parse = $loader->parse($behat_yml_path);
 

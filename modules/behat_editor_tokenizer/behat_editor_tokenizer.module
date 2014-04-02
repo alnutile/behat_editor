@@ -35,6 +35,7 @@ function behat_editor_tokenizer_callback($method, $parameters) {
     $filename = $parameters['filename'];
     $token_content = $parameters['token_content'];
     $filepath = $parameters['fullpath'];
+    //@TODO fix my spelling and modules using this alter
     $alter = 'behat_editor_takenizer_pre_' . $method;
     drupal_alter($alter, $results);
     $filesystem = new Filesystem();

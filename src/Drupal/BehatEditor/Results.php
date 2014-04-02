@@ -182,7 +182,7 @@ class Results {
      */
     public function getSid($settings) {
         if(!empty($settings)) {
-            $settings = unserialize($settings);
+            $settings = (!empty($settings)) ? unserialize($settings) : '' ;
             if(isset($settings['base_url_gsid']) && $settings['base_url_gsid'] > 0) {
                 $sid = $settings['base_url_gsid'];
             } else {

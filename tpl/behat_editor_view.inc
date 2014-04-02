@@ -24,7 +24,8 @@ function behat_editor_view_form($form, $form_state) {
 
     //@todo make this a controller to talk to a model based on the FileController
     $file = new BehatEditor\FileController();
-    $filename = array_pop(arg());
+    $arg = arg();
+    $filename = array_pop($arg);
     $module = arg(3);
     $service_path = array_slice(arg(), 3, count(arg()));
     $params = array(
@@ -61,12 +62,12 @@ function behat_editor_view_form($form, $form_state) {
         '#attributes' => array('class' => array('col-lg-12', 'well', 'actions'))
     );
 
-    $form['actions']['run_test'] = run_test_array($file_info['filename_no_ext'], $module, 'run');
-    $form['actions']['admin_area'] = admin_button_array();
+    $form['actions']['run_test']        = run_test_array($file_info['filename_no_ext'], $module, 'run');
+    $form['actions']['admin_area']      = admin_button_array();
 
-    $form['actions']['edit_test'] = edit_test_array($file_info['filename_no_ext'] . ".feature", $module);
-
-    $form['actions']['clone_test'] = clone_test_array($file_info['filename_no_ext'] . ".feature", $module);
+    $form['actions']['edit_test']       = edit_test_array($file_info['filename_no_ext'] . ".feature", $module);
+    $form['actions']['ace_edit_test']   = ace_edit_test_array($file_info['filename_no_ext'] . ".feature", $module);
+    $form['actions']['clone_test']      = clone_test_array($file_info['filename_no_ext'] . ".feature", $module);
 
     $form['question'] = array(
         '#prefix' => '<div class="panel panel-default col-md-6">',

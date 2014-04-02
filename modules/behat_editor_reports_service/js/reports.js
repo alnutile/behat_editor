@@ -50,16 +50,6 @@ function ReportsAll($scope, $http, $location, $route, $routeParams) {
             // or server returns response with an error status.
         });
 
-
-//    $scope.$watch('query.uid', function(user_id) {
-//        if(user_id) {
-//            $location.search('user_id', user_id);
-//        } else {
-//            $location.search('user_id', '2');
-//            $scope.query.uid = null;
-//        }
-//    });
-
     $scope.setLocation = function(locationToSet, valueScope) {
         $location.search('user_id', eval(valueScope));
     }

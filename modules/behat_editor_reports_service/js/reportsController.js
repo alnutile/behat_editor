@@ -30,15 +30,6 @@ reportsController.controller('ReportsAll', ['$scope', '$http', '$location', '$ro
             $scope.pass_fail_chart = data.pass_fail_chart;
             $scope.pass_fail_per_url = data.pass_fail_per_url;
             $scope.tags = data.tags;
-//            $scope.tableParams = new ngTableParams({
-//                page: 1,
-//                count: 5
-//            }, {
-//                total: $scope.results.length,
-//                getData: function ($defer, params) {
-//                    $defer.resolve($scope.results.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-//                }
-//            });
         };
 
         $scope.getNext = function () {

@@ -21,7 +21,8 @@
         "behat/mink-extension": "dev-CommandTimeout",
         "behat/mink-sahi-driver": "*",
         "drupal/drupal-extension": "*",
-        "twig/twig": "1.15.*@dev"
+        "twig/twig": "1.15.*@dev",
+        "twitter/bootstrap": "3.0.*@dev"
     },
     "minimum-stability": "dev",
     "config": {
