@@ -209,6 +209,15 @@
         });
     };
 
+    Drupal.behat_editor.sanitizer = function(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+
     Drupal.behat_editor.make_scenario_array = function(scenario) {
         var items = scenario.length;
         var scenario_array = new Array();

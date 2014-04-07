@@ -11,7 +11,8 @@
     Drupal.behat_editor_scenario_builder.string_replace = function(string) {
         var string = string || '';
         string = string.replace(/"/g,"'");
-        return string;
+        string = Drupal.behat_editor.sanitizer(string);
+	return string;
     }
 
     Drupal.behaviors.behat_editor_scenario_builder = {};
