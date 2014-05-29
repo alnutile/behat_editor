@@ -1,6 +1,8 @@
 #Repositories Setup
+
+
 -
- **Now that you have the URLs in groups you can start setting up your repositories**
+ Now that you have the URLs in groups you can start setting up your repositories
 ___
 
 
@@ -14,9 +16,14 @@ In there will be a folder called behat. Place your tests in there.
 
 This folder may later have unit test, functional tests etc so we are adding the behat folder for your test.feature files.
 
+~~~
+//root of your repo
+tests/behat/test.feature
+~~~
 
-##*This module comes with a github module so that you can connect to the API*
--
+----
+
+##This module comes with a github module so that you can connect to the API
 
 
 &rarr; Go to the admin index
@@ -31,7 +38,7 @@ This folder may later have unit test, functional tests etc so we are adding the 
 
 ![<github_tabs>](images/github_repo_tabs.png)
 
-####*Here is where you would start setting up the repos for your group*
+####Here is where you would start setting up the repos for your group
  
 &rarr; Click on the Github Repos in the Github Repos for Group Section
  
@@ -41,7 +48,7 @@ This folder may later have unit test, functional tests etc so we are adding the 
 
 &rarr; Assign it to a group and choose which folder those tests are in and then click ADD 
 
-#####*NOTE: That folder should exist prior to using the repository*
+#####NOTE: That folder should exist prior to using the repository
 
  
 	This will download that repo for all users in that group as well as the group
