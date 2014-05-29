@@ -16,10 +16,10 @@ In there will be a folder called behat. Place your tests in there.
 
 This folder may later have unit test, functional tests etc so we are adding the behat folder for your test.feature files.
 
-~~~
-//root of your repo
-tests/behat/test.feature
-~~~
+
+	//root of your repo
+	tests/behat/test.feature
+
 
 ----
 
