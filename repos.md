@@ -7,6 +7,13 @@ ___
 **You can see a video about this [here](http://www.youtube.com/watch?v=f3ko6E3DB0s)**
 
 
+## Repo Setup "Where should I place my tests"
+
+your repo should have a folder called tests
+In there will be a folder called behat. Place your tests in there.
+
+This folder may later have unit test, functional tests etc so we are adding the behat folder for your test.feature files.
+
 
 ##*This module comes with a github module so that you can connect to the API*
 -
