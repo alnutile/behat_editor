@@ -25,6 +25,7 @@ The source of these files are
  * [Batch Jobs](batch.html)
  * [Groups](groups.html)
  * [Repos/Github](repos.html)
+ * [Github Workflow](github_workflow.html)
  * [SauceLabs](saucelabs.html)
  * [URL Admin](urls.html)
  * [Basic Authentication Setup](basic_auth.html)

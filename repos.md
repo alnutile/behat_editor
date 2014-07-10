@@ -1,4 +1,4 @@
-#Repositories Setup
+# Repositories Setup
 
 
 -
@@ -19,6 +19,7 @@ This folder may later have unit test, functional tests etc so we are adding the 
 
 	//root of your repo
 	tests/behat/test.feature
+	
 
 
 ----
