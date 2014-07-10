@@ -4,11 +4,14 @@ The test files are stored in git. You can have numerous repos setup.
 
 So in the admin interface you might see
 
-|Repo Name | Repo Branch | Related Group |View Tests |
-|----------|-------------|---------------|-----------|
-| repo_foo |    master   |    Team Foo   |   view    |
-| repo_foo |    dev      |    Team Foo   |   view    |
-| repo_foo |    prod     |    Team Foo   |   view    |
+
+
+	|Repo Name | Repo Branch | Related Group |View Tests |
+	|----------|-------------|---------------|-----------|
+	| repo_foo |    master   |    Team Foo   |   view    |
+	| repo_foo |    dev      |    Team Foo   |   view    |
+	| repo_foo |    prod     |    Team Foo   |   view    |
+
 
 
 Assuming you are on Team Foo that team has 3 entries for 1 repo.
