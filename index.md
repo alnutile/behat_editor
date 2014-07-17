@@ -16,6 +16,8 @@ The source of these files are
 #### Overview
 
  * [Using inline help](docs_inline.html)
+ * [FAQ](faqs.html)
+ * [Exceptions and Errors](exceptions.html)
  * [Writing](writing.html)
  * [Tags](tags.html)
  * [Add a Test](add.html)
