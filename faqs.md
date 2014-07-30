@@ -30,6 +30,11 @@ Becomes
 	"//*[@id='knowpneumonia.com']"
 
 
+## Where do I store my files
+
+The repo should have a root folder called tests. In there is behat. Place your files in there
+
+
 ## How do I add comments.
 
 Version 2 of the tool will be better about this.
